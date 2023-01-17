@@ -75,7 +75,7 @@ export default function Chat({navigation, route}){
             <View style = {styles.messageBody}>
                 <FlatList 
                     data={Data.messaging.conversation}
-                    keyExtractor = {(item)=> item.id}
+                    keyExtractor = {(item)=> item.messageId}
                     contentContainerStyle = {{paddingBottom : ms(50)}}
                     renderItem = {({item})=> (
                         <View style = {{margin : ms(10)}}>
@@ -99,26 +99,23 @@ export default function Chat({navigation, route}){
                                 </View>
                             : null}
                             {/*  only images sending */}
-                            {item.sendingImages.length> 0? 
+                            {item.sendingImages.length > 0? 
                                 <View style = {styles.messageContainer}>
-                                    <View style = {styles.seningImagesContainer}> 
-                                {item?.sendingImages?.map(data => (
-                                    <Image
-                                        source={{
-                                            uri : data.url
-                                        }}
-                                        style = {{
-                                            width : '85%',
-                                            height : ms(130),
-                                            resizeMode : 'stretch',
-                                            borderRadius : 10
-                                            
-                                        }}
-                                    />
-                                ))}
+                                    {item?.sendingImages?.map(data => (
+                                        <Image
+                                            source={{
+                                                uri : data.url
+                                            }}
+                                            style = {{
+                                                width : '85%',
+                                                height : ms(130),
+                                                resizeMode : 'stretch',
+                                                borderRadius : 10,
+                                                marginTop : ms(10)
+                                            }}
+                                        />
+                                    ))}
 
-                            </View> 
-                                    
                                     <View> 
                                         <Image 
                                             source={{
@@ -130,29 +127,11 @@ export default function Chat({navigation, route}){
                                 </View>
                             : null}
 
-                            {/* <View style = {styles.seningImagesContainer}> 
-                                {item?.senderImages?.map(data => (
-                                    <Image
-                                        source={{
-                                            uri : Conversation.profilePic
-                                        }}
-                                        style = {{
-                                            width : '85%',
-                                            height : ms(130),
-                                            resizeMode : 'stretch',
-                                            borderRadius : 10
-                                            
-                                        }}
-                                    />
-                                ))}
-
-                            </View> */}
-
-                               {item.replyingTxt.length > 0? 
-                                    <View style = {styles.replyContainer}>
-                                        <Text style = {[styles.messageTxt,{color : theme.light.colors.black}]}>{item.replyingTxt}</Text>
-                                    </View>
-                                : null}
+                            {item.replyingTxt.length > 0? 
+                                <View style = {styles.replyContainer}>
+                                    <Text style = {[styles.messageTxt,{color : theme.light.colors.black}]}>{item.replyingTxt}</Text>
+                                </View>
+                            : null}
                         </View>
                     )}
                 />
@@ -348,7 +327,12 @@ const Data = {
             {
                 messageId : 1,
                 sendingTxt : 'Hey, How are you?',
-                sendingImages : [],
+                sendingImages : [
+                    {
+                        id : 1,
+                        url : 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAH0AvAMBIgACEQEDEQH/xAAbAAACAwEBAQAAAAAAAAAAAAAFBgMEBwIBAP/EAD4QAAIBAwIEAwYEBAQFBQAAAAECAwAEEQUhBhIxQRNRYRQiMnGBkSNCobEHFVLBYnLR4SQzgvDxJUNTksL/xAAaAQADAQEBAQAAAAAAAAAAAAACAwQBBQAG/8QAIREAAwACAwACAwEAAAAAAAAAAAECAxESITEEEyJBUTL/2gAMAwEAAhEDEQA/AKOp6TaSXGnxyzZPNuSaOrwtop68n/2pb1yIi4tTk55qOxxE469KjeRpFKxJvstHhXRAPhj+9dJwron9Ef3qIQ99/vU0cGe1D9tGvDJS1XhrRUWPCIPe3IPWidvwvobRoTFEdu9DdbiCxxdetErUDw4x5qKLmwfrRbThbRMf8iH7VJFw5o0MiyJDCGU5BxXGGAxXD82OtEsjB+pBHX763WxWEMvvDAFQuYvZFx/SKWte2jjPfmq/EzG2jyTuoobrkOxpQcXaryEDagE9vliS29HJ9xQi4ZIzmSREVjygswGTSdbYxPQFuxyXKZ3qlrZYSAR9TXN5rxOpSW9la+0GNuTPKTlvp2zU7zagkTLqNm6NyB0kCHGfI5+dNlcWmKf5JpC1NHcysQFY47Ypj0XX10u1EEuzKOn0rvTdUdpik8UTqd8svw/InGR51xrPDcuoahbz2fL7PMvM2DjGT2or/N6rwCU47XoZ0DVk1a8KjcqcYo3cQmGU8y4x50B4Z0ldC16JZXBEhzv8qKce6kbErNCQQE6fWpmkq0jLxc1vfZQ1/R1vbRpIVAfqcdqz2/tLi2ccwIBP61o+l65bT2fiMw3XcUpatOt7czRx4901suk/CTQKuABEhZd8V9HGXj5gNqnul5rZe5G21Q2PiiTlOy+VbD2gCSyj/ELOOnSq84meVmVTijUiJEmQNyN6GyXDByFG1eV7ekEO+vqfEtTj81MFuh5F27ClbXNVEiW5MRwGozba6ixoPDOwFPc9FyvsMiM+VTxRnPShK60WHuwE1Kmsyf8AwGvKTao44hwBFk/mq3CwRIu/uigPEGqyvGjGDGGruDV5XjhAhzsN6zQCobQ4IHrXEpyKCnU7lQAIP0qF9TvD/wCwftXg0e6+fwU881ctzm2i/wAtLmt3921uMxEYPlU1tqV37NGPC7eVZoLl2G5iAhPlSHxNc21zeworBinNsOxAPT/WmR72UxObpWWPBzgdfQUi8QTIQkkC4YMyYHYd6yVpmt9Gofw24fs7XTk1Fo/Eubj3zI+5APYU5atZQ3tq0E0alGGMeVJ2hXctvwzpqCeSEtbrjwYvEkY47DfA+lFdCa8naX2i5vJU/K1yFDA48higVf0fx0+hA4w4ZuNNYTQTq0Y+FGcA1S0LX7i85IkTwzaRtjvzkdqc7jSrufxZ4rO2lklJzNJljjy8hSLNANE1eX2rkiAcsqp5nPT03opf6F5Z32NmvxpLJZXKPySvGc7/AAnbNIvEN7fSl4bkll+EHFNGnpc6nHM8uYeSQNHzDcgruQPtVXWNNEtuXicSJnAfpn1pL3N7J76h6BmnNZRcP55uWXkOR60Gt/cuVkByGGDXVzYuikgHA7joaHq0qMUGSe1PikyZ3v8AQZlXDlfMZrqyjVzzOcY6VxAskkIZwcgb1BKJVYcucE9qW51vQt+hK5YFSAegoO8bFyQDV+6EgeM8p5cb0wWGgG7tUm8QLzdqVKc+GaLOvFRaw4UbN2FELRlMUeFXoO1K2p61HPZoB1Boro+pxzwoB2FdLgyrmhyteUwg8o+1SgIRsB9qBJqgUBFzV0XoWIE5OaC3wMeSStxBIPBUEDHN5V3bSxiCEqBsPKq2qzJJZEkb5oal94drH7pNKt0L+xN9DS10rcoA/SujKOXtQmzuFlh5gDkip1ZvOsWyiK5Iqa/L/wAL8mr6zLvaRMvl3NRa2M2m5711pxJs4xzYFE/A16DeIGmkl8EOypEqtIyjZgc7D12pR12eF7qRoFRA6gmIHJBAA3+1OerT4cpGOchgHDnAxjYfPrSNeW7C/LxoByLzHuBgZ/tWR6G+kbTwdewPoFpzFN4lGD6DfNFDqXNBJJZWokihbCkMAGPf6VnX8Ptbgv7WewukSKWJiUVe6n/fNOFhw+sZNwsxuoGxywTjnWPH9PYfUUpJqnLKk5pJg6TiN4WmklmtbfmkysTPkt6elI38RHkmltLyRApLY5fQjP8AatK1fTJbwxtcQxw28bBvDRQinByMgdaybj7WV1HV/Z7bBjgY79s4xTIn8+hWatRoK8NmN7ZBc5uFT3OX+g9gfQgkjyotr0iyaTy2hCgnkBAxg+VK2hFue3nMSSjnK8jjIHz8x5U06oPHtIQFWLJH4YxhfTalZ1+S0Bia4tM6tuHpG01A7cxYbnNUrvg5LeMXHOcr13p80yHFlGHG/LVXVgscEiyfAaljJXI3Jhx63ozuN0ZWQKNu/nVbnVG5GXfO1dwgRXMiZ93O1R63GYljlTsRnFXUjlvpnGpPcSc0caZVR5VDHqd9CgRJpFAHQUa0RzczujLkFD1HpQa/mEV3JGE+E+VLX8MIrGJJAUk6Y/WvbS4Gn3Eip8GdqqxyNEnrXPNz+8eprraCXaGC01Qs/N2FEX1oOyJ2zS7aFeTFSsuaVUpvsFwmN+oXEMmmfhH3qFQSE2iiQA1QtudoSvMcZphttNWWwUq247Cl5J0ugseBvw502URrlulXheL2NDUsroOUOMV1JaywH3jSpn8dspxy46Z3rFyWtTjzqSwkP8tyuchexwSc+faheoy/8OwPmKuaXLHJYeE4+IY6+vWta66DT7K98/4JwOVihClQN+uD6DvSvMnPLlzygjGM9R6du5ph1efw0EcDPGAcSKiZGduoPy/alyYXCv4kikN122yexrIin4jcmSJ6bJNHgW21aN43ZEY8rMzcuM9CPtWlWl3rFhss5KjbLL2rJpNQYy8t3HzxsuOY7kHzrRuDLuW90pPacq8JKAb++vYnyoM0NdsbhuWtIl4m1bUP5fNLNeHHIcqihe3esjtj+IJXQnJ656nqa0zjSRf5Nd4OQIyPvtSLaRC5Y4RfChBY+p22FHi6kXm7pDpwXFbzJ4kQhEq78sjMAw8wMdQM/Squsi6g1JIzJzRo/bHc57VFpyGC3MdnKXJJeMdGUk7fcYqG7u1iuOVveBQHIG3nS36LyNzO0aHpuuWvgxxvIA2Mb19xC6yWLMCCD0NZpNdo+ChwRuCKI2/EEptjb3DFlxsamnEtgP5ltapAclvFYA9DjNXLljcWIzk4xmqUMytdNjoTR3SIFuJ5LdhnmBIqjIuK2TMt8Lm3edSCMhN6Kx2+igN4/IZOY5zQ3T7GKw1IpuCA21W/5Rbzs0hIyT3rIW3tHhEu7OZE5uSuYdOuXQMqHBpw1TULGWzdUiUH5Vb0y7h9hQ+zqcD+mqvvrW0ir6Z3psTI7C8XpGftV610+/uWCRwsT/lNNRvxn8Oxdh6ITRvhG5aXWYY3sZEVifeKEDpWLLkp64mvFEr/AEJ44f1a0gJntm9MCr2ki4t4WEiODnoRWzanaRuoPIMd6pR2duBymNftTqxckLjLwezKI3vZbliFKqT1I61YNndTnGCx/wAINaqlhZ9fCX7VYitrVN1jUfSl/RXmxr+Qm96MavuGr97dmS2lPfpQ62srqGHHKysp3DDBFbfqd3DBCyhQTise4hfUlvp7hIuS1XLM+egrHjqdKTFkl7dADULlDe+E2OaLBkI33O+Pn0+58qF3N4srO/K+AeXJAxXFozyrDPJnnuLnnJPln/eubhDFO8YAwWBIP/UP7Cqp6Wjm2+V7ZXuVjkU9vP0+dNfBOuwRBbG+bww2ySnoCegY/wB6UrxTG7J2OF29RUNow5o1fdXBUg+eTigyQrWmNw5Kxdo0jiTTpbnQ5IYh+IZiD5bb0h2Ylgfw+VUBcZMgx59fTrTBp/E15awG0njWdWIAZ2IZe3XvgUv6zdS30haSMRJy4AXfbOc1NGOpemXXnx5EmvQvZatDb3kaF3t8sCGYDKkDAAz/AKmm65t7G4tPEbw8kDB9KyqztjLcIOYZLdex8qcuDpWluBo90xxOxEDMc752Gf0+1Dlxdbn0zHl09V4Wxw/ZzjKyop9GribS7ayQq8gYGmscOezgCQMpFDNd0tEgJ5mO1RY7p1qijLhhztCFJD4d2Snwk7U1cNb3CSjcgb0r28im5aNznlNNPDTImoBM+6RVWbzRzv2EtbKw6tAx/Ma5iv0jBXJ6+Vd8UcqXNvJy83LtgUCOpxKzBoDnNDjM2Ub12AIUDlrXP4baPb3WiR3UyByTgZHSsZedXJXO1bV/By7E/DckWd4pmH7V1Ekl0ZttrYy3NtaWg+AD6V1ZzWzspQLntQXXppjqZhBPKRQS9vJdLcSFjgGs2au2aLckGKhbYDmh1hr8V7ApDgkipjcBmyDRaM5F1Wr0yYBqosvrXzy+71rH0e2DdUlLt16Ug8fag0WgTW4wDMwUn0G/74p5ujzMd8VmX8QXV723tj/Wq4/zHJ//ADSV3fQd1xgXSnhR2MQx+EcH57Z/WvNUT/i7gfmGSPoT/rXgcuwb/GzftXeqEe3M39XOP704j/YM1Q/j7fmUGq9mA7EN5n6d6kv2DxwuOpTFRWPxgAHc5oRi6kLyzDwVfA5kG+3p/pXIUOqrjqtRzKfeXsVqKzkIXmJJ5dt6IDxHXgpE5MfuyAEjIyD5EetVorqdZ47pZm8ZX5o2/pPXarTlnViB5EGqQ2mYD8o29M/94oUkM5ujcLTiyPW9CsbjCm5ZAs4HaQbN9+v1qprTLJZknris64V1FdNvwlwxFvMQh8lYnCt+uPrTxqdvcXEJjjbHpXP+V+Npl/xnyjRl11KIdRcjpzUw6XOY7mGUHPMMVWuODbqSd3aU5Y0W03h+W3ZDLLnlINey5sbldgPDe9jBcusstuZN8kftQPWIo/b5AqgAY7UZulU+CFPwUJvbe5luXdTsTtSoqf6C8VgttEMUDyE9BWk/wXBgS8hJ+MhxSNczzG1fI2xTH/Cm8kh1aFG+GVSv16iu20v0SJvrZoOvw/8AqMbjuKUuMY2NswXdqduJG8DwZiMgHelHXs3sq+EPdxvSa7kdPVCto5u4I1xn5UxQ6l4AX2qbkB86sWenRge9VHizTUk07xETJTrQ45ew8loZ7BRdRCSKXmU1ZlEcICzPgOcZ9azDg/iU6Ze+xXDEQv8AAT+X0py4gu/GsgQ4xnIam3Ka0JmmuyzewPby4c5Q7q3nWNcS3ntnFDEHKi5wPocD9q16x1VZbGSG/I544yyue+BmsNsy1xqUc8gwAedz5EnYfc1HhxPHb2Nz5FcosWvvMw8j+/8A4qLVZGll2GPDdSMdxjFSWzct06nuM1LFfXWmajBqFgwE4Hhr7nNliemO5IqlvRLPbQR4f03UpI5LG40O5utNuGDs/gkchx1UnH6UKu9PTSdTmtlLsgOYzJ8RU+f6j6U8abHxlekXWpXsWnW53PjABmHooORt5kVc1rh2113TWe2mD30KZinCn6g+YqZZNX2dKvjq8Wp9RnMrKMsx7VWtEzzA9Mmqt+bi3meC5QpMnxKxrq3uxFD4h97bYeZqlVvs57ipCzBEAXbeiPCWk2880l7d2vtrs/h2tqfhcjqxHkPXbalSFrm6nWLOZpjhQD8IrW9GslsNPeZnW3jKBTJjeKMdlHmT/wB9qRnyNLSLPh4E6dV4KPE3D0Wm6ZL4TT3F4uDOYQPAgG+B0znOAN/pTfoEz3Wi2U0mSzxDmJ7kbGgHGmo20mnwwQs4HicyW0LKf+uVu7HsOvc+Q94I4phuBBos9s8MygrEwOQ+ATg+RqfPNXi3/BsuIzNT4NDRA9BULw+VX2UGoXUr0rnaK9g+SI5qPkIq6/rUBxnpXtAkl9paLYykKNlrng+HwYYLlOscgP2NVH1e6uIHi9xQwwfdzX2hXV1BZeGsiEcx/J/vX1h85t6NX1eWK405H5lwcHrSz7RCMgun3pM1TUdUuZI7KO/aGJhk8q5+1DbrSbqJQf5rOxJ390Un62vChZEaIL23B/5qfeobu8tZoHjeVMMPOkRNBZ0DtqN1kjzFRSaAu5a+umx/jrODQX2JkWpaWjTliTyZ2KGgGr6jqtiBAt0zwdV5uxpk1C39ms05JXyM7k0rX0zXCOkoBx0NZSPQ+yueJtSupoo5Jiq9Dy+VcmfwLaPG3NMrt/lU7D96F26jx1+Z/arMjGRFU9FGB96AK0gpcEQ6qmDkEkZ86tJdTWUyXVtI0U0bcySJ1U+YoVesQYm7qdvsDVqViQwPesYpINWccWqxvqHFevqturEezRyZlm9cflB+p+VFrbj62tJI7LSbEWmmj3FbPSs7kmwWR1DIOx7fI9qjLpHvGrc5B3ds4+QxSaxplsfIqV0a++maXrZEeoxRzKFyH6FfkRvS1xDwpp2n6jax2hVoWcAxc452yTuuepx5+nnstaZxBqGnQDw5edEIHK/ljzqb+dXF6bnUph+LH+FEoOyZ2yPlv9d6XMXL96H3mx3PnZPFDZ2F7cPbSRo6MVDsw6ZO45uxqjqWqXeoMguLmaeJHyWEmFHyA2ziqLe+Bzb4G1ccx8ZIxsuM1T1/Dnqn5ssuy2yr4LHBGc5yGBovwVE1xxNA0KlRGDK7A9BjH65xS1Ovh3EkY+EHIp3/AIYDL6lJtzBYx03wc0rPXHG2MwwuaNB5wailrgmonkIz6VxdnVPHOe+arlhnqKnwHUt0qoTvWow//9k='
+                    }
+                ],
                 replyingTxt : "",
                 replyImages : [],
             },

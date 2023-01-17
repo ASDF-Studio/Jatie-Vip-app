@@ -20,7 +20,7 @@ export function HomeNavigator() {
       <Stack.Screen name= {NAVIGATION.post} component = {Post} />
       <Stack.Screen name= {NAVIGATION.postOptions} component = {PostOptions} />
       <Stack.Screen name= {NAVIGATION.scheduledPost} component = {SchedulePost} />
-    
+  
     </Stack.Navigator>
   );
 }

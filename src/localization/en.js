@@ -295,6 +295,12 @@ export const en = {
     unreadOnly: 'Unread Only',
     archive: 'Archive',
     snoozeNotification: 'Snooze Notification',
+    emptyTxt : "It's very quit here. Let's start a chat!",
+    toEveryOne : 'TO EveryOne',
+    toVipOnly : 'To VIP Only',
+    toFreeMemberOnly : 'To Free Member Only',
+    birthDaysToday : 'Birth Days Today'
+
   },
   operations: {
     save: 'Save',

@@ -2,8 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { strings } from '@/localization';
 import { Icon } from '@/components';
-import PropsType from 'prop-types';
-import { theme, TextStyles } from '@/theme';
+import { theme } from '@/theme';
 import { faArrowRight, faNewspaper } from '@fortawesome/free-solid-svg-icons';
 import { vs, ms } from 'react-native-size-matters';
 import { FontFamily } from '@/theme/Fonts';
@@ -34,31 +33,28 @@ export const ShareFeed = ({onPress}) => {
             }}
           >
             <Text style = {styles.feedLebel}>{strings.profile.feedLebel} </Text>
-            <Icon
-              icon={faArrowRight}
-              size={ms(14)}
-              color = {theme.light.colors.info}
-              onPress = {onPress}
-              style = {{
-                marginLeft : ms(110)
-              }}
-            />
         </View>
       </View>
+        <Icon
+            icon={faArrowRight}
+            size={ms(14)}
+            color = {theme.light.colors.info}
+            onPress = {onPress}
+          />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   feedContainer: {
-    elevation: 8,
+    elevation: 5,
     width: '100%',
     height: vs(80),
     backgroundColor: theme.light.colors.white,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: ms(8),
+    padding: ms(9),
   },
   feedIconContainer: {
     backgroundColor: theme.light.colors.primaryBg,
@@ -76,6 +72,5 @@ const styles = StyleSheet.create({
   feedLebel :{
     fontFamily : FontFamily.BrandonGrotesque_regular,
     fontSize : ms(18, 0.3)
-
   }
 });

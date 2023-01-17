@@ -67,34 +67,34 @@ export default function SearchUser({navigation}){
                     size = {ms(44)}
                     color = {theme.light.colors.primary}
                 />
-                <Text style = {[styles.searchTxt, {fontSize : ms(18), marginTop : ms(10)}]}> {strings.message.searchPlaceholder}</Text>
+                <Text style = {[styles.searchTxt, {fontSize : ms(18), marginTop : ms(10)}]}> {strings.message.emptyTxt}</Text>
             </View>}
             {searchListOpen && 
             <View style = {styles.searchList}> 
-                <Text style = {styles.searchTxt} > {strings.profile.searchResult}</Text>
+                <Text style = {styles.searchTxt}> {strings.profile.searchResult}</Text>
                 <View>
-                <FlatList 
-                    data={Data}
-                    key = {(props)=>props.id}
-                    initialNumToRender ={10}
-                    contentContainerStyle={{ paddingBottom: ms(100) }}
-                    renderItem = {({item})=> {
-                        return (
-                            <View style = {styles.listContainer}>   
-                                <TouchableOpacity 
-                                    style = {styles.list}
-                                    // onPress = {()=> navigation.navigate(NAVIGATION.userProfile)}
-                                > 
-                                    <Image source={{uri : item.image}} style = {styles.profileImage} />
-                                    <View style = {styles.nameContainer}> 
-                                        <Text style = {styles.nameTxt}> {item.name} </Text> 
-                                        <Text style = {styles.userNameTxt}> {item.userName}  </Text>
-                                    </View>
-                                </TouchableOpacity>
-                            </View>
-                        )
-                    } }
-                />
+                    <FlatList 
+                        data={Data}
+                        key = {(props)=>props.id}
+                        initialNumToRender ={10}
+                        contentContainerStyle={{ paddingBottom: ms(100) }}
+                        renderItem = {({item})=> {
+                            return (
+                                <View style = {styles.listContainer}>   
+                                    <TouchableOpacity 
+                                        style = {styles.list}
+                                        // onPress = {()=> navigation.navigate(NAVIGATION.userProfile)}
+                                    > 
+                                        <Image source={{uri : item.image}} style = {styles.profileImage} />
+                                        <View style = {styles.nameContainer}> 
+                                            <Text style = {styles.nameTxt}> {item.name} </Text> 
+                                            <Text style = {styles.userNameTxt}> {item.userName}  </Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                            )
+                        } }
+                    />
                 </View>
             </View>}
         </SafeAreaView>
