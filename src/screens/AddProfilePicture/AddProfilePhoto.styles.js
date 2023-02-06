@@ -34,19 +34,30 @@ export const styles = StyleSheet.create({
     color: theme.light.colors.activeTabIcon,
   },
   bottomButtons: {
-    flex: 1,
+    width: '100%',
+    height: 250,
     justifyContent: 'flex-end',
-    paddingVertical: vs(20),
   },
   img: {
     height: ms(140),
     width: ms(140),
     position: 'absolute',
     borderRadius: ms(70),
+    borderWidth: 1,
+    borderColor: theme.light.colors.activeTabIcon,
   },
   replaceRemoveButton: {
     width: '40%',
     margin: 10,
+    borderRadius: 8,
+  },
+  removeButton: {
+    width: '40%',
+    margin: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    backgroundColor: theme.light.colors.white,
+    borderColor: theme.light.colors.activeTabIcon,
   },
   modalBackground: {
     padding: ms(30),

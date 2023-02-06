@@ -1,7 +1,7 @@
 import { strings } from '@/localization';
 import { theme } from '@/theme';
 import React, { useRef } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Dimensions } from 'react-native';
 import { CropView as ImageCropView } from 'react-native-image-crop-tools';
 import Modal from 'react-native-modal';
 import { ms, vs } from 'react-native-size-matters';
@@ -21,7 +21,7 @@ export const EditViewModal = ({
       <View style={style}>
         <View
           style={{
-            width: '95%',
+            width: '100%',
             height: vs(40),
             backgroundColor: 'white',
             alignSelf: 'center',
@@ -37,7 +37,10 @@ export const EditViewModal = ({
         </View>
         <ImageCropView
           sourceUrl={sourceUrl}
-          style={{ height: 450, width: '100%' }}
+          style={{
+            height: 450,
+            width: Dimensions.get('window').width,
+          }}
           ref={cropViewRef}
           onImageCrop={onImageCrop}
           keepAspectRatio
@@ -45,7 +48,7 @@ export const EditViewModal = ({
         />
         <View
           style={{
-            width: '95%',
+            width: '100%',
             alignSelf: 'center',
             backgroundColor: theme.light.colors.white,
             paddingBottom: 20,
@@ -62,7 +65,6 @@ export const EditViewModal = ({
             style={{
               marginTop: 20,
               width: '95%',
-              height: vs(37),
               alignSelf: 'center',
               backgroundColor: theme.light.colors.white,
               borderWidth: 2,

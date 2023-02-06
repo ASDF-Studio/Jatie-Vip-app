@@ -31,6 +31,7 @@ export const theme = {
       userBackgroundColor: '#F8F2DA',
       black: 'rgb(43, 45,66)',
       white: '#ffffff',
+      headingBlack: '#000000',
     },
   },
   dark: {
