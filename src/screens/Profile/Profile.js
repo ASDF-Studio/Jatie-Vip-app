@@ -10,11 +10,10 @@ import {
 import {
   faSliders,
   faSearch,
-  faArrowRight,
   faRightFromBracket,
 } from '@fortawesome/free-solid-svg-icons';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
-import { ms, vs } from 'react-native-size-matters';
+import { ms } from 'react-native-size-matters';
 import { TextStyles, theme } from '@/theme';
 import { NAVIGATION } from '@/constants';
 import MyStatus from './myStatus';
@@ -30,6 +29,7 @@ import { strings } from '@/localization';
 import { useSelector, useDispatch } from 'react-redux';
 import { FontFamily } from '@/theme/Fonts';
 import { Data } from './ProfileData/profileData';
+import { logout } from '@/actions/UserActions';
 
 export function Profile({ navigation }) {
   const dispatch = useDispatch();
@@ -76,8 +76,8 @@ export function Profile({ navigation }) {
             icon={faRightFromBracket}
             size={ms(20)}
             color={theme.light.colors.secondary}
-            onPress={() => dispatch(logout())}
             style={styles.logOutIcon}
+            onPress={() => dispatch(logout())}
           />
         </View>
       </View>

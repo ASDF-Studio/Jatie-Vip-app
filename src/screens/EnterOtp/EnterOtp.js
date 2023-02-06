@@ -11,6 +11,7 @@ import { useRef } from 'react';
 import { AuthHeader } from '@/components/AuthHeader';
 import { navigationRef } from '@/navigation/RootNavigation';
 import { NAVIGATION } from '@/constants';
+import { TYPES } from '@/actions/UserActions';
 
 export function EnterOtp() {
   const dispatch = useDispatch();
