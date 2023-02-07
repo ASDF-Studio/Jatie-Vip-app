@@ -12,7 +12,10 @@ const Tab = createBottomTabNavigator();
 
 export function AppNavigator() {
   return (
-    <Tab.Navigator screenOptions={{headerShown : false}} tabBar={props => <CustomBottomTabBar {...props} />}>
+    <Tab.Navigator
+      screenOptions={{ headerShown: false }}
+      tabBar={props => <CustomBottomTabBar {...props} />}
+    >
       <Tab.Screen name={NAVIGATION.homeNavigator} component={HomeNavigator} />
       <Tab.Screen
         name={NAVIGATION.messageNavigator}

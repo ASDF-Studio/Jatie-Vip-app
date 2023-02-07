@@ -35,7 +35,7 @@ export const styles = StyleSheet.create({
   },
   bottomButtons: {
     width: '100%',
-    height: 250,
+    height: 230,
     justifyContent: 'flex-end',
   },
   img: {

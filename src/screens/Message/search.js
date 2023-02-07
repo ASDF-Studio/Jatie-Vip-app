@@ -72,7 +72,7 @@ export default function Search({ navigation }) {
           />
           <Text style={styles.searchTxt}>
             {' '}
-            {strings.profile.searchForUsers}
+            {strings.exclusive.searchForUsers}
           </Text>
         </View>
       )}
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    // padding : ms(10),
+    padding: ms(10),
   },
   left: {
     flexDirection: 'row',
@@ -141,8 +141,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   searchBox: {
-    marginTop: vs(-15),
+    marginTop: vs(-20),
     marginBottom: vs(-10),
+    margin: ms(10),
   },
   moreIcon: {
     position: 'absolute',
