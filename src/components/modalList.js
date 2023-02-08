@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   },
   list: {
     flexDirection: 'row',
-    paddingTop: ms(10),
+    paddingTop: ms(15),
     alignItems: 'center',
     borderRadius: 10,
   },

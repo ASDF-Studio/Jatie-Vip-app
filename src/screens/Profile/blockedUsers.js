@@ -77,7 +77,7 @@ export default function BlockedUsers({ navigation }) {
       {open && (
         <ModalDown open={open} setOpen={setOpen}>
           <ModalList
-            title={strings.profile.unblock}
+            title={strings.profile.unblock + strings.home.DummyUser}
             icon={faCheck}
             iconColor={theme.light.colors.secondary}
             iconBg={theme.light.colors.infoBgLight}
@@ -125,13 +125,12 @@ const styles = StyleSheet.create({
     height: ms(40),
     width: ms(40),
     borderRadius: 100,
-    borderWidth: 1,
-    borderColor: theme.light.colors.secondary,
   },
   nameContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingLeft: ms(5),
   },
   nameTxt: {
     fontFamily: FontFamily.Recoleta_black,

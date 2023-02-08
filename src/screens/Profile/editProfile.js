@@ -6,7 +6,6 @@ import {
   StyleSheet,
   Image,
   TextInput,
-  ScrollView,
   SafeAreaView,
 } from 'react-native';
 import { theme, TextStyles } from '@/theme';
@@ -21,6 +20,7 @@ import { TopBackButton } from '@/components';
 import { ms, s, vs } from 'react-native-size-matters';
 import { strings } from '@/localization';
 import ImagePicker from 'react-native-image-crop-picker';
+import { ScrollView } from 'react-native-gesture-handler';
 
 export default function EditProfile({ navigation }) {
   const [date, setDate] = useState(new Date());
@@ -82,9 +82,12 @@ export default function EditProfile({ navigation }) {
       <Text style={[styles.headerText, TextStyles.header]}>
         {strings.profile.editProfile}{' '}
       </Text>
-      <HorizontalLine color={theme.light.colors.infoBgLight} />
+      <HorizontalLine
+        color={theme.light.colors.infoBgLight}
+        paddingTop={ms(10)}
+      />
 
-      <ScrollView style={styles.ScrollView}>
+      <ScrollView style={styles.ScrollView} nestedScrollEnabled={true}>
         <Text style={styles.profileTxt}>{strings.profile.profilePic}</Text>
         <View style={styles.ScrollViewContainer}>
           <View>
@@ -166,7 +169,7 @@ export default function EditProfile({ navigation }) {
           <View style={styles.textFiledContainer}>
             <Text style={styles.textFieldLebel}> {strings.SignUp.gender} </Text>
             <DropDownPicker
-              placeholder={strings.SignUp.genderPlaceHolder}
+              placeholder={strings.profile.genderPlaceHolder}
               open={genderListOpen}
               value={genderValue}
               items={gender}
@@ -175,6 +178,9 @@ export default function EditProfile({ navigation }) {
               setItems={setGender}
               style={styles.textFiled}
               textStyle={styles.dropListTxt}
+              multiple={true}
+              min={0}
+              max={2}
             />
           </View>
 
@@ -212,6 +218,8 @@ export default function EditProfile({ navigation }) {
           </View>
           <View style={styles.marginTop} />
           <HorizontalLine color={theme.light.colors.infoBgLight} />
+        </View>
+        <View style={styles.buttonContainer}>
           <View>
             <Button title={strings.operations.save} />
           </View>
@@ -337,6 +345,11 @@ const styles = StyleSheet.create({
     color: theme.light.colors.black,
     paddingLeft: ms(8),
   },
+  buttonContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    paddingTop: ms(20),
+  },
   marginTop: { marginTop: vs(50) },
   closeMyAccountButtonContainer: { marginTop: ms(10) },
   closeMyAccountButton: {
@@ -356,6 +369,7 @@ const styles = StyleSheet.create({
   profileTxt: {
     fontFamily: FontFamily.Recoleta_bold,
     color: theme.light.colors.black,
+    paddingTop: ms(10),
   },
   profileImage: {
     width: s(100),
@@ -369,18 +383,24 @@ const styles = StyleSheet.create({
   formContainer: {
     marginTop: vs(20),
   },
-  textFiledContainer: {},
+  textFiledContainer: {
+    paddingLeft: 5,
+    paddingRight: 5,
+  },
   textFieldLebel: {
-    color: theme.light.colors.black,
-    fontFamily: FontFamily.BrandonGrotesque_bold,
-    fontSize: ms(18, 0.3),
+    color: theme.light.colors.activeTabLabel,
+    fontFamily: FontFamily.Recoleta_bold,
+    fontSize: ms(15, 0.3),
+    paddingBottom: ms(10),
   },
   textFiled: {
-    backgroundColor: theme.light.colors.inputFiled,
+    backgroundColor: theme.light.colors.textFieldBackgroundColor,
     borderRadius: 10,
-    borderWidth: 0,
+    borderWidth: 1,
+    borderColor: theme.light.colors.textFieldBorderColor,
     padding: ms(10),
     height: vs(45),
+    fontSize: ms(18, 0.3),
     fontFamily: FontFamily.BrandonGrotesque_regular,
     marginBottom: vs(15),
   },
@@ -429,7 +449,8 @@ const styles = StyleSheet.create({
   },
 
   dropListTxt: {
-    fontFamily: FontFamily.BrandonGrotesque_medium,
+    fontFamily: FontFamily.BrandonGrotesque_regular,
+    fontSize: ms(17, 0.3),
   },
   bottomTextContainer: {
     alignItems: 'center',

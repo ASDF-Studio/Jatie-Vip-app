@@ -5,7 +5,7 @@ import { Card, CardHeader, Icon } from '@/components';
 import {
   faCircleUp,
   faCircleDown,
-  faMessage,
+  faComment,
 } from '@fortawesome/free-solid-svg-icons';
 import { ms } from 'react-native-size-matters';
 import { FontFamily } from '@/theme/Fonts';
@@ -54,7 +54,7 @@ export default function MyActivity() {
                 ) : null}
                 {item.status == `${strings.profile.commented}` ? (
                   <Icon
-                    icon={faMessage}
+                    icon={faComment}
                     size={ms(15)}
                     style={[
                       styles.icon,

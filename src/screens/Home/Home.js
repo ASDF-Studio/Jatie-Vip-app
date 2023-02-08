@@ -402,12 +402,11 @@ export function Home({ navigation }) {
           images={feedImages}
         />
       )}
-
       {/*  Slide up for follow, edit , review  */}
       {open && (
         <ModalDown open={open} setOpen={setOpen}>
           <ModalList
-            title={strings.operations.follow}
+            title={strings.operations.follow + strings.home.DummyUser}
             icon={faUserPlus}
             iconColor={theme.light.colors.primary}
             iconBg={theme.light.colors.primaryBgLight}
@@ -424,7 +423,7 @@ export function Home({ navigation }) {
             paddingBottom={8}
           />
           <ModalList
-            title={strings.operations.report}
+            title={strings.home.report}
             icon={faFlag}
             iconColor={theme.light.colors.secondary}
             iconBg={theme.light.colors.infoBgLight}
@@ -434,7 +433,7 @@ export function Home({ navigation }) {
             }}
           />
           <ModalList
-            title={strings.operations.block}
+            title={strings.operations.block + strings.home.DummyUser}
             icon={faXmark}
             iconColor={theme.light.colors.secondary}
             iconBg={theme.light.colors.infoBgLight}
@@ -485,11 +484,6 @@ export function Home({ navigation }) {
               disabled={reportComment.length ? false : true}
               opacity={reportComment.length ? 1 : 0.4}
               style={styles.reportPostButton}
-              //previous code
-              // style={{
-              //   opacity: reportComment.length ? 1 : 0.4,
-              //   width: ms(100),
-              // }}
               onPress={() => {
                 setOpenToast(true), setOpenReport(false);
               }}
@@ -676,6 +670,7 @@ const styles = StyleSheet.create({
     padding: ms(5),
     borderRadius: 10,
     margin: ms(10),
+    bottom: ms(0),
   },
   floaterContainerSponsord: {
     right: ms(8),

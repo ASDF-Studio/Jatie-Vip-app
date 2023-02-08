@@ -1,17 +1,17 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { CardBody, CardHeader, Icon } from '@/components';
 import { theme, TextStyles } from '@/theme';
-import { ms, vs } from 'react-native-size-matters';
+import { ms } from 'react-native-size-matters';
 import {
   faEllipsis,
   faCircleUp,
   faCircleDown,
-  faShare,
-  faReply,
+  faReplyAll,
 } from '@fortawesome/free-solid-svg-icons';
 import PropsType from 'prop-types';
 import { FontFamily } from '@/theme/Fonts';
+import { ScrollView } from 'react-native-gesture-handler';
 
 export const CommentCard = ({
   name,
@@ -27,62 +27,68 @@ export const CommentCard = ({
   morePress,
 }) => {
   return (
-    <View>
-      <View>
-        <View style={styles.leftBorder}>
-          <CardHeader
-            fullName={name}
-            userName={userName}
-            profilePic={imageUrl}
-            time={time}
-          />
-          <View style={styles.body}>
-            <CardBody text={commentTxt} />
+    <View style={styles.container}>
+      <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
+        <View>
+          <View style={styles.leftBorder}>
+            <CardHeader
+              fullName={name}
+              userName={userName}
+              profilePic={imageUrl}
+              time={time}
+            />
+            <View style={styles.body}>
+              <CardBody text={commentTxt} />
+            </View>
           </View>
         </View>
-      </View>
-      <View style={styles.footer}>
-        <View style={styles.reacContainer}>
-          <TouchableOpacity
-            style={[styles.iconContainer, styles.likeContainer]}
-          >
+        <View style={styles.footer}>
+          <View style={styles.reacContainer}>
+            <TouchableOpacity
+              style={[styles.iconContainer, styles.likeContainer]}
+            >
+              <Icon
+                icon={faCircleUp}
+                size={ms(13)}
+                color={theme.light.colors.success}
+                onPress={likePress}
+              />
+              <Text style={styles.likeTxt}>{likeCount} </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.iconContainer, styles.disLikeContainer]}
+            >
+              <Icon
+                icon={faCircleDown}
+                size={ms(13)}
+                color={theme.light.colors.error}
+                onPress={disLikePress}
+              />
+              <Text style={styles.disLikeTxt}> {disLikeCount} </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.iconContainer, styles.ReplyAllContainer]}
+            >
+              <Icon
+                icon={faReplyAll}
+                size={ms(13)}
+                color={theme.light.colors.info}
+                onPress={replyPress}
+                style={styles.ReplyAllIcon}
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={{ flexDirection: 'row' }}>
             <Icon
-              icon={faCircleUp}
+              icon={faEllipsis}
               size={ms(13)}
-              color={theme.light.colors.success}
-              onPress={likePress}
+              color={theme.light.colors.activeTabLabel}
+              onPress={morePress}
+              style={styles.EllipsisIcon}
             />
-            <Text style={styles.likeTxt}>{likeCount} </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.iconContainer, styles.disLikeContainer]}
-          >
-            <Icon
-              icon={faCircleDown}
-              size={ms(13)}
-              color={theme.light.colors.error}
-              onPress={disLikePress}
-            />
-            <Text style={styles.disLikeTxt}> {disLikeCount} </Text>
-          </TouchableOpacity>
-          <Icon
-            icon={faReply}
-            size={ms(13)}
-            color={theme.light.colors.info}
-            onPress={replyPress}
-            style={{ marginLeft: ms(15) }}
-          />
+          </View>
         </View>
-        <View style={{ flexDirection: 'row' }}>
-          <Icon
-            icon={faEllipsis}
-            size={ms(13)}
-            color={theme.light.colors.secondary}
-            onPress={morePress}
-            style={{ marginRight: ms(5) }}
-          />
-        </View>
-      </View>
+      </ScrollView>
     </View>
   );
 };
@@ -100,6 +106,9 @@ CommentCard.prototype = {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    paddingBottom: ms(10),
+  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -114,13 +123,15 @@ const styles = StyleSheet.create({
     height: ms(40),
     borderRadius: 100,
   },
+
   footer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     backgroundColor: theme.light.colors.infoBgLight,
     padding: ms(8),
     borderRadius: 10,
-    marginLeft: ms(20),
+    marginLeft: ms(30),
+    marginRight: ms(10),
   },
   reacContainer: {
     flexDirection: 'row',
@@ -151,6 +162,17 @@ const styles = StyleSheet.create({
   leftBorder: {
     borderLeftWidth: 2,
     borderLeftColor: theme.light.colors.info,
+    paddingLeft: ms(10),
+  },
+  ReplyAllContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  ReplyAllIcon: {
+    marginLeft: ms(10),
+  },
+  EllipsisIcon: {
+    margin: ms(5),
   },
   nameTxt: [
     TextStyles.header,

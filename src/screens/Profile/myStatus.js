@@ -49,7 +49,7 @@ export default function MyStatus() {
       {open && (
         <ModalDown open={open} setOpen={setOpen}>
           <ModalList
-            title={strings.operations.edit}
+            title={strings.profile.editPost}
             icon={faPen}
             iconBg={theme.light.colors.infoBgLight}
             iconColor={theme.light.colors.info}
@@ -60,7 +60,7 @@ export default function MyStatus() {
             paddingBottom={8}
           />
           <ModalList
-            title={strings.operations.remove}
+            title={strings.operations.delete}
             icon={faTrash}
             iconBg={theme.light.colors.infoBgLight}
             iconColor={theme.light.colors.secondary}

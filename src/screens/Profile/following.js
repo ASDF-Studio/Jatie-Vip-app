@@ -5,7 +5,6 @@ import {
   StyleSheet,
   FlatList,
   Image,
-  Alert,
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
@@ -14,7 +13,7 @@ import {
   faMessage,
   faFlag,
   faXmark,
-  faUserPlus,
+  faUserMinus,
 } from '@fortawesome/free-solid-svg-icons';
 import { TextStyles, theme } from '@/theme';
 import { TopBackButton, Icon, Badge, HorizontalLine } from '@/components';
@@ -77,8 +76,8 @@ export default function Following({ navigation }) {
       </View>
       <ModalDown open={open} setOpen={setOpen}>
         <ModalList
-          title={strings.profile.unfollow}
-          icon={faUserPlus}
+          title={strings.profile.unfollow + strings.home.DummyUser}
+          icon={faUserMinus}
           iconColor={theme.light.colors.primary}
           iconBg={theme.light.colors.primaryBgLight}
           // onPress = {()=> Alert.alert("follow")}
@@ -96,14 +95,14 @@ export default function Following({ navigation }) {
           paddingBottom={8}
         />
         <ModalList
-          title={strings.profile.report}
+          title={strings.profile.reportUser}
           icon={faFlag}
           iconColor={theme.light.colors.secondary}
           iconBg={theme.light.colors.infoBgLight}
           // onPress = {()=> Alert.alert("report")}
         />
         <ModalList
-          title={strings.profile.block}
+          title={strings.profile.block + strings.home.DummyUser}
           icon={faXmark}
           iconColor={theme.light.colors.secondary}
           iconBg={theme.light.colors.infoBgLight}
@@ -130,6 +129,7 @@ const styles = StyleSheet.create({
     {
       color: theme.light.colors.black,
       paddingLeft: ms(9),
+      paddingRight: ms(10),
     },
   ],
   listContainer: {
@@ -150,13 +150,12 @@ const styles = StyleSheet.create({
     height: ms(40),
     width: ms(40),
     borderRadius: 100,
-    borderWidth: 1,
-    borderColor: 'gray',
   },
   nameContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingLeft: ms(5),
   },
   nameTxt: {
     fontFamily: FontFamily.Recoleta_bold,

@@ -76,7 +76,7 @@ export default function Followers({ navigation }) {
       </View>
       <ModalDown open={open} setOpen={setOpen}>
         <ModalList
-          title={strings.operations.follow}
+          title={strings.operations.follow + strings.home.DummyUser}
           icon={faUserPlus}
           iconColor={theme.light.colors.primary}
           iconBg={theme.light.colors.primaryBgLight}
@@ -94,14 +94,14 @@ export default function Followers({ navigation }) {
           paddingBottom={8}
         />
         <ModalList
-          title={strings.operations.unFollow}
+          title={strings.profile.reportUser}
           icon={faFlag}
           iconColor={theme.light.colors.secondary}
           iconBg={theme.light.colors.infoBgLight}
           // onPress = {()=> Alert.alert("report")}
         />
         <ModalList
-          title={strings.operations.block}
+          title={strings.operations.block + strings.home.DummyUser}
           icon={faXmark}
           iconColor={theme.light.colors.secondary}
           iconBg={theme.light.colors.infoBgLight}
@@ -128,6 +128,7 @@ const styles = StyleSheet.create({
     {
       color: theme.light.colors.black,
       paddingLeft: ms(9),
+      paddingRight: ms(10),
     },
   ],
   contentContainerStyle: { paddingBottom: ms(100) },
@@ -148,13 +149,12 @@ const styles = StyleSheet.create({
     height: ms(40),
     width: ms(40),
     borderRadius: 100,
-    borderWidth: 1,
-    borderColor: theme.light.colors.secondary,
   },
   nameContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingLeft: ms(5),
   },
   nameTxt: {
     fontFamily: FontFamily.Recoleta_bold,

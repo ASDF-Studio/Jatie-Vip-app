@@ -29,10 +29,8 @@ import { strings } from '@/localization';
 import { useSelector, useDispatch } from 'react-redux';
 import { FontFamily } from '@/theme/Fonts';
 import { Data } from './ProfileData/profileData';
-import { logout } from '@/actions/UserActions';
 
 export function Profile({ navigation }) {
-  const dispatch = useDispatch();
   const userType = useSelector(state => state.userType);
   const [status, setStatus] = useState(strings.profile.myStatus);
 
@@ -72,13 +70,6 @@ export function Profile({ navigation }) {
             style={styles.bellIcon}
           />
           <View style={styles.bellAlert} />
-          <Icon
-            icon={faRightFromBracket}
-            size={ms(20)}
-            color={theme.light.colors.secondary}
-            style={styles.logOutIcon}
-            onPress={() => dispatch(logout())}
-          />
         </View>
       </View>
       <HeaderTab
@@ -149,9 +140,6 @@ export const styles = StyleSheet.create({
   iconContiner: {
     flexDirection: 'row',
     paddingTop: ms(9),
-  },
-  logOutIcon: {
-    // marginRight : ms(9)
   },
   bellIcon: {
     marginRight: ms(12),
