@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    margin: ms(10),
+    padding: ms(10),
   },
   headerText: { color: theme.light.colors.black },
   TopBackButton: {
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
   },
   searchBox: {
     marginTop: vs(-20),
-    marginBottom: vs(-15),
+    marginBottom: vs(-10),
     margin: ms(10),
   },
   searchBoxTextFirld: {
