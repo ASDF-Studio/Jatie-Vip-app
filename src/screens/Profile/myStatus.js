@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Alert, FlatList } from 'react-native';
+import { View, Alert, FlatList, StyleSheet } from 'react-native';
 import { theme } from '@/theme';
 import { faTrash, faPen } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -13,6 +13,7 @@ import {
 } from '@/components';
 import { ms } from 'react-native-size-matters';
 import { strings } from '@/localization';
+import { Data } from './ProfileData/myStatusData';
 
 export default function MyStatus() {
   const [open, setOpen] = useState(false);
@@ -22,7 +23,7 @@ export default function MyStatus() {
         data={Data}
         key={props => props.id}
         renderItem={({ item }) => (
-          <View style={{ margin: ms(10) }}>
+          <View style={styles.cardContainer}>
             <Card>
               <CardHeader
                 fullName={item.fullName}
@@ -48,7 +49,7 @@ export default function MyStatus() {
       {open && (
         <ModalDown open={open} setOpen={setOpen}>
           <ModalList
-            title={strings.operations.edit}
+            title={strings.profile.editPost}
             icon={faPen}
             iconBg={theme.light.colors.infoBgLight}
             iconColor={theme.light.colors.info}
@@ -59,7 +60,7 @@ export default function MyStatus() {
             paddingBottom={8}
           />
           <ModalList
-            title={strings.operations.remove}
+            title={strings.operations.delete}
             icon={faTrash}
             iconBg={theme.light.colors.infoBgLight}
             iconColor={theme.light.colors.secondary}
@@ -70,29 +71,6 @@ export default function MyStatus() {
   );
 }
 
-const Data = [
-  {
-    id: 1,
-    fullName: 'Adam Voigt',
-    userName: '@adam',
-    profilePic:
-      'https://media.istockphoto.com/id/1309328823/photo/headshot-portrait-of-smiling-male-employee-in-office.jpg?b=1&s=170667a&w=0&k=20&c=MRMqc79PuLmQfxJ99fTfGqHL07EDHqHLWg0Tb4rPXQc=',
-    like: 100,
-    disLike: 30,
-    comment: 20,
-    text: 'Hey guys! I’m glad to be a member here. How’s everyone’s day going? I just finished a workout and I’m totally wiped out',
-    time: '10',
-  },
-  {
-    id: 2,
-    fullName: 'Adam Voigt',
-    userName: '@adam',
-    profilePic:
-      'https://media.istockphoto.com/id/1309328823/photo/headshot-portrait-of-smiling-male-employee-in-office.jpg?b=1&s=170667a&w=0&k=20&c=MRMqc79PuLmQfxJ99fTfGqHL07EDHqHLWg0Tb4rPXQc=',
-    like: 100,
-    disLike: 30,
-    comment: 20,
-    text: 'I’m glad to be a member 👍 here. How’s everyone’s day going?',
-    time: '10',
-  },
-];
+const styles = StyleSheet.create({
+  cardContainer: { margin: ms(10) },
+});

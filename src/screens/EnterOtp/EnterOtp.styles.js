@@ -29,15 +29,15 @@ export const styles = StyleSheet.create({
   otpCell: {
     borderWidth: ms(1),
     borderRadius: ms(8),
-    borderColor: '#F2F2F3',
-    backgroundColor: '#F8F8F9',
+    borderColor: theme.light.colors.textFieldBorderColor,
+    backgroundColor: theme.light.colors.textFieldBackgroundColor,
     width: ms(60),
     height: ms(40),
     marginRight: ms(5),
   },
   otpCellFocused: {
-    borderColor: 'gray',
-    backgroundColor: '#F8F8F9',
+    borderColor: theme.light.colors.secondary, //gray
+    backgroundColor: theme.light.colors.textFieldBackgroundColor,
   },
   otpText: {
     fontSize: ms(18),

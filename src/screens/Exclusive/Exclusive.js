@@ -1,4 +1,3 @@
-import { useTheme } from '@react-navigation/native';
 import React from 'react';
 import {
   Image,
@@ -39,6 +38,7 @@ import { ms, vs } from 'react-native-size-matters';
 import { strings } from '@/localization';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Data } from './exclusiveData/exclusiveData';
 
 export function Exclusive({ navigation }) {
   const [open, setOpen] = useState(false);
@@ -56,9 +56,7 @@ export function Exclusive({ navigation }) {
         <View style={styles.headerImageContainer}>
           <Logo />
           <View style={styles.exclusive}>
-            <Text
-              style={[TextStyles.header, { color: theme.light.colors.text }]}
-            >
+            <Text style={[TextStyles.header, styles.headerColor]}>
               {' '}
               {strings.exclusive.header}
             </Text>
@@ -188,10 +186,10 @@ export function Exclusive({ navigation }) {
           data={Data}
           key={props => props.id}
           renderItem={({ item }) => (
-            <View style={{ margin: ms(12) }}>
+            <View style={styles.cardContainer}>
               <Card>
                 <View style={styles.editContainer}>
-                  <View style={{ paddingTop: vs(8) }}>
+                  <View style={styles.CardHeaderContainer}>
                     <CardHeader
                       fullName={item.fullName}
                       userName={item.userName}
@@ -203,24 +201,19 @@ export function Exclusive({ navigation }) {
                   {/* Admin */}
 
                   <View style={styles.cardRightContainer}>
-                    <Text style={[styles.timeTxt]}>{item.time}</Text>
+                    <Text style={styles.timeTxt}>{item.time}</Text>
                     {userType.user == `${strings.userType.admin}` && (
                       <Icon
                         icon={faEllipsis}
                         size={ms(15)}
                         onPress={() => setOpen(true)}
-                        style={[
-                          styles.icon,
-                          {
-                            color: theme.light.colors.black,
-                          },
-                        ]}
+                        style={[styles.icon, styles.ellipsisIconColor]}
                       />
                     )}
                   </View>
                 </View>
                 {/* <CardBody text={item.text}/> */}
-                <View style={{ paddingLeft: ms(5) }}>
+                <View style={styles.fullNameTxtContainer}>
                   <Text style={styles.fullNameTxt}>{item.text}</Text>
                 </View>
                 <View style={styles.thumbnailContainer}>
@@ -244,7 +237,7 @@ export function Exclusive({ navigation }) {
                           <FontAwesomeIcon
                             icon={faLock}
                             size={ms(10)}
-                            style={[styles.lock]}
+                            style={styles.lock}
                           />
                           <Text style={styles.vipOnlyText}>
                             {strings.exclusive.vipOnly}
@@ -263,12 +256,12 @@ export function Exclusive({ navigation }) {
                           <FontAwesomeIcon
                             icon={faCircle}
                             size={ms(50)}
-                            style={[styles.videoPlay]}
+                            style={styles.videoPlay}
                           />
                           <FontAwesomeIcon
                             icon={faPlay}
                             size={ms(15)}
-                            style={[styles.Play]}
+                            style={styles.Play}
                           />
                         </View>
                       </View>
@@ -301,12 +294,9 @@ export function Exclusive({ navigation }) {
       {userType.user == `${strings.userType.admin}` && (
         <TouchableOpacity
           onPress={() => navigation.navigate(NAVIGATION.adminExclusivePost)}
-          style={[
-            styles.btn,
-            { backgroundColor: theme.light.colors.primary, width: ms(140) },
-          ]}
+          style={[styles.btn, styles.adminButton]}
         >
-          <Text style={[styles.btnTxt, { color: theme.light.colors.white }]}>
+          <Text style={[styles.btnTxt, styles.btnTxtColor]}>
             {strings.exclusive.exclusiveButton}
           </Text>
         </TouchableOpacity>
@@ -314,42 +304,3 @@ export function Exclusive({ navigation }) {
     </SafeAreaView>
   );
 }
-
-const Data = [
-  {
-    id: 1,
-    fullName: 'JatieVip',
-    userName: '@JatieVip',
-    profilePic:
-      'https://res.cloudinary.com/hawktech-cloud/image/upload/v1674712476/d24dae39-1a64-47d5-af65-e14b5a1c533c_tmcsua.png',
-    text: 'Starting an argument then having bad period cramps *Pranks on Husband!*',
-    time: '39 mins ago',
-    thumbnail:
-      'https://www.dharmann.com/wp-content/uploads/2022/06/YT-Thumbnail-566-Husband-Pranks-Wife-Goes-Too-Far-Option-1E.jpg',
-    status: 'VIP',
-  },
-  {
-    id: 2,
-    fullName: 'JatieVip',
-    userName: '@JatieVip',
-    profilePic:
-      'https://res.cloudinary.com/hawktech-cloud/image/upload/v1674712476/d24dae39-1a64-47d5-af65-e14b5a1c533c_tmcsua.png',
-    text: 'Starting an argument then having bad period cramps *Pranks on Husband!*',
-    time: '39 mins ago',
-    thumbnail:
-      'https://www.dharmann.com/wp-content/uploads/2022/06/YT-Thumbnail-566-Husband-Pranks-Wife-Goes-Too-Far-Option-1E.jpg',
-    status: 'Free',
-  },
-  {
-    id: 3,
-    fullName: 'JatieVip',
-    userName: '@JatieVip',
-    profilePic:
-      'https://res.cloudinary.com/hawktech-cloud/image/upload/v1674712476/d24dae39-1a64-47d5-af65-e14b5a1c533c_tmcsua.png',
-    text: 'Starting an argument then having bad period cramps *Pranks on Husband!*',
-    time: '39 mins ago',
-    thumbnail:
-      'https://www.dharmann.com/wp-content/uploads/2022/06/YT-Thumbnail-566-Husband-Pranks-Wife-Goes-Too-Far-Option-1E.jpg',
-    status: 'VIP',
-  },
-];

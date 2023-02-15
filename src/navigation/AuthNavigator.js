@@ -10,13 +10,16 @@ import {
   SignUp,
   Welcome,
 } from '@/screens';
+import { theme } from '@/theme';
 
 const Stack = createNativeStackNavigator();
 
 export function AuthNavigator() {
   return (
     <Stack.Navigator
-      screenOptions={{ contentStyle: { backgroundColor: '#fff' } }}
+      screenOptions={{
+        contentStyle: { backgroundColor: theme.light.colors.white },
+      }}
     >
       <Stack.Screen
         component={Welcome}

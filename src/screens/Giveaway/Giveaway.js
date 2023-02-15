@@ -1,4 +1,3 @@
-import { useTheme } from '@react-navigation/native';
 import React from 'react';
 import { Text, View, TouchableOpacity } from 'react-native';
 import { styles } from '@/screens/Giveaway/Giveaway.styles';
@@ -26,12 +25,7 @@ export function Giveaway({ navigation }) {
         <View style={styles.headerImageContainer}>
           <Logo />
           <View>
-            <Text
-              style={[
-                TextStyles.header,
-                { color: theme.light.colors.text, margin: ms(15) },
-              ]}
-            >
+            <Text style={[TextStyles.header, styles.headerDesign]}>
               {strings.giveaway.header}
             </Text>
           </View>
@@ -74,14 +68,9 @@ export function Giveaway({ navigation }) {
       {userType.user == `${strings.userType.admin}` && (
         <TouchableOpacity
           onPress={() => navigation.navigate(NAVIGATION.adminGiveawayPost)}
-          style={[
-            styles.adminBtn,
-            { backgroundColor: theme.light.colors.primary, width: ms(140) },
-          ]}
+          style={[styles.adminBtn, styles.adminBtnDesign]}
         >
-          <Text
-            style={[styles.adminBtnTxt, { color: theme.light.colors.white }]}
-          >
+          <Text style={[styles.adminBtnTxt, styles.adminBtnTxtColor]}>
             {strings.giveaway.newGiveaway}
           </Text>
         </TouchableOpacity>
@@ -89,22 +78,3 @@ export function Giveaway({ navigation }) {
     </SafeAreaView>
   );
 }
-
-const Data = [
-  {
-    id: 1,
-    title: 'Summer 2023 Giveaway',
-    EndsIn: '12 Day: 13 Hrs: 12 Sec',
-    Desc: 'Thanks for joining our app everyone! To show our appreciation, we are going to raffle away a brand new iPhone 13!',
-    profilePic:
-      'https://images.unsplash.com/photo-1616353071588-708dcff912e2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8YXBwbGUlMjBpcGhvbmV8ZW58MHx8MHx8&w=1000&q=80',
-  },
-  {
-    id: 2,
-    title: 'Summer 2023 Giveaway',
-    EndsIn: '12 Day: 13 Hrs: 12 Sec',
-    Desc: 'Thanks for joining our app everyone! To show our appreciation, we are going to raffle away a brand new iPhone 13!',
-    profilePic:
-      'https://images.unsplash.com/photo-1616353071588-708dcff912e2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8YXBwbGUlMjBpcGhvbmV8ZW58MHx8MHx8&w=1000&q=80',
-  },
-];

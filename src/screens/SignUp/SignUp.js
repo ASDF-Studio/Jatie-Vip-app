@@ -1,12 +1,5 @@
 import React, { useState } from 'react';
-import {
-  KeyboardAvoidingView,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { shallowEqual, useSelector } from 'react-redux';
 import { TYPES } from '@/actions/UserActions';
 import { Button, TextField } from '@/components';
@@ -22,13 +15,11 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { faCalendar } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import moment from 'moment';
-import { vs } from 'react-native-size-matters';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 export function SignUp() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [birthday, setBirthday] = useState('');
 
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState('date');
@@ -111,7 +102,7 @@ export function SignUp() {
 
         <TouchableOpacity
           onPress={showDatepicker}
-          style={{ marginBottom: vs(12) }}
+          style={styles.showDatepicker}
         >
           <View pointerEvents="none" style={styles.calenderView}>
             <TextInput

@@ -18,14 +18,22 @@ const customStyles = colors =>
     },
   });
 
-export function Button({ style, textStyle, title, ...rest }) {
+export function Button({ style, textStyle, opacity, title, ...rest }) {
   const { colors } = useTheme();
 
   const styles = useMemo(() => customStyles(colors), [colors]);
 
   return (
     <TouchableOpacity
-      style={[styles.button, { borderColor: colors.border }, style]}
+      style={
+        opacity
+          ? [
+              styles.button,
+              { borderColor: colors.border, opacity: opacity },
+              style,
+            ]
+          : [styles.button, { borderColor: colors.border }, style]
+      }
       {...rest}
     >
       <Text style={[{ color: colors.white }, TextStyles.buttonText, textStyle]}>
@@ -45,3 +53,10 @@ Button.defaultProps = {
   style: null,
   textStyle: null,
 };
+
+//previous code
+// style={[
+//   styles.button,
+//   { borderColor: colors.border },
+//   style,
+// ]}

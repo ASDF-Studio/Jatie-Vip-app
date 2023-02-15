@@ -74,9 +74,10 @@ const styles = StyleSheet.create({
   Image: {
     width: ms(45),
     height: ms(45),
-    borderWidth: 2,
+    borderWidth: 0.5,
     borderRadius: 100,
     marginTop: ms(-5),
+    borderColor: theme.light.colors.primaryBg,
   },
   fullNameTxt: {
     fontFamily: FontFamily.Recoleta_bold,

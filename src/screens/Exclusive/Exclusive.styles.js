@@ -30,6 +30,7 @@ export const styles = StyleSheet.create({
   icon: {
     margin: ms(10),
   },
+  cardContainer: { margin: ms(12) },
   recentContiner: {
     padding: ms(4),
     flexDirection: 'row',
@@ -75,6 +76,17 @@ export const styles = StyleSheet.create({
   videoPlay: {
     color: theme.light.colors.primary,
   },
+  CardHeaderContainer: { paddingTop: vs(8) },
+  fullNameTxtContainer: { paddingLeft: ms(5) },
+  headerColor: { color: theme.light.colors.text },
+  ellipsisIconColor: {
+    color: theme.light.colors.black,
+  },
+  adminButton: {
+    backgroundColor: theme.light.colors.primary,
+    width: ms(140),
+  },
+  btnTxtColor: { color: theme.light.colors.white },
   Play: {
     position: 'absolute',
     color: theme.light.colors.background,
@@ -152,7 +164,14 @@ export const styles = StyleSheet.create({
     backgroundColor: theme.light.colors.white,
     padding: ms(20),
     marginTop: vs(60),
-    elevation: 8,
+    //IOS
+    shadowOffset: { width: -2, height: 4 },
+    shadowColor: theme.light.colors.secondary,
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+
+    //android
+    elevation: 5,
   },
   sortByTxt: {
     fontFamily: FontFamily.Recoleta_semibold,
