@@ -14,9 +14,9 @@ import { FontFamily } from '@/theme/Fonts';
 import { strings } from '@/localization';
 import { NAVIGATION } from '@/constants';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
+import { Data } from './giveawayData/activeData';
 
 export default function Active({ navigation, userType }) {
   const [open, setOpen] = useState(false);
@@ -26,7 +26,7 @@ export default function Active({ navigation, userType }) {
         data={Data}
         key={props => props.id}
         renderItem={({ item }) => (
-          <View style={{ margin: ms(10) }}>
+          <View style={styles.FlatListContainer}>
             <Card>
               <View>
                 <Text style={styles.title}>{strings.giveaway.title} </Text>
@@ -34,7 +34,7 @@ export default function Active({ navigation, userType }) {
               <View>
                 <Text style={styles.officialTxt}>
                   {strings.giveaway.EndsIn}
-                  <Text style={[styles.EndTimeTxt]}> {item.EndsIn}</Text>
+                  <Text style={styles.EndTimeTxt}> {item.EndsIn}</Text>
                 </Text>
               </View>
               <CardBody text={item.Desc} />
@@ -55,7 +55,7 @@ export default function Active({ navigation, userType }) {
                     <FontAwesomeIcon
                       icon={faLock}
                       size={ms(10)}
-                      style={[styles.lock]}
+                      style={styles.lock}
                     />
                     <Text style={styles.vipOnlyText}>
                       {strings.giveaway.vipOnly}
@@ -76,12 +76,7 @@ export default function Active({ navigation, userType }) {
                     }
                     style={styles.btn}
                   >
-                    <Text
-                      style={[
-                        styles.btnTxt,
-                        { color: theme.light.colors.white },
-                      ]}
-                    >
+                    <Text style={[styles.btnTxt, styles.btnTxtColor]}>
                       {strings.giveaway.learnMore}
                     </Text>
                   </TouchableOpacity>
@@ -94,36 +89,6 @@ export default function Active({ navigation, userType }) {
     </SafeAreaView>
   );
 }
-
-const Data = [
-  {
-    id: 1,
-    title: 'Summer 2023 Giveaway',
-    EndsIn: '12 Day: 13 Hrs: 12 Sec',
-    Desc: 'Thanks for joining our app everyone! To show our appreciation, we are going to raffle away a brand new iPhone 13!',
-    photo:
-      'https://images.unsplash.com/photo-1616353071588-708dcff912e2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8YXBwbGUlMjBpcGhvbmV8ZW58MHx8MHx8&w=1000&q=80',
-    status: 'VIP',
-  },
-  {
-    id: 2,
-    title: 'Summer 2023 Giveaway',
-    EndsIn: '12 Day: 13 Hrs: 12 Sec',
-    Desc: 'Thanks for joining our app everyone! To show our appreciation, we are going to raffle away a brand new iPhone 13!',
-    photo:
-      'https://images.unsplash.com/photo-1616353071588-708dcff912e2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8YXBwbGUlMjBpcGhvbmV8ZW58MHx8MHx8&w=1000&q=80',
-    status: 'Free',
-  },
-  {
-    id: 3,
-    title: 'Summer 2023 Giveaway',
-    EndsIn: '12 Day: 13 Hrs: 12 Sec',
-    Desc: 'Thanks for joining our app everyone! To show our appreciation, we are going to raffle away a brand new iPhone 13!',
-    photo:
-      'https://images.unsplash.com/photo-1616353071588-708dcff912e2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8YXBwbGUlMjBpcGhvbmV8ZW58MHx8MHx8&w=1000&q=80',
-    status: 'VIP',
-  },
-];
 
 export const styles = StyleSheet.create({
   title: {
@@ -146,6 +111,7 @@ export const styles = StyleSheet.create({
     marginTop: ms(-5),
     paddingLeft: ms(15),
   },
+  FlatListContainer: { margin: ms(10) },
   thumbnailImage: {
     width: '100%',
     height: vs(180),
@@ -172,7 +138,7 @@ export const styles = StyleSheet.create({
     fontFamily: FontFamily.BrandonGrotesque_bold,
     fontSize: ms(14, 0.3),
   },
-
+  btnTxtColor: { color: theme.light.colors.white },
   //vip only
 
   vipOnlyContainer: {

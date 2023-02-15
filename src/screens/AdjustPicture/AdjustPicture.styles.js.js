@@ -43,6 +43,13 @@ export const styles = StyleSheet.create({
     backgroundColor: theme.light.colors.white,
     justifyContent: 'center',
     paddingHorizontal: ms(20),
+    //IOS
+    shadowOffset: { width: -2, height: 4 },
+    shadowColor: theme.light.colors.secondary,
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+
+    //android
     elevation: 5,
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,

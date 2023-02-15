@@ -6,6 +6,7 @@ import PropsType from 'prop-types';
 import { s, ms, vs } from 'react-native-size-matters';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
+import { strings } from '@/localization';
 
 export function StatusNavigatorBar({
   status,
@@ -14,7 +15,7 @@ export function StatusNavigatorBar({
   title2,
   key1,
   key2,
-  showLock
+  showLock,
 }) {
   return (
     <View style={styles.statusContainer}>
@@ -36,7 +37,7 @@ export function StatusNavigatorBar({
         {status == key1 ? (
           <View style={styles.statusNaivigator} />
         ) : (
-          <View style={[styles.statusNaivigator, { left: ms(200) }]} />
+          <View style={[styles.statusNaivigator, { left: ms(195) }]} /> //200
         )}
       </View>
       <View style={styles.status}>
@@ -53,11 +54,16 @@ export function StatusNavigatorBar({
         >
           {' '}
           {title2}{' '}
-          {showLock? 
-          <FontAwesomeIcon 
-            icon={faLock}
-            color = {status != key2?theme.light.colors.primaryInactive : theme.light.colors.primary}
-          />: null}
+          {showLock ? (
+            <FontAwesomeIcon
+              icon={faLock}
+              color={
+                status != key2
+                  ? theme.light.colors.primaryInactive
+                  : theme.light.colors.primary
+              }
+            />
+          ) : null}
         </Text>
       </View>
     </View>
@@ -77,26 +83,28 @@ const styles = StyleSheet.create({
   statusContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    backgroundColor: theme.light.colors.primaryBg,
+    backgroundColor: theme.light.colors.primaryBgLight,
     margin: ms(10),
     padding: ms(9),
     borderRadius: 8,
-    height: ms(50),
+    height: ms(40),
     marginBottom: vs(20),
+    paddingTop: ms(5),
   },
   statusText: {
     color: theme.light.colors.primary,
     fontSize: ms(18, 0.3),
-    fontFamily : FontFamily.Recoleta_bold
-    },
+    fontFamily: FontFamily.Recoleta_bold,
+  },
 
   statusNaivigator: {
     width: ms(6),
     height: ms(6),
     backgroundColor: theme.light.colors.primary,
     position: 'absolute',
-    top: ms(26),
-    left: ms(40),
-    borderRadius: 50,
+    borderRadius: 100,
+    alignSelf: 'center',
+    // left: ms(40),
+    top: ms(22),
   },
 });

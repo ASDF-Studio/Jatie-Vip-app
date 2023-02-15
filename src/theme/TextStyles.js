@@ -9,7 +9,8 @@ export const TextStyles = StyleSheet.create({
     fontFamily: FontFamily.Recoleta_bold,
   },
   title: {
-    fontSize: ms(15, 0.3),
+    fontSize: ms(32, 0.3),
+    color: theme.light.colors.headingBlack,
     fontFamily: FontFamily.Recoleta_bold,
   },
   text: {

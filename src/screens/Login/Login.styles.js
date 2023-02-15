@@ -13,17 +13,22 @@ export const styles = StyleSheet.create({
   submitButton: {
     marginTop: 20,
   },
+  logoContainer: { marginBottom: ms(10) },
+  linkColor: {
+    color: theme.light.colors.hyperlink,
+    textDecorationLine: 'underline',
+  },
   subTitle: {
     fontSize: ms(18, 0.3),
     fontFamily: FontFamily.BrandonGrotesque_medium,
-    color: theme.light.colors.text,
+    color: theme.light.colors.activeTabLabel,
   },
   termsAndConditionsStyle: {
     fontFamily: FontFamily.BrandonGrotesque_regular,
     fontSize: ms(18, 0.3),
     lineHeight: ms(22),
     marginTop: ms(20),
-    color: theme.light.colors.text,
+    color: theme.light.colors.activeTabLabel,
     textAlign: 'center',
   },
 });

@@ -1,146 +1,211 @@
-import React from 'react';
-import { StyleSheet, View, Text, Switch } from 'react-native';
-import { Button, Icon } from '@/components';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { AppSwitch, Button, TextField, TopBackButton } from '@/components';
+import { strings } from '@/localization';
 import { TextStyles, theme } from '@/theme';
 import { FontFamily } from '@/theme/Fonts';
+import { faCalendar } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import React from 'react';
 import { useState } from 'react';
-import { ms, vs } from 'react-native-size-matters';
-import { strings } from '@/localization';
-import { SafeAreaView } from 'react-native-safe-area-context';
-export default function AdminPostOption({ navigation }) {
-  return (
-    <SafeAreaView style={styles.contianer}>
-      <View style={styles.header}>
-        <Icon
-          icon={faArrowLeft}
-          size={ms(20)}
-          onPress={() => navigation.goBack()}
-          style={[styles.headerIcon]}
-        />
-        <Text style={[styles.headerText, TextStyles.header]}>
-          {strings.exclusive.adminPostHeader}
-        </Text>
-      </View>
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
+import DatePicker from 'react-native-date-picker';
+import { ms } from 'react-native-size-matters';
 
-      <View style={styles.postContainer}>
-        {AdminSwitch(strings.exclusive.schedulePost)}
-        {AdminSwitch(strings.exclusive.forVIPsOnly)}
-        {AdminSwitch(strings.exclusive.pinThisPost)}
-      </View>
-      <View style={styles.PostButtonContainer}>
-        <Button
-          style={styles.PostButton}
-          title={strings.exclusive.postButton}
-        />
-      </View>
+export default function AdminPostOption({ navigation }) {
+  const [schedulePost, setSchedulePost] = useState(false);
+  const [vipOnly, setVipOnly] = useState(false);
+  const [pinPost, setPinPost] = useState(false);
+
+  const [postDate, setPostDate] = useState(new Date());
+  const [openPostDatePicker, setOpenPostDatePicker] = useState(false);
+
+  // const [publishingDate, setPublishingDate] = useState(new Date());
+  // const [openPublishingDatePicker, setOpenPublishingDatePicker] = useState(false);
+
+  // const [expiringDate, setExpiringDate] = useState(new Date());
+  // const [openExpiringDatePicker, setOpenExpiringDatePicker] = useState(false);
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <ScrollView>
+        <View style={styles.headerContainer}>
+          <TopBackButton
+            onPress={() => navigation.goBack()}
+            style={styles.TopBackButton}
+          />
+          <Text style={styles.headerTxt}>{strings.home.postOptions} </Text>
+        </View>
+        <View style={styles.optionContainer}>
+          <View style={styles.list}>
+            <View style={styles.left}>
+              <Text style={styles.listTxt}>
+                {strings.exclusive.schedulePost}{' '}
+              </Text>
+              <View style={styles.postSwitch}>
+                <AppSwitch
+                  value={schedulePost}
+                  onChange={() => setSchedulePost(prev => !prev)}
+                />
+              </View>
+            </View>
+            <View style={styles.right}>
+              {/* Date picker  */}
+              <View>
+                <TextField
+                  style={styles.rightTextField}
+                  editable={false}
+                  // value = {Moment(postDate).format('DD-MM-YYYY')}
+                  placeholder={strings.home.selectTimeAndDate}
+                />
+                <TouchableOpacity
+                  style={styles.datePickerIcon}
+                  onPress={() => setOpenPostDatePicker(true)}
+                >
+                  <FontAwesomeIcon
+                    icon={faCalendar}
+                    size={ms(13)}
+                    color={theme.light.colors.info}
+                  />
+                </TouchableOpacity>
+                <DatePicker
+                  modal
+                  mode="date"
+                  open={openPostDatePicker}
+                  // locale = "fr"
+                  date={postDate}
+                  onConfirm={date => {
+                    setOpenPostDatePicker(false);
+                    setPostDate(date);
+                  }}
+                  onCancel={() => {
+                    setOpenPostDatePicker(false);
+                  }}
+                />
+              </View>
+            </View>
+          </View>
+
+          {/* 2 */}
+
+          <View style={styles.list}>
+            <View style={styles.left}>
+              <Text style={styles.listTxt}>{strings.home.forVIPsOnly} </Text>
+              <View style={styles.vipSwitch}>
+                <AppSwitch
+                  value={vipOnly}
+                  onChange={() => setVipOnly(prev => !prev)}
+                />
+              </View>
+            </View>
+          </View>
+          <View style={styles.list}>
+            <View style={styles.left}>
+              <Text style={styles.listTxt}>{strings.home.pinThisPost} </Text>
+              <View style={styles.pinSwitch}>
+                <AppSwitch
+                  value={pinPost}
+                  onChange={() => setPinPost(prev => !prev)}
+                />
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.PostButtonContainer}>
+            <Button
+              style={styles.PostButton}
+              title={strings.exclusive.postButton}
+            />
+          </View>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
 
-const AdminSwitch = text => {
-  const [isEnabled, setIsEnabled] = useState(false);
-  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
-  return (
-    <View style={styles.SwitchContainer}>
-      <View style={styles.Switch}>
-        <Text
-          style={[
-            TextStyles.text,
-            {
-              fontFamily: FontFamily.Recoleta_medium,
-              textAlign: 'justify',
-              color: theme.light.colors.black,
-            },
-          ]}
-        >
-          {text}
-        </Text>
-      </View>
-      <Switch
-        trackColor={{
-          false: theme.light.colors.infoBgLight,
-          true: theme.light.colors.infoBg,
-        }}
-        thumbColor={
-          isEnabled ? theme.light.colors.info : theme.light.colors.secondary
-        }
-        // ios_backgroundColor="#3e3e3e"
-        ios_backgroundColor={theme.light.colors.info}
-        onValueChange={toggleSwitch}
-        value={isEnabled}
-      />
-    </View>
-  );
-};
-
 const styles = StyleSheet.create({
-  contianer: {
+  container: {
     flex: 1,
     backgroundColor: theme.light.colors.white,
   },
-  header: {
-    padding: ms(15),
-  },
-  headerIcon: {
-    color: theme.light.colors.info,
-  },
-  headerText: {
-    marginTop: vs(10),
-    color: theme.light.colors.black,
-  },
-  postContainer: {
+
+  headerTxt: [
+    TextStyles.header,
+    {
+      color: theme.light.colors.black,
+      paddingLeft: ms(9),
+    },
+  ],
+  optionContainer: {
+    // height: 600,
+    padding: ms(0),
     flexDirection: 'column',
   },
-
-  //VIP Switch
-
-  SwitchContainer: {
+  TopBackButton: { padding: ms(10), paddingBottom: ms(10) },
+  list: {
     flexDirection: 'row',
-    borderWidth: 1,
+    justifyContent: 'space-between',
+    alignContent: 'center',
+    // borderTopWidth: 1, //
+    borderBottomWidth: 1,
     borderColor: theme.light.colors.infoBgLight,
+    padding: ms(12), //9
   },
-  Switch: {
-    margin: ms(20),
+  datePickerIcon: {
+    position: 'absolute',
+    top: ms(30),
+    right: ms(10),
   },
-
+  rightTextField: {
+    width: ms(170),
+  },
+  left: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  listTxt: {
+    fontSize: ms(16, 0.3),
+    fontFamily: FontFamily.Recoleta_medium,
+    color: theme.light.colors.black,
+  },
+  postSwitch: {
+    marginLeft: ms(2),
+  },
+  vipSwitch: {
+    marginLeft: ms(4),
+  },
+  pinSwitch: {
+    marginLeft: ms(5),
+  },
+  goingLiveSwitch: {
+    marginLeft: ms(25),
+  },
+  adSwitch: {
+    marginLeft: ms(12),
+  },
+  lebelTxt: {
+    fontFamily: FontFamily.BrandonGrotesque_regular,
+    fontSize: ms(15, 0.3),
+  },
+  adPublishDateContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignContent: 'center',
+  },
+  publishingTxt: {
+    fontFamily: FontFamily.BrandonGrotesque_regular,
+    fontSize: ms(18, 0.3),
+    lineHeight: ms(22),
+  },
   PostButtonContainer: {
     margin: ms(10),
     flexDirection: 'column',
     flexGrow: 1,
     justifyContent: 'flex-end',
-  },
-
-  //BottomLayout of file upload
-
-  BottomFileContainer: {
-    width: '100%',
-    flexDirection: 'row',
-    borderTopWidth: 1,
-    borderColor: theme.light.colors.infoBgLight,
-    display: 'flex',
-    justifyContent: 'space-between',
-  },
-  iconContainer: {
-    flexDirection: 'row',
-    marginLeft: ms(10),
-    borderRightWidth: 1,
-    borderColor: theme.light.colors.infoBgLight,
-  },
-  icon: {
-    margin: ms(10),
-    color: theme.light.colors.secondary,
-  },
-  ButtonContainer: {
-    margin: ms(10),
-    borderWidth: 0,
-    borderRadius: 10,
-    padding: ms(8),
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: theme.light.colors.primary,
-    position: 'relative',
-    backgroundColor: theme.light.colors.primary,
-    width: ms(120),
   },
 });

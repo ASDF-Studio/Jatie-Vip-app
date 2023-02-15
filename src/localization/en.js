@@ -13,8 +13,8 @@ export const en = {
     message: 'Welcome',
     variant: 'App variant: ',
     comments: 'Comments',
-    seeAllComments: 'See All Comments...',
-    newFeed: 'News Feed',
+    seeAllComments: 'See all comments...',
+    newFeed: 'Newsfeed',
     vipArea: 'VIP Area',
     recent: 'Recent',
     followingOnly: 'Following Only',
@@ -22,11 +22,11 @@ export const en = {
     popularToday: 'Popular Today',
     popularThisWeek: 'Popular This Week',
     popularThisMonth: 'Popular this Month',
-    typeComment: 'Type your comment here',
+    typeComment: 'Type your comment here...',
     replyTo: 'Reply to',
-    shareToFeed: 'Share To Feed',
+    shareToFeed: 'Share to Feed',
     whatOnYourMind: "What's on your mind?",
-    shareToVipOnly: 'Share to VIP Only',
+    shareToVipOnly: 'Share to VIPs Only',
     post: 'post',
     next: 'Next',
     postOptions: 'Post Options',
@@ -49,6 +49,9 @@ export const en = {
     selectReason: 'Select Reason',
     reportMessage:
       'Thanks for reporting your concern. We will take down or ban this user if we find violation of our terms of services.',
+    offical: 'Official',
+    DummyUser: ' @songbaobo',
+    report: 'Report this post',
   },
   sortBy: {
     recent: 'Recent',
@@ -64,7 +67,7 @@ export const en = {
     password: 'Password',
     passwordHint: 'Enter your password',
     invalidCredentials: 'Invalid Username/Password',
-    enterPhoneNumber: 'Enter your phone number',
+    enterPhoneNumber: 'Enter your Phone Number',
     phoneNumber: 'Phone Number',
     continue: 'Continue',
     loginOrSignup: 'Login or Signup',
@@ -89,7 +92,7 @@ export const en = {
     message: 'This screen has the iOS native large header.',
     header: 'Profile',
     logout: 'Logout',
-    feedTitle: 'Share To Feed',
+    feedTitle: 'Share to Feed',
     feedLebel: "What's on your mind?",
     follow: 'Follow',
     unfollow: 'Unfollow',
@@ -141,8 +144,8 @@ export const en = {
     yearlyPlan: '$99/Year',
     upgradeYearlySubsription: 'Upgrade to Yearly Subscription',
     saveByYearlyPlan: 'Save $20.88 by choosing the Yearly plan',
-    searchUser: 'Search Users',
-    searchForUsers: 'Search for the users',
+    searchUser: 'Search users...',
+    searchForUsers: 'Search for the users...',
     searchResult: 'Recent Searches & Results',
     unreadOnly: 'Unread Only',
     youAreVIP: 'You are a VIP Member',
@@ -178,6 +181,10 @@ export const en = {
     manageSubscription: 'Manage your subscription',
     closeConfirm:
       "Are you sure want to close your Account? This action can't be undone.",
+    logout: 'Logout',
+    editPost: 'Edit Post',
+    reportUser: 'Report User',
+    genderPlaceHolder: 'Prefer not to say',
   },
   Welcome: {
     login: 'Login',
@@ -227,6 +234,10 @@ export const en = {
     edit: 'Edit',
     image: 'image',
     video: 'video',
+    titleHere: 'Title here',
+    whatOnYourMind: "What's on your mind?",
+    next: 'Next',
+
     //recent modal
     recent: 'Recent',
     popularToday: 'Popular Today',
@@ -278,8 +289,7 @@ export const en = {
     startDate: 'Start Date',
     endDate: 'End Date',
     numberOfWinners: 'Number of Winners',
-    forVIPsOnly: 'For VIPs Only',
-    usOnly: 'US-only',
+
     post: 'Post',
 
     //Alert
@@ -288,6 +298,13 @@ export const en = {
     message: 'message',
     report: 'report',
     blocked: 'blocked',
+
+    // post option
+
+    startDate: 'Start Date',
+    endDate: 'End Date',
+    forVIPsOnly: 'For VIPs Only',
+    usOnly: 'US-only',
   },
   message: {
     message: 'Message',
@@ -300,7 +317,6 @@ export const en = {
     toVipOnly : 'To VIP Only',
     toFreeMemberOnly : 'To Free Member Only',
     birthDaysToday : 'Birth Days Today'
-
   },
   operations: {
     save: 'Save',
@@ -321,5 +337,6 @@ export const en = {
     ok: 'Ok',
     addComments: 'Add Comments',
     submit: 'Submit',
+    delete: 'Delete',
   },
 };

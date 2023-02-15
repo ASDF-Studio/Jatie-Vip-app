@@ -16,7 +16,7 @@ import {
   faYoutube,
   faInstagram,
 } from '@fortawesome/free-brands-svg-icons';
-import { s, ms } from 'react-native-size-matters';
+import { ms } from 'react-native-size-matters';
 
 export function Welcome() {
   const { colors } = useTheme();
@@ -25,14 +25,14 @@ export function Welcome() {
   return (
     <ImageBackground style={styles.container}>
       <View style={styles.subContainer}>
-        <View style={{ marginBottom: s(41) }}>
+        <View style={styles.logoContainer}>
           <Logo height={ms(250)} width={ms(235)} />
         </View>
         <Button
           title={strings.Welcome.login}
           onPress={() => navigate(NAVIGATION.login)}
         />
-        <Button title={strings.Welcome.signup} style={{ marginTop: s(15) }} />
+        <Button title={strings.Welcome.signup} style={styles.signButton} />
 
         <View style={styles.socialContainer}>
           <FontAwesomeIcon

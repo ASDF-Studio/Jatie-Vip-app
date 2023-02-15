@@ -9,6 +9,7 @@ export const theme = {
       primaryInactive: 'rgb(200,174, 11)',
       primaryBg: 'rgba(232, 174, 11, 0.3)',
       primaryBgLight: 'rgba(232, 174, 11, 0.08)',
+      // primaryBgLight: 'rgba(211, 167, 8, 0.15)', //
       secondary: '#80818E',
       info: 'rgb(147,129,255)',
       infoBg: 'rgba(147,129,255, 0.3)',
@@ -31,6 +32,7 @@ export const theme = {
       userBackgroundColor: '#F8F2DA',
       black: 'rgb(43, 45,66)',
       white: '#ffffff',
+      headingBlack: '#000000',
     },
   },
   dark: {
