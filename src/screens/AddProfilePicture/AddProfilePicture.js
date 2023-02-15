@@ -1,6 +1,12 @@
 import { useTheme } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { TouchableOpacity, View, Image, ScrollView } from 'react-native';
+import {
+  TouchableOpacity,
+  View,
+  Image,
+  ScrollView,
+  Dimensions,
+} from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { login, TYPES } from '@/actions/UserActions';
 import { Button, ErrorView } from '@/components';
@@ -105,8 +111,13 @@ export function AddProfilePicture() {
             <FontAwesomeIcon icon={faUser} size={65} color={colors.white} />
           )}
         </View>
+
         <EditViewModal
           textStyleHeading={styles.HeadingTextStyle}
+          style={{
+            alignSelf: 'center',
+            width: Dimensions.get('window').width,
+          }}
           style={styles.EditViewModal}
           sourceUrl={image}
           isVisible={cropImageModal}
@@ -119,6 +130,7 @@ export function AddProfilePicture() {
           }}
           onPress={ReplaceImage}
         />
+
         {!image ? (
           <Button
             onPress={toggleModal}
@@ -128,34 +140,38 @@ export function AddProfilePicture() {
         ) : (
           <View style={styles.buttonContainer}>
             <Button
-              onPress={RemovePic}
-              style={styles.replaceRemoveButton}
-              title={strings.addYourProfilePicture.remove}
-            />
-
-            <Button
               onPress={toggleModal}
               style={styles.replaceRemoveButton}
               title={strings.addYourProfilePicture.replace}
             />
+
+            <Button
+              onPress={RemovePic}
+              style={styles.removeButton}
+              textStyle={styles.skipButtonText}
+              title={strings.addYourProfilePicture.remove}
+            />
           </View>
         )}
       </View>
-      <View style={styles.bottomButtons}>
-        <Button
-          onPress={handleSubmit}
-          title={
-            isLoading
-              ? strings.common.loading
-              : strings.addYourProfilePicture.Finish
-          }
-        />
-        <Button
-          onPress={handleSubmit}
-          style={styles.skipButton}
-          textStyle={styles.skipButtonText}
-          title={strings.addYourProfilePicture.skip}
-        />
+
+      <View>
+        <View style={styles.bottomButtons}>
+          <Button
+            onPress={handleSubmit}
+            title={
+              isLoading
+                ? strings.common.loading
+                : strings.addYourProfilePicture.Finish
+            }
+          />
+          <Button
+            onPress={handleSubmit}
+            style={styles.skipButton}
+            textStyle={styles.skipButtonText}
+            title={strings.addYourProfilePicture.skip}
+          />
+        </View>
 
         <Modal isVisible={isModalVisible}>
           <View style={styles.modalBackground}>
