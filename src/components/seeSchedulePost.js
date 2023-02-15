@@ -41,6 +41,13 @@ const styles = StyleSheet.create({
     padding: ms(10),
     borderRadius: 8,
     backgroundColor: theme.light.colors.white,
+    //IOS
+    shadowOffset: { width: -2, height: 4 },
+    shadowColor: theme.light.colors.secondary,
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+
+    //android
     elevation: 5,
   },
   schedulePostTxt: {

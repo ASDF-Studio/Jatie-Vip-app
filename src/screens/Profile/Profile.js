@@ -10,11 +10,10 @@ import {
 import {
   faSliders,
   faSearch,
-  faArrowRight,
   faRightFromBracket,
 } from '@fortawesome/free-solid-svg-icons';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
-import { ms, vs } from 'react-native-size-matters';
+import { ms } from 'react-native-size-matters';
 import { TextStyles, theme } from '@/theme';
 import { NAVIGATION } from '@/constants';
 import MyStatus from './myStatus';
@@ -28,11 +27,10 @@ import {
 } from '@/components';
 import { strings } from '@/localization';
 import { useSelector, useDispatch } from 'react-redux';
-import { ChooseUser, logout } from '@/actions/UserActions';
 import { FontFamily } from '@/theme/Fonts';
+import { Data } from './ProfileData/profileData';
 
 export function Profile({ navigation }) {
-  const dispatch = useDispatch();
   const userType = useSelector(state => state.userType);
   const [status, setStatus] = useState(strings.profile.myStatus);
 
@@ -72,13 +70,6 @@ export function Profile({ navigation }) {
             style={styles.bellIcon}
           />
           <View style={styles.bellAlert} />
-          <Icon
-            icon={faRightFromBracket}
-            size={ms(20)}
-            color={theme.light.colors.secondary}
-            onPress={() => dispatch(logout())}
-            style={styles.logOutIcon}
-          />
         </View>
       </View>
       <HeaderTab
@@ -150,9 +141,6 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingTop: ms(9),
   },
-  logOutIcon: {
-    // marginRight : ms(9)
-  },
   bellIcon: {
     marginRight: ms(12),
   },
@@ -176,10 +164,3 @@ export const styles = StyleSheet.create({
     backgroundColor: theme.light.colors.primaryBgLight,
   },
 });
-
-const Data = {
-  name: 'Adam Voigt',
-  userName: '@adam',
-  profilePic:
-    'https://media.istockphoto.com/id/1309328823/photo/headshot-portrait-of-smiling-male-employee-in-office.jpg?b=1&s=170667a&w=0&k=20&c=MRMqc79PuLmQfxJ99fTfGqHL07EDHqHLWg0Tb4rPXQc=',
-};

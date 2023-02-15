@@ -15,6 +15,9 @@ export const styles = StyleSheet.create({
     marginTop: vs(10),
     width: '50%',
   },
+  EditViewModal: { width: '100%' },
+  buttonContainer: { flexDirection: 'row' },
+  addYourPPButton: { marginTop: vs(20) },
   formContainer: {
     justifyContent: 'center',
     alignItems: 'center',

@@ -118,6 +118,7 @@ export function AddProfilePicture() {
             alignSelf: 'center',
             width: Dimensions.get('window').width,
           }}
+          style={styles.EditViewModal}
           sourceUrl={image}
           isVisible={cropImageModal}
           onImageCrop={res => {
@@ -137,7 +138,7 @@ export function AddProfilePicture() {
             title={strings.addYourProfilePicture.upload}
           />
         ) : (
-          <View style={{ flexDirection: 'row' }}>
+          <View style={styles.buttonContainer}>
             <Button
               onPress={toggleModal}
               style={styles.replaceRemoveButton}
@@ -183,7 +184,7 @@ export function AddProfilePicture() {
               title={strings.addYourProfilePicture.uploadFromCamera}
               onPress={OpenCamera}
             />
-            <View style={{ marginTop: vs(20) }}>
+            <View style={styles.addYourPPButton}>
               <Button
                 title={strings.addYourProfilePicture.uploadFromGallery}
                 onPress={OpenGallery}

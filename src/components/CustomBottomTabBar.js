@@ -4,12 +4,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { useTheme } from '@react-navigation/native';
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import {
-  faNewspaper,
-  faMessage,
-  faUserCircle,
-} from '@fortawesome/free-regular-svg-icons';
-import { faCrown, faGift } from '@fortawesome/free-solid-svg-icons';
+import { faNewspaper, faUserCircle } from '@fortawesome/free-regular-svg-icons';
+import { faCrown, faGift, faMessage } from '@fortawesome/free-solid-svg-icons';
+import { theme } from '@/theme';
+import { ms } from 'react-native-size-matters';
 
 const tabBarLabel = {
   [NAVIGATION.homeNavigator]: 'Feed',
@@ -73,12 +71,22 @@ function CustomBottomTabBar({ state, descriptors, navigation }) {
             onLongPress={onLongPress}
             style={styles.tabBoxContainer}
           >
+            {isFocused ? (
+              <View
+                style={{
+                  width: '110%',
+                  borderWidth: 1,
+                  borderColor: theme.light.colors.primary,
+                  bottom: ms(20),
+                }}
+              />
+            ) : null}
+
             <FontAwesomeIcon
               icon={tabBarIcon[route.name]}
               size={20}
               color={isFocused ? colors.activeTabIcon : colors.inactiveTabIcon}
             />
-
             <Text
               style={[
                 styles.labelStyle,
@@ -101,14 +109,17 @@ function CustomBottomTabBar({ state, descriptors, navigation }) {
 const styles = StyleSheet.create({
   tabBoxContainer: {
     flex: 1,
-    padding: 6,
-    paddingBottom: 12,
+    padding: ms(6),
+    paddingBottom: ms(30),
+    paddingTop: ms(20),
     justifyContent: 'center',
     alignItems: 'center',
+    borderTopWidth: 1,
+    borderColor: theme.light.colors.primaryBg,
   },
   labelStyle: {
-    paddingTop: 5,
-    fontSize: 14,
+    paddingTop: ms(5),
+    fontSize: ms(14),
     fontFamily: FontFamily.Recoleta_semibold,
   },
 });

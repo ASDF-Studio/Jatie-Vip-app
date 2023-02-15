@@ -1,8 +1,7 @@
-import { useTheme } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { Text, View } from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { login, TYPES, ChooseUser } from '@/actions/UserActions';
+import { TYPES, ChooseUser } from '@/actions/UserActions';
 import { Button, ErrorView, TextField } from '@/components';
 import { strings } from '@/localization';
 import { styles } from '@/screens/Login/Login.styles';
@@ -31,24 +30,23 @@ export function Login() {
   const handleSubmit = () => {
     // dispatch(login(username, password));
     navigationRef.navigate(NAVIGATION.enterOtp);
-    dispatch(ChooseUser(selectedValue))
+    dispatch(ChooseUser(selectedValue));
   };
 
   // testing purpose code
   const [userListOpen, setUserListOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState(null);
   const [user, setUser] = useState([
-    {label: 'Free', value: 'Free'},
-    {label: 'Admin', value: 'Admin'},
-    {label: 'VIP', value: 'VIP'}
+    { label: 'Free', value: 'Free' },
+    { label: 'Admin', value: 'Admin' },
+    { label: 'VIP', value: 'VIP' },
   ]);
 
- 
   // console.log(selectedValue)
 
   return (
     <View style={styles.container}>
-      <View style={{ marginBottom: ms(10) }}>
+      <View style={styles.logoContainer}>
         <Logo height={ms(142)} width={ms(142)} />
       </View>
       <Text style={TextStyles.title}>{strings.login.loginOrSignup}</Text>
@@ -65,17 +63,17 @@ export function Login() {
 
       {/* only for testing purpose code */}
       <DropDownPicker
-          placeholder='User Type'
-          open={userListOpen}
-          value={selectedValue}
-          items={user}
-          setOpen={setUserListOpen}
-          setValue={setSelectedValue}
-          setItems={setUser}
-          style={styles.textFiled}
-          textStyle = {styles.dropListTxt}
-      />               
-      
+        placeholder="User Type"
+        open={userListOpen}
+        value={selectedValue}
+        items={user}
+        setOpen={setUserListOpen}
+        setValue={setSelectedValue}
+        setItems={setUser}
+        style={styles.textFiled}
+        textStyle={styles.dropListTxt}
+      />
+
       <Button
         onPress={handleSubmit}
         style={styles.submitButton}
@@ -84,13 +82,9 @@ export function Login() {
 
       <Text style={styles.termsAndConditionsStyle}>
         {strings.login.byContinue}
-        <Text style={{ color: theme.light.colors.hyperlink }}>
-          {strings.login.termsAndConditions}
-        </Text>
+        <Text style={styles.linkColor}>{strings.login.termsAndConditions}</Text>
         {strings.login.and}
-        <Text style={{ color: theme.light.colors.hyperlink }}>
-          {strings.login.privacyPolicy}
-        </Text>
+        <Text style={styles.linkColor}>{strings.login.privacyPolicy}</Text>
       </Text>
     </View>
   );

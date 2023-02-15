@@ -50,6 +50,8 @@ export const en = {
     reportMessage:
       'Thanks for reporting your concern. We will take down or ban this user if we find violation of our terms of services.',
     offical: 'Official',
+    DummyUser: ' @songbaobo',
+    report: 'Report this post',
   },
   sortBy: {
     recent: 'Recent',
@@ -65,7 +67,7 @@ export const en = {
     password: 'Password',
     passwordHint: 'Enter your password',
     invalidCredentials: 'Invalid Username/Password',
-    enterPhoneNumber: 'Enter your phone number',
+    enterPhoneNumber: 'Enter your Phone Number',
     phoneNumber: 'Phone Number',
     continue: 'Continue',
     loginOrSignup: 'Login or Signup',
@@ -90,7 +92,7 @@ export const en = {
     message: 'This screen has the iOS native large header.',
     header: 'Profile',
     logout: 'Logout',
-    feedTitle: 'Share To Feed',
+    feedTitle: 'Share to Feed',
     feedLebel: "What's on your mind?",
     follow: 'Follow',
     unfollow: 'Unfollow',
@@ -179,6 +181,10 @@ export const en = {
     manageSubscription: 'Manage your subscription',
     closeConfirm:
       "Are you sure want to close your Account? This action can't be undone.",
+    logout: 'Logout',
+    editPost: 'Edit Post',
+    reportUser: 'Report User',
+    genderPlaceHolder: 'Prefer not to say',
   },
   Welcome: {
     login: 'Login',
@@ -338,5 +344,6 @@ export const en = {
     ok: 'Ok',
     addComments: 'Add Comments',
     submit: 'Submit',
+    delete: 'Delete',
   },
 };

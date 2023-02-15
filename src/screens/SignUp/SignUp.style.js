@@ -13,6 +13,7 @@ export const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 20,
   },
+  showDatepicker: { marginBottom: vs(12) },
   subTitle: {
     fontSize: ms(18, 0.3),
     fontFamily: FontFamily.BrandonGrotesque_medium,
