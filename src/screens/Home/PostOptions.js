@@ -1,11 +1,4 @@
-import {
-  AppDatePicker,
-  AppSwitch,
-  Button,
-  Icon,
-  TextField,
-  TopBackButton,
-} from '@/components';
+import { AppSwitch, Button, TextField, TopBackButton } from '@/components';
 import { strings } from '@/localization';
 import { TextStyles, theme } from '@/theme';
 import { FontFamily } from '@/theme/Fonts';
@@ -23,7 +16,6 @@ import {
 } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import { ms } from 'react-native-size-matters';
-import Moment from 'moment';
 
 export default function PostOptions({ navigation }) {
   const [schedulePost, setSchedulePost] = useState(false);
@@ -48,7 +40,7 @@ export default function PostOptions({ navigation }) {
         <View style={styles.headerContainer}>
           <TopBackButton
             onPress={() => navigation.goBack()}
-            style={{ padding: ms(10), paddingBottom: ms(10) }}
+            style={styles.TopBackButton}
           />
           <Text style={styles.headerTxt}>{strings.home.postOptions} </Text>
         </View>
@@ -67,9 +59,7 @@ export default function PostOptions({ navigation }) {
               {/* Date picker  */}
               <View>
                 <TextField
-                  style={{
-                    width: ms(170),
-                  }}
+                  style={styles.rightContainerTextField}
                   editable={false}
                   // value = {Moment(postDate).format('DD-MM-YYYY')}
                   placeholder={strings.home.selectTimeAndDate}
@@ -123,8 +113,8 @@ export default function PostOptions({ navigation }) {
               </View>
             </View>
           </View>
-          <View style={[styles.list, { flexDirection: 'column' }]}>
-            <View style={{ flexDirection: 'row' }}>
+          <View style={styles.listTopAndBottom}>
+            <View style={styles.listTop}>
               <Text style={styles.listTxt}>{strings.home.goingLive} </Text>
               <View style={styles.goingLiveSwitch}>
                 <AppSwitch
@@ -136,8 +126,8 @@ export default function PostOptions({ navigation }) {
             <Text style={styles.lebelTxt}>{strings.home.goingLiveLebel} </Text>
           </View>
 
-          <View style={[styles.list, { flexDirection: 'column' }]}>
-            <View style={{ flexDirection: 'row' }}>
+          <View style={styles.listTopAndBottom}>
+            <View style={styles.listBottom}>
               <Text style={styles.listTxt}>{strings.home.thisIsAnAd} </Text>
               <View style={styles.adSwitch}>
                 <AppSwitch value={ad} onChange={() => setAd(prev => !prev)} />
@@ -158,9 +148,7 @@ export default function PostOptions({ navigation }) {
                   {/* Date picker  */}
                   <View>
                     <TextField
-                      style={{
-                        width: ms(170),
-                      }}
+                      style={styles.datePicketTextField}
                       editable={false}
                       // value = { publishingDate?Moment(publishingDate).format('DD-MM-YYYY'): null}
                       placeholder={strings.home.publishingDate}
@@ -202,9 +190,7 @@ export default function PostOptions({ navigation }) {
                   {/* Date picker  */}
                   <View>
                     <TextField
-                      style={{
-                        width: ms(170),
-                      }}
+                      style={styles.datePicketTextField}
                       editable={false}
                       // value = {Moment(expiringDate).format('DD-MM-YYYY')}
                       placeholder={strings.home.ExpirationDate}
@@ -240,13 +226,11 @@ export default function PostOptions({ navigation }) {
             </View>
           )}
 
-          <View style={{ padding: ms(9) }}>
+          <View style={styles.buttomContainer}>
             <Button
               title={strings.home.post}
               // onPress = {}
-              style={{
-                marginTop: ms(20),
-              }}
+              style={styles.buttonPost}
             />
           </View>
         </View>
@@ -273,6 +257,10 @@ const styles = StyleSheet.create({
   optionContainer: {
     padding: ms(0),
   },
+  TopBackButton: {
+    padding: ms(10),
+    paddingBottom: ms(10),
+  },
   list: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -281,6 +269,24 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: theme.light.colors.infoBgLight,
     padding: ms(12), //9
+  },
+  listTopAndBottom: {
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignContent: 'center',
+    // borderTopWidth: 1, //
+    borderBottomWidth: 1,
+    borderColor: theme.light.colors.infoBgLight,
+    padding: ms(12), //9 },
+  },
+  listTop: {
+    flexDirection: 'row',
+  },
+  listBottom: {
+    flexDirection: 'row',
+  },
+  rightContainerTextField: {
+    width: ms(170),
   },
   datePickerIcon: {
     position: 'absolute',
@@ -295,6 +301,9 @@ const styles = StyleSheet.create({
     fontSize: ms(16, 0.3),
     fontFamily: FontFamily.Recoleta_medium,
     color: theme.light.colors.black,
+  },
+  datePicketTextField: {
+    width: ms(170),
   },
   postSwitch: {
     marginLeft: ms(2),
@@ -324,5 +333,14 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.BrandonGrotesque_regular,
     fontSize: ms(18, 0.3),
     lineHeight: ms(22),
+  },
+
+  //button
+
+  buttomContainer: {
+    padding: ms(9),
+  },
+  buttonPost: {
+    marginTop: ms(20),
   },
 });

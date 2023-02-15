@@ -13,6 +13,7 @@ import { FontFamily } from '@/theme/Fonts';
 import { ms, vs } from 'react-native-size-matters';
 import { strings } from '@/localization';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Data, Info } from './exclusiveData/thumbnailData';
 
 export default function Thubmnail({ navigation }) {
   return (
@@ -26,18 +27,7 @@ export default function Thubmnail({ navigation }) {
       <ScrollView>
         <View style={styles.postContainer}>
           <View style={styles.title}>
-            <Text
-              style={[
-                TextStyles.text,
-                {
-                  fontFamily: FontFamily.BrandonGrotesque_bold,
-                  fontSize: ms(18, 0.3),
-                  color: theme.light.colors.black,
-                },
-              ]}
-            >
-              {Data.text}
-            </Text>
+            <Text style={[TextStyles.text, styles.titleText]}>{Data.text}</Text>
           </View>
 
           {Data.video.map(item => {
@@ -70,16 +60,7 @@ export default function Thubmnail({ navigation }) {
           })}
 
           <View style={styles.description}>
-            <Text
-              style={[
-                TextStyles.text,
-                {
-                  fontFamily: FontFamily.BrandonGrotesque_regular,
-                  textAlign: 'justify',
-                  color: theme.light.colors.black,
-                },
-              ]}
-            >
+            <Text style={[TextStyles.text, styles.descriptionText]}>
               {Data.description}
             </Text>
           </View>
@@ -121,7 +102,7 @@ export const infoBox = (text, link) => {
       >
         {text}
         <Text
-          style={{ color: theme.light.colors.hyperlink }}
+          style={styles.hyperlink}
           onPress={() => {
             Linking.openURL(link);
           }}
@@ -131,62 +112,6 @@ export const infoBox = (text, link) => {
       </Text>
     </View>
   );
-};
-
-const Info = {
-  movefit: 'DOWNLOAD THE MOVE APP: ',
-  movefitLink: 'https://movefit.com/',
-  jatie: 'ALL THINGS JATIE: ',
-  jatieLink: 'https://linktr.ee/katiebrueckner',
-  jatieVIP: 'JATIE VIP: ',
-  jatieVIPLink: 'https://www.jatievip.com',
-  jatieBrand: 'Help Support us and look good while doing it!!',
-  j80Fit: 'J80Fit: ',
-  j80FitLink: 'https://j80fitness.com/',
-  jatieBeauty: 'Jatie Beauty: ',
-  jatieBeautyLink: 'https://www.jatiebeauty.com/',
-};
-
-const Data = {
-  id: 1,
-  thumbnail:
-    'https://www.dharmann.com/wp-content/uploads/2022/06/YT-Thumbnail-566-Husband-Pranks-Wife-Goes-Too-Far-Option-1E.jpg',
-  video: [
-    {
-      vID: 1,
-      videoLink: 'https://vjs.zencdn.net/v/oceans.mp4',
-      poster:
-        'https://www.dharmann.com/wp-content/uploads/2022/06/YT-Thumbnail-566-Husband-Pranks-Wife-Goes-Too-Far-Option-1E.jpg',
-    },
-    {
-      vID: 2,
-      videoLink: 'https://vjs.zencdn.net/v/oceans.mp4',
-      poster:
-        'https://www.dharmann.com/wp-content/uploads/2022/06/YT-Thumbnail-566-Husband-Pranks-Wife-Goes-Too-Far-Option-1E.jpg',
-    },
-  ],
-  photo: [
-    {
-      pID: 1,
-      photoLink:
-        'https://media.istockphoto.com/id/1309328823/photo/headshot-portrait-of-smiling-male-employee-in-office.jpg?b=1&s=170667a&w=0&k=20&c=MRMqc79PuLmQfxJ99fTfGqHL07EDHqHLWg0Tb4rPXQc=',
-      poster:
-        'https://www.dharmann.com/wp-content/uploads/2022/06/YT-Thumbnail-566-Husband-Pranks-Wife-Goes-Too-Far-Option-1E.jpg',
-    },
-    {
-      pID: 2,
-      photoLink:
-        'https://media.istockphoto.com/id/1309328823/photo/headshot-portrait-of-smiling-male-employee-in-office.jpg?b=1&s=170667a&w=0&k=20&c=MRMqc79PuLmQfxJ99fTfGqHL07EDHqHLWg0Tb4rPXQc=',
-    },
-    {
-      pID: 3,
-      photoLink:
-        'https://www.dharmann.com/wp-content/uploads/2022/06/YT-Thumbnail-566-Husband-Pranks-Wife-Goes-Too-Far-Option-1E.jpg',
-    },
-  ],
-  text: 'Starting an argument then having bad period cramps *Pranks on Husband!*',
-  description:
-    'Nothing like starting an argument with your wife for fun lol.. Hope you guys enjoyed this video and get ready for vlogmas starting tomorrow!!',
 };
 
 const styles = StyleSheet.create({
@@ -213,12 +138,23 @@ const styles = StyleSheet.create({
   title: {
     padding: ms(20),
   },
+  titleText: {
+    fontFamily: FontFamily.BrandonGrotesque_bold,
+    fontSize: ms(18, 0.3),
+    color: theme.light.colors.black,
+  },
   description: {
     padding: ms(20),
+  },
+  descriptionText: {
+    fontFamily: FontFamily.BrandonGrotesque_regular,
+    textAlign: 'justify',
+    color: theme.light.colors.black,
   },
   info: {
     paddingLeft: ms(20),
   },
+  hyperlink: { color: theme.light.colors.hyperlink },
   videoContainer: {
     width: '100%',
     marginBottom: vs(10),

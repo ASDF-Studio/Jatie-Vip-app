@@ -1,12 +1,4 @@
-import {
-  AppDatePicker,
-  AppSwitch,
-  Button,
-  HorizontalLine,
-  Icon,
-  TextField,
-  TopBackButton,
-} from '@/components';
+import { AppSwitch, Button, TextField, TopBackButton } from '@/components';
 import { strings } from '@/localization';
 import { TextStyles, theme } from '@/theme';
 import { FontFamily } from '@/theme/Fonts';
@@ -24,24 +16,14 @@ import {
 } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import { ms } from 'react-native-size-matters';
-import Moment from 'moment';
 
 export default function AdminPostOption({ navigation }) {
   const [schedulePost, setSchedulePost] = useState(false);
   const [vipOnly, setVipOnly] = useState(false);
   const [pinPost, setPinPost] = useState(false);
-  const [goingLIve, setGoingLive] = useState(false);
-  const [ad, setAd] = useState(false);
 
   const [postDate, setPostDate] = useState(new Date());
   const [openPostDatePicker, setOpenPostDatePicker] = useState(false);
-
-  const [publishingDate, setPublishingDate] = useState(new Date());
-  const [openPublishingDatePicker, setOpenPublishingDatePicker] =
-    useState(false);
-
-  const [expiringDate, setExpiringDate] = useState(new Date());
-  const [openExpiringDatePicker, setOpenExpiringDatePicker] = useState(false);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -49,7 +31,7 @@ export default function AdminPostOption({ navigation }) {
         <View style={styles.headerContainer}>
           <TopBackButton
             onPress={() => navigation.goBack()}
-            style={{ padding: ms(10), paddingBottom: ms(10) }}
+            style={styles.TopBackButton}
           />
           <Text style={styles.headerTxt}>{strings.home.postOptions} </Text>
         </View>
@@ -68,9 +50,7 @@ export default function AdminPostOption({ navigation }) {
               {/* Date picker  */}
               <View>
                 <TextField
-                  style={{
-                    width: ms(170),
-                  }}
+                  style={styles.rightTextFild}
                   editable={false}
                   // value = {Moment(postDate).format('DD-MM-YYYY')}
                   placeholder={strings.home.selectTimeAndDate}
@@ -119,9 +99,7 @@ export default function AdminPostOption({ navigation }) {
               {/* Date picker  */}
               <View>
                 <TextField
-                  style={{
-                    width: ms(170),
-                  }}
+                  style={styles.rightTextFild}
                   editable={false}
                   // value = {Moment(postDate).format('DD-MM-YYYY')}
                   placeholder={strings.home.selectTimeAndDate}
@@ -208,6 +186,7 @@ const styles = StyleSheet.create({
     padding: ms(0),
     flexDirection: 'column',
   },
+  TopBackButton: { padding: ms(10), paddingBottom: ms(10) },
   list: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -221,6 +200,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: ms(30),
     right: ms(10),
+  },
+  rightTextFild: {
+    width: ms(170),
   },
   left: {
     flexDirection: 'row',

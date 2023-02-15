@@ -19,14 +19,14 @@ export default function UpgradeMembership({ navigation }) {
 
       <View style={styles.headerTxtContainer}>
         <Text style={TextStyles.header}> {strings.profile.upgradeTo} </Text>
-        <Text style={[TextStyles.header, { color: 'black' }]}>
+        <Text style={[TextStyles.header, styles.upgradeToHeader]}>
           {' '}
           {strings.profile.vipMemberShip}{' '}
         </Text>
       </View>
 
       <View style={styles.card}>
-        <Text style={[TextStyles.header, { fontSize: 15, color: 'black' }]}>
+        <Text style={[TextStyles.header, styles.benefitsHeader]}>
           {' '}
           {strings.profile.benefits}{' '}
         </Text>
@@ -81,15 +81,11 @@ export default function UpgradeMembership({ navigation }) {
             onPress={() =>
               navigation.navigate(NAVIGATION.monthlyUpgradeSuccess)
             }
-            style={{
-              marginTop: ms(10),
-            }}
+            style={styles.monthlyPlanButton}
           />
           <Button
             title={strings.profile.yearlyPlan}
-            style={{
-              marginTop: ms(10),
-            }}
+            style={styles.yearlyPlanButton}
           />
         </View>
         <View style={styles.footerTxtContainer}>
@@ -140,10 +136,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: ms(5),
   },
+  monthlyPlanButton: {
+    marginTop: ms(10),
+  },
+  yearlyPlanButton: {
+    marginTop: ms(10),
+  },
   listText: {
     fontFamily: FontFamily.BrandonGrotesque_medium,
     fontSize: ms(16, 0.3),
   },
+  upgradeToHeader: { color: theme.light.colors.black },
+  benefitsHeader: { fontSize: 15, color: theme.light.colors.black },
   btnContainer: {
     alignItems: 'center',
   },

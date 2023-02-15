@@ -4,7 +4,6 @@ import {
   Text,
   Image,
   StyleSheet,
-  Alert,
   TouchableOpacity,
   FlatList,
   SafeAreaView,
@@ -22,7 +21,6 @@ import {
   Card,
   CardBody,
   CardFooter,
-  CommentCard,
   PopUp,
   Button,
 } from '@/components';
@@ -42,6 +40,7 @@ import {
 import { faBell } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { strings } from '@/localization';
+import { Data, demo, User } from './ProfileData/manageReportOnProfileData';
 
 export default function ManageReportOnMessage({ navigation }) {
   const [openMore, setOpenMore] = useState(false);
@@ -52,7 +51,7 @@ export default function ManageReportOnMessage({ navigation }) {
     <SafeAreaView style={styles.container}>
       <TopBackButton
         onPress={() => navigation.goBack()}
-        style={{ padding: ms(10) }}
+        style={styles.TopBackButton}
       />
       <Text style={[styles.headerText, TextStyles.header]}>
         {strings.profile.manageReports}{' '}
@@ -79,7 +78,7 @@ export default function ManageReportOnMessage({ navigation }) {
             <Image
               style={styles.headerImage}
               source={{
-                uri: 'https://media.istockphoto.com/id/1309328823/photo/headshot-portrait-of-smiling-male-employee-in-office.jpg?b=1&s=170667a&w=0&k=20&c=MRMqc79PuLmQfxJ99fTfGqHL07EDHqHLWg0Tb4rPXQc=',
+                uri: demo.headerImage,
               }}
             />
             <View style={styles.profileLogoContainer}>
@@ -110,12 +109,7 @@ export default function ManageReportOnMessage({ navigation }) {
 
         <View style={styles.messageHeader}>
           <View style={styles.messageLeft}>
-            <TouchableOpacity
-              style={[
-                styles.IconBox,
-                { backgroundColor: theme.light.colors.successBgLight },
-              ]}
-            >
+            <TouchableOpacity style={[styles.IconBox, styles.IconBoxColor]}>
               <FontAwesomeIcon
                 icon={faMessage}
                 size={ms(13)}
@@ -126,7 +120,7 @@ export default function ManageReportOnMessage({ navigation }) {
                 {strings.profile.message}{' '}
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.IconBox, { marginLeft: ms(10) }]}>
+            <TouchableOpacity style={[styles.IconBox, styles.IconBoxDesign]}>
               <FontAwesomeIcon
                 icon={faUserPlus}
                 size={ms(13)}
@@ -150,7 +144,7 @@ export default function ManageReportOnMessage({ navigation }) {
           data={Data}
           key={props => props.id}
           renderItem={({ item }) => (
-            <View style={{ margin: 10 }}>
+            <View style={styles.cardContainer}>
               <Card>
                 <CardHeader
                   fullName={item.fullName}
@@ -231,39 +225,22 @@ export default function ManageReportOnMessage({ navigation }) {
 
         <PopUp open={openBan} setOpen={setOpenBan}>
           <View>
-            <Text
-              style={[TextStyles.header, { color: theme.light.colors.black }]}
-            >
+            <Text style={[TextStyles.header, styles.headerColor]}>
               {strings.profile.areYouSureWantToBan}
             </Text>
-            <View style={{ flexDirection: 'row' }}>
+            <View style={styles.imageViewContainer}>
               <Image
                 source={{
-                  uri: 'https://media.istockphoto.com/id/1270067126/photo/smiling-indian-man-looking-at-camera.jpg?s=612x612&w=0&k=20&c=ovIQ5GPurLd3mOUj82jB9v-bjGZ8updgy1ACaHMeEC0=',
+                  uri: demo.popUpImage,
                 }}
-                style={{
-                  height: ms(40),
-                  width: ms(40),
-                  borderRadius: 100,
-                }}
+                style={styles.imageDesign}
               />
               <View>
-                <Text
-                  style={[
-                    TextStyles.header,
-                    { color: theme.light.colors.black, fontSize: ms(18, 0.3) },
-                  ]}
-                >
+                <Text style={[TextStyles.header, styles.headerFullname]}>
                   {User.fullName}{' '}
                 </Text>
                 <Text>{User.userName}</Text>
-                <Text
-                  style={{
-                    backgroundColor: theme.light.colors.inputFiled,
-                    borderRadius: 10,
-                    padding: 2,
-                  }}
-                >
+                <Text style={styles.freeMemberText}>
                   {' '}
                   {strings.profile.freeMember}{' '}
                 </Text>
@@ -272,21 +249,14 @@ export default function ManageReportOnMessage({ navigation }) {
             <View>
               <Button
                 title={strings.profile.yesBan}
-                style={{
-                  marginTop: 10,
-                  backgroundColor: theme.light.colors.white,
-                  borderWidth: 2,
-                  borderColor: theme.light.colors.primary,
-                }}
+                style={styles.yesBanButton}
                 textStyle={{
                   color: theme.light.colors.primary,
                 }}
               />
               <Button
                 title={strings.profile.DoNotBan}
-                style={{
-                  marginTop: 10,
-                }}
+                style={styles.DoNotBanButton}
               />
             </View>
           </View>
@@ -305,6 +275,7 @@ const styles = StyleSheet.create({
     color: theme.light.colors.black,
     paddingLeft: ms(9),
   },
+  TopBackButton: { padding: ms(10) },
   activity: {
     flexDirection: 'row',
     padding: ms(9),
@@ -326,6 +297,7 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.BrandonGrotesque_medium,
     fontSize: ms(15, 0.3),
   },
+  cardContainer: { margin: 10 },
   reasonContainer: {
     backgroundColor: theme.light.colors.inputFiled,
     borderRadius: 10,
@@ -365,6 +337,24 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 75,
   },
+  freeMemberText: {
+    backgroundColor: theme.light.colors.inputFiled,
+    borderRadius: 10,
+    padding: 2,
+  },
+  headerFullname: {
+    color: theme.light.colors.black,
+    fontSize: ms(18, 0.3),
+  },
+  yesBanButton: {
+    marginTop: 10,
+    backgroundColor: theme.light.colors.white,
+    borderWidth: 2,
+    borderColor: theme.light.colors.primary,
+  },
+  DoNotBanButton: {
+    marginTop: 10,
+  },
   fullNameTxt: [
     TextStyles.header,
     {
@@ -400,6 +390,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  headerColor: { color: theme.light.colors.black },
+  imageViewContainer: { flexDirection: 'row' },
+  imageDesign: {
+    height: ms(40),
+    width: ms(40),
+    borderRadius: 100,
+  },
   messageHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -430,6 +427,8 @@ const styles = StyleSheet.create({
     width: ms(100),
     borderRadius: 10,
   },
+  IconBoxColor: { backgroundColor: theme.light.colors.successBgLight },
+  IconBoxDesign: { marginLeft: ms(10) },
   moreIconContainer: {
     backgroundColor: theme.light.colors.infoBg,
     padding: ms(10),
@@ -443,38 +442,3 @@ const styles = StyleSheet.create({
     margin: ms(12),
   },
 });
-
-const User = {
-  fullName: 'Adam',
-  userName: '@adam',
-  profilePic:
-    'https://media.istockphoto.com/id/1270067126/photo/smiling-indian-man-looking-at-camera.jpg?s=612x612&w=0&k=20&c=ovIQ5GPurLd3mOUj82jB9v-bjGZ8updgy1ACaHMeEC0=',
-  time: 10,
-};
-
-const Data = [
-  {
-    id: 1,
-    fullName: 'Adam Voigt',
-    userName: '@adam',
-    profilePic:
-      'https://media.istockphoto.com/id/1309328823/photo/headshot-portrait-of-smiling-male-employee-in-office.jpg?b=1&s=170667a&w=0&k=20&c=MRMqc79PuLmQfxJ99fTfGqHL07EDHqHLWg0Tb4rPXQc=',
-    like: 100,
-    disLike: 30,
-    comment: 20,
-    text: 'Initiated by 2020 IEEE President Toshio Fukuda and the IEEE 2020 IEEE Board Ad Hoc Committee on Lifelong Learning and Continuing Education, the IEEE Academies are designed to teach in-demand technical concepts in a new way to IEEE members working in industry. The IEEE Academies are a new learning format at IEEE that will help members understand',
-    time: '10',
-  },
-  {
-    id: 2,
-    fullName: 'Adam Voigt',
-    userName: '@adam',
-    profilePic:
-      'https://media.istockphoto.com/id/1309328823/photo/headshot-portrait-of-smiling-male-employee-in-office.jpg?b=1&s=170667a&w=0&k=20&c=MRMqc79PuLmQfxJ99fTfGqHL07EDHqHLWg0Tb4rPXQc=',
-    like: 100,
-    disLike: 30,
-    comment: 20,
-    text: 'Initiated by 2020 IEEE President Toshio Fukuda and the IEEE 2020 IEEE Board Ad Hoc Committee on Lifelong Learning and Continuing Education, the IEEE Academies are designed to teach in-demand technical concepts in a new way to IEEE members working in industry. The IEEE Academies are a new learning format at IEEE that will help members understand',
-    time: '10',
-  },
-];

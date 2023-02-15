@@ -19,24 +19,22 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { strings } from '@/localization';
 import { NAVIGATION } from '@/constants';
 import { ms, vs } from 'react-native-size-matters';
-import { Icon, TopBackButton } from '@/components';
+import { TopBackButton } from '@/components';
 
 export default function AdminTools({ navigation }) {
   return (
     <SafeAreaView style={styles.contianer}>
       <TopBackButton
         onPress={() => navigation.goBack()}
-        style={{
-          padding: 10,
-        }}
+        style={styles.TopBackButton}
       />
-      <Text style={[styles.headerText]}>{strings.profile.adminTools} </Text>
+      <Text style={styles.headerText}>{strings.profile.adminTools} </Text>
       <View style={styles.body}>
         <TouchableOpacity
           style={styles.list}
           onPress={() => navigation.navigate(NAVIGATION.manageReports)}
         >
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={styles.RawContainer}>
             <View style={styles.iconContainer}>
               <FontAwesomeIcon
                 icon={faFile}
@@ -57,7 +55,7 @@ export default function AdminTools({ navigation }) {
           onPress={() => navigation.navigate(NAVIGATION.blockedUsers)}
           style={styles.list}
         >
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={styles.RawContainer}>
             <View style={styles.iconContainer}>
               <FontAwesomeIcon
                 icon={faPeopleRoof}
@@ -75,7 +73,7 @@ export default function AdminTools({ navigation }) {
           />
         </TouchableOpacity>
         <TouchableOpacity style={styles.list}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={styles.RawContainer}>
             <View style={styles.iconContainer}>
               <FontAwesomeIcon
                 icon={faChartColumn}
@@ -96,7 +94,7 @@ export default function AdminTools({ navigation }) {
           onPress={() => navigation.navigate(NAVIGATION.bannedUsers)}
           style={styles.list}
         >
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={styles.RawContainer}>
             <View style={styles.iconContainer}>
               <FontAwesomeIcon
                 icon={faBan}
@@ -138,6 +136,9 @@ const styles = StyleSheet.create({
     backgroundColor: theme.light.colors.primaryBgLight,
     padding: ms(10),
   },
+  TopBackButton: {
+    padding: 10,
+  },
   upgradeBox: {
     borderWidth: 2,
     borderColor: theme.light.colors.primary,
@@ -157,6 +158,10 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.BrandonGrotesque_regular,
     fontSize: ms(15, 0.3),
     paddingTop: ms(10),
+  },
+  RawContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   list: {
     backgroundColor: theme.light.colors.white,

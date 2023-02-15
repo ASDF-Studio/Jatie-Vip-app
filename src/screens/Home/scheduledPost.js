@@ -11,11 +11,11 @@ import { Card, CardBody, CardHeader, TopBackButton } from '@/components';
 import { strings } from '@/localization';
 import { TextStyles, theme } from '@/theme';
 import { faClock, faPen } from '@fortawesome/free-solid-svg-icons';
-// import { faPen } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { ms } from 'react-native-size-matters';
 import Moment from 'moment';
 import { FontFamily } from '@/theme/Fonts';
+import { Data } from './Data/scheduledPostData';
 
 export default function SchedulePost({ navigation }) {
   return (
@@ -23,12 +23,12 @@ export default function SchedulePost({ navigation }) {
       <View style={styles.headerContainer}>
         <TopBackButton
           onPress={() => navigation.goBack()}
-          style={{ padding: ms(5), paddingBottom: ms(10) }}
+          style={styles.TopBackButton}
         />
         <Text style={styles.headerTxt}>{strings.home.scheduledPost} </Text>
       </View>
       <View style={styles.postContainer}>
-        <View style={{ marginTop: ms(10) }}>
+        <View style={styles.cardContainer}>
           <Card>
             <CardHeader
               fullName={Data.name}
@@ -59,26 +59,22 @@ export default function SchedulePost({ navigation }) {
             </View>
           </Card>
         </View>
-        <View style={{ marginTop: ms(10) }}>
+        <View style={styles.sponsordContainer}>
           <Card>
             <ImageBackground
               source={{
-                uri: 'https://mybayutcdn.bayut.com/mybayut/wp-content/uploads/zabeel.jpg',
+                uri: Data.sponsoredPic,
               }}
               style={styles.bgImage}
             />
-            <TouchableOpacity
-              style={[styles.floaterContainer, { right: ms(8) }]}
-            >
+            <TouchableOpacity style={styles.floaterContainerSponored}>
               <Text style={styles.floaterTxt}>
                 {' '}
                 {strings.home.sponsordPost}{' '}
               </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              style={[styles.floaterContainer, { bottom: ms(30) }]}
-            >
+            <TouchableOpacity style={styles.floaterContainer}>
               <Text style={styles.floaterTxt}>{strings.home.learMore} </Text>
             </TouchableOpacity>
 
@@ -129,6 +125,16 @@ const styles = StyleSheet.create({
     backgroundColor: theme.light.colors.primaryBgLight, //
     padding: ms(9),
   },
+  cardContainer: {
+    marginTop: ms(10),
+  },
+  TopBackButton: {
+    padding: ms(5),
+    paddingBottom: ms(10),
+  },
+  sponsordContainer: {
+    marginTop: ms(10),
+  },
   cardFooter: {
     backgroundColor: theme.light.colors.infoBgLight,
     padding: ms(5),
@@ -166,6 +172,15 @@ const styles = StyleSheet.create({
     padding: ms(5),
     borderRadius: 10,
     margin: ms(10),
+    bottom: ms(30),
+  },
+  floaterContainerSponored: {
+    position: 'absolute',
+    backgroundColor: theme.light.colors.black,
+    padding: ms(5),
+    borderRadius: 10,
+    margin: ms(10),
+    right: ms(8),
   },
   floaterTxt: {
     fontFamily: FontFamily.BrandonGrotesque_bold,
@@ -173,11 +188,3 @@ const styles = StyleSheet.create({
     color: theme.light.colors.white,
   },
 });
-
-const Data = {
-  name: 'Jatie VIP',
-  userName: '@JatieVIP',
-  profilePic:
-    'https://res.cloudinary.com/hawktech-cloud/image/upload/v1674712476/d24dae39-1a64-47d5-af65-e14b5a1c533c_tmcsua.png',
-  txt: 'We hope you love the products we recommend! All of them were independently selected by our editors. Some may have been sent as samples, but all opinions and reviews are our own. Just so you know.',
-};

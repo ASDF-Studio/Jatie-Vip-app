@@ -1,6 +1,6 @@
 import { FontFamily } from '@/theme/Fonts';
 import { StyleSheet } from 'react-native';
-import { ms } from 'react-native-size-matters';
+import { ms, s } from 'react-native-size-matters';
 
 export const styles = colors =>
   StyleSheet.create({
@@ -10,6 +10,9 @@ export const styles = colors =>
       justifyContent: 'center',
       paddingHorizontal: ms(20),
       backgroundColor: 'gray',
+    },
+    logoContainer: {
+      marginBottom: s(41),
     },
     subContainer: {
       position: 'absolute',
@@ -23,6 +26,7 @@ export const styles = colors =>
       justifyContent: 'space-between',
       width: '80%',
     },
+    signButton: { marginTop: s(15) },
     copyrightTitle: {
       fontFamily: FontFamily.BrandonGrotesque_regular,
       fontSize: ms(15, 0.3),

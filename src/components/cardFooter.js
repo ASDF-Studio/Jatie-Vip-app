@@ -5,12 +5,11 @@ import { theme, TextStyles } from '@/theme';
 import { FontFamily } from '@/theme/Fonts';
 import {
   faEllipsis,
-  faShareNodes,
   faCircleUp,
+  faShareNodes,
 } from '@fortawesome/free-solid-svg-icons';
 import { ms } from 'react-native-size-matters';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { NAVIGATION } from '@/constants';
 import { faCircleDown, faComment } from '@fortawesome/free-regular-svg-icons';
 
 export const CardFooter = ({
@@ -68,14 +67,14 @@ export const CardFooter = ({
           size={ms(13)}
           color={theme.light.colors.info}
           onPress={sharePress}
-          style={{ marginRight: ms(13) }}
+          style={styles.ShareNodeIcon}
         />
         <Icon
           icon={faEllipsis}
           size={ms(13)}
           color={theme.light.colors.black}
           onPress={morePress}
-          style={{ marginRight: ms(5) }}
+          style={styles.EllipsisIcon}
         />
       </View>
     </View>
@@ -116,7 +115,7 @@ const styles = StyleSheet.create({
     color: theme.light.colors.black,
   },
   disLikeIconContainer: {
-    paddingLeft: ms(10),
+    paddingLeft: ms(12),
   },
   disLikeText: {
     paddingLeft: ms(5),
@@ -125,7 +124,7 @@ const styles = StyleSheet.create({
     color: theme.light.colors.secondary,
   },
   commentsIconContainer: {
-    paddingLeft: ms(10),
+    paddingLeft: ms(15),
   },
   commentsTxt: {
     paddingLeft: ms(5),
@@ -137,4 +136,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+
+  EllipsisIcon: { margin: ms(10) },
+  ShareNodeIcon: { margin: ms(10) },
 });

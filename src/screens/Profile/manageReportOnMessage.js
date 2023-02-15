@@ -25,6 +25,7 @@ import {
   faFlag,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
+import { ChatData } from './ProfileData/manageReportOnMessageData';
 
 export default function ManageReportOnMessage({ navigation }) {
   const [open, setOpen] = useState(false);
@@ -33,7 +34,7 @@ export default function ManageReportOnMessage({ navigation }) {
     <SafeAreaView style={styles.container}>
       <TopBackButton
         onPress={() => navigation.goBack()}
-        style={{ padding: ms(10) }}
+        style={styles.TopBackButton}
       />
       <Text style={[styles.headerText, TextStyles.header]}>
         {strings.profile.manageReports}{' '}
@@ -74,9 +75,7 @@ export default function ManageReportOnMessage({ navigation }) {
               </View>
             </TouchableOpacity>
             <View style={styles.rightChatBox}>
-              <Text
-                style={[styles.chatTxt, { color: theme.light.colors.black }]}
-              >
+              <Text style={[styles.chatTxt, styles.chatTxtColor]}>
                 {item.adminText}{' '}
               </Text>
             </View>
@@ -131,6 +130,7 @@ const styles = StyleSheet.create({
     color: theme.light.colors.black,
     paddingLeft: ms(9),
   },
+  TopBackButton: { padding: ms(10) },
   activity: {
     flexDirection: 'row',
     padding: ms(10),
@@ -173,6 +173,7 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.BrandonGrotesque_medium,
     color: theme.light.colors.white,
   },
+  chatTxtColor: { color: theme.light.colors.black },
   chatBoxContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -209,42 +210,3 @@ const UserData = {
     'https://media.istockphoto.com/id/1270067126/photo/smiling-indian-man-looking-at-camera.jpg?s=612x612&w=0&k=20&c=ovIQ5GPurLd3mOUj82jB9v-bjGZ8updgy1ACaHMeEC0=',
   time: 10,
 };
-
-const ChatData = [
-  {
-    id: 1,
-    userText:
-      'Fernando Garibay, It is taken from her third extended play, The fame moster (2009)',
-    userImage:
-      'https://media.istockphoto.com/id/1270067126/photo/smiling-indian-man-looking-at-camera.jpg?s=612x612&w=0&k=20&c=ovIQ5GPurLd3mOUj82jB9v-bjGZ8updgy1ACaHMeEC0=',
-    adminText:
-      'La reine de Chypre(The Queen of Cyprus) in an 1841 grand opera in five acts composed',
-  },
-  {
-    id: 2,
-    userText:
-      'Dance in the Dark, is a song written, producred and arranged by American singer lady gaga(pictured) and Fernando garibt. It is taken from her third extended play, The fame Monster',
-    userImage:
-      'https://media.istockphoto.com/id/1270067126/photo/smiling-indian-man-looking-at-camera.jpg?s=612x612&w=0&k=20&c=ovIQ5GPurLd3mOUj82jB9v-bjGZ8updgy1ACaHMeEC0=',
-    adminText:
-      'La reine de Chypre(The Queen of Cyprus) in an 1841 grand opera in five acts composed',
-  },
-  {
-    id: 3,
-    userText:
-      'Fernando Garibay, It is taken from her third extended play, The fame moster (2009)',
-    userImage:
-      'https://media.istockphoto.com/id/1270067126/photo/smiling-indian-man-looking-at-camera.jpg?s=612x612&w=0&k=20&c=ovIQ5GPurLd3mOUj82jB9v-bjGZ8updgy1ACaHMeEC0=',
-    adminText:
-      'La reine de Chypre(The Queen of Cyprus) in an 1841 grand opera in five acts composed',
-  },
-  {
-    id: 4,
-    userText:
-      'Dance in the Dark, is a song written, producred and arranged by American singer lady gaga(pictured) and Fernando garibt. It is taken from her third extended play, The fame Monster',
-    userImage:
-      'https://media.istockphoto.com/id/1270067126/photo/smiling-indian-man-looking-at-camera.jpg?s=612x612&w=0&k=20&c=ovIQ5GPurLd3mOUj82jB9v-bjGZ8updgy1ACaHMeEC0=',
-    adminText:
-      'La reine de Chypre(The Queen of Cyprus) in an 1841 grand opera in five acts composed',
-  },
-];

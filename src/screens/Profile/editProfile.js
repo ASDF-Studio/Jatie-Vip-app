@@ -6,10 +6,6 @@ import {
   StyleSheet,
   Image,
   TextInput,
-  ScrollView,
-  Modal,
-  TouchableWithoutFeedback,
-  Touchable,
   SafeAreaView,
 } from 'react-native';
 import { theme, TextStyles } from '@/theme';
@@ -17,7 +13,6 @@ import { FontFamily } from '@/theme/Fonts';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faCalendar, faClose } from '@fortawesome/free-solid-svg-icons';
 import { Icon, HorizontalLine, PopUp, Button } from '@/components';
-import { EditViewModal } from '../../components/CropPictureModal';
 import DatePicker from 'react-native-date-picker';
 import Moment from 'moment';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -25,7 +20,7 @@ import { TopBackButton } from '@/components';
 import { ms, s, vs } from 'react-native-size-matters';
 import { strings } from '@/localization';
 import ImagePicker from 'react-native-image-crop-picker';
-import { string } from 'prop-types';
+import { ScrollView } from 'react-native-gesture-handler';
 
 export default function EditProfile({ navigation }) {
   const [date, setDate] = useState(new Date());
@@ -82,22 +77,19 @@ export default function EditProfile({ navigation }) {
     <SafeAreaView style={styles.container}>
       <TopBackButton
         onPress={() => navigation.goBack()}
-        style={{ paddingLeft: ms(10), paddingTop: ms(10) }}
+        style={styles.TopBackButton}
       />
       <Text style={[styles.headerText, TextStyles.header]}>
         {strings.profile.editProfile}{' '}
       </Text>
-      <HorizontalLine color={theme.light.colors.infoBgLight} />
+      <HorizontalLine
+        color={theme.light.colors.infoBgLight}
+        paddingTop={ms(10)}
+      />
 
-      <ScrollView style={{ flex: 1, padding: 8 }}>
+      <ScrollView style={styles.ScrollView} nestedScrollEnabled={true}>
         <Text style={styles.profileTxt}>{strings.profile.profilePic}</Text>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
+        <View style={styles.ScrollViewContainer}>
           <View>
             <Image
               source={{
@@ -106,7 +98,7 @@ export default function EditProfile({ navigation }) {
               style={styles.profileImage}
             />
           </View>
-          <View style={{ flexDirection: 'row' }}>
+          <View style={styles.buttonAddProfile}>
             <Button
               title={strings.addYourProfilePicture.replace}
               style={styles.replaceBtn}
@@ -123,7 +115,7 @@ export default function EditProfile({ navigation }) {
         </View>
         <View style={styles.formContainer}>
           <View style={styles.textFiledContainer}>
-            <Text style={[styles.textFieldLebel]}>
+            <Text style={styles.textFieldLebel}>
               {' '}
               {strings.SignUp.yourName}{' '}
             </Text>
@@ -134,10 +126,7 @@ export default function EditProfile({ navigation }) {
             />
           </View>
           <View style={styles.textFiledContainer}>
-            <Text style={[styles.textFieldLebel]}>
-              {' '}
-              {strings.SignUp.email}{' '}
-            </Text>
+            <Text style={styles.textFieldLebel}> {strings.SignUp.email} </Text>
             <TextInput
               style={styles.textFiled}
               value={email}
@@ -145,7 +134,7 @@ export default function EditProfile({ navigation }) {
             />
           </View>
           <View style={styles.textFiledContainer}>
-            <Text style={[styles.textFieldLebel]}>
+            <Text style={styles.textFieldLebel}>
               {' '}
               {strings.SignUp.birthday}{' '}
             </Text>
@@ -155,13 +144,7 @@ export default function EditProfile({ navigation }) {
               editable={false}
               value={Moment(date).format('DD-MM-YYYY')}
             />
-            <View
-              style={{
-                position: 'absolute',
-                top: 42,
-                right: 15,
-              }}
-            >
+            <View style={styles.CalendarIcon}>
               <Icon
                 icon={faCalendar}
                 color={theme.light.colors.info}
@@ -184,12 +167,9 @@ export default function EditProfile({ navigation }) {
             />
           </View>
           <View style={styles.textFiledContainer}>
-            <Text style={[styles.textFieldLebel]}>
-              {' '}
-              {strings.SignUp.gender}{' '}
-            </Text>
+            <Text style={styles.textFieldLebel}> {strings.SignUp.gender} </Text>
             <DropDownPicker
-              placeholder={strings.SignUp.genderPlaceHolder}
+              placeholder={strings.profile.genderPlaceHolder}
               open={genderListOpen}
               value={genderValue}
               items={gender}
@@ -198,11 +178,14 @@ export default function EditProfile({ navigation }) {
               setItems={setGender}
               style={styles.textFiled}
               textStyle={styles.dropListTxt}
+              multiple={true}
+              min={0}
+              max={2}
             />
           </View>
 
           <View style={styles.textFiledContainer}>
-            <Text style={[styles.textFieldLebel]}>
+            <Text style={styles.textFieldLebel}>
               {' '}
               {strings.SignUp.country}{' '}
             </Text>
@@ -219,7 +202,7 @@ export default function EditProfile({ navigation }) {
             />
           </View>
           <View style={styles.textFiledContainer}>
-            <Text style={[styles.textFieldLebel]}>
+            <Text style={styles.textFieldLebel}>
               {' '}
               {strings.SignUp.loginPhone}{' '}
             </Text>
@@ -233,19 +216,17 @@ export default function EditProfile({ navigation }) {
               {strings.SignUp.loginFormBottomTxt}
             </Text>
           </View>
-          <View style={{ marginTop: vs(50) }} />
+          <View style={styles.marginTop} />
           <HorizontalLine color={theme.light.colors.infoBgLight} />
+        </View>
+        <View style={styles.buttonContainer}>
           <View>
             <Button title={strings.operations.save} />
           </View>
-          <View style={{ marginTop: ms(10) }}>
+          <View style={styles.closeMyAccountButtonContainer}>
             <Button
               title={strings.profile.closeMyAccount}
-              style={{
-                backgroundColor: theme.light.colors.white,
-                borderWidth: 2,
-                borderColor: theme.light.colors.primary,
-              }}
+              style={styles.closeMyAccountButton}
               textStyle={{
                 color: theme.light.colors.primary,
               }}
@@ -270,7 +251,7 @@ export default function EditProfile({ navigation }) {
             <PopUp open={subscriptionPopup} setOpen={setSubscriptionPopup}>
               <TouchableOpacity
                 onPress={() => setSubscriptionPopup(false)}
-                style={{ padding: ms(20) }}
+                style={styles.popUpContainer}
               >
                 <FontAwesomeIcon
                   icon={faClose}
@@ -278,13 +259,11 @@ export default function EditProfile({ navigation }) {
                   color={theme.light.colors.primary}
                 />
               </TouchableOpacity>
-              <Text
-                style={[styles.errorTxt, { color: theme.light.colors.black }]}
-              >
+              <Text style={[styles.errorTxt, styles.errorTxtColor]}>
                 {' '}
                 {strings.profile.cancelSubscription}{' '}
               </Text>
-              <View style={{ alignItems: 'flex-start' }}>
+              <View style={styles.ruleContainer}>
                 <Text style={styles.errorTxt}>{strings.profile.rule1}</Text>
                 <Text style={styles.errorTxt}>{strings.profile.rule2} </Text>
                 <Text style={styles.errorTxt}>{strings.profile.rule3} </Text>
@@ -294,13 +273,13 @@ export default function EditProfile({ navigation }) {
           </View>
         )}
 
-        <View style={{ marginBottom: ms(50) }} />
+        <View style={styles.marginBottom50} />
       </ScrollView>
 
       <PopUp open={openPopUp} setOpen={setOpenPopUp}>
         <TouchableOpacity
           onPress={() => setOpenPopUp(false)}
-          style={{ padding: 20 }}
+          style={styles.popUpTouch}
         >
           <FontAwesomeIcon
             icon={faClose}
@@ -308,25 +287,18 @@ export default function EditProfile({ navigation }) {
             color={theme.light.colors.primary}
           />
         </TouchableOpacity>
-        <Text style={[TextStyles.label, { textAlign: 'center' }]}>
+        <Text style={[TextStyles.label, styles.closeConfirm]}>
           {' '}
           {strings.profile.closeConfirm}{' '}
         </Text>
         <Button
           title={strings.operations.no}
-          style={{
-            marginTop: vs(20),
-          }}
+          style={styles.noButton}
           onPress={() => setOpenPopUp(false)}
         />
         <Button
           title={strings.operations.yes}
-          style={{
-            marginTop: vs(10),
-            backgroundColor: theme.light.colors.white,
-            borderWidth: 2,
-            borderColor: theme.light.colors.primary,
-          }}
+          style={styles.yesButton}
           textStyle={{
             color: theme.light.colors.primary,
           }}
@@ -342,16 +314,12 @@ export default function EditProfile({ navigation }) {
         <PopUp open={openReplace} setOpen={setReplace}>
           <Button
             title={strings.operations.imageFromCamera}
-            style={{
-              margin: ms(5),
-            }}
+            style={styles.imageFromCameraButton}
             onPress={PickFromCamera}
           />
           <Button
             title={strings.operations.imageFromGallery}
-            style={{
-              margin: ms(5),
-            }}
+            style={styles.imageFromGalleryButton}
             onPress={SelectFromGallery}
           />
         </PopUp>
@@ -371,14 +339,37 @@ const styles = StyleSheet.create({
   headerIcon: {
     color: theme.light.colors.info,
   },
+  TopBackButton: { paddingLeft: ms(10), paddingTop: ms(10) },
   headerText: {
     marginTop: vs(10),
     color: theme.light.colors.black,
     paddingLeft: ms(8),
   },
+  buttonContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    paddingTop: ms(20),
+  },
+  marginTop: { marginTop: vs(50) },
+  closeMyAccountButtonContainer: { marginTop: ms(10) },
+  closeMyAccountButton: {
+    backgroundColor: theme.light.colors.white,
+    borderWidth: 2,
+    borderColor: theme.light.colors.primary,
+  },
+  ScrollView: {
+    flex: 1,
+    padding: 8,
+  },
+  ScrollViewContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   profileTxt: {
     fontFamily: FontFamily.Recoleta_bold,
     color: theme.light.colors.black,
+    paddingTop: ms(10),
   },
   profileImage: {
     width: s(100),
@@ -388,23 +379,35 @@ const styles = StyleSheet.create({
     borderColor: theme.light.colors.primary,
     marginTop: vs(10),
   },
+  buttonAddProfile: { flexDirection: 'row' },
   formContainer: {
     marginTop: vs(20),
   },
-  textFiledContainer: {},
+  textFiledContainer: {
+    paddingLeft: 5,
+    paddingRight: 5,
+  },
   textFieldLebel: {
-    color: theme.light.colors.black,
-    fontFamily: FontFamily.BrandonGrotesque_bold,
-    fontSize: ms(18, 0.3),
+    color: theme.light.colors.activeTabLabel,
+    fontFamily: FontFamily.Recoleta_bold,
+    fontSize: ms(15, 0.3),
+    paddingBottom: ms(10),
   },
   textFiled: {
-    backgroundColor: theme.light.colors.inputFiled,
+    backgroundColor: theme.light.colors.textFieldBackgroundColor,
     borderRadius: 10,
-    borderWidth: 0,
+    borderWidth: 1,
+    borderColor: theme.light.colors.textFieldBorderColor,
     padding: ms(10),
     height: vs(45),
+    fontSize: ms(18, 0.3),
     fontFamily: FontFamily.BrandonGrotesque_regular,
     marginBottom: vs(15),
+  },
+  CalendarIcon: {
+    position: 'absolute',
+    top: 42,
+    right: 15,
   },
   replaceBtn: {
     width: '38%',
@@ -446,7 +449,8 @@ const styles = StyleSheet.create({
   },
 
   dropListTxt: {
-    fontFamily: FontFamily.BrandonGrotesque_medium,
+    fontFamily: FontFamily.BrandonGrotesque_regular,
+    fontSize: ms(17, 0.3),
   },
   bottomTextContainer: {
     alignItems: 'center',
@@ -463,8 +467,35 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.BrandonGrotesque_medium,
     fontSize: ms(20, 0.3),
   },
+  popUpContainer: { padding: ms(20) },
   errorTxt: {
     fontFamily: FontFamily.BrandonGrotesque_medium,
     fontSize: ms(20, 0.3),
   },
+  ruleContainer: {
+    alignItems: 'flex-start',
+  },
+  marginBottom50: {
+    marginBottom: ms(50),
+  },
+  popUpTouch: {
+    padding: 20,
+  },
+  noButton: {
+    marginTop: vs(20),
+  },
+  yesButton: {
+    marginTop: vs(10),
+    backgroundColor: theme.light.colors.white,
+    borderWidth: 2,
+    borderColor: theme.light.colors.primary,
+  },
+  imageFromCameraButton: {
+    margin: ms(5),
+  },
+  imageFromGalleryButton: {
+    margin: ms(5),
+  },
+  errorTxtColor: { color: theme.light.colors.black },
+  closeConfirm: { textAlign: 'center' },
 });

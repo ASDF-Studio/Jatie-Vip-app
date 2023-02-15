@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import { Config } from 'react-native-config';
-import { getUser } from '@/selectors/UserSelectors';
 import { strings } from '@/localization';
 import { theme, TextStyles } from '@/theme';
 import { ms, vs } from 'react-native-size-matters';
@@ -44,8 +42,6 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
-  CommentCard,
-  CommentContainer,
   HorizontalLine,
   Icon,
   ModalDown,
@@ -54,13 +50,12 @@ import {
   SeeSchedulePost,
   ShareFeed,
   StatusNavigatorBar,
-  TextField,
   Toast,
   TopBackButton,
   VerticalLine,
 } from '@/components';
 import { Logo } from '@/assets';
-import { ScrollView } from 'react-native-gesture-handler';
+import { Data } from './Data/HomeData';
 
 export function Home({ navigation }) {
   const userType = useSelector(state => state.userType);
@@ -126,13 +121,13 @@ export function Home({ navigation }) {
             icon={faSearch}
             size={ms(22)}
             onPress={() => navigation.navigate(NAVIGATION.search)}
-            style={{ marginRight: ms(5) }}
+            style={styles.searchIcon}
           />
           <Icon
             icon={faBell}
             size={ms(22)}
-            style={{ marginLeft: ms(10) }}
             onPress={() => navigation.navigate(NAVIGATION.notification)}
+            style={styles.bellIcon}
           />
         </View>
       </View>
@@ -162,15 +157,10 @@ export function Home({ navigation }) {
               )}
             </View>
           }
-          data={FeedData}
+          data={Data}
           keyExtractor={item => item.id}
           renderItem={({ item }) => (
-            <View
-              style={{
-                margin: ms(8),
-                borderRadius: 10,
-              }}
-            >
+            <View style={styles.cardContainer}>
               <Card>
                 <CardHeader
                   fullName={item.name}
@@ -182,6 +172,7 @@ export function Home({ navigation }) {
                 />
                 <CardBody text={item.feedText} />
 
+                {/* Before design changes */}
                 {/* comments  */}
                 {/* {item.comments ? (
                   <CommentContainer
@@ -198,7 +189,9 @@ export function Home({ navigation }) {
                     />
                   </CommentContainer>
                 ) : null} */}
+
                 {/* video */}
+
                 {item.video ? (
                   <AppVideoPlayer url={item.video} poster={item.poster} />
                 ) : null}
@@ -218,13 +211,7 @@ export function Home({ navigation }) {
                           source={{
                             uri: data.url,
                           }}
-                          style={[
-                            styles.image,
-                            {
-                              // height: ms(imageItem),
-                              height: ms(200),
-                            },
-                          ]}
+                          style={styles.image}
                         />
                       </TouchableOpacity>
                     ))}
@@ -246,13 +233,7 @@ export function Home({ navigation }) {
                               uri: data.url,
                             }}
                             key={data.id}
-                            style={[
-                              styles.image,
-                              {
-                                // height: ms(imageItem),
-                                height: ms(200),
-                              },
-                            ]}
+                            style={styles.image}
                           />
                         </TouchableOpacity>
                       ) : data.id == 2 ? (
@@ -269,18 +250,7 @@ export function Home({ navigation }) {
                               uri: data.url,
                             }}
                             key={data.id}
-                            style={[
-                              styles.image,
-                              {
-                                height: ms(200),
-                                backgroundColor: theme.light.colors.hyperlink,
-                                opacity: 0.7,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                overflow: 'hidden',
-                                width: '100%',
-                              },
-                            ]}
+                            style={[styles.image, styles.moreImage]}
                           >
                             <TouchableOpacity
                               onPress={() => {
@@ -288,16 +258,7 @@ export function Home({ navigation }) {
                                   setFeedImages(item.feedImages);
                               }}
                             >
-                              <Text
-                                style={{
-                                  color: theme.light.colors.white,
-                                  fontFamily:
-                                    FontFamily.BrandonGrotesque_regular,
-                                  fontSize: ms(24, 0.3),
-                                  width: '100%',
-                                  padding: 35,
-                                }}
-                              >
+                              <Text style={styles.extraImage}>
                                 {strings.message.plus}
                                 {item.feedImages.length - 2}
                               </Text>
@@ -318,7 +279,7 @@ export function Home({ navigation }) {
               </Card>
               {/* sponsored post */}
               {item.sponsored ? (
-                <View style={{ marginTop: ms(10) }}>
+                <View style={styles.sponsordContainer}>
                   <Card>
                     <Image
                       source={{
@@ -326,18 +287,14 @@ export function Home({ navigation }) {
                       }}
                       style={styles.bgImage}
                     />
-                    <TouchableOpacity
-                      style={[styles.floaterContainer, { right: ms(8) }]}
-                    >
+                    <TouchableOpacity style={styles.floaterContainerSponsord}>
                       <Text style={styles.floaterTxt}>
                         {' '}
                         {strings.home.sponsordPost}{' '}
                       </Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity
-                      style={[styles.floaterContainer, { bottom: 0 }]}
-                    >
+                    <TouchableOpacity style={styles.floaterContainer}>
                       <Text style={styles.floaterTxt}>
                         {strings.home.learMore}{' '}
                       </Text>
@@ -445,12 +402,11 @@ export function Home({ navigation }) {
           images={feedImages}
         />
       )}
-
       {/*  Slide up for follow, edit , review  */}
       {open && (
         <ModalDown open={open} setOpen={setOpen}>
           <ModalList
-            title={strings.operations.follow}
+            title={strings.operations.follow + strings.home.DummyUser}
             icon={faUserPlus}
             iconColor={theme.light.colors.primary}
             iconBg={theme.light.colors.primaryBgLight}
@@ -467,7 +423,7 @@ export function Home({ navigation }) {
             paddingBottom={8}
           />
           <ModalList
-            title={strings.operations.report}
+            title={strings.home.report}
             icon={faFlag}
             iconColor={theme.light.colors.secondary}
             iconBg={theme.light.colors.infoBgLight}
@@ -477,7 +433,7 @@ export function Home({ navigation }) {
             }}
           />
           <ModalList
-            title={strings.operations.block}
+            title={strings.operations.block + strings.home.DummyUser}
             icon={faXmark}
             iconColor={theme.light.colors.secondary}
             iconBg={theme.light.colors.infoBgLight}
@@ -486,12 +442,12 @@ export function Home({ navigation }) {
       )}
 
       <ReportOnPostModal open={openReport} setOpen={setOpenReport}>
-        <View style={{ backgroundColor: theme.light.colors.white }}>
+        <View style={styles.reportPostContainer}>
           <TopBackButton
             onPress={() => setOpenReport(false)}
-            style={{ padding: ms(10), paddingBottom: ms(10) }}
+            style={styles.reportPostBackButton}
           />
-          <View style={{ paddingLeft: ms(9), paddingRight: ms(9) }}>
+          <View style={styles.reportPostTopContainer}>
             <DropDownPicker
               placeholder={strings.home.selectReason}
               open={reportListOpen}
@@ -500,28 +456,9 @@ export function Home({ navigation }) {
               setOpen={setReportListOpen}
               setValue={setReportOptionValue}
               setItems={setReportOption}
-              style={{
-                padding: ms(10),
-                marginBottom: ms(10),
-                backgroundColor: theme.light.colors.inputFiled,
-                borderWidth: 0,
-              }}
+              style={styles.dropDownPicker}
               textStyle={styles.dropListTxt}
-              dropDownContainerStyle={{
-                borderWidth: 0,
-                shadowOffset: {
-                  width: 0,
-                  height: ms(2),
-                },
-                //IOS
-                shadowOffset: { width: -2, height: 4 },
-                shadowColor: theme.light.colors.secondary,
-                shadowOpacity: 0.2,
-                shadowRadius: 3,
-
-                //android
-                elevation: 5,
-              }}
+              dropDownContainerStyle={styles.dropDownContainerStyle}
             />
             <TextInput
               multiline
@@ -536,14 +473,7 @@ export function Home({ navigation }) {
             color={theme.light.colors.infoBgLight}
             paddingTop={15}
           />
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              padding: ms(10),
-            }}
-          >
+          <View style={styles.reportPostBottomContainer}>
             <Icon
               icon={faImage}
               size={ms(22)}
@@ -552,10 +482,8 @@ export function Home({ navigation }) {
             <Button
               title={strings.operations.submit}
               disabled={reportComment.length ? false : true}
-              style={{
-                opacity: reportComment.length ? 1 : 0.4,
-                width: ms(100),
-              }}
+              opacity={reportComment.length ? 1 : 0.4}
+              style={styles.reportPostButton}
               onPress={() => {
                 setOpenToast(true), setOpenReport(false);
               }}
@@ -600,6 +528,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     alignItems: 'center',
     padding: ms(10),
+  },
+  searchIcon: { marginRight: ms(5) },
+  bellIcon: { marginLeft: ms(10) },
+  cardContainer: {
+    margin: ms(8),
+    borderRadius: 10,
   },
   nameTxt: [
     TextStyles.header,
@@ -696,18 +630,34 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginRight: ms(-5),
   },
+  extraImage: {
+    color: theme.light.colors.white,
+    fontFamily: FontFamily.BrandonGrotesque_regular,
+    fontSize: ms(24, 0.3),
+    width: '100%',
+    padding: 35,
+  },
   image: {
     flex: 1,
     width: '85%',
     height: ms(200),
-    // borderRadius: 10,
-    // marginTop: ms(10),
     marginRight: ms(10),
-    // resizeMode: 'contain',
+  },
+  moreImage: {
+    height: ms(200),
+    backgroundColor: theme.light.colors.hyperlink,
+    opacity: 0.7,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    width: '100%',
   },
 
   // sponsored post
 
+  sponsordContainer: {
+    marginTop: ms(10),
+  },
   bgImage: {
     height: 200,
     width: '100%',
@@ -720,127 +670,64 @@ const styles = StyleSheet.create({
     padding: ms(5),
     borderRadius: 10,
     margin: ms(10),
+    bottom: ms(0),
+  },
+  floaterContainerSponsord: {
+    right: ms(8),
+
+    position: 'absolute',
+    backgroundColor: theme.light.colors.black,
+    padding: ms(5),
+    borderRadius: 10,
+    margin: ms(10),
   },
   floaterTxt: {
     fontFamily: FontFamily.BrandonGrotesque_bold,
     fontSize: ms(14, 0.3),
     color: theme.light.colors.white,
   },
-});
 
-const FeedData = [
-  {
-    id: 1,
-    name: 'Jatie Vip',
-    userName: '@JatieVip',
-    image:
-      'https://res.cloudinary.com/hawktech-cloud/image/upload/v1674712476/d24dae39-1a64-47d5-af65-e14b5a1c533c_tmcsua.png',
-    time: '2',
-    isOffical: true,
-    feedText:
-      'We hope you love the products we recommend! All of them were independently seelcted by our editors. Some may have been sent as samples, but all opinions and reviews are our own. Just so you know',
-    video: null,
-    poster: null,
-    comments: {
-      id: 1,
-      name: 'halt',
-      userName: '@halt',
-      profilePic:
-        'data:image/jpeg;base64,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',
-      time: '10',
-      commentTxt: 'This is beautiful',
+  // reportPostContainer
+
+  reportPostContainer: {
+    backgroundColor: theme.light.colors.white,
+  },
+  reportPostBackButton: {
+    padding: ms(10),
+    paddingBottom: ms(10),
+  },
+  reportPostTopContainer: {
+    paddingLeft: ms(9),
+    paddingRight: ms(9),
+  },
+  dropDownPicker: {
+    padding: ms(10),
+    marginBottom: ms(10),
+    backgroundColor: theme.light.colors.inputFiled,
+    borderWidth: 0,
+  },
+  dropDownContainerStyle: {
+    borderWidth: 0,
+    shadowOffset: {
+      width: 0,
+      height: ms(2),
     },
-    feedImages: [],
-    sponsored: null,
+    //IOS
+    shadowOffset: { width: -2, height: 4 },
+    shadowColor: theme.light.colors.secondary,
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+
+    //android
+    elevation: 5,
   },
-  {
-    id: 2,
-    name: 'Suli Keya',
-    userName: '@suli',
-    image:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTogJpc_o9afOD0CxRPp4t3xRVAvMeu06_e3H9yZ-t--w&s',
-    time: '2',
-    isOffical: false,
-    video:
-      'https://media.istockphoto.com/id/951326868/video/woman-kayaking-in-halong-bay.mp4?s=mp4-640x640-is&k=20&c=9Aq68HcOGvc_Ce80p0DyfIcj3y55hUojTTrC0l4MHPw=',
-    poster:
-      'https://www.dharmann.com/wp-content/uploads/2022/06/YT-Thumbnail-566-Husband-Pranks-Wife-Goes-Too-Far-Option-1E.jpg',
-    feedText:
-      'We hope you love the products we recommend! All of them were independently seelcted by our editors. Some may have been sent as samples, but all opinions and reviews are our own. Just so you know',
-    feedImages: [],
-    sponsored:
-      'https://mybayutcdn.bayut.com/mybayut/wp-content/uploads/zabeel.jpg',
+  reportPostBottomContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: ms(10),
   },
-  {
-    id: 3,
-    name: 'Neail Noa',
-    userName: '@neail',
-    image:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcZYM5Jpcc7j3fxx_KjA6gHwKP5CbGHPk2ZYMixN5KYQ&s',
-    time: '2',
-    isOffical: false,
-    video: null,
-    poster: null,
-    feedText:
-      'We hope you love the products we recommend! All of them were independently seelcted by our editors. Some may have been sent as samples, but all opinions and reviews are our own. Just so you know',
-    feedImages: [
-      {
-        id: 1,
-        url: 'https://media.istockphoto.com/photos/beautiful-woman-smiling-with-crossed-arms-picture-id1289220545?b=1&k=20&m=1289220545&s=612x612&w=0&h=K2EYdNGQdcg8YVa9JICMTQbNwNSAcnSCWUrTClGEiO0=',
-      },
-    ],
-    sponsored: null,
+  reportPostButton: {
+    width: ms(100),
   },
-  {
-    id: 4,
-    name: 'Neail Noa',
-    userName: '@neail',
-    image:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcZYM5Jpcc7j3fxx_KjA6gHwKP5CbGHPk2ZYMixN5KYQ&s',
-    time: '2',
-    isOffical: false,
-    video: null,
-    poster: null,
-    feedText:
-      'We hope you love the products we recommend! All of them were independently seelcted by our editors. Some may have been sent as samples, but all opinions and reviews are our own. Just so you know',
-    feedImages: [
-      {
-        id: 1,
-        url: 'https://media.istockphoto.com/photos/beautiful-woman-smiling-with-crossed-arms-picture-id1289220545?b=1&k=20&m=1289220545&s=612x612&w=0&h=K2EYdNGQdcg8YVa9JICMTQbNwNSAcnSCWUrTClGEiO0=',
-      },
-      {
-        id: 2,
-        url: 'https://www.dharmann.com/wp-content/uploads/2022/06/YT-Thumbnail-566-Husband-Pranks-Wife-Goes-Too-Far-Option-1E.jpg',
-      },
-    ],
-    sponsored: null,
-  },
-  {
-    id: 5,
-    name: 'Neail Noa',
-    userName: '@neail',
-    image:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcZYM5Jpcc7j3fxx_KjA6gHwKP5CbGHPk2ZYMixN5KYQ&s',
-    time: '2',
-    isOffical: false,
-    video: null,
-    poster: null,
-    feedText:
-      'We hope you love the products we recommend! All of them were independently seelcted by our editors. Some may have been sent as samples, but all opinions and reviews are our own. Just so you know',
-    feedImages: [
-      {
-        id: 1,
-        url: 'https://media.istockphoto.com/photos/beautiful-woman-smiling-with-crossed-arms-picture-id1289220545?b=1&k=20&m=1289220545&s=612x612&w=0&h=K2EYdNGQdcg8YVa9JICMTQbNwNSAcnSCWUrTClGEiO0=',
-      },
-      {
-        id: 2,
-        url: 'https://www.dharmann.com/wp-content/uploads/2022/06/YT-Thumbnail-566-Husband-Pranks-Wife-Goes-Too-Far-Option-1E.jpg',
-      },
-      {
-        id: 3,
-        url: 'https://media.istockphoto.com/photos/beautiful-woman-smiling-with-crossed-arms-picture-id1289220545?b=1&k=20&m=1289220545&s=612x612&w=0&h=K2EYdNGQdcg8YVa9JICMTQbNwNSAcnSCWUrTClGEiO0=',
-      },
-    ],
-    sponsored: null,
-  },
-];
+});

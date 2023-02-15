@@ -14,53 +14,53 @@ export default function NotificationSettings({ navigation }) {
     <SafeAreaView style={styles.container}>
       <TopBackButton
         onPress={() => navigation.goBack()}
-        style={{ padding: ms(10) }}
+        style={styles.TopBackButton}
       />
       <View style={styles.listHeader}>
-        <Text style={[TextStyles.header, { color: theme.light.colors.black }]}>
+        <Text style={[TextStyles.header, styles.headerColor]}>
           {' '}
           {strings.profile.notificatin}{' '}
         </Text>
         <AppSwitch value={isEnabled} onChange={toggleSwitch} />
       </View>
-      <HorizontalLine color={theme.light.colors.infoBgLight} />
-      <Text style={styles.headerText}> {strings.profile.fromMembers}</Text>
-      <View style={styles.list}>
-        <Text style={styles.listTxt}> {strings.profile.reactTo} </Text>
-        <AppSwitch value={isEnabled} onChange={toggleSwitch} />
+      <HorizontalLine
+        color={theme.light.colors.primaryBg}
+        paddingTop={5}
+        paddingBottom={5}
+      />
+      <View style={styles.content}>
+        <Text style={styles.headerText}> {strings.profile.fromMembers}</Text>
+        <View style={styles.list}>
+          <Text style={styles.listTxt}> {strings.profile.reactTo} </Text>
+          <AppSwitch value={isEnabled} onChange={toggleSwitch} />
+        </View>
+        <View style={styles.list}>
+          <Text style={styles.listTxt}> {strings.profile.commentsOn} </Text>
+          <AppSwitch value={isEnabled} onChange={toggleSwitch} />
+        </View>
+        <View style={styles.list}>
+          <Text style={styles.listTxt}> {strings.profile.ImFollowing} </Text>
+          <AppSwitch value={isEnabled} onChange={toggleSwitch} />
+        </View>
+        <HorizontalLine color={theme.light.colors.infoBgLight} />
+        <Text style={styles.headerText}> {strings.profile.fromJatie} </Text>
+        <View style={styles.list}>
+          <Text style={styles.listTxt}> {strings.profile.jatiePost} </Text>
+          <AppSwitch value={isEnabled} onChange={toggleSwitch} />
+        </View>
+        <View style={styles.list}>
+          <Text style={styles.listTxt}> {strings.profile.JatieLive} </Text>
+          <AppSwitch value={isEnabled} onChange={toggleSwitch} />
+        </View>
+        <View style={styles.list}>
+          <Text style={styles.listTxt}> {strings.profile.beforeLive} </Text>
+          <AppSwitch value={isEnabled} onChange={toggleSwitch} />
+        </View>
       </View>
-      <View style={styles.list}>
-        <Text style={styles.listTxt}> {strings.profile.commentsOn} </Text>
-        <AppSwitch value={isEnabled} onChange={toggleSwitch} />
-      </View>
-      <View style={styles.list}>
-        <Text style={styles.listTxt}> {strings.profile.ImFollowing} </Text>
-        <AppSwitch value={isEnabled} onChange={toggleSwitch} />
-      </View>
-      <HorizontalLine color={theme.light.colors.infoBgLight} />
-      <Text style={styles.headerText}> {strings.profile.fromJatie} </Text>
-      <View style={styles.list}>
-        <Text style={styles.listTxt}> {strings.profile.jatiePost} </Text>
-        <AppSwitch value={isEnabled} onChange={toggleSwitch} />
-      </View>
-      <View style={styles.list}>
-        <Text style={styles.listTxt}> {strings.profile.JatieLive} </Text>
-        <AppSwitch value={isEnabled} onChange={toggleSwitch} />
-      </View>
-      <View style={styles.list}>
-        <Text style={styles.listTxt}> {strings.profile.beforeLive} </Text>
-        <AppSwitch value={isEnabled} onChange={toggleSwitch} />
-      </View>
-
-      <View style={{ alignItems: 'center', marginTop: ms(150) }}>
+      <View style={styles.buttonContainer}>
         <Button
           title={strings.operations.save}
-          style={{
-            backgroundColor: theme.light.colors.primary,
-            alignItems: 'center',
-            borderWidth: 0,
-            width: '90%',
-          }}
+          style={styles.button}
           textStyle={{
             color: theme.light.colors.white,
           }}
@@ -75,12 +75,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: theme.light.colors.white,
   },
+  TopBackButton: {
+    padding: ms(10),
+    paddingLeft: ms(15),
+  },
   listHeader: {
     paddingTop: ms(5),
     paddingBottom: ms(5),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    paddingLeft: ms(15),
+    paddingRight: ms(10),
   },
   headerText: {
     fontFamily: FontFamily.Recoleta_medium,
@@ -89,14 +95,30 @@ const styles = StyleSheet.create({
     fontSize: ms(18, 0.3),
     color: theme.light.colors.black,
   },
+  content: {
+    paddingLeft: ms(15),
+  },
   list: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: vs(10),
+    paddingRight: ms(10),
   },
   listTxt: {
     fontFamily: FontFamily.BrandonGrotesque_medium,
     fontSize: ms(16, 0.3),
   },
+  buttonContainer: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'flex-end',
+    paddingBottom: ms(15),
+  },
+  button: {
+    backgroundColor: theme.light.colors.primary,
+    borderWidth: 0,
+    width: '95%',
+  },
+  headerColor: { color: theme.light.colors.black },
 });

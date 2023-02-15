@@ -15,6 +15,7 @@ import { ms, vs } from 'react-native-size-matters';
 import { strings } from '@/localization';
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { item } from './giveawayData/postDetailsData';
 
 export default function PostDetails({ navigation }) {
   const [active, setActive] = useState(true);
@@ -36,7 +37,7 @@ export default function PostDetails({ navigation }) {
               <View>
                 <Text style={styles.timeLable}>
                   {strings.giveaway.expires}
-                  <Text style={[styles.EndTimeTxt]}> {item.EndsIn}</Text>
+                  <Text style={styles.EndTimeTxt}> {item.EndsIn}</Text>
                 </Text>
               </View>
               <CardBody text={item.Desc} />
@@ -60,7 +61,7 @@ export default function PostDetails({ navigation }) {
                     </TouchableOpacity>
                   </View>
                   <View style={styles.termsAndConsition}>
-                    {termsAndConsition(
+                    {termsAndCondition(
                       strings.giveaway.byJoining,
                       strings.giveaway.termsAndConsition
                     )}
@@ -90,7 +91,7 @@ export default function PostDetails({ navigation }) {
                     </TouchableOpacity>
                   </View>
                   <View style={styles.termsAndConsition}>
-                    {termsAndConsition(strings.giveaway.onlyUS)}
+                    {termsAndCondition(strings.giveaway.onlyUS)}
                   </View>
                 </View>
               </View>
@@ -102,25 +103,13 @@ export default function PostDetails({ navigation }) {
   );
 }
 
-const termsAndConsition = (text, link) => {
+const termsAndCondition = (text, link) => {
   return (
     <View>
-      <Text
-        style={[
-          TextStyles.text,
-          {
-            fontFamily: FontFamily.BrandonGrotesque_regular,
-            textAlign: 'justify',
-            color: theme.light.colors.black,
-          },
-        ]}
-      >
+      <Text style={[TextStyles.text, styles.termsAndConsitionText]}>
         {text}
         <Text
-          style={{
-            color: theme.light.colors.hyperlink,
-            textDecorationLine: 'underline',
-          }}
+          style={styles.termsTextDesign}
           onPress={() => {
             Linking.openURL(link);
           }}
@@ -135,13 +124,7 @@ const termsAndConsition = (text, link) => {
 const link = link => {
   return (
     <Text
-      style={{
-        color: theme.light.colors.hyperlink,
-        paddingLeft: ms(15),
-        fontFamily: FontFamily.BrandonGrotesque_regular,
-        textAlign: 'justify',
-        fontSize: ms(16),
-      }}
+      style={styles.linkTextDesign}
       onPress={() => {
         Linking.openURL(link);
       }}
@@ -149,18 +132,6 @@ const link = link => {
       {link}
     </Text>
   );
-};
-
-const item = {
-  id: 1,
-  title: 'Summer 2023 Giveaway',
-  EndsIn: '12 Day: 13 Hrs: 12 Sec',
-  Desc: 'Thanks for joining our app everyone! To show our appreciation, we are going to raffle away a brand new iPhone 13!',
-  link: 'https://www.youtube.com/watch?v=3d2vRlwNLIlk',
-  MoreDesc:
-    'Along with the iPhone 6 and Apple Watch announcements, the GM version of iOS 8 was released to developers. As is typical with all major interations of Apples mobile operating system, there were new wallpapers released. The GM release is currently only available for reistered developers, which means the common users are left waiting for iOS 8 to launch publicaly before takling advantage of the images.',
-  photo:
-    'https://images.unsplash.com/photo-1616353071588-708dcff912e2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8YXBwbGUlMjBpcGhvbmV8ZW58MHx8MHx8&w=1000&q=80',
 };
 
 const styles = StyleSheet.create({
@@ -273,5 +244,21 @@ const styles = StyleSheet.create({
     backgroundColor: theme.light.colors.primaryBg,
     borderWidth: 2,
     borderColor: theme.light.colors.primaryBg,
+  },
+  termsTextDesign: {
+    color: theme.light.colors.hyperlink,
+    textDecorationLine: 'underline',
+  },
+  termsAndConsitionText: {
+    fontFamily: FontFamily.BrandonGrotesque_regular,
+    textAlign: 'justify',
+    color: theme.light.colors.black,
+  },
+  linkTextDesign: {
+    color: theme.light.colors.hyperlink,
+    paddingLeft: ms(15),
+    fontFamily: FontFamily.BrandonGrotesque_regular,
+    textAlign: 'justify',
+    fontSize: ms(16),
   },
 });

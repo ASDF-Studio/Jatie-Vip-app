@@ -39,14 +39,10 @@ let nextId = 0;
 export default function AdminPost({ navigation }) {
   const userType = useSelector(state => state.userType);
   const [imageArray, setImageArray] = useState([]);
-  const [videoArray, setVideoArray] = useState([]);
-  const [image, setImage] = useState();
   const [isModalVisible, setModalVisible] = useState(false);
   const [isImage, setIsImage] = useState();
-  const [cropImageModal, setCropImageModal] = useState();
   const [postTxt, setPostTxt] = useState('');
   const [vipOnly, setVipOnly] = useState(false);
-  const [loading, setLoading] = useState(true);
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -214,29 +210,21 @@ export default function AdminPost({ navigation }) {
 
           {/* button */}
 
-          <TouchableOpacity
-            onPress={() => navigation.navigate(NAVIGATION.postOptions)}
-          >
+          <TouchableOpacity>
             {/* show only for Free and vip user */}
             {userType.user == strings.userType.vip && (
               <Button
                 title={strings.home.post}
-                style={{
-                  opacity: postTxt.length ? 1 : 0.4,
-                  width: ms(100),
-                  margin: ms(10),
-                }}
-                disabled={postTxt.length == 0 ? false : true}
+                opacity={postTxt.length ? 1 : 0.4}
+                style={styles.postButton}
+                disabled={postTxt.length ? false : true}
               />
             )}
             {userType.user == strings.userType.free && (
               <Button
                 title={strings.home.post}
-                style={{
-                  opacity: postTxt.length ? 1 : 0.4,
-                  width: ms(100),
-                  margin: ms(10),
-                }}
+                opacity={postTxt.length ? 1 : 0.4}
+                style={styles.postButton}
                 disabled={postTxt.length ? false : true}
               />
             )}
@@ -244,12 +232,10 @@ export default function AdminPost({ navigation }) {
             {userType.user == strings.userType.admin && (
               <Button
                 title={strings.home.next}
+                opacity={postTxt.length ? 1 : 0.4}
+                y
                 onPress={() => navigation.navigate(NAVIGATION.postOptions)}
-                style={{
-                  opacity: postTxt.length ? 1 : 0.4,
-                  width: ms(100),
-                  margin: ms(10),
-                }}
+                style={styles.postButton}
                 disabled={postTxt.length ? false : true}
               />
             )}
@@ -270,7 +256,7 @@ export default function AdminPost({ navigation }) {
             title={strings.operations.imageFromCamera}
             onPress={OpenCamera}
           />
-          <View style={{ marginTop: vs(20) }}>
+          <View style={styles.imageFromGalleryButton}>
             <Button
               title={strings.operations.imageFromGallery}
               onPress={OpenGallery}
@@ -300,7 +286,7 @@ export const FileUpload = imageArray => {
                     />
                     <View style={styles.minus}>
                       <Text
-                        style={[styles.minusTxt]}
+                        style={styles.minusTxt}
                         onPress={() => {
                           deleteFile(item.id);
                         }}
@@ -317,7 +303,7 @@ export const FileUpload = imageArray => {
                     />
                     <View style={styles.minus}>
                       <Text
-                        style={[styles.minusTxt]}
+                        style={styles.minusTxt}
                         onPress={() => {
                           deleteFile(item.id);
                         }}
@@ -329,19 +315,19 @@ export const FileUpload = imageArray => {
                       {' '}
                       <ActivityIndicator
                         animating={animating}
-                        color="#bc2b78"
+                        color={theme.light.colors.primary}
                         size="large"
                         style={styles.activityIndicator}
                       />
                       <FontAwesomeIcon
                         icon={faCircle}
                         size={ms(30)}
-                        style={[styles.videoPlay]}
+                        style={styles.videoPlay}
                       />
                       <FontAwesomeIcon
                         icon={faVideoCamera}
                         size={ms(15)}
-                        style={[styles.Play]}
+                        style={styles.Play}
                       />
                     </View>
                   </View>
@@ -443,6 +429,10 @@ const styles = StyleSheet.create({
     margin: ms(10),
     color: theme.light.colors.secondary,
   },
+  postButton: {
+    width: ms(100),
+    margin: ms(10),
+  },
   ButtonContainer: {
     margin: ms(10),
     borderRadius: 10,
@@ -498,6 +488,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'white',
     borderRadius: 12,
+  },
+
+  imageFromGalleryButton: {
+    marginTop: vs(20),
   },
   closeView: {
     alignItems: 'flex-end',

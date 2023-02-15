@@ -1,20 +1,17 @@
 import React, { useState } from 'react';
 import { Text, View } from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { login, TYPES } from '@/actions/UserActions';
 import { Button, ErrorView } from '@/components';
 import { strings } from '@/localization';
 import { styles } from '@/screens/EnterOtp/EnterOtp.styles';
 import { errorsSelector } from '@/selectors/ErrorSelectors';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
-import { ms } from 'react-native-size-matters';
-import { Logo } from '@/assets';
-import { TextStyles, theme } from '@/theme';
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
 import { useRef } from 'react';
 import { AuthHeader } from '@/components/AuthHeader';
 import { navigationRef } from '@/navigation/RootNavigation';
 import { NAVIGATION } from '@/constants';
+import { TYPES } from '@/actions/UserActions';
 
 export function EnterOtp() {
   const dispatch = useDispatch();

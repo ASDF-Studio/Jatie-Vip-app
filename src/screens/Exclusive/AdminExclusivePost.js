@@ -26,17 +26,14 @@ import { useState } from 'react';
 import Modal from 'react-native-modal';
 import { close } from '@/assets';
 import ImageCropPicker from 'react-native-image-crop-picker';
+import { Data, File } from './exclusiveData/adminExclusivePostData';
 
 let nextId = 0;
 
 export default function AdminExclusivePost({ navigation }) {
   const [imageArray, setImageArray] = useState([]);
-  const [videoArray, setVideoArray] = useState([]);
-  const [image, setImage] = useState();
   const [isModalVisible, setModalVisible] = useState(false);
   const [isImage, setIsImage] = useState();
-  const [cropImageModal, setCropImageModal] = useState();
-  const [loading, setLoading] = useState(true);
   const [postTxt, setPostTxt] = useState('');
 
   const toggleModal = () => {
@@ -142,16 +139,7 @@ export default function AdminExclusivePost({ navigation }) {
       <ScrollView>
         <View style={styles.postContainer}>
           <View style={styles.title}>
-            <Text
-              style={[
-                TextStyles.text,
-                {
-                  fontFamily: FontFamily.BrandonGrotesque_bold,
-                  textAlign: 'justify',
-                  color: theme.light.colors.black,
-                },
-              ]}
-            >
+            <Text style={[TextStyles.text, styles.titleText]}>
               {strings.exclusive.title}
             </Text>
           </View>
@@ -162,16 +150,7 @@ export default function AdminExclusivePost({ navigation }) {
               placeholder={strings.exclusive.titleHere}
               onChangeText={val => setPostTxt(val)}
             >
-              <Text
-                style={[
-                  TextStyles.text,
-                  {
-                    fontFamily: FontFamily.BrandonGrotesque_regular,
-                    textAlign: 'justify',
-                    color: theme.light.colors.black,
-                  },
-                ]}
-              >
+              <Text style={[TextStyles.text, styles.titleTextBox]}>
                 {Data.title}
               </Text>
             </TextInput>
@@ -183,16 +162,7 @@ export default function AdminExclusivePost({ navigation }) {
               placeholder={strings.exclusive.whatOnYourMind}
               onChangeText={val => setPostTxt(val)}
             >
-              <Text
-                style={[
-                  TextStyles.text,
-                  {
-                    fontFamily: FontFamily.BrandonGrotesque_regular,
-                    textAlign: 'justify',
-                    color: theme.light.colors.black,
-                  },
-                ]}
-              >
+              <Text style={[TextStyles.text, styles.TextBoxDEscDesign]}>
                 {Data.desc}
               </Text>
             </TextInput>
@@ -221,35 +191,13 @@ export default function AdminExclusivePost({ navigation }) {
 
         {/* button */}
 
-        {/* <TouchableOpacity
-          onPress={() => navigation.navigate(NAVIGATION.adminPostOption)}
-        > */}
-        {/* <View style={styles.ButtonContainer}>
-            <Text
-              style={[
-                TextStyles.text,
-                {
-                  fontFamily: FontFamily.BrandonGrotesque_bold,
-                  textAlign: 'justify',
-                  color: theme.light.colors.white,
-                },
-              ]}
-            >
-              {strings.exclusive.nextButton}
-            </Text>
-          </View> */}
-
         <Button
           title={strings.exclusive.next}
-          onPress={() => navigation.navigate(NAVIGATION.adminPostOption)}
-          style={{
-            opacity: postTxt.length ? 1 : 0.4,
-            width: ms(100),
-            margin: ms(10),
-          }}
           disabled={postTxt.length ? false : true}
+          opacity={postTxt.length ? 1 : 0.4}
+          style={styles.exclusivePostButton}
+          onPress={() => navigation.navigate(NAVIGATION.adminPostOption)}
         />
-        {/* </TouchableOpacity> */}
       </View>
 
       {/* Model */}
@@ -265,7 +213,7 @@ export default function AdminExclusivePost({ navigation }) {
             title={strings.operations.imageFromCamera}
             onPress={OpenCamera}
           />
-          <View style={{ marginTop: vs(20) }}>
+          <View style={styles.imageFromGalleryButton}>
             <Button
               title={strings.operations.imageFromGallery}
               onPress={OpenGallery}
@@ -295,7 +243,7 @@ export const FileUpload = imageArray => {
                     />
                     <View style={styles.minus}>
                       <Text
-                        style={[styles.minusTxt]}
+                        style={styles.minusTxt}
                         onPress={() => {
                           deleteFile(item.id);
                         }}
@@ -312,7 +260,7 @@ export const FileUpload = imageArray => {
                     />
                     <View style={styles.minus}>
                       <Text
-                        style={[styles.minusTxt]}
+                        style={styles.minusTxt}
                         onPress={() => {
                           deleteFile(item.id);
                         }}
@@ -324,19 +272,19 @@ export const FileUpload = imageArray => {
                       {' '}
                       <ActivityIndicator
                         animating={animating}
-                        color="#bc2b78"
+                        color={theme.light.colors.primary}
                         size="large"
                         style={styles.activityIndicator}
                       />
                       <FontAwesomeIcon
                         icon={faCircle}
                         size={ms(30)}
-                        style={[styles.videoPlay]}
+                        style={styles.videoPlay}
                       />
                       <FontAwesomeIcon
                         icon={faVideoCamera}
                         size={ms(15)}
-                        style={[styles.Play]}
+                        style={styles.Play}
                       />
                     </View>
                   </View>
@@ -364,20 +312,18 @@ export const BttomContantLayout = () => {
                   source={{ uri: item.videoLink }}
                 />
                 <View style={styles.minus}>
-                  <Text style={[styles.minusTxt]}>
-                    {strings.giveaway.minus}
-                  </Text>
+                  <Text style={styles.minusTxt}>{strings.giveaway.minus}</Text>
                 </View>
                 <View style={styles.videoPlayContainer}>
                   <FontAwesomeIcon
                     icon={faCircle}
                     size={ms(30)}
-                    style={[styles.videoPlay]}
+                    style={styles.videoPlay}
                   />
                   <FontAwesomeIcon
                     icon={faVideoCamera}
                     size={ms(15)}
-                    style={[styles.Play]}
+                    style={styles.Play}
                   />
                 </View>
               </View>
@@ -396,9 +342,7 @@ export const BttomContantLayout = () => {
                   source={{ uri: item.photoLink }}
                 />
                 <View style={styles.minus}>
-                  <Text style={[styles.minusTxt]}>
-                    {strings.giveaway.minus}
-                  </Text>
+                  <Text style={styles.minusTxt}>{strings.giveaway.minus}</Text>
                 </View>
               </View>
             );
@@ -407,50 +351,6 @@ export const BttomContantLayout = () => {
       </View>
     </ScrollView>
   );
-};
-
-const File = {
-  id: 1,
-  video: [
-    {
-      vID: 1,
-      videoLink:
-        'https://www.dharmann.com/wp-content/uploads/2022/06/YT-Thumbnail-566-Husband-Pranks-Wife-Goes-Too-Far-Option-1E.jpg',
-    },
-    {
-      vID: 2,
-      videoLink:
-        'https://www.dharmann.com/wp-content/uploads/2022/06/YT-Thumbnail-566-Husband-Pranks-Wife-Goes-Too-Far-Option-1E.jpg',
-    },
-  ],
-  photo: [
-    {
-      pID: 1,
-      photoLink:
-        'https://media.istockphoto.com/id/1309328823/photo/headshot-portrait-of-smiling-male-employee-in-office.jpg?b=1&s=170667a&w=0&k=20&c=MRMqc79PuLmQfxJ99fTfGqHL07EDHqHLWg0Tb4rPXQc=',
-    },
-    {
-      pID: 2,
-      photoLink:
-        'https://media.istockphoto.com/id/1309328823/photo/headshot-portrait-of-smiling-male-employee-in-office.jpg?b=1&s=170667a&w=0&k=20&c=MRMqc79PuLmQfxJ99fTfGqHL07EDHqHLWg0Tb4rPXQc=',
-    },
-    {
-      pID: 3,
-      photoLink:
-        'https://media.istockphoto.com/id/1309328823/photo/headshot-portrait-of-smiling-male-employee-in-office.jpg?b=1&s=170667a&w=0&k=20&c=MRMqc79PuLmQfxJ99fTfGqHL07EDHqHLWg0Tb4rPXQc=',
-    },
-    {
-      pID: 4,
-      photoLink:
-        'https://media.istockphoto.com/id/1309328823/photo/headshot-portrait-of-smiling-male-employee-in-office.jpg?b=1&s=170667a&w=0&k=20&c=MRMqc79PuLmQfxJ99fTfGqHL07EDHqHLWg0Tb4rPXQc=',
-    },
-  ],
-};
-
-const Data = {
-  id: 1,
-  title: 'Summer 2023 Giveaway',
-  desc: 'All of them were independently selected bn our editors. We hope you ❤️ love the products we recommend! All of them were independently selected by our editors. Some may have sent as samples, but all options and reviews are our own. Just so you know. ✊',
 };
 
 const styles = StyleSheet.create({
@@ -474,6 +374,11 @@ const styles = StyleSheet.create({
   title: {
     padding: ms(10),
   },
+  titleText: {
+    fontFamily: FontFamily.BrandonGrotesque_bold,
+    textAlign: 'justify',
+    color: theme.light.colors.black,
+  },
   InputTextBox: {
     paddingLeft: ms(10),
     borderWidth: 1,
@@ -485,6 +390,11 @@ const styles = StyleSheet.create({
     marginLeft: ms(10),
     marginRight: vs(10),
     marginBottom: vs(10),
+  },
+  titleTextBox: {
+    fontFamily: FontFamily.BrandonGrotesque_regular,
+    textAlign: 'justify',
+    color: theme.light.colors.black,
   },
   TextBoxDEsc: {
     width: '100%',
@@ -499,6 +409,11 @@ const styles = StyleSheet.create({
   InputTextBoxDEsc: {
     height: '100%',
     textAlignVertical: 'top',
+  },
+  TextBoxDEscDesign: {
+    fontFamily: FontFamily.BrandonGrotesque_regular,
+    textAlign: 'justify',
+    color: theme.light.colors.black,
   },
 
   //BottomLAyout of file contant
@@ -567,6 +482,11 @@ const styles = StyleSheet.create({
     backgroundColor: theme.light.colors.primary,
     width: ms(120),
   },
+  exclusivePostButton: {
+    width: ms(100),
+    margin: ms(10),
+  },
+  imageFromGalleryButton: { marginTop: vs(20) },
 
   // - circle
 

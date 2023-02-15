@@ -19,12 +19,21 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     alignItems: 'center',
   },
+  headerDesign: {
+    color: theme.light.colors.text,
+    margin: ms(15),
+  },
   headerImage: {
     width: ms(50),
     height: vs(50),
     borderWidth: 2,
     borderRadius: 75,
   },
+  adminBtnDesign: {
+    backgroundColor: theme.light.colors.primary,
+    width: ms(140),
+  },
+  adminBtnTxtColor: { color: theme.light.colors.white },
   iconContiner: {
     // flexDirection: 'row',
     flexDirection: 'row',

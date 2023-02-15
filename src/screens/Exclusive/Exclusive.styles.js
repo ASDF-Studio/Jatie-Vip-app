@@ -30,6 +30,7 @@ export const styles = StyleSheet.create({
   icon: {
     margin: ms(10),
   },
+  cardContainer: { margin: ms(12) },
   recentContiner: {
     padding: ms(4),
     flexDirection: 'row',
@@ -75,6 +76,17 @@ export const styles = StyleSheet.create({
   videoPlay: {
     color: theme.light.colors.primary,
   },
+  CardHeaderContainer: { paddingTop: vs(8) },
+  fullNameTxtContainer: { paddingLeft: ms(5) },
+  headerColor: { color: theme.light.colors.text },
+  ellipsisIconColor: {
+    color: theme.light.colors.black,
+  },
+  adminButton: {
+    backgroundColor: theme.light.colors.primary,
+    width: ms(140),
+  },
+  btnTxtColor: { color: theme.light.colors.white },
   Play: {
     position: 'absolute',
     color: theme.light.colors.background,

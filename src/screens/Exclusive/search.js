@@ -17,6 +17,7 @@ import { ms, vs } from 'react-native-size-matters';
 import { NAVIGATION } from '@/constants/navigation';
 import { strings } from '@/localization';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { Data } from '@/screens/CommonData/searchData';
 
 export default function Search({ navigation }) {
   const [searchListOpen, setSearchListOpen] = useState(false);
@@ -27,11 +28,9 @@ export default function Search({ navigation }) {
         <View style={styles.left}>
           <TopBackButton
             onPress={() => navigation.goBack()}
-            style={{ paddingRight: ms(5), paddingLeft: ms(10) }}
+            style={styles.TopBackButton}
           />
-          <Text
-            style={[TextStyles.header, { color: theme.light.colors.black }]}
-          >
+          <Text style={[TextStyles.header, styles.headerText]}>
             {' '}
             {strings.exclusive.search}{' '}
           </Text>
@@ -41,23 +40,20 @@ export default function Search({ navigation }) {
             icon={faSearch}
             color={theme.light.colors.primary}
             size={ms(20)}
-            style={{ marginRight: ms(15) }}
+            style={styles.searchButton}
           />
           <Icon
             icon={faBell}
             color={theme.light.colors.black}
             size={ms(20)}
             onPress={() => navigation.navigate(NAVIGATION.notification)}
-            style={{ marginRight: ms(10) }}
+            style={styles.bellIcon}
           />
         </View>
       </View>
       <View style={styles.searchBox}>
         <TextField
-          style={{
-            paddingRight: ms(80),
-            backgroundColor: theme.light.colors.white,
-          }}
+          style={styles.searchBoxTextFirld}
           placeholder={strings.exclusive.searchUser}
           onFocus={() => setSearchListOpen(true)}
         />
@@ -78,8 +74,6 @@ export default function Search({ navigation }) {
             {' '}
             {strings.exclusive.searchForUsers}
           </Text>
-
-          {/* <View style={styles.arrow}></View> */}
         </View>
       )}
       {searchListOpen && (
@@ -90,7 +84,7 @@ export default function Search({ navigation }) {
               data={Data}
               key={props => props.id}
               initialNumToRender={10}
-              contentContainerStyle={{ paddingBottom: ms(100) }}
+              contentContainerStyle={styles.contentContainerStyle}
               renderItem={({ item }) => {
                 return (
                   <View style={styles.listContainer}>
@@ -131,6 +125,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     margin: ms(10),
   },
+  headerText: { color: theme.light.colors.black },
+  TopBackButton: {
+    paddingRight: ms(5),
+    paddingLeft: ms(10),
+  },
   left: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -138,6 +137,12 @@ const styles = StyleSheet.create({
   right: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  bellIcon: {
+    marginLeft: ms(10),
+  },
+  searchButton: {
+    marginRight: ms(15),
   },
   switchContainer: {
     position: 'absolute',
@@ -148,8 +153,12 @@ const styles = StyleSheet.create({
   },
   searchBox: {
     marginTop: vs(-20),
-    marginBottom: vs(-10),
+    marginBottom: vs(-15),
     margin: ms(10),
+  },
+  searchBoxTextFirld: {
+    paddingRight: ms(80),
+    backgroundColor: theme.light.colors.white,
   },
   moreIcon: {
     position: 'absolute',
@@ -167,6 +176,9 @@ const styles = StyleSheet.create({
   },
   searchList: {
     padding: ms(10),
+  },
+  contentContainerStyle: {
+    paddingBottom: ms(100),
   },
   listHeader: {
     paddingTop: ms(5),
@@ -191,8 +203,8 @@ const styles = StyleSheet.create({
     height: ms(40),
     width: ms(40),
     borderRadius: 100,
-    // borderWidth: 1,
-    // borderColor: 'gray',
+    borderWidth: 1,
+    borderColor: 'gray',
   },
   nameContainer: {
     flexDirection: 'row',
@@ -208,93 +220,4 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.Recoleta_regular,
     fontSize: ms(14, 0.3),
   },
-
-  //   search
-
-  //   arrow: {
-  //     height: '40%',
-  //     backgroundColor: theme.light.colors.primary,
-  //     marginLeft: '2%',
-  //     borderBottomLeftRadius: 40,
-  //     overflow: 'hidden',
-  //     position: 'absolute',
-  //   },
-  arrow: {
-    top: 20,
-    left: 40,
-    borderWidth: 1,
-    borderColor: theme.light.colors.primary,
-    // border: 2px dotted #BE5F4B,
-    // border-color: transparent transparent transparent #BE5F4B;
-    height: '40%',
-    width: '50%',
-    borderBottomLeftRadius: 250,
-    borderTopRightRadius: 250,
-    // border-radius: 230px 0 0 150px;
-    position: 'absolute',
-    // borderBottomColor: 'transparent',
-    // borderLeftColor: 'transparent',
-    borderTopColor: 'transparent',
-    borderEndColor: 'transparent',
-    borderStyle: 'dotted',
-  },
 });
-
-const Data = [
-  {
-    id: 1,
-    name: 'Harinder Bharwal',
-    userName: '@harinder',
-    image:
-      'https://image.shutterstock.com/image-photo/young-handsome-man-beard-wearing-260nw-1768126784.jpg',
-  },
-  {
-    id: 2,
-    name: 'Peter Taylor',
-    userName: '@peter',
-    image:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmAgieDfVf6AX0Ox5zuIgW78Laf6YxS37M1byexctLnQ&s',
-  },
-  {
-    id: 3,
-    name: 'Danna Koprivoan',
-    userName: '@dana',
-    image:
-      'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
-  },
-  {
-    id: 4,
-    name: 'Mayke Sehurs',
-    userName: '@mayke',
-    image:
-      'https://media.istockphoto.com/photos/smiling-man-outdoors-in-the-city-picture-id1179420343?b=1&k=20&m=1179420343&s=612x612&w=0&h=c9Z3DyUg-YvgOQnL_ykTIgVTWXjF-GNo4FUQ7i5fyyk=',
-  },
-  {
-    id: 5,
-    name: 'Anatoly Shcherbatykh',
-    userName: '@anatoly',
-    image:
-      'https://image.shutterstock.com/image-photo/portrait-mature-businessman-wearing-glasses-260nw-738242395.jpg',
-  },
-  {
-    id: 6,
-    name: 'Otmar Dolezal',
-    userName: '@otmar',
-    image:
-      'https://img.freepik.com/free-photo/no-problem-concept-bearded-man-makes-okay-gesture-has-everything-control-all-fine-gesture-wears-spectacles-jumper-poses-against-pink-wall-says-i-got-this-guarantees-something_273609-42817.jpg?w=2000',
-  },
-  {
-    id: 7,
-    name: 'Siri Jakobsson',
-    userName: '@mayke',
-    image:
-      'https://img.freepik.com/free-photo/handsome-confident-smiling-man-with-hands-crossed-chest_176420-18743.jpg?w=2000',
-  },
-  {
-    id: 8,
-    name: 'Bansilal Brata ',
-    userName: '@brata',
-    image:
-      'https://image.shutterstock.com/image-photo/young-handsome-man-beard-wearing-260nw-1768126784.jpg',
-  },
-];

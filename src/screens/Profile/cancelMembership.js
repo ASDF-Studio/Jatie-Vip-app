@@ -1,8 +1,7 @@
 import { TextStyles, theme } from '@/theme';
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Logo } from '@/assets';
-import { ms, vs } from 'react-native-size-matters';
+import { ms } from 'react-native-size-matters';
 import { TopBackButton, Button, Card } from '@/components';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faCheck, faTruckFront } from '@fortawesome/free-solid-svg-icons';
@@ -15,18 +14,18 @@ export default function CancelMemberShip({ navigation }) {
     <SafeAreaView style={styles.container}>
       <TopBackButton
         onPress={() => navigation.goBack()}
-        style={{ padding: ms(10) }}
+        style={styles.TopBackButton}
       />
-      <Text style={[styles.headerTxt, { paddingLeft: ms(6) }]}>
+      <Text style={[styles.headerTxt, styles.cancelVipMembershipDesign]}>
         {strings.profile.cancelVipMembership}
       </Text>
       <View style={styles.body}>
-        <View style={{ marginTop: ms(20) }} />
-        <Text style={[styles.headerTxt, { fontSize: ms(18, 0.3) }]}>
+        <View style={styles.marginTop} />
+        <Text style={[styles.headerTxt, styles.cencelMessageDesign]}>
           {strings.profile.cencelMessage}
         </Text>
         <View style={styles.card}>
-          <Text style={[TextStyles.header, { fontSize: ms(15, 0.3) }]}>
+          <Text style={[TextStyles.header, styles.benefitsDesign]}>
             {' '}
             {strings.profile.benefits}{' '}
           </Text>
@@ -81,18 +80,11 @@ export default function CancelMemberShip({ navigation }) {
               onPress={() =>
                 navigation.navigate(NAVIGATION.monthlyUpgradeSuccess)
               }
-              style={{
-                marginTop: ms(10),
-              }}
+              style={styles.btnContainerDesign}
             />
             <Button
               title={strings.profile.cancelAnyway}
-              style={{
-                marginTop: ms(10),
-                borderWidth: 2,
-                borderColor: theme.light.colors.primary,
-                backgroundColor: theme.light.colors.white,
-              }}
+              style={styles.btn2ndContainerDesign}
               textStyle={{
                 color: theme.light.colors.primary,
               }}
@@ -119,6 +111,8 @@ const styles = StyleSheet.create({
     backgroundColor: theme.light.colors.primaryBgLight,
     padding: ms(10),
   },
+  TopBackButton: { padding: ms(10) },
+  marginTop: { marginTop: ms(20) },
   card: {
     backgroundColor: theme.light.colors.white,
     margin: ms(8),
@@ -150,6 +144,18 @@ const styles = StyleSheet.create({
   btnContainer: {
     alignItems: 'center',
   },
+  btnContainerDesign: {
+    marginTop: ms(10),
+  },
+  btn2ndContainerDesign: {
+    marginTop: ms(10),
+    borderWidth: 2,
+    borderColor: theme.light.colors.primary,
+    backgroundColor: theme.light.colors.white,
+  },
+  cancelVipMembershipDesign: { paddingLeft: ms(6) },
+  cencelMessageDesign: { fontSize: ms(18, 0.3) },
+  benefitsDesign: { fontSize: ms(15, 0.3) },
   footerTxtContainer: {
     alignItems: 'center',
     padding: ms(10),

@@ -39,6 +39,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import { NAVIGATION } from '@/constants';
+import { Data } from './MessageData/adminGroupChatData';
 
 let nextId = 0;
 
@@ -52,8 +53,6 @@ export default function AdminGroupChat({ navigation, route }) {
 
   let paramName = route.params.paramName;
   let paramIcon = route.params.paramIcon;
-
-  let size;
 
   deleteFile = id => {
     setImageArray(imageArray.filter(a => a.id !== id));
@@ -89,7 +88,7 @@ export default function AdminGroupChat({ navigation, route }) {
         <View>
           <TopBackButton
             onPress={() => navigation.goBack()}
-            style={{ paddingLeft: ms(10) }}
+            style={styles.TopBackButton}
           />
         </View>
         <View style={styles.headerIconContainer}>
@@ -98,7 +97,7 @@ export default function AdminGroupChat({ navigation, route }) {
         </View>
       </View>
       <View style={styles.userContainer}>
-        <View style={{ flexDirection: 'row' }}>
+        <View style={styles.userTopContainer}>
           <View style={styles.iconContainer}>
             <Icon icon={paramIcon} size={ms(22)} style={styles.iconDesign} />
           </View>
@@ -129,9 +128,9 @@ export default function AdminGroupChat({ navigation, route }) {
         <FlatList
           data={Data.messaging.conversation}
           keyExtractor={item => item.messageId}
-          contentContainerStyle={{ paddingBottom: ms(50) }}
+          contentContainerStyle={styles.contentContainerStyle}
           renderItem={({ item }) => (
-            <View style={{ margin: ms(10) }}>
+            <View style={styles.messageBodyContainer}>
               {item.Time.length > 0 ? (
                 <View style={styles.timeContainer}>
                   <Text style={styles.timeTxt}> {item.Time}</Text>
@@ -182,7 +181,6 @@ export default function AdminGroupChat({ navigation, route }) {
                             styles.image,
                             {
                               height: ms(imageItem),
-                              // height: ms(100),
                             },
                           ]}
                         />
@@ -197,12 +195,7 @@ export default function AdminGroupChat({ navigation, route }) {
                               uri: data.url,
                             }}
                             key={data.id}
-                            style={[
-                              styles.image,
-                              {
-                                height: ms(100),
-                              },
-                            ]}
+                            style={[styles.image, styles.imageMoreThen3]}
                           />
                         ) : data.id == 3 ? (
                           <ImageBackground
@@ -210,18 +203,7 @@ export default function AdminGroupChat({ navigation, route }) {
                               uri: data.url,
                             }}
                             key={data.id}
-                            style={[
-                              styles.image,
-                              {
-                                height: ms(100),
-                                backgroundColor: theme.light.colors.hyperlink,
-                                opacity: 0.7,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                overflow: 'hidden',
-                                width: '100%',
-                              },
-                            ]}
+                            style={[styles.image, styles.moreImage]}
                           >
                             <TouchableOpacity
                               onPress={() => {
@@ -229,16 +211,7 @@ export default function AdminGroupChat({ navigation, route }) {
                                   setFeedImages(item.sendingImages);
                               }}
                             >
-                              <Text
-                                style={{
-                                  color: theme.light.colors.white,
-                                  fontFamily:
-                                    FontFamily.BrandonGrotesque_regular,
-                                  fontSize: ms(24, 0.3),
-                                  width: '100%',
-                                  padding: ms(35),
-                                }}
-                              >
+                              <Text style={styles.moreImage}>
                                 {strings.message.plus}
                                 {item.sendingImages.length - 2}
                               </Text>
@@ -261,12 +234,7 @@ export default function AdminGroupChat({ navigation, route }) {
 
               {item.replyingTxt.length > 0 ? (
                 <View style={styles.replyContainer}>
-                  <Text
-                    style={[
-                      styles.messageTxt,
-                      { color: theme.light.colors.black },
-                    ]}
-                  >
+                  <Text style={[styles.messageTxt, styles.replayMessageTxt]}>
                     {item.replyingTxt}
                   </Text>
                 </View>
@@ -283,10 +251,7 @@ export default function AdminGroupChat({ navigation, route }) {
             ></TextInput>
             <View style={styles.inputBoxIconContainer}>
               <TouchableOpacity
-                style={[
-                  styles.boxIcon,
-                  { backgroundColor: theme.light.colors.successBgLight },
-                ]}
+                style={[styles.boxIcon, styles.boxIconColor]}
                 onPress={UploadImages}
               >
                 <FontAwesomeIcon
@@ -296,10 +261,7 @@ export default function AdminGroupChat({ navigation, route }) {
                 />
               </TouchableOpacity>
               <TouchableOpacity
-                style={[
-                  styles.boxIcon,
-                  { backgroundColor: theme.light.colors.primaryBgLight },
-                ]}
+                style={[styles.boxIcon, styles.boxIconSendColor]}
               >
                 <FontAwesomeIcon
                   icon={faPaperPlane}
@@ -386,7 +348,7 @@ export const FileUpload = imageArray => {
                     />
                     <View style={styles.minus}>
                       <Text
-                        style={[styles.minusTxt]}
+                        style={styles.minusTxt}
                         onPress={() => {
                           deleteFile(item.id);
                         }}
@@ -405,49 +367,6 @@ export const FileUpload = imageArray => {
   );
 };
 
-const Data = {
-  id: 1,
-  name: strings.message.toEveryOne,
-  icon: faUserGroup,
-  messaging: {
-    userId: 1,
-    name: 'Jatie VIP',
-    profilePic:
-      'https://res.cloudinary.com/hawktech-cloud/image/upload/v1674712476/d24dae39-1a64-47d5-af65-e14b5a1c533c_tmcsua.png',
-    conversation: [
-      {
-        messageId: 1,
-        Time: 'July 23, 2022 . 11:23AM',
-        sendingTxt:
-          'Fernando Garibay. It is taken from her third extended play, The Fame Moster (2009)',
-        sendingImages: [],
-        replyingTxt: '',
-        replyImages: [],
-      },
-    ],
-  },
-  id: 2,
-  name: strings.message.toEveryOne,
-  icon: faUserGroup,
-  messaging: {
-    userId: 1,
-    name: 'Jatie VIP',
-    profilePic:
-      'https://res.cloudinary.com/hawktech-cloud/image/upload/v1674712476/d24dae39-1a64-47d5-af65-e14b5a1c533c_tmcsua.png',
-    conversation: [
-      {
-        messageId: 1,
-        Time: 'July 23, 2022 . 11:23AM',
-        sendingTxt:
-          'Fernando Garibay. It is taken from her third extended play, The Fame Moster (2009)',
-        sendingImages: [],
-        replyingTxt: '',
-        replyImages: [],
-      },
-    ],
-  },
-};
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -464,6 +383,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  TopBackButton: {
+    paddingLeft: ms(10),
+  },
   bellIcon: {
     marginRight: ms(9),
   },
@@ -477,6 +399,9 @@ const styles = StyleSheet.create({
     marginRight: ms(5),
     marginLeft: ms(5),
     alignItems: 'center',
+  },
+  userTopContainer: {
+    flexDirection: 'row',
   },
   userNameTxtContainer: {
     padding: ms(2),
@@ -495,6 +420,8 @@ const styles = StyleSheet.create({
     backgroundColor: theme.light.colors.primaryBgLight,
   },
 
+  messageBodyContainer: { margin: ms(10) },
+  contentContainerStyle: { paddingBottom: ms(50) },
   messageContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -510,6 +437,7 @@ const styles = StyleSheet.create({
     fontSize: ms(16, 0.3),
     color: theme.light.colors.white,
   },
+  replayMessageTxt: { color: theme.light.colors.black },
   messageWithImage: {
     height: ms(40),
     width: ms(40),
@@ -517,6 +445,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     right: ms(3),
+  },
+  moreImage: {
+    color: theme.light.colors.white,
+    fontFamily: FontFamily.BrandonGrotesque_regular,
+    fontSize: ms(24, 0.3),
+    width: '100%',
+    padding: ms(35),
   },
   replyContainer: {
     backgroundColor: theme.light.colors.white,
@@ -552,6 +487,8 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     padding: ms(8),
   },
+  boxIconColor: { backgroundColor: theme.light.colors.successBgLight },
+  boxIconSendColor: { backgroundColor: theme.light.colors.primaryBgLight },
 
   // birthday users
 
@@ -603,6 +540,18 @@ const styles = StyleSheet.create({
     marginTop: ms(10),
     marginRight: ms(10),
     // resizeMode: 'contain',
+  },
+  imageMoreThen3: {
+    height: ms(100),
+  },
+  moreImage: {
+    height: ms(100),
+    backgroundColor: theme.light.colors.hyperlink,
+    opacity: 0.7,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    width: '100%',
   },
 
   //BottomLAyout of file contant
