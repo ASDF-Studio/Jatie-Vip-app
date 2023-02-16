@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Image,
   Text,
+  Platform,
 } from 'react-native';
 import { theme } from '@/theme';
 import { Card, CardBody } from '@/components';
@@ -21,7 +22,12 @@ import { Data } from './giveawayData/activeData';
 export default function Active({ navigation, userType }) {
   const [open, setOpen] = useState(false);
   return (
-    <SafeAreaView>
+    <SafeAreaView
+      style={{
+        marginTop: Platform.OS === 'ios' ? -48 : 0,
+        marginBottom: Platform.OS === 'ios' ? -70 : 0,
+      }}
+    >
       <FlatList
         data={Data}
         key={props => props.id}
@@ -102,7 +108,9 @@ export const styles = StyleSheet.create({
     fontFamily: FontFamily.Recoleta_medium,
     textAlign: 'justify',
     backgroundColor: theme.light.colors.primaryBg,
+    borderColor: theme.light.colors.primaryBg,
     borderRadius: 20,
+    overflow: 'hidden',
     padding: ms(8),
     fontSize: ms(11, 0.3),
     marginLeft: ms(15),
