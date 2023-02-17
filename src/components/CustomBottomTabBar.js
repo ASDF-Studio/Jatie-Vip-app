@@ -1,9 +1,15 @@
+import React from 'react';
 import { NAVIGATION } from '@/constants';
 import { FontFamily } from '@/theme/Fonts';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { useTheme } from '@react-navigation/native';
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Keyboard,
+} from 'react-native';
 import { faNewspaper, faUserCircle } from '@fortawesome/free-regular-svg-icons';
 import { faCrown, faGift, faMessage } from '@fortawesome/free-solid-svg-icons';
 import { theme } from '@/theme';
@@ -27,8 +33,33 @@ const tabBarIcon = {
 
 function CustomBottomTabBar({ state, descriptors, navigation }) {
   const { colors } = useTheme();
+  const [keyboardShow, setKeyboardShow] = React.useState();
+  React.useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardShow(true);
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardShow(false);
+      }
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
   return (
-    <View style={{ flexDirection: 'row' }}>
+    <View
+      style={{
+        flexDirection: 'row',
+        marginBottom: keyboardShow ? -100 : 25,
+      }}
+    >
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const label =

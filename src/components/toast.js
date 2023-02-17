@@ -25,23 +25,30 @@ export const Toast = ({ open, setOpen, icon, message, onPressOk }) => {
                 style={{
                   backgroundColor: theme.light.colors.primaryBgLight,
                   padding: ms(10),
-                  borderRadius: 100,
+                  borderRadius: 15,
                 }}
               >
                 <FontAwesomeIcon
                   icon={icon}
-                  size={ms(22)}
-                  color={theme.light.colors.primary}
+                  size={ms(13)}
+                  color={theme.light.colors.primaryBgDark}
                 />
               </View>
             </View>
             <Text style={styles.messageTxt}>{message} </Text>
-            <View style={{ alignItems: 'center' }}>
+            <View
+              style={{
+                alignItems: 'center',
+                padding: ms(5),
+                paddingBottom: 30,
+              }}
+            >
               <Button
-                title={strings.operations.ok}
+                title={strings.operations.okay}
                 style={{
-                  width: '30%',
+                  width: '45%',
                   margin: ms(10),
+                  backgroundColor: theme.light.colors.primaryBgDark,
                 }}
                 onPress={() => onPressOk(false)}
               />

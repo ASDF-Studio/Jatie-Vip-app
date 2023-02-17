@@ -12,7 +12,10 @@ export default function NotificationSettings({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <TopBackButton onPress={() => navigation.goBack()} />
+      <TopBackButton
+        onPress={() => navigation.goBack()}
+        style={styles.TopBackButton}
+      />
       <View style={styles.listHeader}>
         <Text style={[TextStyles.header, { color: theme.light.colors.black }]}>
           {' '}
@@ -20,7 +23,13 @@ export default function NotificationSettings({ navigation }) {
         </Text>
         <AppSwitch value={isEnabled} onChange={toggleSwitch} />
       </View>
-      <HorizontalLine color={theme.light.colors.infoBgLight} />
+
+      <HorizontalLine
+        color={theme.light.colors.infoBgLight}
+        paddingTop={5}
+        paddingBottom={5}
+      />
+
       <Text style={styles.headerText}> {strings.profile.fromMembers}</Text>
       <View style={styles.list}>
         <Text style={styles.listTxt}> {strings.profile.reactTo} </Text>
@@ -34,7 +43,11 @@ export default function NotificationSettings({ navigation }) {
         <Text style={styles.listTxt}> {strings.profile.ImFollowing} </Text>
         <AppSwitch value={isEnabled} onChange={toggleSwitch} />
       </View>
-      <HorizontalLine color={theme.light.colors.infoBgLight} />
+      <HorizontalLine
+        color={theme.light.colors.infoBgLight}
+        paddingTop={5}
+        paddingBottom={5}
+      />
       <Text style={styles.headerText}> {strings.profile.fromJatie} </Text>
       <View style={styles.list}>
         <Text style={styles.listTxt}> {strings.profile.jatiePost} </Text>
@@ -72,6 +85,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: theme.light.colors.white,
   },
+  TopBackButton: { padding: ms(10), paddingLeft: ms(15) },
   listHeader: {
     paddingTop: ms(5),
     paddingBottom: ms(5),
@@ -79,14 +93,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: ms(10),
+    paddingLeft: ms(10),
   },
   headerText: {
-    fontFamily: FontFamily.Recoleta_medium,
+    fontFamily: FontFamily.Recoleta_bold,
     paddingTop: ms(10),
     paddingBottom: ms(10),
-    fontSize: ms(18, 0.3),
+    fontSize: ms(14, 0.3),
     color: theme.light.colors.black,
     paddingHorizontal: ms(10),
+    paddingLeft: ms(15),
   },
   list: {
     flexDirection: 'row',
@@ -94,9 +110,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: vs(10),
     paddingHorizontal: ms(10),
+    paddingLeft: ms(15),
   },
   listTxt: {
     fontFamily: FontFamily.BrandonGrotesque_medium,
-    fontSize: ms(16, 0.3),
+    fontSize: ms(14, 0.3),
+    color: theme.light.colors.black,
   },
 });

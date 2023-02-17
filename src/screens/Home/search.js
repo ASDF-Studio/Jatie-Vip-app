@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     marginTop: vs(-20),
     marginBottom: vs(-10),
     margin: ms(10),
-    }
+  },
   searchBoxTextFirld: {
     paddingRight: ms(80),
     backgroundColor: theme.light.colors.white,

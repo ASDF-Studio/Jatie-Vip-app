@@ -182,7 +182,7 @@ export function Message({ navigation }) {
             }}
           />
           <ModalList
-            title={strings.operations.block}
+            title={strings.operations.block + strings.home.DummyUser}
             icon={faXmark}
             iconColor={theme.light.colors.secondary}
             iconBg={theme.light.colors.infoBgLight}

@@ -10,6 +10,7 @@ import {
   faMessage,
   faSearch,
   faThumbsUp,
+  faTrash,
   faUserPlus,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
@@ -422,22 +423,48 @@ export function Home({ navigation }) {
             paddingTop={15}
             paddingBottom={8}
           />
-          <ModalList
-            title={strings.home.report}
-            icon={faFlag}
-            iconColor={theme.light.colors.secondary}
-            iconBg={theme.light.colors.infoBgLight}
-            onPress={() => {
-              setOpenReport(true);
-              setOpen(false);
-            }}
-          />
-          <ModalList
-            title={strings.operations.block + strings.home.DummyUser}
-            icon={faXmark}
-            iconColor={theme.light.colors.secondary}
-            iconBg={theme.light.colors.infoBgLight}
-          />
+          {(userType.user == `${strings.userType.free}`) |
+          (userType.user == `${strings.userType.vip}`) ? (
+            <>
+              <ModalList
+                title={strings.home.report}
+                icon={faFlag}
+                iconColor={theme.light.colors.secondary}
+                iconBg={theme.light.colors.infoBgLight}
+                onPress={() => {
+                  setOpenReport(true);
+                  setOpen(false);
+                }}
+              />
+              <ModalList
+                title={strings.operations.block + strings.home.DummyUser}
+                icon={faXmark}
+                iconColor={theme.light.colors.secondary}
+                iconBg={theme.light.colors.infoBgLight}
+              />
+            </>
+          ) : userType.user == `${strings.userType.admin}` ? (
+            <>
+              <ModalList
+                title={strings.home.deletePost}
+                icon={faTrash}
+                iconColor={theme.light.colors.secondary}
+                iconBg={theme.light.colors.infoBgLight}
+              />
+              <ModalList
+                title={strings.operations.block + strings.home.DummyUser}
+                icon={faXmark}
+                iconColor={theme.light.colors.secondary}
+                iconBg={theme.light.colors.infoBgLight}
+              />
+              <ModalList
+                title={strings.operations.ban + strings.home.DummyUser}
+                icon={faFlag}
+                iconColor={theme.light.colors.secondary}
+                iconBg={theme.light.colors.infoBgLight}
+              />
+            </>
+          ) : null}
         </ModalDown>
       )}
 
@@ -446,6 +473,11 @@ export function Home({ navigation }) {
           <TopBackButton
             onPress={() => setOpenReport(false)}
             style={styles.reportPostBackButton}
+          />
+          <Text style={styles.reportTxt}> {strings.home.reportPost} </Text>
+          <HorizontalLine
+            color={theme.light.colors.infoBgLight}
+            paddingBottom={12}
           />
           <View style={styles.reportPostTopContainer}>
             <DropDownPicker
@@ -459,6 +491,7 @@ export function Home({ navigation }) {
               style={styles.dropDownPicker}
               textStyle={styles.dropListTxt}
               dropDownContainerStyle={styles.dropDownContainerStyle}
+              arrowIconStyle={styles.arrowIconStyle}
             />
             <TextInput
               multiline
@@ -546,6 +579,12 @@ const styles = StyleSheet.create({
     fontSize: ms(12, 0.3),
     color: theme.light.colors.secondary,
   },
+  reportTxt: {
+    fontFamily: FontFamily.Recoleta_bold,
+    fontSize: ms(14, 0.3),
+    color: theme.light.colors.black,
+    padding: 10,
+  },
   userPic: {
     width: ms(61),
     height: ms(66),
@@ -607,8 +646,12 @@ const styles = StyleSheet.create({
     fontSize: ms(18, 0.3),
     lineHeight: ms(22),
     textAlignVertical: 'top',
-    backgroundColor: theme.light.colors.inputFiled,
+    backgroundColor: theme.light.colors.textFieldBackgroundColor,
     borderRadius: 10,
+    borderWidth: 0.5,
+    borderColor: theme.light.colors.infoBg,
+    paddingLeft: ms(15),
+    height: 100,
   },
   dropListTxt: {
     fontFamily: FontFamily.BrandonGrotesque_regular,
@@ -690,11 +733,14 @@ const styles = StyleSheet.create({
   // reportPostContainer
 
   reportPostContainer: {
-    backgroundColor: theme.light.colors.white,
+    // backgroundColor: theme.light.colors.white,
+    borderRadius: 10,
+    borderWidth: 0.5,
+    borderColor: theme.light.colors.primary,
   },
   reportPostBackButton: {
     padding: ms(10),
-    paddingBottom: ms(10),
+    paddingBottom: ms(-10),
   },
   reportPostTopContainer: {
     paddingLeft: ms(9),
@@ -703,15 +749,22 @@ const styles = StyleSheet.create({
   dropDownPicker: {
     padding: ms(10),
     marginBottom: ms(10),
-    backgroundColor: theme.light.colors.inputFiled,
-    borderWidth: 0,
+    backgroundColor: theme.light.colors.textFieldBackgroundColor,
+    borderWidth: 0.5,
+    borderColor: theme.light.colors.infoBg,
+    paddingLeft: ms(15),
   },
   dropDownContainerStyle: {
-    borderWidth: 0,
+    borderWidth: 1,
+    borderTopStartRadius: 10,
+    borderTopEndRadius: 10,
+    borderColor: theme.light.colors.infoBgLight,
     shadowOffset: {
       width: 0,
       height: ms(2),
     },
+    padding: ms(10),
+    marginTop: ms(5),
     //IOS
     shadowOffset: { width: -2, height: 4 },
     shadowColor: theme.light.colors.secondary,
@@ -729,5 +782,8 @@ const styles = StyleSheet.create({
   },
   reportPostButton: {
     width: ms(100),
+  },
+  arrowIconStyle: {
+    color: theme.light.colors.infoBgLight,
   },
 });

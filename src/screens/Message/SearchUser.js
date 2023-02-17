@@ -9,11 +9,10 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
-import { faBell } from '@fortawesome/free-regular-svg-icons';
+import { faBell, faFaceMehBlank } from '@fortawesome/free-regular-svg-icons';
 import {
   faSearch,
   faEllipsis,
-  faFaceMehBlank,
   faUser,
   faBirthdayCake,
   faCrown,
@@ -79,7 +78,7 @@ export default function SearchUser({ navigation }) {
           <FontAwesomeIcon
             icon={faFaceMehBlank}
             size={ms(44)}
-            color={theme.light.colors.primary}
+            color={theme.light.colors.primaryBgDark}
           />
           <Text style={[styles.searchTxt, styles.searchBodyTxt]}>
             {' '}
