@@ -7,6 +7,7 @@ export const ChatData = [
       'https://media.istockphoto.com/id/1270067126/photo/smiling-indian-man-looking-at-camera.jpg?s=612x612&w=0&k=20&c=ovIQ5GPurLd3mOUj82jB9v-bjGZ8updgy1ACaHMeEC0=',
     adminText:
       'La reine de Chypre(The Queen of Cyprus) in an 1841 grand opera in five acts composed',
+    reportedText: true,
   },
   {
     id: 2,
@@ -16,6 +17,7 @@ export const ChatData = [
       'https://media.istockphoto.com/id/1270067126/photo/smiling-indian-man-looking-at-camera.jpg?s=612x612&w=0&k=20&c=ovIQ5GPurLd3mOUj82jB9v-bjGZ8updgy1ACaHMeEC0=',
     adminText:
       'La reine de Chypre(The Queen of Cyprus) in an 1841 grand opera in five acts composed',
+    reportedText: false,
   },
   {
     id: 3,
@@ -25,6 +27,7 @@ export const ChatData = [
       'https://media.istockphoto.com/id/1270067126/photo/smiling-indian-man-looking-at-camera.jpg?s=612x612&w=0&k=20&c=ovIQ5GPurLd3mOUj82jB9v-bjGZ8updgy1ACaHMeEC0=',
     adminText:
       'La reine de Chypre(The Queen of Cyprus) in an 1841 grand opera in five acts composed',
+    reportedText: false,
   },
   {
     id: 4,
@@ -34,5 +37,14 @@ export const ChatData = [
       'https://media.istockphoto.com/id/1270067126/photo/smiling-indian-man-looking-at-camera.jpg?s=612x612&w=0&k=20&c=ovIQ5GPurLd3mOUj82jB9v-bjGZ8updgy1ACaHMeEC0=',
     adminText:
       'La reine de Chypre(The Queen of Cyprus) in an 1841 grand opera in five acts composed',
+    reportedText: false,
   },
 ];
+
+export const UserData = {
+  fullName: 'Adam',
+  userName: '@adam',
+  profilePic:
+    'https://media.istockphoto.com/id/1270067126/photo/smiling-indian-man-looking-at-camera.jpg?s=612x612&w=0&k=20&c=ovIQ5GPurLd3mOUj82jB9v-bjGZ8updgy1ACaHMeEC0=',
+  time: 10,
+};
