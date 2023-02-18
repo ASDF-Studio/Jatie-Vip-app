@@ -39,20 +39,27 @@ export default function Notification({ navigation }) {
       />
       <View style={styles.listHeader}>
         <Text style={styles.headerTxt}>{strings.profile.bannedUsers}</Text>
-        <Badge count={23} size={ms(16)} />
+        <Badge count={23} size={ms(13)} />
       </View>
-
+      <HorizontalLine
+        color={theme.light.colors.primaryBg}
+        paddingTop={5}
+        paddingBottom={5}
+      />
       <View style={styles.searchBox}>
         <TextField
           style={styles.searchBoxTextBox}
           placeholder={strings.profile.searchUser}
         />
         <View style={styles.moreIcon}>
-          <Icon icon={faSearch} color={theme.light.colors.secondary} />
+          <Icon icon={faSearch} size={13} color={theme.light.colors.black} />
         </View>
       </View>
-      <HorizontalLine />
-
+      <HorizontalLine
+        color={theme.light.colors.infoBgLight}
+        paddingTop={2}
+        paddingBottom={2}
+      />
       <View style={styles.searchList}>
         <View>
           <FlatList
@@ -89,7 +96,7 @@ export default function Notification({ navigation }) {
       {open && (
         <ModalDown open={open} setOpen={setOpen}>
           <ModalList
-            title={strings.profile.unban}
+            title={strings.profile.unban + strings.home.DummyUser}
             icon={faCheck}
             iconColor={theme.light.colors.info}
             iconBg={theme.light.colors.infoBgLight}
@@ -115,6 +122,7 @@ const styles = StyleSheet.create({
     {
       color: theme.light.colors.black,
       paddingLeft: ms(9),
+      paddingRight: ms(5),
     },
   ],
   TopBackButton: { padding: 10 },
@@ -139,10 +147,11 @@ const styles = StyleSheet.create({
   },
   searchBoxTextBox: {
     paddingLeft: ms(40),
+    backgroundColor: theme.light.colors.white,
   },
   moreIcon: {
     position: 'absolute',
-    left: ms(10),
+    left: ms(20),
     top: ms(30),
   },
   searchBody: {
@@ -179,13 +188,12 @@ const styles = StyleSheet.create({
     height: ms(40),
     width: ms(40),
     borderRadius: 100,
-    borderWidth: 1,
-    borderColor: theme.light.colors.secondary,
   },
   nameContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingLeft: ms(7),
   },
   nameTxt: {
     fontFamily: FontFamily.Recoleta_bold,

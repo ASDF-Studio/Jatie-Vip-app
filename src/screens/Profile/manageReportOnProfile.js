@@ -56,7 +56,7 @@ export default function ManageReportOnMessage({ navigation }) {
       <Text style={[styles.headerText, TextStyles.header]}>
         {strings.profile.manageReports}{' '}
       </Text>
-      <HorizontalLine color={theme.light.colors.infoBgLight} />
+      <HorizontalLine color={theme.light.colors.infoBgLight} paddingTop={10} />
       <CardHeader
         fullName={User.fullName}
         userName={User.userName}
@@ -73,73 +73,80 @@ export default function ManageReportOnMessage({ navigation }) {
         </View>
       </View>
       <View style={styles.body}>
-        <View style={styles.headerContainer}>
-          <View style={styles.headerImageContainer}>
-            <Image
-              style={styles.headerImage}
-              source={{
-                uri: demo.headerImage,
-              }}
-            />
-            <View style={styles.profileLogoContainer}>
-              <FontAwesomeIcon
-                icon={faCrown}
-                color={theme.light.colors.primary}
-                size={ms(20)}
+        <View style={styles.reportContainer}>
+          <View style={styles.headerContainer}>
+            <View style={styles.headerImageContainer}>
+              <Image
+                style={styles.headerImage}
+                source={{
+                  uri: demo.headerImage,
+                }}
               />
+              <View style={styles.profileLogoContainer}>
+                <FontAwesomeIcon
+                  icon={faCrown}
+                  color={theme.light.colors.primary}
+                  size={ms(20)}
+                />
+              </View>
+              <View>
+                <Text style={styles.fullNameTxt}> {User.fullName}</Text>
+                <Text style={styles.userNameTxt}> {User.userName} </Text>
+              </View>
             </View>
-            <View>
-              <Text style={styles.fullNameTxt}> {User.fullName}</Text>
-              <Text style={styles.userNameTxt}> {User.userName} </Text>
+            <View style={styles.iconContiner}>
+              <Icon icon={faSearch} size={ms(20)} style={styles.searchIcon} />
+              <Icon icon={faBell} size={ms(20)} style={styles.bellIcon} />
             </View>
           </View>
-          <View style={styles.iconContiner}>
-            <Icon icon={faSearch} size={ms(20)} style={styles.searchIcon} />
-            <Icon icon={faBell} size={ms(20)} style={styles.bellIcon} />
-          </View>
-        </View>
-        <HeaderTab
-          title1={strings.profile.followers}
-          count1={10}
-          // onPress1 = {()=>Alert.alert('press 1')}
-          title2={strings.profile.following}
-          count2={20}
-          // onPress2 = {()=>Alert.alert('press 2')}
-        />
+          <HeaderTab
+            title1={strings.profile.followers}
+            count1={10}
+            // onPress1 = {()=>Alert.alert('press 1')}
+            title2={strings.profile.following}
+            count2={20}
+            // onPress2 = {()=>Alert.alert('press 2')}
+          />
+          <HorizontalLine
+            color={theme.light.colors.infoBgLight}
+            paddingTop={10}
+            paddingBottom={5}
+          />
 
-        <View style={styles.messageHeader}>
-          <View style={styles.messageLeft}>
-            <TouchableOpacity style={[styles.IconBox, styles.IconBoxColor]}>
-              <FontAwesomeIcon
-                icon={faMessage}
-                size={ms(13)}
-                color={theme.light.colors.success}
-              />
-              <Text style={styles.messageBtnTxt}>
-                {' '}
-                {strings.profile.message}{' '}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.IconBox, styles.IconBoxDesign]}>
-              <FontAwesomeIcon
-                icon={faUserPlus}
-                size={ms(13)}
-                color={theme.light.colors.primary}
-              />
-              <Text style={styles.followersBtnTxt}>
-                {' '}
-                {strings.profile.follow}{' '}
-              </Text>
+          <View style={styles.messageHeader}>
+            <View style={styles.messageLeft}>
+              <TouchableOpacity style={[styles.IconBox, styles.IconBoxColor]}>
+                <FontAwesomeIcon
+                  icon={faMessage}
+                  size={ms(13)}
+                  color={theme.light.colors.success}
+                />
+                <Text style={styles.messageBtnTxt}>
+                  {' '}
+                  {strings.profile.message}{' '}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.IconBox, styles.IconBoxDesign]}>
+                <FontAwesomeIcon
+                  icon={faUserPlus}
+                  size={ms(13)}
+                  color={theme.light.colors.primary}
+                />
+                <Text style={styles.followersBtnTxt}>
+                  {' '}
+                  {strings.profile.follow}{' '}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity
+              onPress={() => setOpenMore(true)}
+              style={styles.moreIconContainer}
+            >
+              <FontAwesomeIcon icon={faEllipsis} />
             </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            onPress={() => setOpenMore(true)}
-            style={styles.moreIconContainer}
-          >
-            <FontAwesomeIcon icon={faEllipsis} />
-          </TouchableOpacity>
+          <HorizontalLine />
         </View>
-        <HorizontalLine />
         <FlatList
           data={Data}
           key={props => props.id}
@@ -170,7 +177,7 @@ export default function ManageReportOnMessage({ navigation }) {
         {openMore && (
           <ModalDown open={openMore} setOpen={setOpenMore}>
             <ModalList
-              title={strings.operations.follow}
+              title={strings.operations.follow + strings.home.DummyUser}
               icon={faUserPlus}
               iconColor={theme.light.colors.primary}
               iconBg={theme.light.colors.primaryBgLight}
@@ -182,7 +189,10 @@ export default function ManageReportOnMessage({ navigation }) {
               iconBg={theme.light.colors.successBgLight}
               // onPress = {()=> Alert.alert("working")}
             />
-            <HorizontalLine color={theme.light.colors.infoBgLight} />
+            <HorizontalLine
+              color={theme.light.colors.infoBgLight}
+              paddingTop={10}
+            />
             <ModalList
               title={strings.operations.remove}
               icon={faTrash}
@@ -190,13 +200,13 @@ export default function ManageReportOnMessage({ navigation }) {
               iconBg={theme.light.colors.infoBgLight}
             />
             <ModalList
-              title={strings.operations.block}
+              title={strings.operations.block + strings.home.DummyUser}
               icon={faXmark}
               iconColor={theme.light.colors.secondary}
               iconBg={theme.light.colors.infoBgLight}
             />
             <ModalList
-              title={strings.operations.ban}
+              title={strings.operations.ban + strings.home.DummyUser}
               icon={faFlag}
               iconColor={theme.light.colors.secondary}
               iconBg={theme.light.colors.infoBgLight}
@@ -287,26 +297,30 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  cardContainer: { margin: 10 },
   statsTxt: {
-    fontFamily: FontFamily.BrandonGrotesque_medium,
-    fontSize: ms(15, 0.3),
+    fontFamily: FontFamily.BrandonGrotesque_regular,
+    fontSize: ms(18, 0.3),
+    color: theme.light.colors.black,
   },
   reactOnTxt: {
     color: theme.light.colors.info,
     textDecorationLine: 'underline',
-    fontFamily: FontFamily.BrandonGrotesque_medium,
-    fontSize: ms(15, 0.3),
+    fontFamily: FontFamily.BrandonGrotesque_regular,
+    fontSize: ms(18, 0.3),
+    marginLeft: ms(5),
   },
-  cardContainer: { margin: 10 },
   reasonContainer: {
     backgroundColor: theme.light.colors.inputFiled,
-    borderRadius: 10,
-    padding: ms(3),
+    borderRadius: 4,
+    padding: ms(5),
+    paddingHorizontal: 10,
     marginLeft: ms(10),
   },
   reasonTxt: {
     fontFamily: FontFamily.BrandonGrotesque_bold,
     fontSize: ms(11, 0.3),
+    color: theme.light.colors.black,
   },
   body: {
     flex: 1,
@@ -321,7 +335,9 @@ const styles = StyleSheet.create({
     elevation: 5,
     // padding : ms(8)
   },
-
+  reportContainer: {
+    backgroundColor: theme.light.colors.white,
+  },
   headerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',

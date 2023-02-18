@@ -146,7 +146,7 @@ export const en = {
     yearlyPlan: '$99/Year',
     upgradeYearlySubsription: 'Upgrade to Yearly Subscription',
     saveByYearlyPlan: 'Save $20.88 by choosing the Yearly plan',
-    searchUser: 'Search users...',
+    searchUser: 'Search Users...',
     searchForUsers: 'Search for the users...',
     searchResult: 'Recent Searches & Results',
     unreadOnly: 'Unread Only',
@@ -249,7 +249,7 @@ export const en = {
 
     //search
     search: 'Search',
-    searchUser: 'Search users...',
+    searchUser: 'Search Users...',
     searchForUsers: 'Search for users...',
   },
   giveaway: {

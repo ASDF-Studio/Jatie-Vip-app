@@ -9,6 +9,7 @@ export const theme = {
       primaryInactive: 'rgb(200,174, 11)',
       primaryBg: 'rgba(232, 174, 11, 0.3)',
       primaryBgLight: 'rgba(232, 174, 11, 0.08)',
+      primaryBgLightest: 'rgba(232, 174, 11, 0.03)',
       primaryBgDark: 'rgb(211, 167, 8)',
       primaryBgDarkest: 'rgb(143, 113, 5)',
       secondary: '#80818E',

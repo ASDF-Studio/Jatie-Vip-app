@@ -39,7 +39,7 @@ export default function Following({ navigation }) {
       <HorizontalLine
         color={theme.light.colors.primaryBg}
         paddingTop={8}
-        paddingBottom={8}
+        paddingBottom={20}
       />
       <View>
         <FlatList
@@ -47,6 +47,7 @@ export default function Following({ navigation }) {
           key={props => props.id}
           initialNumToRender={10}
           contentContainerStyle={styles.contentContainerStyle}
+          style={styles.bellowContainer}
           renderItem={({ item }) => {
             return (
               <View style={styles.listContainer}>
@@ -132,6 +133,10 @@ const styles = StyleSheet.create({
       paddingRight: ms(10),
     },
   ],
+  bellowContainer: {
+    paddingTop: ms(10),
+  },
+
   listContainer: {
     padding: ms(2),
     paddingLeft: ms(8),
