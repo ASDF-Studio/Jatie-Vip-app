@@ -1,5 +1,5 @@
 import { theme } from '@/theme';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 import { FontFamily } from '@/theme/Fonts';
 import { ms, vs } from 'react-native-size-matters';
 export const styles = StyleSheet.create({
@@ -58,6 +58,8 @@ export const styles = StyleSheet.create({
   },
 
   feedContainer: {
+    // marginTop: Platform.OS == 'ios' ? vs(-37) : vs(0),
+    // top: -40,
     flex: 1,
     backgroundColor: theme.light.colors.primaryBgLight,
   },
