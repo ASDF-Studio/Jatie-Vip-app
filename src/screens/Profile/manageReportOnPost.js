@@ -25,9 +25,9 @@ export default function ManageReportOnMessage({ navigation }) {
         style={styles.TopBackButton}
       />
       <Text style={[styles.headerText, TextStyles.header]}>
-        {strings.profile.manageReports}{' '}
+        {strings.profile.manageReports}
       </Text>
-      <HorizontalLine color={theme.light.colors.infoBgLight} />
+      <HorizontalLine color={theme.light.colors.infoBgLight} paddingTop={10} />
       <CardHeader
         fullName={Data.fullName}
         userName={Data.userName}
@@ -36,8 +36,8 @@ export default function ManageReportOnMessage({ navigation }) {
       />
       <View style={styles.activity}>
         <View style={styles.textContainer}>
-          <Text style={styles.statsTxt}> {strings.profile.reported} </Text>
-          <Text style={styles.reactOnTxt}> {strings.profile.thisPost} </Text>
+          <Text style={styles.statsTxt}>{strings.profile.reported}</Text>
+          <Text style={styles.reactOnTxt}>{strings.profile.thisPost}</Text>
         </View>
         <View style={styles.reasonContainer}>
           <Text style={styles.reasonTxt}>{strings.profile.reason}</Text>
@@ -45,13 +45,15 @@ export default function ManageReportOnMessage({ navigation }) {
       </View>
       <View style={styles.body}>
         <Card>
-          <CardHeader
-            fullName={Data.fullName}
-            userName={Data.userName}
-            profilePic={Data.profilePic}
-            time={Data.time}
-          />
-          <CardBody text={card.text} />
+          <View style={styles.reportBound}>
+            <CardHeader
+              fullName={Data.fullName}
+              userName={Data.userName}
+              profilePic={Data.profilePic}
+              time={Data.time}
+            />
+            <CardBody text={card.text} />
+          </View>
           <CommentContainer
             seeAllPress={() =>
               navigation.navigate(NAVIGATION.manageReportOnPostAllComments)
@@ -98,25 +100,28 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   statsTxt: {
-    fontFamily: FontFamily.BrandonGrotesque_medium,
-    fontSize: ms(15, 0.3),
-    // paddingLeft : ms(5)
+    fontFamily: FontFamily.BrandonGrotesque_regular,
+    fontSize: ms(18, 0.3),
+    color: theme.light.colors.black,
   },
   reactOnTxt: {
     color: theme.light.colors.info,
     textDecorationLine: 'underline',
-    fontFamily: FontFamily.BrandonGrotesque_medium,
-    fontSize: ms(15, 0.3),
+    fontFamily: FontFamily.BrandonGrotesque_regular,
+    fontSize: ms(18, 0.3),
+    marginLeft: ms(5),
   },
   reasonContainer: {
     backgroundColor: theme.light.colors.inputFiled,
-    borderRadius: 10,
-    padding: ms(3),
+    borderRadius: 4,
+    padding: ms(5),
+    paddingHorizontal: 10,
     marginLeft: ms(10),
   },
   reasonTxt: {
-    fontFamily: FontFamily.Recoleta_medium,
-    fontSize: ms(10, 0.3),
+    fontFamily: FontFamily.BrandonGrotesque_bold,
+    fontSize: ms(11, 0.3),
+    color: theme.light.colors.black,
   },
   body: {
     flex: 1,
@@ -130,5 +135,11 @@ const styles = StyleSheet.create({
     //android
     elevation: 5,
     padding: ms(8),
+  },
+  reportBound: {
+    borderWidth: 1,
+    borderRadius: 10,
+    borderColor: theme.light.colors.primary,
+    backgroundColor: theme.light.colors.primaryBgLightest,
   },
 });

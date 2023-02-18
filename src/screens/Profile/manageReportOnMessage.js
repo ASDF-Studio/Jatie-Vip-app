@@ -25,7 +25,7 @@ import {
   faFlag,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
-import { ChatData } from './ProfileData/manageReportOnMessageData';
+import { ChatData, UserData } from './ProfileData/manageReportOnMessageData';
 
 export default function ManageReportOnMessage({ navigation }) {
   const [open, setOpen] = useState(false);
@@ -39,7 +39,7 @@ export default function ManageReportOnMessage({ navigation }) {
       <Text style={[styles.headerText, TextStyles.header]}>
         {strings.profile.manageReports}{' '}
       </Text>
-      <HorizontalLine color={theme.light.colors.infoBgLight} />
+      <HorizontalLine color={theme.light.colors.infoBgLight} paddingTop={10} />
       <CardHeader
         fullName={UserData.fullName}
         userName={UserData.userName}
@@ -48,11 +48,11 @@ export default function ManageReportOnMessage({ navigation }) {
       />
       <View style={styles.activity}>
         <View style={styles.textContainer}>
-          <Text style={styles.statsTxt}> {strings.profile.reported} </Text>
-          <Text style={styles.reactOnTxt}> {strings.profile.thisPost} </Text>
+          <Text style={styles.statsTxt}>{strings.profile.reported}</Text>
+          <Text style={styles.reactOnTxt}>{strings.profile.thisPost}</Text>
         </View>
         <View style={styles.reasonContainer}>
-          <Text style={styles.reasonTxt}> {strings.profile.reason} </Text>
+          <Text style={styles.reasonTxt}>{strings.profile.reason}</Text>
         </View>
       </View>
       <FlatList
@@ -60,20 +60,39 @@ export default function ManageReportOnMessage({ navigation }) {
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
           <View style={styles.body}>
-            <TouchableOpacity
-              style={styles.chatBoxContainer}
-              onPress={() => setOpen(true)}
-            >
-              <View style={styles.leftChatBox}>
-                <Text style={styles.chatTxt}> {item.userText} </Text>
+            {item.reportedText == true ? (
+              <View style={styles.reportBound}>
+                <TouchableOpacity
+                  style={styles.chatBoxContainer}
+                  onPress={() => setOpen(true)}
+                >
+                  <View style={styles.leftChatBox}>
+                    <Text style={styles.chatTxt}> {item.userText} </Text>
+                  </View>
+                  <View>
+                    <Image
+                      source={{ uri: item.userImage }}
+                      style={styles.chatImage}
+                    />
+                  </View>
+                </TouchableOpacity>
               </View>
-              <View>
-                <Image
-                  source={{ uri: item.userImage }}
-                  style={styles.chatImage}
-                />
-              </View>
-            </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={styles.chatBoxContainer}
+                onPress={() => setOpen(true)}
+              >
+                <View style={styles.leftChatBox}>
+                  <Text style={styles.chatTxt}> {item.userText} </Text>
+                </View>
+                <View>
+                  <Image
+                    source={{ uri: item.userImage }}
+                    style={styles.chatImage}
+                  />
+                </View>
+              </TouchableOpacity>
+            )}
             <View style={styles.rightChatBox}>
               <Text style={[styles.chatTxt, styles.chatTxtColor]}>
                 {item.adminText}{' '}
@@ -85,7 +104,7 @@ export default function ManageReportOnMessage({ navigation }) {
       {open && (
         <ModalDown open={open} setOpen={setOpen}>
           <ModalList
-            title={strings.operations.follow}
+            title={strings.operations.follow + strings.home.DummyUser}
             icon={faUserPlus}
             iconColor={theme.light.colors.primary}
             iconBg={theme.light.colors.primaryBgLight}
@@ -96,21 +115,24 @@ export default function ManageReportOnMessage({ navigation }) {
             iconColor={theme.light.colors.success}
             iconBg={theme.light.colors.successBgLight}
           />
-          <HorizontalLine color={theme.light.colors.infoBgLight} />
+          <HorizontalLine
+            color={theme.light.colors.infoBgLight}
+            paddingTop={10}
+          />
           <ModalList
-            title={strings.operations.report}
+            title={strings.operations.report + strings.home.DummyUser}
             icon={faFlag}
             iconColor={theme.light.colors.secondary}
             iconBg={theme.light.colors.infoBgLight}
           />
           <ModalList
-            title={strings.profile.block}
+            title={strings.profile.block + strings.home.DummyUser}
             icon={faXmark}
             iconColor={theme.light.colors.secondary}
             iconBg={theme.light.colors.infoBgLight}
           />
           <ModalList
-            title={strings.profile.ban}
+            title={strings.profile.ban + strings.home.DummyUser}
             icon={faFlag}
             iconColor={theme.light.colors.secondary}
             iconBg={theme.light.colors.infoBgLight}
@@ -143,25 +165,27 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   statsTxt: {
-    fontFamily: FontFamily.BrandonGrotesque_medium,
-    fontSize: ms(15, 0.3),
-    // paddingLeft : ms(5)
+    fontFamily: FontFamily.BrandonGrotesque_regular,
+    fontSize: ms(18, 0.3),
+    color: theme.light.colors.black,
   },
   reactOnTxt: {
     color: theme.light.colors.info,
     textDecorationLine: 'underline',
-    fontFamily: FontFamily.BrandonGrotesque_medium,
-    fontSize: ms(15, 0.3),
+    fontFamily: FontFamily.BrandonGrotesque_regular,
+    fontSize: ms(18, 0.3),
+    marginLeft: ms(5),
   },
   reasonContainer: {
     backgroundColor: theme.light.colors.inputFiled,
-    borderRadius: 10,
-    padding: ms(3),
+    borderRadius: 4,
+    padding: ms(5),
+    paddingHorizontal: 10,
     marginLeft: ms(10),
   },
   reasonTxt: {
-    fontFamily: FontFamily.Recoleta_medium,
-    fontSize: ms(10, 0.3),
+    fontFamily: FontFamily.BrandonGrotesque_bold,
+    fontSize: ms(11, 0.3),
     color: theme.light.colors.black,
   },
   body: {
@@ -180,7 +204,7 @@ const styles = StyleSheet.create({
     maxWidth: '80%',
   },
   leftChatBox: {
-    backgroundColor: theme.light.colors.activeTabIcon,
+    backgroundColor: theme.light.colors.primaryBgDarkest,
     padding: ms(10),
     borderRadius: 10,
   },
@@ -201,12 +225,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
   },
+  reportBound: {
+    padding: 10,
+    borderWidth: 1,
+    borderRadius: 10,
+    borderColor: theme.light.colors.primary,
+    backgroundColor: theme.light.colors.primaryBgLightest,
+  },
 });
-
-const UserData = {
-  fullName: 'Adam',
-  userName: '@adam',
-  profilePic:
-    'https://media.istockphoto.com/id/1270067126/photo/smiling-indian-man-looking-at-camera.jpg?s=612x612&w=0&k=20&c=ovIQ5GPurLd3mOUj82jB9v-bjGZ8updgy1ACaHMeEC0=',
-  time: 10,
-};

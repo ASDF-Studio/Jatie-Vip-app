@@ -46,12 +46,14 @@ export const en = {
     scheduledPost: 'Scheduled Posts',
     learMore: 'Learn More',
     sponsordPost: 'Sponsored Post',
-    selectReason: 'Select Reason',
+    selectReason: 'Select Reason...',
     reportMessage:
       'Thanks for reporting your concern. We will take down or ban this user if we find violation of our terms of services.',
     offical: 'Official',
     DummyUser: ' @songbaobo',
     report: 'Report this post',
+    deletePost: 'Delete Post',
+    reportPost: 'Report Post',
   },
   sortBy: {
     recent: 'Recent',
@@ -144,7 +146,7 @@ export const en = {
     yearlyPlan: '$99/Year',
     upgradeYearlySubsription: 'Upgrade to Yearly Subscription',
     saveByYearlyPlan: 'Save $20.88 by choosing the Yearly plan',
-    searchUser: 'Search users...',
+    searchUser: 'Search Users...',
     searchForUsers: 'Search for the users...',
     searchResult: 'Recent Searches & Results',
     unreadOnly: 'Unread Only',
@@ -172,19 +174,20 @@ export const en = {
     cancelAnyway: 'Cancel Anyway',
     doNotCancel: "Don't Cancel",
     closeMyAccount: 'Close My Account',
-    cancelSubscription: 'How do i cancel my subscription?',
+    cancelSubscription: 'How do I Cancel My Subscription?',
     rule1: '1. Login to www.jativip.com',
-    rule2: "2. Click 'Manage",
+    rule2: "2. Click 'Manage'",
     rule3: "3. Click 'Cancel Renewal'",
     closeWarning:
       "You can't close your account while your subsription is still active.",
     manageSubscription: 'Manage your subscription',
     closeConfirm:
-      "Are you sure want to close your Account? This action can't be undone.",
+      "Are you sure want to close your account? This action can't be undone.",
     logout: 'Logout',
     editPost: 'Edit Post',
     reportUser: 'Report User',
     genderPlaceHolder: 'Prefer not to say',
+    userID: 'User ID',
   },
   Welcome: {
     login: 'Login',
@@ -246,7 +249,7 @@ export const en = {
 
     //search
     search: 'Search',
-    searchUser: 'Search users...',
+    searchUser: 'Search Users...',
     searchForUsers: 'Search for users...',
   },
   giveaway: {
@@ -335,7 +338,8 @@ export const en = {
     yes: 'Yes',
     no: 'No',
     ok: 'Ok',
-    addComments: 'Add Comments',
+    okay: 'Okay',
+    addComments: 'Add comments...',
     submit: 'Submit',
     delete: 'Delete',
   },

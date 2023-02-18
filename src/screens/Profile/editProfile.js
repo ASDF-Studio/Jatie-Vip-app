@@ -11,7 +11,7 @@ import {
 import { theme, TextStyles } from '@/theme';
 import { FontFamily } from '@/theme/Fonts';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faCalendar, faClose } from '@fortawesome/free-solid-svg-icons';
+import { faCalendar, faClose, faPen } from '@fortawesome/free-solid-svg-icons';
 import { Icon, HorizontalLine, PopUp, Button } from '@/components';
 import DatePicker from 'react-native-date-picker';
 import Moment from 'moment';
@@ -87,7 +87,11 @@ export default function EditProfile({ navigation }) {
         paddingTop={ms(10)}
       />
 
-      <ScrollView style={styles.ScrollView} nestedScrollEnabled={true}>
+      <ScrollView
+        style={styles.ScrollView}
+        nestedScrollEnabled={true}
+        showsVerticalScrollIndicator={true}
+      >
         <Text style={styles.profileTxt}>{strings.profile.profilePic}</Text>
         <View style={styles.ScrollViewContainer}>
           <View>
@@ -151,6 +155,7 @@ export default function EditProfile({ navigation }) {
                 onPress={() => setOpenDatePicker(true)}
               />
             </View>
+
             <DatePicker
               modal
               mode="date"
@@ -181,9 +186,10 @@ export default function EditProfile({ navigation }) {
               multiple={true}
               min={0}
               max={2}
+              listMode="SCROLLVIEW"
+              dropDownDirection="TOP"
             />
           </View>
-
           <View style={styles.textFiledContainer}>
             <Text style={styles.textFieldLebel}>
               {' '}
@@ -199,8 +205,38 @@ export default function EditProfile({ navigation }) {
               setItems={setLocation}
               style={styles.textFiled}
               textStyle={styles.dropListTxt}
+              listMode="SCROLLVIEW"
             />
           </View>
+          {/* userID */}
+          <HorizontalLine
+            color={theme.light.colors.infoBgLight}
+            paddingTop={10}
+            paddingBottom={20}
+          />
+          <View style={styles.textFiledContainer}>
+            <Text style={styles.textFieldLebel}>
+              {' '}
+              {strings.profile.userID}{' '}
+            </Text>
+            <TextInput
+              style={styles.textFiled}
+              selectTextOnFocus={false}
+              value={strings.setupUserId.placeholder}
+            />
+            <View style={styles.CalendarIcon}>
+              <Icon
+                icon={faPen}
+                color={theme.light.colors.info}
+                // onPress={() => setOpenDatePicker(true)}
+              />
+            </View>
+          </View>
+          <HorizontalLine
+            color={theme.light.colors.infoBgLight}
+            paddingTop={10}
+            paddingBottom={20}
+          />
           <View style={styles.textFiledContainer}>
             <Text style={styles.textFieldLebel}>
               {' '}
@@ -211,14 +247,17 @@ export default function EditProfile({ navigation }) {
               value={loginPhone}
               onChangeText={val => setLoginPhone(val)}
             />
-            <Text style={styles.dropListTxt}>
-              {' '}
-              {strings.SignUp.loginFormBottomTxt}
-            </Text>
           </View>
-          <View style={styles.marginTop} />
-          <HorizontalLine color={theme.light.colors.infoBgLight} />
+          {/* <View style={styles.marginTop} /> */}
+          <Text style={styles.dropListTxt}>
+            {' '}
+            {strings.SignUp.loginFormBottomTxt}
+          </Text>
         </View>
+        <HorizontalLine
+          color={theme.light.colors.infoBgLight}
+          paddingTop={20}
+        />
         <View style={styles.buttonContainer}>
           <View>
             <Button title={strings.operations.save} />
@@ -242,8 +281,7 @@ export default function EditProfile({ navigation }) {
             </Text>
             <TouchableOpacity onPress={() => setSubscriptionPopup(true)}>
               <Text style={styles.bottomTextLink}>
-                {' '}
-                {strings.profile.manageSubscription}{' '}
+                {strings.profile.manageSubscription}
               </Text>
             </TouchableOpacity>
 
@@ -253,22 +291,30 @@ export default function EditProfile({ navigation }) {
                 onPress={() => setSubscriptionPopup(false)}
                 style={styles.popUpContainer}
               >
-                <FontAwesomeIcon
-                  icon={faClose}
-                  size={ms(30)}
-                  color={theme.light.colors.primary}
-                />
+                <View style={styles.iconBackgroundClose}>
+                  <FontAwesomeIcon
+                    icon={faClose}
+                    size={ms(13)}
+                    color={theme.light.colors.primaryBgDark}
+                  />
+                </View>
               </TouchableOpacity>
-              <Text style={[styles.errorTxt, styles.errorTxtColor]}>
-                {' '}
-                {strings.profile.cancelSubscription}{' '}
+              <Text style={[styles.errorTxtHeader, styles.errorTxtColor]}>
+                {strings.profile.cancelSubscription}
               </Text>
               <View style={styles.ruleContainer}>
                 <Text style={styles.errorTxt}>{strings.profile.rule1}</Text>
                 <Text style={styles.errorTxt}>{strings.profile.rule2} </Text>
                 <Text style={styles.errorTxt}>{strings.profile.rule3} </Text>
               </View>
-              <Button title={strings.operations.ok} />
+              <Button
+                title={strings.operations.okay}
+                style={styles.closeMyAccountButton}
+                textStyle={{
+                  color: theme.light.colors.primary,
+                }}
+                onPress={() => setSubscriptionPopup(false)}
+              />
             </PopUp>
           </View>
         )}
@@ -281,15 +327,16 @@ export default function EditProfile({ navigation }) {
           onPress={() => setOpenPopUp(false)}
           style={styles.popUpTouch}
         >
-          <FontAwesomeIcon
-            icon={faClose}
-            size={30}
-            color={theme.light.colors.primary}
-          />
+          <View style={styles.iconBackgroundClose}>
+            <FontAwesomeIcon
+              icon={faClose}
+              size={13}
+              color={theme.light.colors.primary}
+            />
+          </View>
         </TouchableOpacity>
         <Text style={[TextStyles.label, styles.closeConfirm]}>
-          {' '}
-          {strings.profile.closeConfirm}{' '}
+          {strings.profile.closeConfirm}
         </Text>
         <Button
           title={strings.operations.no}
@@ -348,14 +395,15 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flex: 1,
     justifyContent: 'flex-end',
-    paddingTop: ms(20),
+    paddingTop: ms(10),
+    marginBottom: ms(-30),
   },
   marginTop: { marginTop: vs(50) },
   closeMyAccountButtonContainer: { marginTop: ms(10) },
   closeMyAccountButton: {
     backgroundColor: theme.light.colors.white,
     borderWidth: 2,
-    borderColor: theme.light.colors.primary,
+    borderColor: theme.light.colors.primaryBgDark,
   },
   ScrollView: {
     flex: 1,
@@ -399,14 +447,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: theme.light.colors.textFieldBorderColor,
     padding: ms(10),
-    height: vs(45),
+    height: vs(40),
     fontSize: ms(18, 0.3),
     fontFamily: FontFamily.BrandonGrotesque_regular,
     marginBottom: vs(15),
   },
   CalendarIcon: {
     position: 'absolute',
-    top: 42,
+    top: 45,
     right: 15,
   },
   replaceBtn: {
@@ -451,35 +499,53 @@ const styles = StyleSheet.create({
   dropListTxt: {
     fontFamily: FontFamily.BrandonGrotesque_regular,
     fontSize: ms(17, 0.3),
+    padding: ms(10),
   },
   bottomTextContainer: {
     alignItems: 'center',
-    padding: 10,
+    paddingVertical: 10,
+    paddingTop: ms(50),
   },
   bottomTextLebel: {
     textAlign: 'center',
     fontFamily: FontFamily.BrandonGrotesque_medium,
-    fontSize: 16,
+    fontSize: ms(18, 0.3),
+    paddingHorizontal: ms(30),
   },
   bottomTextLink: {
-    color: theme.light.colors.primary,
+    color: theme.light.colors.primaryBgDark,
     textDecorationLine: 'underline',
     fontFamily: FontFamily.BrandonGrotesque_medium,
     fontSize: ms(20, 0.3),
+    marginBottom: -ms(30),
   },
-  popUpContainer: { padding: ms(20) },
-  errorTxt: {
+  popUpContainer: {
+    padding: ms(20),
+  },
+  errorTxtHeader: {
     fontFamily: FontFamily.BrandonGrotesque_medium,
-    fontSize: ms(20, 0.3),
+    fontSize: ms(16, 0.3),
+  },
+  errorTxt: {
+    fontFamily: FontFamily.BrandonGrotesque_regular,
+    color: theme.light.colors.black,
+    fontSize: ms(16, 0.3),
+    right: ms(60),
   },
   ruleContainer: {
     alignItems: 'flex-start',
+    padding: ms(20),
   },
   marginBottom50: {
     marginBottom: ms(50),
   },
   popUpTouch: {
     padding: 20,
+  },
+  iconBackgroundClose: {
+    backgroundColor: theme.light.colors.primaryBgLight,
+    padding: ms(10),
+    borderRadius: 60,
   },
   noButton: {
     marginTop: vs(20),
@@ -496,6 +562,16 @@ const styles = StyleSheet.create({
   imageFromGalleryButton: {
     margin: ms(5),
   },
-  errorTxtColor: { color: theme.light.colors.black },
-  closeConfirm: { textAlign: 'center' },
+  errorTxtColor: {
+    color: theme.light.colors.black,
+    fontFamily: FontFamily.Recoleta_bold,
+    fontSize: ms(14, 0.3),
+  },
+  closeConfirm: {
+    textAlign: 'center',
+    color: theme.light.colors.black,
+    fontFamily: FontFamily.Recoleta_bold,
+    fontSize: ms(14, 0.3),
+    paddingHorizontal: 30,
+  },
 });

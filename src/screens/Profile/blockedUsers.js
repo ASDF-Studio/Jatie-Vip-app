@@ -39,7 +39,7 @@ export default function BlockedUsers({ navigation }) {
       <HorizontalLine
         color={theme.light.colors.primaryBg}
         paddingTop={15}
-        paddingBottom={8}
+        // paddingBottom={8}
       />
       <View>
         <FlatList
@@ -47,6 +47,7 @@ export default function BlockedUsers({ navigation }) {
           key={props => props.id}
           initialNumToRender={10}
           contentContainerStyle={styles.contentContainerStyle}
+          style={styles.bellowContainer}
           renderItem={({ item }) => {
             return (
               <View style={styles.listContainer}>
@@ -90,6 +91,9 @@ export default function BlockedUsers({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  bellowContainer: {
+    paddingTop: 10,
+  },
   container: {
     flex: 1,
     backgroundColor: theme.light.colors.white,

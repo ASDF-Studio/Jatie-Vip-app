@@ -229,7 +229,7 @@ export default function Chat({ navigation, route }) {
             }}
           />
           <ModalList
-            title={strings.operations.block}
+            title={strings.operations.block + strings.home.DummyUser}
             icon={faXmark}
             iconColor={theme.light.colors.secondary}
             iconBg={theme.light.colors.infoBgLight}
@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
   },
   messageTxtContainer: {
     width: '85%',
-    backgroundColor: theme.light.colors.primary,
+    backgroundColor: theme.light.colors.primaryBgDarkest,
     borderRadius: 10,
     padding: ms(10),
   },

@@ -143,7 +143,7 @@ export default function AdminPost({ navigation }) {
           {strings.home.shareToFeed}
         </Text>
       </View>
-      <HorizontalLine />
+      <HorizontalLine color={theme.light.colors.primaryBgLight} />
       <ScrollView>
         <View style={styles.postContainer}>
           <View style={styles.TextBoxDEsc}>
