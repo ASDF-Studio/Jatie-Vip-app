@@ -18,6 +18,9 @@ export const NAVIGATION = {
   chat: 'Chat',
   searchUser: 'SearchUser',
   birthDayToday: 'BirthDayToday',
+  adminGroupChat: 'AdminGroupChat',
+  notification: 'Notification',
+  search: 'Search',
 
   // profle
   profile: 'Profile',

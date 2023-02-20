@@ -87,79 +87,60 @@ export default function SearchUser({ navigation }) {
         </View>
       )}
 
-      {!searchListOpen && (
-        <View style={styles.searchBody}>
-          <FontAwesomeIcon
-            icon={faFaceMehBlank}
-            size={ms(44)}
-            color={theme.light.colors.primary}
-          />
-          <Text
-            style={[styles.searchTxt, { fontSize: ms(18), marginTop: ms(10) }]}
-          >
-            {' '}
-            {strings.message.emptyTxt}
-          </Text>
-        </View>
-      )}
-
       {searchListOpen && (
         <ScrollView>
           <View style={styles.searchList}>
-            <Text style={styles.searchTxt}>
-              {' '}
-              {strings.profile.searchResult}
-            </Text>
+            {/* <Text style={styles.searchTxt}> {strings.profile.searchResult}</Text> */}
             <View>
-              <FlatList
-                data={Data}
-                key={props => props.id}
-                initialNumToRender={10}
-                contentContainerStyle={{ paddingBottom: ms(100) }}
-                renderItem={({ item }) => {
-                  return (
-                    <View style={styles.listContainer}>
-                      <TouchableOpacity
-                        style={styles.list}
-                        // onPress = {()=> navigation.navigate(NAVIGATION.userProfile)}
-                      >
-                        <Image
-                          source={{ uri: item.image }}
-                          style={styles.profileImage}
-                        />
-                        <View style={styles.nameContainer}>
-                          <Text style={styles.nameTxt}> {item.name} </Text>
-                          <Text style={styles.userNameTxt}>
-                            {' '}
-                            {item.userName}{' '}
-                          </Text>
-                        </View>
-                      </TouchableOpacity>
-                    </View>
-                  );
-                }}
-              />
-            </View>
-
-            {Data.map(item => {
-              return (
-                <View style={styles.listContainer} key={item.id}>
-                  <TouchableOpacity
-                    style={styles.list}
-                    // onPress = {()=> navigation.navigate(NAVIGATION.userProfile)}
-                  >
-                    <Image
-                      source={{ uri: item.image }}
-                      style={styles.profileImage}
-                    />
-                    <View style={styles.nameContainer}>
-                      <Text style={styles.nameTxt}> {item.name} </Text>
-                      <Text style={styles.userNameTxt}> {item.userName} </Text>
-                    </View>
-                  </TouchableOpacity>
+              {userType.user == `${strings.userType.admin}` && (
+                <View>
+                  {groupMessage(
+                    faUserGroup,
+                    strings.message.toEveryOne,
+                    navigation
+                  )}
+                  {groupMessage(faCrown, strings.message.toVipOnly, navigation)}
+                  {groupMessage(
+                    faUser,
+                    strings.message.toFreeMemberOnly,
+                    navigation
+                  )}
+                  {groupMessage(
+                    faBirthdayCake,
+                    strings.message.birthDaysToday,
+                    navigation
+                  )}
+                  <HorizontalLine
+                    color={theme.light.colors.infoBgLight}
+                    paddingTop={10}
+                    paddingBottom={10}
+                  />
                 </View>
-              );
-            })}
+              )}
+
+              {Data.map(item => {
+                return (
+                  <View style={styles.listContainer} key={item.id}>
+                    <TouchableOpacity
+                      style={styles.list}
+                      // onPress = {()=> navigation.navigate(NAVIGATION.userProfile)}
+                    >
+                      <Image
+                        source={{ uri: item.image }}
+                        style={styles.profileImage}
+                      />
+                      <View style={styles.nameContainer}>
+                        <Text style={styles.nameTxt}> {item.name} </Text>
+                        <Text style={styles.userNameTxt}>
+                          {' '}
+                          {item.userName}{' '}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                );
+              })}
+            </View>
           </View>
         </ScrollView>
       )}
