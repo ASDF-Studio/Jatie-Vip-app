@@ -34,6 +34,16 @@ export const styles = StyleSheet.create({
     width: '100%',
     height: ms(42),
   },
+  dropDownContainerStyle: {
+    marginTop: ms(17),
+    marginBottom: ms(17),
+    borderWidth: 1,
+    borderTopEndRadius: 10,
+    borderTopStartRadius: 10,
+    borderBottomEndRadius: 10,
+    borderBottomStartRadius: 10,
+    borderColor: theme.light.colors.primary,
+  },
   calenderView: {
     paddingTop: vs(5, 0.3),
     flexDirection: 'row',
@@ -45,6 +55,7 @@ export const styles = StyleSheet.create({
     backgroundColor: theme.light.colors.textFieldBackgroundColor,
     borderTopLeftRadius: 10,
     borderBottomLeftRadius: 10,
+    paddingLeft: ms(10),
   },
   calenderIcon: {
     backgroundColor: theme.light.colors.textFieldBackgroundColor,

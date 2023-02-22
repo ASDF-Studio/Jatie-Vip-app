@@ -183,11 +183,12 @@ export default function EditProfile({ navigation }) {
               setItems={setGender}
               style={styles.textFiled}
               textStyle={styles.dropListTxt}
-              multiple={true}
               min={0}
               max={2}
               listMode="SCROLLVIEW"
-              dropDownDirection="TOP"
+              zIndex={3000}
+              zIndexInverse={1000}
+              dropDownContainerStyle={styles.dropDownContainerStyle}
             />
           </View>
           <View style={styles.textFiledContainer}>
@@ -206,6 +207,9 @@ export default function EditProfile({ navigation }) {
               style={styles.textFiled}
               textStyle={styles.dropListTxt}
               listMode="SCROLLVIEW"
+              zIndex={2000}
+              zIndexInverse={2000}
+              dropDownContainerStyle={styles.dropDownContainerStyle}
             />
           </View>
           {/* userID */}
@@ -500,6 +504,13 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.BrandonGrotesque_regular,
     fontSize: ms(17, 0.3),
     padding: ms(10),
+  },
+  dropDownContainerStyle: {
+    marginTop: ms(5),
+    borderWidth: 1,
+    borderTopEndRadius: 10,
+    borderTopStartRadius: 10,
+    borderColor: theme.light.colors.primary,
   },
   bottomTextContainer: {
     alignItems: 'center',

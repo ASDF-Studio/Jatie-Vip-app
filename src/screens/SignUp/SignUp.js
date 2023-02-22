@@ -11,17 +11,19 @@ import { AuthHeader } from '@/components/AuthHeader';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { navigationRef } from '@/navigation/RootNavigation';
 import { NAVIGATION } from '@/constants';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { faCalendar } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import moment from 'moment';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import DatePicker from 'react-native-date-picker';
+import { faCalendar } from '@fortawesome/free-solid-svg-icons';
+import { theme } from '@/theme';
 
 export function SignUp() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
 
   const [date, setDate] = useState(new Date());
+  const [openDatePicker, setOpenDatePicker] = useState(false);
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
 
@@ -36,9 +38,8 @@ export function SignUp() {
   const [openCountryDropDown, setOpenCountryDropDown] = useState(false);
   const [countryvalue, setCountryvalue] = useState(null);
   const [countryItems, setCountryItems] = useState([
-    { label: 'India', value: 'India' },
     { label: 'United States', value: 'United States' },
-    { label: 'China', value: 'China' },
+    { label: 'Australia', value: 'Australia' },
     { label: 'United Kingdom', value: 'United Kingdom' },
   ]);
 
@@ -55,7 +56,7 @@ export function SignUp() {
     navigationRef.navigate(NAVIGATION.addProfilePicture);
   };
 
-  const onChange = (event, selectedDate) => {
+  const onChange = selectedDate => {
     const formattedDate = moment(selectedDate).format('MMM DD, yyyy');
 
     console.log('selected date', formattedDate);
@@ -106,21 +107,40 @@ export function SignUp() {
         >
           <View pointerEvents="none" style={styles.calenderView}>
             <TextInput
-              value={date}
+              // value={date}
               placeholder={strings.SignUp.dobPlaceHolder}
+              value={moment(date).format('MM-DD-YYYY')}
               style={styles.dobInput}
             />
             <View style={styles.calenderIcon}>
-              <FontAwesomeIcon icon={faCalendar} />
+              <FontAwesomeIcon
+                icon={faCalendar}
+                color={theme.light.colors.info}
+              />
             </View>
           </View>
         </TouchableOpacity>
 
         {show && (
-          <DateTimePicker
-            value={new Date(date)}
-            mode={mode}
-            onChange={onChange}
+          // <DateTimePicker
+          //   value={new Date(date)}
+          //   mode={mode}
+          //   onChange={onChange}
+          // />
+          <DatePicker
+            modal
+            mode="date"
+            open={show}
+            // locale = "fr"
+            date={date}
+            onConfirm={date => {
+              setShow(false);
+              setDate(date);
+            }}
+            onCancel={() => {
+              setShow(false);
+            }}
+            // onDateChange={onChange}
           />
         )}
 
@@ -135,6 +155,10 @@ export function SignUp() {
           style={styles.dropDownPicker}
           placeholder={strings.SignUp.genderPlaceHolder}
           placeholderStyle={styles.dropdowntextstyle}
+          listMode="SCROLLVIEW"
+          zIndex={3000}
+          zIndexInverse={1000}
+          dropDownContainerStyle={styles.dropDownContainerStyle}
         />
         <Text style={styles.subTitle}>{strings.SignUp.country}</Text>
 
@@ -148,6 +172,10 @@ export function SignUp() {
           style={styles.dropDownPicker}
           placeholder={strings.SignUp.countryPlaceHolder}
           placeholderStyle={styles.dropdowntextstyle}
+          listMode="SCROLLVIEW"
+          zIndex={1000}
+          zIndexInverse={3000}
+          dropDownContainerStyle={styles.dropDownContainerStyle}
         />
         <Button
           onPress={handleSubmit}
