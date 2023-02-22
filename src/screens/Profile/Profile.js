@@ -7,11 +7,7 @@ import {
   StatusBar,
   SafeAreaView,
 } from 'react-native';
-import {
-  faSliders,
-  faSearch,
-  faRightFromBracket,
-} from '@fortawesome/free-solid-svg-icons';
+import { faSliders } from '@fortawesome/free-solid-svg-icons';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
 import { ms } from 'react-native-size-matters';
 import { TextStyles, theme } from '@/theme';
@@ -29,6 +25,7 @@ import { strings } from '@/localization';
 import { useSelector, useDispatch } from 'react-redux';
 import { FontFamily } from '@/theme/Fonts';
 import { Data } from './ProfileData/profileData';
+import { faSearch } from '@fortawesome/pro-regular-svg-icons';
 
 export function Profile({ navigation }) {
   const userType = useSelector(state => state.userType);
@@ -45,7 +42,7 @@ export function Profile({ navigation }) {
               uri: Data.profilePic,
             }}
           />
-          <View>
+          <View style={styles.headerText}>
             <Text style={styles.nameTxt}>{Data.name}</Text>
             <Text style={styles.userNameTxt}>{Data.userName}</Text>
           </View>
@@ -115,11 +112,22 @@ export const styles = StyleSheet.create({
   headerImageContainer: {
     flexDirection: 'row',
   },
+  headerImage: {
+    width: ms(60),
+    height: ms(60),
+    borderWidth: 1,
+    borderRadius: 100,
+    margin: ms(3),
+  },
+  headerText: {
+    margin: ms(7),
+    marginLeft: ms(5),
+  },
   nameTxt: [
     TextStyles.header,
     {
       color: theme.light.colors.black,
-      fontSize: ms(20, 0.3),
+      fontSize: ms(24, 0.3),
       paddingLeft: ms(3, 0.3),
       paddingTop: ms(4),
     },
@@ -130,19 +138,14 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     top: ms(25),
     paddingLeft: ms(3, 0.3),
-  },
-  headerImage: {
-    width: ms(50),
-    height: ms(50),
-    borderWidth: 2,
-    borderRadius: 100,
+    paddingTop: ms(10),
   },
   iconContiner: {
     flexDirection: 'row',
-    paddingTop: ms(9),
+    paddingTop: ms(18),
   },
   bellIcon: {
-    marginRight: ms(12),
+    marginRight: ms(6),
   },
   searchIcon: {
     marginRight: ms(12),
@@ -157,7 +160,7 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     borderRadius: 100,
     left: ms(74),
-    top: ms(10),
+    top: ms(18),
   },
   feedContainer: {
     flex: 1,

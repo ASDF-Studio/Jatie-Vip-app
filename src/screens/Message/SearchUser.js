@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import { faBell, faFaceMehBlank } from '@fortawesome/free-regular-svg-icons';
 import {
-  faSearch,
   faEllipsis,
   faUser,
   faBirthdayCake,
@@ -26,6 +25,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { useSelector } from 'react-redux';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Data } from './MessageData/searchUserData';
+import { faSearch } from '@fortawesome/pro-regular-svg-icons';
 
 export default function SearchUser({ navigation }) {
   const [searchListOpen, setSearchListOpen] = useState(false);
@@ -279,6 +279,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingLeft: ms(7),
   },
   nameTxt: {
     fontFamily: FontFamily.Recoleta_bold,

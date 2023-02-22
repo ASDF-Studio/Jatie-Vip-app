@@ -26,7 +26,6 @@ import {
   faLock,
   faPen,
   faPlay,
-  faSearch,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
@@ -39,6 +38,7 @@ import { strings } from '@/localization';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Data } from './exclusiveData/exclusiveData';
+import { faSearch } from '@fortawesome/pro-regular-svg-icons';
 
 export function Exclusive({ navigation }) {
   const [open, setOpen] = useState(false);

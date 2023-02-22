@@ -31,13 +31,12 @@ import {
   faEllipsis,
   faFlag,
   faImage,
-  faPaperPlane,
-  faSearch,
   faTrash,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import { Data } from './MessageData/chatData';
+import { faPaperPlaneTop, faSearch } from '@fortawesome/pro-regular-svg-icons';
 
 let nextId = 0;
 
@@ -254,7 +253,7 @@ export default function Chat({ navigation, route }) {
               </TouchableOpacity>
               <TouchableOpacity style={[styles.boxIcon, styles.sendBoxIcon]}>
                 <FontAwesomeIcon
-                  icon={faPaperPlane}
+                  icon={faPaperPlaneTop}
                   size={ms(16)}
                   color={theme.light.colors.primary}
                 />

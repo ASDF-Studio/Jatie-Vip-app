@@ -9,7 +9,6 @@ import {
   SafeAreaView,
 } from 'react-native';
 import {
-  faSearch,
   faCrown,
   faMessage,
   faUserPlus,
@@ -38,6 +37,8 @@ import { HorizontalLine } from '@/components';
 import { ms, vs } from 'react-native-size-matters';
 import { NAVIGATION } from '@/constants';
 import { Data, demo } from './ProfileData/userProfileData';
+import { faSearch } from '@fortawesome/pro-regular-svg-icons';
+import { FontFamily } from '@/theme/Fonts';
 
 export default function UserProfile({ navigation }) {
   const [openMore, setOpenMore] = useState(false);
@@ -56,28 +57,28 @@ export default function UserProfile({ navigation }) {
           <View style={styles.profileLogoContainer}>
             <FontAwesomeIcon
               icon={faCrown}
-              color={theme.light.colors.primary}
+              color={theme.light.colors.primaryBgDark}
               size={20}
             />
           </View>
-          <View>
+          <View style={styles.profileTitleContainer}>
             <Text style={[TextStyles.header, styles.headerDesign]}>
               {' '}
               {demo.name}
             </Text>
-            <Text style={TextStyles.label}> {demo.userName}</Text>
+            <Text style={styles.userNameDesign}> {demo.userName}</Text>
           </View>
         </View>
         <View style={styles.iconContiner}>
           <Icon
             icon={faSearch}
-            size={20}
+            size={22}
             style={styles.icon}
             onPress={() => navigation.navigate(NAVIGATION.search)}
           />
           <Icon
             icon={faBell}
-            size={20}
+            size={22}
             style={styles.icon}
             onPress={() => navigation.navigate(NAVIGATION.notification)}
           />
@@ -104,7 +105,7 @@ export default function UserProfile({ navigation }) {
               icon={faMessage}
               color={theme.light.colors.success}
             />
-            <Text style={[TextStyles.label, styles.IconBoxColor]}>
+            <Text style={[styles.IconBoxColor]}>
               {' '}
               {strings.profile.message}{' '}
             </Text>
@@ -114,17 +115,17 @@ export default function UserProfile({ navigation }) {
               icon={faUserPlus}
               color={theme.light.colors.primary}
             />
-            <Text style={[TextStyles.label, styles.labelColor]}>
-              {' '}
-              {strings.profile.followers}{' '}
-            </Text>
+            <Text style={[styles.labelColor]}> {strings.profile.follow} </Text>
           </TouchableOpacity>
         </View>
         <TouchableOpacity
           onPress={() => setOpenMore(true)}
           style={styles.moreIconContainer}
         >
-          <FontAwesomeIcon icon={faEllipsis} />
+          <FontAwesomeIcon
+            icon={faEllipsis}
+            color={theme.light.colors.secondary}
+          />
         </TouchableOpacity>
       </View>
       <HorizontalLine />
@@ -244,15 +245,27 @@ const styles = StyleSheet.create({
   profileLogoContainer: {
     height: ms(30),
     width: ms(30),
-    backgroundColor: theme.light.colors.primaryBg,
+    backgroundColor: theme.light.colors.primaryBgSolid,
     position: 'absolute',
     bottom: vs(-18),
     left: ms(10),
-    borderRadius: 100,
+    borderRadius: 60,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  headerDesign: { color: theme.light.colors.text },
+  profileTitleContainer: {
+    marginLeft: 10,
+  },
+  headerDesign: {
+    color: theme.light.colors.text,
+    fontFamily: FontFamily.Recoleta_bold,
+    fontSize: ms(24, 0.3),
+  },
+  userNameDesign: {
+    paddingTop: ms(3),
+    fontFamily: FontFamily.Recoleta_regular,
+    fontSize: ms(14, 0.3),
+  },
   messageHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -261,24 +274,34 @@ const styles = StyleSheet.create({
   messageLeft: {
     flexDirection: 'row',
   },
-  messageRight: {},
   IconBox: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-evenly',
     backgroundColor: theme.light.colors.primaryBgLight,
-    padding: ms(10),
+    paddingHorizontal: ms(15),
     borderRadius: 10,
   },
   IconBoxDesign: {
     backgroundColor: theme.light.colors.successBgLight,
     marginRight: ms(10),
   },
-  IconBoxColor: { color: theme.light.colors.success },
-  labelColor: { color: theme.light.colors.primary },
+  IconBoxColor: {
+    color: theme.light.colors.success,
+    fontFamily: FontFamily.Recoleta_bold,
+    fontSize: ms(13, 0.3),
+    paddingLeft: ms(10),
+  },
+
+  labelColor: {
+    color: theme.light.colors.primary,
+    fontFamily: FontFamily.Recoleta_bold,
+    fontSize: ms(13, 0.3),
+    paddingLeft: ms(10),
+  },
   moreIconContainer: {
-    height: ms(40),
-    width: ms(40),
+    height: ms(30),
+    width: ms(30),
     backgroundColor: theme.light.colors.infoBg,
     padding: ms(10),
     borderRadius: 60,

@@ -18,7 +18,6 @@ import {
   faTiktok,
   faYoutube,
   faInstagram,
-  faSnapchat,
 } from '@fortawesome/free-brands-svg-icons';
 import { TextStyles, theme } from '@/theme';
 import { FontFamily } from '@/theme/Fonts';
