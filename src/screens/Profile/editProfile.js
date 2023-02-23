@@ -21,6 +21,7 @@ import { ms, s, vs } from 'react-native-size-matters';
 import { strings } from '@/localization';
 import ImagePicker from 'react-native-image-crop-picker';
 import { ScrollView } from 'react-native-gesture-handler';
+import { faCheck } from '@fortawesome/pro-regular-svg-icons';
 
 export default function EditProfile({ navigation }) {
   const [date, setDate] = useState(new Date());
@@ -40,6 +41,15 @@ export default function EditProfile({ navigation }) {
     { label: 'United State', value: 'United State' },
     { label: 'United kingdom', value: 'United kingdom' },
     { label: 'Australia', value: 'Australia' },
+    { label: 'Bangladesh', value: 'Bangladesh' },
+    { label: 'India', value: 'India' },
+    { label: 'China', value: 'China' },
+    { label: 'Pakistan', value: 'Pakistan' },
+    { label: 'UAE', value: 'UAE' },
+    { label: 'Saudi Arabia', value: 'Saudi Arabia' },
+    { label: 'Qatar', value: 'Qatar' },
+    { label: 'Iran', value: 'Iran' },
+    { label: 'Iraq', value: 'Iraq' },
   ]);
   const [closeAccount, setCloseAccount] = useState(false);
   const [replageImage, setReplageImage] = useState(
@@ -181,7 +191,7 @@ export default function EditProfile({ navigation }) {
               setOpen={setGenderListOpen}
               setValue={setGenderValue}
               setItems={setGender}
-              style={styles.textFiled}
+              style={genderListOpen ? styles.openDropDown : styles.textFiled}
               textStyle={styles.dropListTxt}
               min={0}
               max={2}
@@ -189,6 +199,12 @@ export default function EditProfile({ navigation }) {
               zIndex={3000}
               zIndexInverse={1000}
               dropDownContainerStyle={styles.dropDownContainerStyle}
+              TickIconComponent={() => (
+                <FontAwesomeIcon
+                  icon={faCheck}
+                  color={theme.light.colors.primary}
+                />
+              )}
             />
           </View>
           <View style={styles.textFiledContainer}>
@@ -204,12 +220,18 @@ export default function EditProfile({ navigation }) {
               setOpen={setLocationListOpen}
               setValue={setLocationValue}
               setItems={setLocation}
-              style={styles.textFiled}
+              style={locationListOpen ? styles.openDropDown : styles.textFiled}
               textStyle={styles.dropListTxt}
               listMode="SCROLLVIEW"
-              zIndex={2000}
-              zIndexInverse={2000}
+              zIndex={1000}
+              zIndexInverse={3000}
               dropDownContainerStyle={styles.dropDownContainerStyle}
+              TickIconComponent={() => (
+                <FontAwesomeIcon
+                  icon={faCheck}
+                  color={theme.light.colors.primary}
+                />
+              )}
             />
           </View>
           {/* userID */}
@@ -436,8 +458,8 @@ const styles = StyleSheet.create({
     marginTop: vs(20),
   },
   textFiledContainer: {
-    paddingLeft: 5,
-    paddingRight: 5,
+    marginLeft: ms(5),
+    marginRight: ms(5),
   },
   textFieldLebel: {
     color: theme.light.colors.activeTabLabel,
@@ -503,14 +525,40 @@ const styles = StyleSheet.create({
   dropListTxt: {
     fontFamily: FontFamily.BrandonGrotesque_regular,
     fontSize: ms(17, 0.3),
+  },
+  openDropDown: {
+    borderBottomStartRadius: 10,
+    borderBottomEndRadius: 10,
+    borderTopStartRadius: 10,
+    borderTopEndRadius: 10,
+    borderWidth: 1,
+    borderColor: theme.light.colors.info,
+
+    backgroundColor: theme.light.colors.textFieldBackgroundColor,
     padding: ms(10),
+    height: vs(40),
+    fontSize: ms(18, 0.3),
+    fontFamily: FontFamily.BrandonGrotesque_regular,
+    marginBottom: vs(15),
   },
   dropDownContainerStyle: {
     marginTop: ms(5),
+    marginBottom: ms(17),
     borderWidth: 1,
     borderTopEndRadius: 10,
     borderTopStartRadius: 10,
-    borderColor: theme.light.colors.primary,
+    borderBottomEndRadius: 10,
+    borderBottomStartRadius: 10,
+    borderColor: theme.light.colors.dropDownBorder,
+
+    //IOS
+    shadowOffset: { width: -2, height: 4 },
+    shadowColor: theme.light.colors.secondary,
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+
+    //android
+    elevation: 50,
   },
   bottomTextContainer: {
     alignItems: 'center',

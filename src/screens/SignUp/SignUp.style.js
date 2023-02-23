@@ -42,7 +42,27 @@ export const styles = StyleSheet.create({
     borderTopStartRadius: 10,
     borderBottomEndRadius: 10,
     borderBottomStartRadius: 10,
-    borderColor: theme.light.colors.primary,
+    borderColor: theme.light.colors.dropDownBorder,
+
+    //IOS
+    shadowOffset: { width: -2, height: 4 },
+    shadowColor: theme.light.colors.secondary,
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+
+    //android
+    elevation: 50,
+  },
+  openDropDown: {
+    borderBottomStartRadius: 10,
+    borderBottomEndRadius: 10,
+    borderTopStartRadius: 10,
+    borderTopEndRadius: 10,
+    borderWidth: 1,
+    borderColor: theme.light.colors.info,
+
+    backgroundColor: theme.light.colors.textFieldBackgroundColor,
+    marginVertical: vs(10, 0.3),
   },
   calenderView: {
     paddingTop: vs(5, 0.3),

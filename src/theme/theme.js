@@ -36,6 +36,7 @@ export const theme = {
       black: 'rgb(43, 45,66)',
       white: '#ffffff',
       headingBlack: '#000000',
+      dropDownBorder: '#E9EBEC',
     },
   },
   dark: {

@@ -17,6 +17,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import DatePicker from 'react-native-date-picker';
 import { faCalendar } from '@fortawesome/free-solid-svg-icons';
 import { theme } from '@/theme';
+import { faCheck } from '@fortawesome/pro-regular-svg-icons';
 
 export function SignUp() {
   const [name, setName] = useState('');
@@ -38,9 +39,18 @@ export function SignUp() {
   const [openCountryDropDown, setOpenCountryDropDown] = useState(false);
   const [countryvalue, setCountryvalue] = useState(null);
   const [countryItems, setCountryItems] = useState([
-    { label: 'United States', value: 'United States' },
+    { label: 'United State', value: 'United State' },
+    { label: 'United kingdom', value: 'United kingdom' },
     { label: 'Australia', value: 'Australia' },
-    { label: 'United Kingdom', value: 'United Kingdom' },
+    { label: 'Bangladesh', value: 'Bangladesh' },
+    { label: 'India', value: 'India' },
+    { label: 'China', value: 'China' },
+    { label: 'Pakistan', value: 'Pakistan' },
+    { label: 'UAE', value: 'UAE' },
+    { label: 'Saudi Arabia', value: 'Saudi Arabia' },
+    { label: 'Qatar', value: 'Qatar' },
+    { label: 'Iran', value: 'Iran' },
+    { label: 'Iraq', value: 'Iraq' },
   ]);
 
   const isLoading = useSelector(state =>
@@ -152,13 +162,22 @@ export function SignUp() {
           setOpen={setOpenGenderDropDown}
           setValue={setGenderValue}
           setItems={setGenderItems}
-          style={styles.dropDownPicker}
+          // style={styles.dropDownPicker}
+          style={
+            openGenderDropDown ? styles.openDropDown : styles.dropDownPicker
+          }
           placeholder={strings.SignUp.genderPlaceHolder}
           placeholderStyle={styles.dropdowntextstyle}
           listMode="SCROLLVIEW"
           zIndex={3000}
           zIndexInverse={1000}
           dropDownContainerStyle={styles.dropDownContainerStyle}
+          TickIconComponent={() => (
+            <FontAwesomeIcon
+              icon={faCheck}
+              color={theme.light.colors.primary}
+            />
+          )}
         />
         <Text style={styles.subTitle}>{strings.SignUp.country}</Text>
 
@@ -169,13 +188,22 @@ export function SignUp() {
           setOpen={setOpenCountryDropDown}
           setValue={setCountryvalue}
           setItems={setCountryItems}
-          style={styles.dropDownPicker}
+          // style={styles.dropDownPicker}
+          style={
+            openCountryDropDown ? styles.openDropDown : styles.dropDownPicker
+          }
           placeholder={strings.SignUp.countryPlaceHolder}
           placeholderStyle={styles.dropdowntextstyle}
           listMode="SCROLLVIEW"
           zIndex={1000}
           zIndexInverse={3000}
           dropDownContainerStyle={styles.dropDownContainerStyle}
+          TickIconComponent={() => (
+            <FontAwesomeIcon
+              icon={faCheck}
+              color={theme.light.colors.primary}
+            />
+          )}
         />
         <Button
           onPress={handleSubmit}
