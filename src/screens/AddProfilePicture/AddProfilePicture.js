@@ -22,6 +22,8 @@ import ImageCropPicker from 'react-native-image-crop-picker';
 import Modal from 'react-native-modal';
 import { close } from '@/assets';
 import { EditViewModal } from '@/components/CropPictureModal';
+import { navigationRef } from '@/navigation/RootNavigation';
+import { NAVIGATION } from '@/constants';
 
 export function AddProfilePicture() {
   const { colors } = useTheme();
@@ -59,7 +61,16 @@ export function AddProfilePicture() {
   const handleSubmit = () => {
     const dummyUserName = 'Dummy';
     const dummyUserPassword = 'Dummy';
-    dispatch(login(dummyUserName, dummyUserPassword));
+
+    // let filename = Image.split("/").pop();
+    // let fileType = filename.split(".").pop();
+    // var obj = {
+    //   uri: Image,
+    //   name: filename,
+    //   type: fileName,
+    // };
+    // dispatch(login(dummyUserName, dummyUserPassword));
+    navigationRef.navigate(NAVIGATION.homeNavigator)
   };
 
   const OpenGallery = () => {

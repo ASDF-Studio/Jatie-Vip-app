@@ -15,7 +15,10 @@ export function RootNavigator() {
   return (
     // Force use "light" color scheme for now
     <NavigationContainer ref={navigationRef} theme={theme['light']}>
-      {user ? <AppNavigator /> : <AuthNavigator />}
+      {/* {user ? <AppNavigator /> :  */}
+
+      <AuthNavigator />
+      {/* } */}
     </NavigationContainer>
   );
 }

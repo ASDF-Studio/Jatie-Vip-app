@@ -1,0 +1,1 @@
+export const BASE_URL = "https://96e3-103-223-15-30.in.ngrok.io/v1/graphql";

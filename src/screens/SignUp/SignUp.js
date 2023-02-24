@@ -1,7 +1,14 @@
-import React, { useState } from 'react';
-import { Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { shallowEqual, useSelector } from 'react-redux';
-import { TYPES } from '@/actions/UserActions';
+import React, { useEffect, useState } from 'react';
+import {
+  KeyboardAvoidingView,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { TYPES, updateProfile } from '@/actions/UserActions';
 import { Button, TextField } from '@/components';
 import { strings } from '@/localization';
 import { styles } from '@/screens/SignUp/SignUp.style';
@@ -16,11 +23,14 @@ import { faCalendar } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import moment from 'moment';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-
-export function SignUp() {
+import { showMessage } from 'react-native-flash-message';
+import { COUNTRY_LIST } from '@/constants';
+export function SignUp({ route }) {
+  const { userName } = route.params
+  const dispatch = useDispatch()
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-
+  const [birthday, setBirthday] = useState('');
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
@@ -41,7 +51,6 @@ export function SignUp() {
     { label: 'China', value: 'China' },
     { label: 'United Kingdom', value: 'United Kingdom' },
   ]);
-
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.LOGIN], state)
   );
@@ -52,13 +61,15 @@ export function SignUp() {
   );
 
   const handleSubmit = () => {
-    navigationRef.navigate(NAVIGATION.addProfilePicture);
+    validation()
+    // navigationRef.navigate(NAVIGATION.addProfilePicture);
   };
 
   const onChange = (event, selectedDate) => {
     const formattedDate = moment(selectedDate).format('MMM DD, yyyy');
-
-    console.log('selected date', formattedDate);
+    const birthDate = moment(selectedDate).format("yyyy/MMM/DD");
+    console.log('selected date', moment(selectedDate).format("yyyy/MMM/DD"));
+    setBirthday(birthDate)
     setShow(false);
     setDate(formattedDate);
   };
@@ -76,6 +87,43 @@ export function SignUp() {
     setShow(true);
   };
 
+  const validation = () => {
+    if (name == "") {
+      showMessage({
+        message: "Please enter name",
+        type: "danger"
+      })
+    } else if (email == "") {
+      showMessage({
+        message: "Please enter email",
+        type: "danger"
+      })
+    }
+    else if (birthday == "") {
+      showMessage({
+        message: "Please select birthday",
+        type: "danger"
+      })
+    }
+    else if (genderValue == "") {
+      showMessage({
+        message: "Please select gender",
+        type: "danger"
+      })
+    }
+    else if (countryvalue == "") {
+      showMessage({
+        message: "Please select country",
+        type: "danger"
+      })
+    }
+    else {
+      const id =
+        "bbf33cb8-3da8-4551-ad99-33ab3a39ce72";
+      dispatch(updateProfile(birthday, name, genderValue, id, email, countryvalue, userName))
+    }
+
+  }
   return (
     <KeyboardAwareScrollView>
       <View style={styles.container}>
@@ -126,22 +174,29 @@ export function SignUp() {
 
         <Text style={styles.subTitle}>{strings.SignUp.gender}</Text>
         <DropDownPicker
+          dropDownDirection='TOP'
           open={openGenderDropDown}
           value={genderValue}
           items={genderItems}
           setOpen={setOpenGenderDropDown}
           setValue={setGenderValue}
           setItems={setGenderItems}
-          style={styles.dropDownPicker}
+          style={
+            // [
+            styles.dropDownPicker
+            //   { marginBottom: openGenderDropDown ? 140 : 0 }
+            // ]
+          }
           placeholder={strings.SignUp.genderPlaceHolder}
           placeholderStyle={styles.dropdowntextstyle}
         />
         <Text style={styles.subTitle}>{strings.SignUp.country}</Text>
 
         <DropDownPicker
+
           open={openCountryDropDown}
           value={countryvalue}
-          items={countryItems}
+          items={COUNTRY_LIST}
           setOpen={setOpenCountryDropDown}
           setValue={setCountryvalue}
           setItems={setCountryItems}

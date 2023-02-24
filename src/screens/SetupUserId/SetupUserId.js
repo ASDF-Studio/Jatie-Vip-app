@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Text, View } from 'react-native';
-import { shallowEqual, useSelector } from 'react-redux';
-import { TYPES } from '@/actions/UserActions';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { checkUserName, TYPES } from '@/actions/UserActions';
 import { Button, TextField } from '@/components';
 import { strings } from '@/localization';
 import { styles } from '@/screens/EnterOtp/EnterOtp.styles';
@@ -10,9 +10,11 @@ import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { AuthHeader } from '@/components/AuthHeader';
 import { navigationRef } from '@/navigation/RootNavigation';
 import { NAVIGATION } from '@/constants';
+import { showMessage } from 'react-native-flash-message';
 
 export function SetupUserId() {
   const [userId, setUserId] = useState('');
+  const dispatch = useDispatch();
 
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.LOGIN], state)
@@ -22,9 +24,20 @@ export function SetupUserId() {
     state => errorsSelector([TYPES.LOGIN], state),
     shallowEqual
   );
+  const validation = () => {
+    if (userId == "") {
+      showMessage({
+        message: "Please enter username",
+        type: "danger"
+      })
+    } else {
+      dispatch(checkUserName(userId))
 
+    }
+  }
   const handleSubmit = () => {
-    navigationRef.navigate(NAVIGATION.signUp);
+    validation()
+    // navigationRef.navigate(NAVIGATION.signUp);
   };
 
   return (

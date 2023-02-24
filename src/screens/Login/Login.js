@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import { useTheme } from '@react-navigation/native';
+import React, { useEffect, useState, useRef } from 'react';
 import { Text, View } from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { TYPES, ChooseUser } from '@/actions/UserActions';
+import { TYPES, ChooseUser, login } from '@/actions/UserActions';
 import { Button, ErrorView, TextField } from '@/components';
 import { strings } from '@/localization';
 import { styles } from '@/screens/Login/Login.styles';
@@ -13,10 +14,16 @@ import { TextStyles, theme } from '@/theme';
 import { navigationRef } from '@/navigation/RootNavigation';
 import { NAVIGATION } from '@/constants';
 import DropDownPicker from 'react-native-dropdown-picker';
+import { showMessage } from "react-native-flash-message";
+import { SITE_KEY, CAPTCHA_BASE_URL } from '@/constants';
+import Recaptcha from 'react-native-recaptcha-that-works';
 
 export function Login() {
+  const recaptcha = useRef();
+
   const dispatch = useDispatch();
   const [mobileNumber, setMobileNumber] = useState('');
+  const [captchaToken, setCaptchaToken] = useState("");
 
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.LOGIN], state)
@@ -26,12 +33,45 @@ export function Login() {
     state => errorsSelector([TYPES.LOGIN], state),
     shallowEqual
   );
+  const validation = () => {
+    if (mobileNumber == 0) {
+      showMessage({
+        message: "Please enter phone number",
+        type: "danger",
+      });
+    } else if (mobileNumber.length < 10) {
+      showMessage({ message: "Please enter valid phone number", type: "danger", });
+
+    }
+    else {
+      // navigationRef.navigate(NAVIGATION.enterOtp, { "number": mobileNumber });
+      recaptcha.current.open();
+
+    }
+  };
+
 
   const handleSubmit = () => {
-    // dispatch(login(username, password));
-    navigationRef.navigate(NAVIGATION.enterOtp);
-    dispatch(ChooseUser(selectedValue));
+    validation()
+    // navigationRef.navigate(NAVIGATION.enterOtp);
+    // dispatch(logi)
   };
+  const send = () => {
+    console.log('send!');
+    recaptcha.current.open();
+  }
+
+  const onVerify = token => {
+    setCaptchaToken(token)
+
+    dispatch(login(mobileNumber))
+    console.log('success!', token);
+  }
+
+  const onExpire = () => {
+    setCaptchaToken("")
+    console.warn('expired!');
+  }
 
   // testing purpose code
   const [userListOpen, setUserListOpen] = useState(false);
@@ -46,7 +86,8 @@ export function Login() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.logoContainer}>
+
+      <View style={{ marginBottom: ms(10) }}>
         <Logo height={ms(142)} width={ms(142)} />
       </View>
       <Text style={TextStyles.title}>{strings.login.loginOrSignup}</Text>
@@ -59,20 +100,17 @@ export function Login() {
         value={mobileNumber}
         keyboardType="phone-pad"
       />
-      <ErrorView errors={errors} />
-
-      {/* only for testing purpose code */}
-      <DropDownPicker
-        placeholder="User Type"
-        open={userListOpen}
-        value={selectedValue}
-        items={user}
-        setOpen={setUserListOpen}
-        setValue={setSelectedValue}
-        setItems={setUser}
-        style={styles.textFiled}
-        textStyle={styles.dropListTxt}
+      <Recaptcha
+        ref={recaptcha}
+        siteKey={SITE_KEY}
+        baseUrl={CAPTCHA_BASE_URL}
+        onVerify={onVerify}
+        onExpire={onExpire}
+        size="normal"
+        explicit
       />
+
+      <ErrorView errors={errors} />
 
       <Button
         onPress={handleSubmit}
@@ -86,6 +124,6 @@ export function Login() {
         {strings.login.and}
         <Text style={styles.linkColor}>{strings.login.privacyPolicy}</Text>
       </Text>
-    </View>
+    </View >
   );
 }
