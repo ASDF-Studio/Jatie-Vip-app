@@ -17,6 +17,7 @@ export function App() {
         <RootNavigator />
       </PersistGate>
       <FlashMessage
+        hideOnPress
         position="top"
         floating
         duration={700}

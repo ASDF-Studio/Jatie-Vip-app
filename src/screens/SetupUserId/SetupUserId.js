@@ -15,39 +15,41 @@ import { showMessage } from 'react-native-flash-message';
 export function SetupUserId({ route }) {
   const { ID } = route.params;
   const [userId, setUserId] = useState('');
+
   const dispatch = useDispatch();
 
   const isLoading = useSelector(state =>
-    isLoadingSelector([TYPES.LOGIN], state)
+    isLoadingSelector([TYPES.CHECK_USER_NAME], state)
   );
 
   const errors = useSelector(
-    state => errorsSelector([TYPES.LOGIN], state),
+    state => errorsSelector([TYPES.CHECK_USER_NAME], state),
     shallowEqual
   );
+
   const validation = () => {
     if (userId == "") {
       showMessage({
         message: "Please enter username",
         type: "danger"
       })
-    } else {
+    } else if (errors.length <= 0) {
+
       // dispatch(checkUserName(userId))
+
       navigationRef.navigate(NAVIGATION.signUp, { "username": userId, "ID": ID });
 
     }
   }
   const handleSubmit = () => {
-    validation()
-    // navigationRef.navigate(NAVIGATION.signUp, { "username": "mukul" });
+    validation();
   };
   const OnChangehandler = (text) => {
-    if (text !== "") {
-      console.log("ETS", text)
-      setUserId(text)
-      dispatch(checkUserName(text))
+    // if (text !== "") {
+    setUserId(text)
+    dispatch(checkUserName(text))
 
-    }
+    // }
   }
 
   return (
@@ -57,7 +59,7 @@ export function SetupUserId({ route }) {
 
       <TextField
         autoCapitalize="none"
-        onChangeText={OnChangehandler}
+        onChangeText={(text) => { OnChangehandler(text) }}
         placeholder={strings.setupUserId.placeholder}
         value={userId}
       />

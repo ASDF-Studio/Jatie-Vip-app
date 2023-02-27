@@ -13,6 +13,7 @@ import { AuthHeader } from '@/components/AuthHeader';
 import { navigationRef } from '@/navigation/RootNavigation';
 import { NAVIGATION } from '@/constants';
 import { showMessage } from 'react-native-flash-message';
+import { theme } from '@/theme';
 
 export function EnterOtp({ route }) {
   const { number } = route.params;
@@ -22,13 +23,12 @@ export function EnterOtp({ route }) {
   const [codeError, setCodeError] = useState(false);
 
   const isLoading = useSelector(state =>
-    isLoadingSelector([TYPES.LOGIN], state)
+    isLoadingSelector([TYPES.VERIFY_OTP], state)
   );
   const errors = useSelector(
-    state => errorsSelector([TYPES.VERIFY_OTP_ERROR], state),
+    state => errorsSelector([TYPES.VERIFY_OTP], state),
     shallowEqual
   );
-  // console.log("fewfewfewf", JSON.stringify(errors))
 
   const validation = () => {
     if (code.length < 5) {

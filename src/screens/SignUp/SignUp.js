@@ -26,7 +26,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { showMessage } from 'react-native-flash-message';
 import { COUNTRY_LIST } from '@/constants';
 export function SignUp({ route }) {
-  const { userName, ID } = route.params
+  const { username, ID } = route.params;
   const dispatch = useDispatch()
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -67,8 +67,7 @@ export function SignUp({ route }) {
 
   const onChange = (event, selectedDate) => {
     const formattedDate = moment(selectedDate).format('MMM DD, yyyy');
-    const birthDate = moment(selectedDate).format("yyyy/MMM/DD");
-    console.log('selected date', moment(selectedDate).format("yyyy/MM/DD"));
+    const birthDate = moment(selectedDate).format("yyyy/MM/DD");
     setBirthday(birthDate)
     setShow(false);
     setDate(formattedDate);
@@ -95,31 +94,31 @@ export function SignUp({ route }) {
       })
     } else if (email == "") {
       showMessage({
-        message: strings.SignUp.email,
+        message: strings.SignUp.emailPlaceHolder,
         type: "danger"
       })
     }
     else if (birthday == "") {
       showMessage({
-        message: strings.SignUp.birthday,
+        message: strings.SignUp.dobPlaceHolder,
         type: "danger"
       })
     }
     else if (genderValue == "") {
       showMessage({
-        message: strings.SignUp.gender,
+        message: strings.SignUp.genderPlaceHolder,
         type: "danger"
       })
     }
     else if (countryvalue == "") {
       showMessage({
-        message: strings.SignUp.country,
+        message: strings.SignUp.countryPlaceHolder,
         type: "danger"
       })
     }
     else {
 
-      dispatch(updateProfile(birthday, name, genderValue, ID, email, countryvalue, userName))
+      dispatch(updateProfile(birthday, name, genderValue, ID, email, countryvalue, username))
     }
 
   }

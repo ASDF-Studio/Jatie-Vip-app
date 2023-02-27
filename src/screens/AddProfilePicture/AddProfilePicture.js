@@ -14,7 +14,6 @@ import { strings } from '@/localization';
 import { styles } from '@/screens/AddProfilePicture/AddProfilePhoto.styles';
 import { errorsSelector } from '@/selectors/ErrorSelectors';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
-import { vs } from 'react-native-size-matters';
 import { AuthHeader } from '@/components/AuthHeader';
 import { faUser } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -59,17 +58,6 @@ export function AddProfilePicture() {
   };
 
   const handleSubmit = () => {
-    const dummyUserName = 'Dummy';
-    const dummyUserPassword = 'Dummy';
-
-    // let filename = Image.split("/").pop();
-    // let fileType = filename.split(".").pop();
-    // var obj = {
-    //   uri: Image,
-    //   name: filename,
-    //   type: fileName,
-    // };
-    // dispatch(login(dummyUserName, dummyUserPassword));
     navigationRef.navigate(NAVIGATION.homeNavigator)
   };
 

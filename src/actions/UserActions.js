@@ -10,6 +10,8 @@ export const TYPES = {
   LOGIN_REQUEST: 'LOGIN_REQUEST',
   LOGIN_ERROR: 'LOGIN_ERROR',
   LOGIN_SUCCESS: 'LOGIN_SUCCESS',
+  VERIFY_OTP: "VERIFY_OTP",
+  CHECK_USER_NAME: "CHECK_USER_NAME",
   VERIFY_OTP_REQUEST: "VERIFY_OTP_REQUEST",
   VERIFY_OTP_SUCCESS: "VERIFY_OTP_SUCCESS",
   VERIFY_OTP_ERROR: "VERIFY_OTP_ERROR",
@@ -18,7 +20,8 @@ export const TYPES = {
   CHECK_USERNAME_ERROR: "VERIFY_OTP_ERROR",
   UPDATE_PROFILE_REQUEST: "UPDATE_PROFILE_REQUEST",
   UPDATE_PROFILE_SUCCESS: "UPDATE_PROFILE_SUCCESS",
-  UPDATE_PROFILE_ERROR: "UPDATE_PROFILE_ERROR"
+  UPDATE_PROFILE_ERROR: "UPDATE_PROFILE_ERROR",
+
 };
 
 const loginRequest = () => ({
@@ -104,19 +107,17 @@ export const verifyOtp = (number, Otp) => async dispatch => {
   dispatch(verifyOtpRequest());
   try {
     const user = await UserController.verifyOtp(number, Otp);
-    console.log("WOWOWOWOW", user)
-    // dispatch(verifyOtpSuccess(user));
-    // navigationRef.navigate(NAVIGATION.setupUserId);
-    // navigationRef.navigate(NAVIGATION.enterOtp, { number })
     dispatch(verifyOtpSuccess(user));
     navigationRef.navigate(NAVIGATION.setupUserId, { "ID": user.id });
 
   } catch (error) {
+
+    dispatch(verifyOtpError(error));
     showMessage({
       message: strings.enterOtp.sorryCodeDidnotMatch,
       type: "danger"
     })
-    dispatch(verifyOtpError(error));
+
   }
 };
 
@@ -124,7 +125,7 @@ export const checkUserName = (username) => async dispatch => {
   dispatch(checkUserNameRequest());
   try {
     const user = await UserController.checkUserName(username);
-    dispatch(checkUserNameSuccess(user)); 1
+    dispatch(checkUserNameSuccess(user));
     if (user.status == true) {
 
     }
@@ -133,6 +134,7 @@ export const checkUserName = (username) => async dispatch => {
         message: strings.setupUserId.chooseAnother,
         type: "danger"
       })
+      dispatch(checkUserNameRequest(error))
     }
 
   } catch (error) {
@@ -145,20 +147,20 @@ export const updateProfile = (dob, fullname, gender, id, primaryEmail, location,
   try {
     const user = await UserController.updateProfile(dob, fullname, gender, id, primaryEmail, location, username);
     dispatch(updateProfileSuccess(user));
-    navigationRef.navigate(NAVIGATION.addProfilePicture, {})
+    navigationRef.navigate(NAVIGATION.addProfilePicture)
   } catch (error) {
     dispatch(updateProfileError(error));
   }
 };
 export const uploadProfile = (file) => async dispatch => {
-  // dispatch(updateProfileRequest());
+  dispatch(updateProfileRequest());
   try {
     const number = "19184003493"
     const user = await UserController.upload_Profile_Pic(file, number);
-    // dispatch(updateProfileSuccess(user));
+    dispatch(updateProfileSuccess(user));
     navigationRef.navigate(NAVIGATION.homeNavigator)
   } catch (error) {
-    // dispatch(updateProfileError(error));
+    dispatch(updateProfileError(error));
   }
 };
 export const logout = () => async dispatch => {

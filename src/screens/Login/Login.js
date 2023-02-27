@@ -82,7 +82,6 @@ export function Login() {
     { label: 'VIP', value: 'VIP' },
   ]);
 
-  // console.log(selectedValue)
 
   return (
     <View style={styles.container}>
