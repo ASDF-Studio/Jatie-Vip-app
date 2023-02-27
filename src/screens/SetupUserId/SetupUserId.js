@@ -12,7 +12,8 @@ import { navigationRef } from '@/navigation/RootNavigation';
 import { NAVIGATION } from '@/constants';
 import { showMessage } from 'react-native-flash-message';
 
-export function SetupUserId() {
+export function SetupUserId({ route }) {
+  const { ID } = route.params;
   const [userId, setUserId] = useState('');
   const dispatch = useDispatch();
 
@@ -31,14 +32,23 @@ export function SetupUserId() {
         type: "danger"
       })
     } else {
-      dispatch(checkUserName(userId))
+      // dispatch(checkUserName(userId))
+      navigationRef.navigate(NAVIGATION.signUp, { "username": userId, "ID": ID });
 
     }
   }
   const handleSubmit = () => {
     validation()
-    // navigationRef.navigate(NAVIGATION.signUp);
+    // navigationRef.navigate(NAVIGATION.signUp, { "username": "mukul" });
   };
+  const OnChangehandler = (text) => {
+    if (text !== "") {
+      console.log("ETS", text)
+      setUserId(text)
+      dispatch(checkUserName(text))
+
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -47,7 +57,7 @@ export function SetupUserId() {
 
       <TextField
         autoCapitalize="none"
-        onChangeText={setUserId}
+        onChangeText={OnChangehandler}
         placeholder={strings.setupUserId.placeholder}
         value={userId}
       />

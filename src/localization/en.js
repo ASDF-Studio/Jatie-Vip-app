@@ -77,6 +77,13 @@ export const en = {
     termsAndConditions: 'Terms & Conditions',
     and: ' and ',
     privacyPolicy: 'Privacy Policy',
+    //-----
+
+    numberHint: "Please enter phone number",
+    numberValid: "Please enter valid phone number",
+
+
+
   },
   enterOtp: {
     title: 'Enter OTP to \ncontinue',
@@ -89,6 +96,7 @@ export const en = {
     title: 'Setup your \nUser ID',
     subtitle: 'Select your User ID',
     placeholder: '@username',
+    chooseAnother: "Sorry this username is already exist choose another one "
   },
   profile: {
     message: 'This screen has the iOS native large header.',
@@ -178,11 +186,9 @@ export const en = {
     rule1: '1. Login to www.jativip.com',
     rule2: "2. Click 'Manage'",
     rule3: "3. Click 'Cancel Renewal'",
-    closeWarning:
-      "You can't close your account while your subsription is still active.",
+    closeWarning: "You can't close your account while your subsription is still active.",
     manageSubscription: 'Manage your subscription',
-    closeConfirm:
-      "Are you sure want to close your account? This action can't be undone.",
+    closeConfirm: "Are you sure want to close your account? This action can't be undone.",
     logout: 'Logout',
     editPost: 'Edit Post',
     reportUser: 'Report User',
@@ -315,11 +321,11 @@ export const en = {
     unreadOnly: 'Unread Only',
     archive: 'Archive',
     snoozeNotification: 'Snooze Notification',
-    emptyTxt : "It's very quit here. Let's start a chat!",
-    toEveryOne : 'TO EveryOne',
-    toVipOnly : 'To VIP Only',
-    toFreeMemberOnly : 'To Free Member Only',
-    birthDaysToday : 'Birth Days Today'
+    emptyTxt: "It's very quit here. Let's start a chat!",
+    toEveryOne: 'TO EveryOne',
+    toVipOnly: 'To VIP Only',
+    toFreeMemberOnly: 'To Free Member Only',
+    birthDaysToday: 'Birth Days Today'
   },
   operations: {
     save: 'Save',

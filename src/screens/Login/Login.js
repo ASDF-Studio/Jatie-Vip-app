@@ -36,11 +36,11 @@ export function Login() {
   const validation = () => {
     if (mobileNumber == 0) {
       showMessage({
-        message: "Please enter phone number",
+        message: strings.login.numberHint,
         type: "danger",
       });
     } else if (mobileNumber.length < 10) {
-      showMessage({ message: "Please enter valid phone number", type: "danger", });
+      showMessage({ message: strings.login.numberValid, type: "danger", });
 
     }
     else {
@@ -53,7 +53,7 @@ export function Login() {
 
   const handleSubmit = () => {
     validation()
-    // navigationRef.navigate(NAVIGATION.enterOtp);
+    // navigationRef.navigate(NAVIGATION.addProfilePicture);
     // dispatch(logi)
   };
   const send = () => {

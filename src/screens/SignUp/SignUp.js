@@ -26,7 +26,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { showMessage } from 'react-native-flash-message';
 import { COUNTRY_LIST } from '@/constants';
 export function SignUp({ route }) {
-  const { userName } = route.params
+  const { userName, ID } = route.params
   const dispatch = useDispatch()
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -68,7 +68,7 @@ export function SignUp({ route }) {
   const onChange = (event, selectedDate) => {
     const formattedDate = moment(selectedDate).format('MMM DD, yyyy');
     const birthDate = moment(selectedDate).format("yyyy/MMM/DD");
-    console.log('selected date', moment(selectedDate).format("yyyy/MMM/DD"));
+    console.log('selected date', moment(selectedDate).format("yyyy/MM/DD"));
     setBirthday(birthDate)
     setShow(false);
     setDate(formattedDate);
@@ -90,37 +90,36 @@ export function SignUp({ route }) {
   const validation = () => {
     if (name == "") {
       showMessage({
-        message: "Please enter name",
+        message: strings.SignUp.name,
         type: "danger"
       })
     } else if (email == "") {
       showMessage({
-        message: "Please enter email",
+        message: strings.SignUp.email,
         type: "danger"
       })
     }
     else if (birthday == "") {
       showMessage({
-        message: "Please select birthday",
+        message: strings.SignUp.birthday,
         type: "danger"
       })
     }
     else if (genderValue == "") {
       showMessage({
-        message: "Please select gender",
+        message: strings.SignUp.gender,
         type: "danger"
       })
     }
     else if (countryvalue == "") {
       showMessage({
-        message: "Please select country",
+        message: strings.SignUp.country,
         type: "danger"
       })
     }
     else {
-      const id =
-        "bbf33cb8-3da8-4551-ad99-33ab3a39ce72";
-      dispatch(updateProfile(birthday, name, genderValue, id, email, countryvalue, userName))
+
+      dispatch(updateProfile(birthday, name, genderValue, ID, email, countryvalue, userName))
     }
 
   }

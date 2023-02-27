@@ -8,7 +8,7 @@ import {
   Dimensions,
 } from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { login, TYPES } from '@/actions/UserActions';
+import { login, TYPES, uploadProfile } from '@/actions/UserActions';
 import { Button, ErrorView } from '@/components';
 import { strings } from '@/localization';
 import { styles } from '@/screens/AddProfilePicture/AddProfilePhoto.styles';
@@ -108,7 +108,10 @@ export function AddProfilePicture() {
   const RemovePic = () => {
     setImage(!image);
   };
-
+  const handleFinish = () => {
+    // validation()
+    dispatch(uploadProfile(image, "19184003493"));
+  };
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
       <AuthHeader title={strings.addYourProfilePicture.title} />
@@ -169,7 +172,7 @@ export function AddProfilePicture() {
       <View>
         <View style={styles.bottomButtons}>
           <Button
-            onPress={handleSubmit}
+            onPress={handleFinish}
             title={
               isLoading
                 ? strings.common.loading

@@ -1,5 +1,6 @@
 import { NAVIGATION } from '@/constants';
 import { UserController } from '@/controllers';
+import { strings } from '@/localization';
 import { navigationRef } from '@/navigation/RootNavigation';
 import { showMessage } from 'react-native-flash-message';
 
@@ -107,16 +108,14 @@ export const verifyOtp = (number, Otp) => async dispatch => {
     // dispatch(verifyOtpSuccess(user));
     // navigationRef.navigate(NAVIGATION.setupUserId);
     // navigationRef.navigate(NAVIGATION.enterOtp, { number })
-    if (user.errors[0]?.message) {
-      showMessage({
-        message: user.errors[0]?.message,
-        type: "danger"
-      })
-    } else {
-      dispatch(verifyOtpSuccess(user));
-      navigationRef.navigate(NAVIGATION.setupUserId);
-    }
+    dispatch(verifyOtpSuccess(user));
+    navigationRef.navigate(NAVIGATION.setupUserId, { "ID": user.id });
+
   } catch (error) {
+    showMessage({
+      message: strings.enterOtp.sorryCodeDidnotMatch,
+      type: "danger"
+    })
     dispatch(verifyOtpError(error));
   }
 };
@@ -125,17 +124,17 @@ export const checkUserName = (username) => async dispatch => {
   dispatch(checkUserNameRequest());
   try {
     const user = await UserController.checkUserName(username);
-    dispatch(checkUserNameSuccess(user));
-    if (user.data.users.length == 0) {
-      navigationRef.navigate(NAVIGATION.signUp, { "userName": username })
+    dispatch(checkUserNameSuccess(user)); 1
+    if (user.status == true) {
+
     }
     else {
       showMessage({
-        message: "Sorry,this username is already taken please choose another one ",
-        type: "info",
-        duration: 2000
+        message: strings.setupUserId.chooseAnother,
+        type: "danger"
       })
     }
+
   } catch (error) {
     dispatch(checkUserNameRequest(error));
   }
@@ -146,12 +145,22 @@ export const updateProfile = (dob, fullname, gender, id, primaryEmail, location,
   try {
     const user = await UserController.updateProfile(dob, fullname, gender, id, primaryEmail, location, username);
     dispatch(updateProfileSuccess(user));
-    navigationRef.navigate(NAVIGATION.addProfilePicture)
+    navigationRef.navigate(NAVIGATION.addProfilePicture, {})
   } catch (error) {
     dispatch(updateProfileError(error));
   }
 };
-
+export const uploadProfile = (file) => async dispatch => {
+  // dispatch(updateProfileRequest());
+  try {
+    const number = "19184003493"
+    const user = await UserController.upload_Profile_Pic(file, number);
+    // dispatch(updateProfileSuccess(user));
+    navigationRef.navigate(NAVIGATION.homeNavigator)
+  } catch (error) {
+    // dispatch(updateProfileError(error));
+  }
+};
 export const logout = () => async dispatch => {
   try {
     await UserController.logout();
