@@ -3,14 +3,11 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Icon } from '@/components';
 import { theme, TextStyles } from '@/theme';
 import { FontFamily } from '@/theme/Fonts';
-import {
-  faEllipsis,
-  faCircleUp,
-  faShareNodes,
-} from '@fortawesome/free-solid-svg-icons';
+import { faEllipsis, faCircleUp } from '@fortawesome/free-solid-svg-icons';
 import { ms } from 'react-native-size-matters';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faCircleDown, faComment } from '@fortawesome/free-regular-svg-icons';
+import { faShareNodes } from '@fortawesome/pro-regular-svg-icons';
 
 export const CardFooter = ({
   likeCount,
@@ -105,8 +102,8 @@ const styles = StyleSheet.create({
     backgroundColor: theme.light.colors.infoBgLight,
     borderRadius: 13,
     padding: ms(3),
-    paddingLeft: ms(8),
-    paddingRight: ms(8),
+    paddingLeft: ms(10),
+    paddingRight: ms(10),
   },
   likeTxt: {
     fontFamily: FontFamily.Recoleta_semibold,

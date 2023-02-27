@@ -10,11 +10,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
-import {
-  faSearch,
-  faEllipsis,
-  faCheck,
-} from '@fortawesome/free-solid-svg-icons';
+import { faEllipsis, faCheck } from '@fortawesome/free-solid-svg-icons';
 import {
   HorizontalLine,
   Icon,
@@ -27,6 +23,7 @@ import {
 import { ms, vs } from 'react-native-size-matters';
 import { strings } from '@/localization';
 import { Data } from './ProfileData/bannedUsersData';
+import { faSearch } from '@fortawesome/pro-regular-svg-icons';
 
 export default function Notification({ navigation }) {
   const [open, setOpen] = useState(false);

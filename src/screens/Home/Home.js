@@ -8,13 +8,11 @@ import {
   faFlag,
   faImage,
   faMessage,
-  faSearch,
   faThumbsUp,
   faTrash,
   faUserPlus,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
-import { faBell } from '@fortawesome/free-regular-svg-icons';
 import { useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { FontFamily } from '@/theme/Fonts';
@@ -57,6 +55,7 @@ import {
 } from '@/components';
 import { Logo } from '@/assets';
 import { Data } from './Data/HomeData';
+import { faBell, faSearch } from '@fortawesome/pro-regular-svg-icons';
 
 export function Home({ navigation }) {
   const userType = useSelector(state => state.userType);

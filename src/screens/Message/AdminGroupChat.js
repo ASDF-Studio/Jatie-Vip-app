@@ -31,8 +31,6 @@ import {
   faEllipsis,
   faFlag,
   faImage,
-  faPaperPlane,
-  faSearch,
   faTrash,
   faUserGroup,
   faXmark,
@@ -40,6 +38,7 @@ import {
 import ImageCropPicker from 'react-native-image-crop-picker';
 import { NAVIGATION } from '@/constants';
 import { Data } from './MessageData/adminGroupChatData';
+import { faPaperPlaneTop, faSearch } from '@fortawesome/pro-regular-svg-icons';
 
 let nextId = 0;
 
@@ -264,7 +263,7 @@ export default function AdminGroupChat({ navigation, route }) {
                 style={[styles.boxIcon, styles.boxIconSendColor]}
               >
                 <FontAwesomeIcon
-                  icon={faPaperPlane}
+                  icon={faPaperPlaneTop}
                   size={ms(16)}
                   color={theme.light.colors.primary}
                 />

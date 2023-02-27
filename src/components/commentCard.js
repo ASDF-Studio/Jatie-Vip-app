@@ -3,15 +3,12 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { CardBody, CardHeader, Icon } from '@/components';
 import { theme, TextStyles } from '@/theme';
 import { ms } from 'react-native-size-matters';
-import {
-  faEllipsis,
-  faCircleUp,
-  faCircleDown,
-  faReplyAll,
-} from '@fortawesome/free-solid-svg-icons';
+import { faEllipsis, faCircleUp } from '@fortawesome/free-solid-svg-icons';
 import PropsType from 'prop-types';
 import { FontFamily } from '@/theme/Fonts';
 import { ScrollView } from 'react-native-gesture-handler';
+import { CommentHeader } from './commentHeader';
+import { faCircleDown, faReplyAll } from '@fortawesome/pro-regular-svg-icons';
 
 export const CommentCard = ({
   name,
@@ -31,7 +28,7 @@ export const CommentCard = ({
       <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
         <View>
           <View style={styles.leftBorder}>
-            <CardHeader
+            <CommentHeader
               fullName={name}
               userName={userName}
               profilePic={imageUrl}
@@ -123,6 +120,10 @@ const styles = StyleSheet.create({
     height: ms(40),
     borderRadius: 100,
   },
+  body: {
+    fontFamily: FontFamily.BrandonGrotesque_regular,
+    fontSize: ms(18, 0.3),
+  },
 
   footer: {
     flexDirection: 'row',
@@ -152,12 +153,22 @@ const styles = StyleSheet.create({
     paddingLeft: ms(3),
   },
   disLikeContainer: {
-    paddingLeft: ms(8),
+    backgroundColor: theme.light.colors.infoBgLight,
+    borderRadius: 13,
+    padding: ms(3),
+    paddingLeft: ms(10),
+    paddingRight: ms(10),
+    marginLeft: ms(8),
   },
   disLikeTxt: {
-    fontFamily: FontFamily.Recoleta_regular,
+    // fontFamily: FontFamily.Recoleta_regular,
+    // fontSize: ms(13, 0.3),
+    // paddingLeft: ms(3),
+
+    fontFamily: FontFamily.Recoleta_semibold,
     fontSize: ms(13, 0.3),
-    paddingLeft: ms(3),
+    paddingLeft: ms(5),
+    color: theme.light.colors.black,
   },
   leftBorder: {
     borderLeftWidth: 2,
@@ -167,6 +178,7 @@ const styles = StyleSheet.create({
   ReplyAllContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginLeft: ms(5),
   },
   ReplyAllIcon: {
     marginLeft: ms(10),

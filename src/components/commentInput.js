@@ -3,10 +3,11 @@ import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { TextField } from '@/components';
 import { theme } from '@/theme';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+
 import { ms, vs } from 'react-native-size-matters';
 import { strings } from '@/localization';
 import { FontFamily } from '@/theme/Fonts';
+import { faPaperPlaneTop } from '@fortawesome/pro-regular-svg-icons';
 
 export const CommentInput = ({ value, onPress }) => {
   return (
@@ -18,7 +19,7 @@ export const CommentInput = ({ value, onPress }) => {
       />
       <TouchableOpacity style={styles.iconContainer} onPress={onPress}>
         <FontAwesomeIcon
-          icon={faPaperPlane}
+          icon={faPaperPlaneTop}
           size={18}
           color={theme.light.colors.primary}
         />
@@ -29,9 +30,8 @@ export const CommentInput = ({ value, onPress }) => {
 
 const styles = StyleSheet.create({
   container: {
-    // bottom : ms(-15),
-    borderWidth: 1, //
-    borderColor: theme.light.colors.infoBgLight, //
+    borderTopWidth: 1,
+    borderColor: theme.light.colors.infoBgLight,
     width: '100%',
   },
   textFiled: {

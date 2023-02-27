@@ -11,13 +11,14 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
-import { faSearch, faEllipsis } from '@fortawesome/free-solid-svg-icons';
+import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
 import { HorizontalLine, Icon, TextField, TopBackButton } from '@/components';
 import { ms, vs } from 'react-native-size-matters';
 import { NAVIGATION } from '@/constants/navigation';
 import { strings } from '@/localization';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { Data } from '@/screens/CommonData/searchData';
+import { faSearch } from '@fortawesome/pro-regular-svg-icons';
 
 export default function Search({ navigation }) {
   const [searchListOpen, setSearchListOpen] = useState(false);

@@ -26,7 +26,6 @@ import {
 } from '@/components';
 import { ms, vs } from 'react-native-size-matters';
 import {
-  faSearch,
   faCrown,
   faMessage,
   faUserPlus,
@@ -41,6 +40,7 @@ import { faBell } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { strings } from '@/localization';
 import { Data, demo, User } from './ProfileData/manageReportOnProfileData';
+import { faSearch } from '@fortawesome/pro-regular-svg-icons';
 
 export default function ManageReportOnMessage({ navigation }) {
   const [openMore, setOpenMore] = useState(false);

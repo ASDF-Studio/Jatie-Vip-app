@@ -3,7 +3,6 @@ import { Text, View, TouchableOpacity } from 'react-native';
 import { styles } from '@/screens/Giveaway/Giveaway.styles';
 import { TextStyles, theme } from '@/theme';
 import { HorizontalLine, Icon, StatusNavigatorBar } from '@/components';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import Past from './past';
 import Active from './active';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
@@ -14,6 +13,7 @@ import { useSelector } from 'react-redux';
 import { ms } from 'react-native-size-matters';
 import { strings } from '@/localization';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { faSearch } from '@fortawesome/pro-regular-svg-icons';
 
 export function Giveaway({ navigation }) {
   const userType = useSelector(state => state.userType);
