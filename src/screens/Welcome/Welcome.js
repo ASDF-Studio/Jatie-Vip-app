@@ -32,7 +32,9 @@ export function Welcome() {
           title={strings.Welcome.login}
           onPress={() => navigate(NAVIGATION.login)}
         />
-        <Button title={strings.Welcome.signup} style={styles.signButton} />
+        <Button title={strings.Welcome.signup}
+          onPress={() => navigate(NAVIGATION.login)}
+          style={styles.signButton} />
 
         <View style={styles.socialContainer}>
           <FontAwesomeIcon

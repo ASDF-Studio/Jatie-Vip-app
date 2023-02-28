@@ -31,4 +31,28 @@ export const styles = StyleSheet.create({
     color: theme.light.colors.activeTabLabel,
     textAlign: 'center',
   },
+  countryCodePicker: {
+    backgroundColor: theme.light.colors.textFieldBackgroundColor,
+    borderRadius: ms(10),
+    borderColor: theme.light.colors.textFieldBorderColor,
+    paddingHorizontal: ms(10),
+    width: '18%',
+    height: ms(42),
+    alignItems: "center",
+    justifyContent: "center",
+    fontFamily: FontFamily.BrandonGrotesque_regular,
+    marginHorizontal: "1%"
+  },
+  countryPickerText: {
+    color: "black",
+    fontFamily: FontFamily.BrandonGrotesque_regular,
+  },
+  inputFieldView: {
+    flexDirection: "row",
+    alignItems: "center", justifyContent: "space-between"
+
+  },
+  numberinput: {
+    width: "81%",
+  }
 });

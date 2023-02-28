@@ -81,7 +81,7 @@ export const en = {
 
     numberHint: "Please enter phone number",
     numberValid: "Please enter valid phone number",
-
+    selectCountryCode: "Please select country code"
 
 
   },

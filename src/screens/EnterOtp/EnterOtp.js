@@ -16,7 +16,7 @@ import { showMessage } from 'react-native-flash-message';
 import { theme } from '@/theme';
 
 export function EnterOtp({ route }) {
-  const { number } = route.params;
+  const { number, isRegistered } = route.params;
   const smoothInputPinRef = useRef(null);
   const dispatch = useDispatch();
   const [code, setCode] = useState('');
@@ -38,7 +38,7 @@ export function EnterOtp({ route }) {
     }
     else {
       setCodeError(false)
-      dispatch(verifyOtp(number, code))
+      dispatch(verifyOtp(number, code, isRegistered))
     }
   }
 

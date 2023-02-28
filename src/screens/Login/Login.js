@@ -1,6 +1,6 @@
 import { useTheme } from '@react-navigation/native';
 import React, { useEffect, useState, useRef } from 'react';
-import { Text, View } from 'react-native';
+import { SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { TYPES, ChooseUser, login } from '@/actions/UserActions';
 import { Button, ErrorView, TextField } from '@/components';
@@ -17,13 +17,15 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { showMessage } from "react-native-flash-message";
 import { SITE_KEY, CAPTCHA_BASE_URL } from '@/constants';
 import Recaptcha from 'react-native-recaptcha-that-works';
-
+import { CountryPicker } from "react-native-country-codes-picker";
 export function Login() {
   const recaptcha = useRef();
 
   const dispatch = useDispatch();
   const [mobileNumber, setMobileNumber] = useState('');
   const [captchaToken, setCaptchaToken] = useState("");
+  const [show, setShow] = useState(false);
+  const [countryCode, setCountryCode] = useState('');
 
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.LOGIN], state)
@@ -34,7 +36,14 @@ export function Login() {
     shallowEqual
   );
   const validation = () => {
-    if (mobileNumber == 0) {
+    if (countryCode == "") {
+      showMessage({
+        message: strings.login.selectCountryCode,
+        type: "danger",
+      });
+
+    }
+    else if (mobileNumber == 0) {
       showMessage({
         message: strings.login.numberHint,
         type: "danger",
@@ -63,8 +72,8 @@ export function Login() {
 
   const onVerify = token => {
     setCaptchaToken(token)
-
-    dispatch(login(mobileNumber))
+    var FinalNumber = countryCode + mobileNumber
+    dispatch(login(FinalNumber))
     console.log('success!', token);
   }
 
@@ -92,13 +101,47 @@ export function Login() {
       <Text style={TextStyles.title}>{strings.login.loginOrSignup}</Text>
       <Text style={styles.subTitle}>{strings.login.enterPhoneNumber}</Text>
 
-      <TextField
-        autoCapitalize="none"
-        onChangeText={setMobileNumber}
-        placeholder={strings.login.phoneNumber}
-        value={mobileNumber}
-        keyboardType="phone-pad"
+
+      <CountryPicker
+        enableModalAvoiding={true}
+        show={show}
+        style={{
+          // Styles for whole modal [View]
+          modal: {
+            height: 700,
+
+          },
+
+
+        }}
+
+
+        onBackdropPress={() => setShow(false)}
+        // when picker button press you will get the country object with dial code
+        pickerButtonOnPress={(item) => {
+          setCountryCode(item.dial_code);
+          setShow(false);
+        }}
       />
+      <View style={styles.inputFieldView}>
+        <TouchableOpacity
+          onPress={setShow}
+          style={styles.countryCodePicker}>
+          <Text style={styles.countryPickerText}>
+            {countryCode == "" ? "+1" : countryCode}
+          </Text>
+
+        </TouchableOpacity>
+        <TextField
+          style={styles.numberinput}
+          autoCapitalize="none"
+          onChangeText={setMobileNumber}
+          placeholder={strings.login.phoneNumber}
+          value={mobileNumber}
+          keyboardType="phone-pad"
+        />
+      </View>
+
       <Recaptcha
         ref={recaptcha}
         siteKey={SITE_KEY}
@@ -124,5 +167,6 @@ export function Login() {
         <Text style={styles.linkColor}>{strings.login.privacyPolicy}</Text>
       </Text>
     </View >
+
   );
 }

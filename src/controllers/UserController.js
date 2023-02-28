@@ -77,8 +77,7 @@ export class UserController {
   }
   static async upload_Profile_Pic(file, number) {
     return new Promise((resolve, reject) => {
-      // const endpoint = API_BASE_URL + API_END_POINTS.UPLOAD_PROFILE_PIC;
-      const endpoint = "https://24c4-103-223-15-30.in.ngrok.io/api/upload"
+      const endpoint = API_BASE_URL + API_END_POINTS.UPLOAD_PROFILE_PIC;
       let filename = file.split("/").pop();
       let fileType = filename.split(".").pop();
       var obj = {

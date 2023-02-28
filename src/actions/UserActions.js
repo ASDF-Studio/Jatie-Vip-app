@@ -17,7 +17,7 @@ export const TYPES = {
   VERIFY_OTP_ERROR: "VERIFY_OTP_ERROR",
   CHECK_USERNAME_REQUEST: "VERIFY_OTP_REQUEST",
   CHECK_USERNAME_SUCCESS: "VERIFY_OTP_SUCCESS",
-  CHECK_USERNAME_ERROR: "VERIFY_OTP_ERROR",
+  CHECK_USERNAME_ERROR: "CHECK_USERNAME_ERROR",
   UPDATE_PROFILE_REQUEST: "UPDATE_PROFILE_REQUEST",
   UPDATE_PROFILE_SUCCESS: "UPDATE_PROFILE_SUCCESS",
   UPDATE_PROFILE_ERROR: "UPDATE_PROFILE_ERROR",
@@ -96,19 +96,24 @@ export const login = (number) => async dispatch => {
   dispatch(loginRequest());
   try {
     const user = await UserController.login(number);
-    dispatch(loginSuccess(user));
-    navigationRef.navigate(NAVIGATION.enterOtp, { number })
+    dispatch(loginSuccess());
+    navigationRef.navigate(NAVIGATION.enterOtp, { number, "isRegistered": user?.isregistered })
   } catch (error) {
     dispatch(loginError(error.message));
   }
 };
 
-export const verifyOtp = (number, Otp) => async dispatch => {
+export const verifyOtp = (number, Otp, isRegistered) => async dispatch => {
   dispatch(verifyOtpRequest());
   try {
     const user = await UserController.verifyOtp(number, Otp);
-    dispatch(verifyOtpSuccess(user));
-    navigationRef.navigate(NAVIGATION.setupUserId, { "ID": user.id });
+    dispatch(verifyOtpSuccess());
+    if (isRegistered == true) {
+      navigationRef.navigate(NAVIGATION.homeNavigator)
+    } else {
+      navigationRef.navigate(NAVIGATION.setupUserId, { "ID": user?.id });
+    }
+
 
   } catch (error) {
 
@@ -125,19 +130,24 @@ export const checkUserName = (username) => async dispatch => {
   dispatch(checkUserNameRequest());
   try {
     const user = await UserController.checkUserName(username);
-    dispatch(checkUserNameSuccess(user));
+    dispatch(checkUserNameSuccess());
     if (user.status == true) {
 
     }
     else {
+      console.log("DDDDDD")
       showMessage({
         message: strings.setupUserId.chooseAnother,
         type: "danger"
       })
-      dispatch(checkUserNameRequest(error))
+      dispatch(checkUserNameError({ "valid": false }))
     }
 
   } catch (error) {
+    showMessage({
+      message: strings.setupUserId.chooseAnother,
+      type: "danger"
+    })
     dispatch(checkUserNameRequest(error));
   }
 };
