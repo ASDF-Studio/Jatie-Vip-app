@@ -11,9 +11,9 @@ import {
   Keyboard,
 } from 'react-native';
 import { faNewspaper, faUserCircle } from '@fortawesome/free-regular-svg-icons';
-import { faCrown, faGift, faMessage } from '@fortawesome/free-solid-svg-icons';
 import { theme } from '@/theme';
 import { ms } from 'react-native-size-matters';
+import { faCrown, faGift, faMessage } from '@fortawesome/pro-regular-svg-icons';
 
 const tabBarLabel = {
   [NAVIGATION.homeNavigator]: 'Feed',
@@ -57,7 +57,7 @@ function CustomBottomTabBar({ state, descriptors, navigation }) {
     <View
       style={{
         flexDirection: 'row',
-        marginBottom: keyboardShow ? -100 : 25,
+        marginBottom: keyboardShow ? -86 : 20,
       }}
     >
       {state.routes.map((route, index) => {
@@ -117,6 +117,7 @@ function CustomBottomTabBar({ state, descriptors, navigation }) {
               icon={tabBarIcon[route.name]}
               size={20}
               color={isFocused ? colors.activeTabIcon : colors.inactiveTabIcon}
+              // style={{ colo: 'black' }}
             />
             <Text
               style={[
@@ -140,13 +141,13 @@ function CustomBottomTabBar({ state, descriptors, navigation }) {
 const styles = StyleSheet.create({
   tabBoxContainer: {
     flex: 1,
-    padding: ms(6),
-    paddingBottom: ms(30),
+    // padding: ms(6),
+    paddingBottom: ms(15),
     paddingTop: ms(20),
-    justifyContent: 'center',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
     borderTopWidth: 1,
-    borderColor: theme.light.colors.primaryBg,
+    borderColor: theme.light.colors.infoBgLight,
   },
   labelStyle: {
     paddingTop: ms(5),

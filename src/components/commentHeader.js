@@ -9,7 +9,7 @@ import { faThumbTack } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { strings } from '@/localization';
 
-export const CardHeader = ({
+export const CommentHeader = ({
   fullName,
   userName,
   profilePic,
@@ -57,7 +57,7 @@ export const CardHeader = ({
   );
 };
 
-CardHeader.prototype = {
+CommentHeader.prototype = {
   fullName: PropsType.string.isRequired,
   userName: PropsType.string.isRequired,
   profilePic: PropsType.string.isRequired,
@@ -72,8 +72,8 @@ const styles = StyleSheet.create({
     paddingTop: ms(20), //
   },
   Image: {
-    width: ms(45),
-    height: ms(45),
+    width: ms(35),
+    height: ms(35),
     borderWidth: 0.5,
     borderRadius: 100,
     marginTop: ms(-5),

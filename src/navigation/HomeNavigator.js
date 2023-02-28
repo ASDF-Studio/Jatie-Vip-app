@@ -19,9 +19,11 @@ export function HomeNavigator() {
     >
       <Stack.Screen name={NAVIGATION.home} component={Home} />
       <Stack.Screen name={NAVIGATION.comments} component={Comments} />
-      <Stack.Screen name= {NAVIGATION.post} component = {Post} />
-      <Stack.Screen name= {NAVIGATION.postOptions} component = {PostOptions} />
-      <Stack.Screen name= {NAVIGATION.scheduledPost} component = {SchedulePost} />
+      <Stack.Screen name={NAVIGATION.post} component={Post} />
+      <Stack.Screen name={NAVIGATION.postOptions} component={PostOptions} />
+      <Stack.Screen name={NAVIGATION.scheduledPost} component={SchedulePost} />
+      <Stack.Screen name={NAVIGATION.notification} component={Notification} />
+      <Stack.Screen name={NAVIGATION.search} component={Search} />
     </Stack.Navigator>
   );
 }

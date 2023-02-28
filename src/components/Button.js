@@ -14,7 +14,7 @@ const customStyles = colors =>
       borderRadius: ms(8),
       padding: ms(10),
       width: '100%',
-      backgroundColor: colors.primary,
+      backgroundColor: colors.primaryBgDark,
     },
   });
 

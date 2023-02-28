@@ -11,7 +11,7 @@ export const ShareFeed = ({ onPress }) => {
   return (
     <View style={styles.feedContainer}>
       <View style={styles.feedIconContainer}>
-        <Icon icon={faNewspaper} size={ms(18)} style={styles.feedIcon} />
+        <Icon icon={faNewspaper} size={ms(15)} style={styles.feedIcon} />
       </View>
       <View
         style={{
@@ -42,6 +42,13 @@ export const ShareFeed = ({ onPress }) => {
 
 const styles = StyleSheet.create({
   feedContainer: {
+    //IOS
+    shadowOffset: { width: -2, height: 4 },
+    shadowColor: theme.light.colors.secondary,
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+
+    //android
     elevation: 5,
     width: '100%',
     height: vs(75),
@@ -49,10 +56,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: ms(9),
+    padding: ms(12), //9
+    borderBottomWidth: 1,
+    borderColor: theme.light.colors.primaryBg,
   },
- feedIconContainer: {
-    backgroundColor: theme.light.colors.primaryBg,
+  feedIconContainer: {
+    backgroundColor: theme.light.colors.primaryBgLight,
     padding: ms(10),
     borderRadius: 100,
   },
@@ -67,5 +76,6 @@ const styles = StyleSheet.create({
   feedLebel: {
     fontFamily: FontFamily.BrandonGrotesque_regular,
     fontSize: ms(18, 0.3),
+    color: theme.light.colors.secondary,
   },
 });

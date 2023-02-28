@@ -14,7 +14,6 @@ import {
   faBellSlash,
   faBoxArchive,
   faFlag,
-  faSearch,
   faTrash,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
@@ -34,6 +33,7 @@ import { faBell } from '@fortawesome/free-regular-svg-icons';
 import { NAVIGATION } from '@/constants';
 import { Logo } from '@/assets';
 import { Data } from './MessageData/messageData';
+import { faSearch } from '@fortawesome/pro-regular-svg-icons';
 
 export function Message({ navigation }) {
   const [unreadOnlySwitch, setUnreadonlySwitch] = useState(false);
@@ -133,7 +133,7 @@ export function Message({ navigation }) {
                   {item.textMessage}{' '}
                 </Text>
               ) : (
-                <Text style={styles.messageTxt}> {item.textMessage}</Text>
+                <Text style={styles.messageTxtActive}> {item.textMessage}</Text>
               )}
             </TouchableOpacity>
           )}
@@ -269,10 +269,11 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   messageHeaderImage: {
-    width: ms(50),
-    height: ms(50),
+    width: ms(60),
+    height: ms(60),
     borderRadius: 100,
     marginTop: ms(10),
+    marginLeft: ms(5),
   },
   messageHeaderText: {
     flexDirection: 'row',
@@ -304,9 +305,20 @@ export const styles = StyleSheet.create({
     fontSize: ms(18, 0.3),
     position: 'absolute',
     top: ms(50),
-    left: ms(60),
+    left: ms(77),
     color: theme.light.colors.black,
-    paddingLeft: ms(10), //
+    paddingLeft: ms(10),
+    paddingTop: ms(5),
+  },
+  messageTxtActive: {
+    fontFamily: FontFamily.BrandonGrotesque_regular,
+    fontSize: ms(18, 0.3),
+    position: 'absolute',
+    top: ms(50),
+    left: ms(72),
+    color: theme.light.colors.black,
+    paddingLeft: ms(10),
+    paddingTop: ms(5),
   },
   messageButton: {
     width: '35%',

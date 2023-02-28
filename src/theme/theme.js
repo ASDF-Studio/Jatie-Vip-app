@@ -8,6 +8,7 @@ export const theme = {
       primary: 'rgb(232, 174, 11)',
       primaryInactive: 'rgb(200,174, 11)',
       primaryBg: 'rgba(232, 174, 11, 0.3)',
+      primaryBgSolid: 'rgb(248, 242, 218)',
       primaryBgLight: 'rgba(232, 174, 11, 0.08)',
       primaryBgLightest: 'rgba(232, 174, 11, 0.03)',
       primaryBgDark: 'rgb(211, 167, 8)',
@@ -35,6 +36,7 @@ export const theme = {
       black: 'rgb(43, 45,66)',
       white: '#ffffff',
       headingBlack: '#000000',
+      dropDownBorder: '#E9EBEC',
     },
   },
   dark: {

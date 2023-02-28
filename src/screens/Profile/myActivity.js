@@ -14,7 +14,7 @@ import { Data } from './ProfileData/myActivityData';
 
 export default function MyActivity() {
   return (
-    <View>
+    <View style={styles.pageContainer}>
       <FlatList
         data={Data}
         key={item => item.id}
@@ -86,7 +86,12 @@ const styles = StyleSheet.create({
     padding: ms(10),
     alignItems: 'center',
   },
-  cardContainer: { margin: ms(10) },
+  pageContainer: {
+    marginTop: ms(5),
+  },
+  cardContainer: {
+    margin: ms(5),
+  },
   textContainer: {
     flexDirection: 'row',
     alignItems: 'center',

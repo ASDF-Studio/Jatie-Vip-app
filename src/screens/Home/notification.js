@@ -16,12 +16,12 @@ import {
   faCircleDown,
   faMessage,
 } from '@fortawesome/free-solid-svg-icons';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { AppSwitch, HorizontalLine, Icon, CardHeader } from '@/components';
 import { ms } from 'react-native-size-matters';
 import { NAVIGATION } from '@/constants/navigation';
 import { strings } from '@/localization';
 import { Data, profilePic } from '@/screens/CommonData/notoficationData';
+import { faSearch } from '@fortawesome/pro-regular-svg-icons';
 
 export default function Notification({ navigation }) {
   const [read, setRead] = useState(false);
