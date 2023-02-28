@@ -13,7 +13,7 @@ import { NAVIGATION } from '@/constants';
 import { showMessage } from 'react-native-flash-message';
 
 export function SetupUserId({ route }) {
-  const { ID } = route.params;
+  const { ID, number } = route.params;
   const [userId, setUserId] = useState('');
 
   const dispatch = useDispatch();
@@ -26,7 +26,6 @@ export function SetupUserId({ route }) {
     state => errorsSelector([TYPES.CHECK_USER_NAME], state),
     shallowEqual
   );
-
   const validation = () => {
     if (userId == "") {
       showMessage({
@@ -35,9 +34,8 @@ export function SetupUserId({ route }) {
       })
     } else if (errors.length <= 0) {
 
-      // dispatch(checkUserName(userId))
 
-      navigationRef.navigate(NAVIGATION.signUp, { "username": userId, "ID": ID });
+      navigationRef.navigate(NAVIGATION.signUp, { "username": userId, "ID": ID, number: number });
 
     }
   }

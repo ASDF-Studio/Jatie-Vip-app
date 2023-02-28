@@ -8,7 +8,7 @@ import {
   Dimensions,
 } from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { login, TYPES, uploadProfile } from '@/actions/UserActions';
+import { login, TYPES, updateProfileSuccess, uploadProfile } from '@/actions/UserActions';
 import { Button, ErrorView } from '@/components';
 import { strings } from '@/localization';
 import { styles } from '@/screens/AddProfilePicture/AddProfilePhoto.styles';
@@ -24,7 +24,9 @@ import { EditViewModal } from '@/components/CropPictureModal';
 import { navigationRef } from '@/navigation/RootNavigation';
 import { NAVIGATION } from '@/constants';
 
-export function AddProfilePicture() {
+export function AddProfilePicture({ route }) {
+  const { number } = route.params;
+
   const { colors } = useTheme();
   const [image, setImage] = useState(null);
   const [isModalVisible, setModalVisible] = useState(false);
@@ -58,7 +60,14 @@ export function AddProfilePicture() {
   };
 
   const handleSubmit = () => {
-    navigationRef.navigate(NAVIGATION.homeNavigator)
+
+    const dummyData = {
+      "status": true,
+      "id": "8ce35c01-baec-42fb-ac74-4f0b63239865",
+      "url": "https://jatievip.s3.us-east-2.amazonaws.com/photo-1677589077205.jpg",
+      "message": "profile pic uploaded successfully"
+    }
+    dispatch(updateProfileSuccess(dummyData));
   };
 
   const OpenGallery = () => {
@@ -97,8 +106,8 @@ export function AddProfilePicture() {
     setImage(!image);
   };
   const handleFinish = () => {
-    // validation()
-    dispatch(uploadProfile(image, "19184003493"));
+
+    dispatch(uploadProfile(image, number));
   };
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>

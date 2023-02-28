@@ -83,7 +83,7 @@ const updateProfileError = error => ({
   payload: { error },
 });
 
-const updateProfileSuccess = user => ({
+export const updateProfileSuccess = user => ({
   type: TYPES.UPDATE_PROFILE_SUCCESS,
   payload: { user },
 });
@@ -107,12 +107,10 @@ export const verifyOtp = (number, Otp, isRegistered) => async dispatch => {
   dispatch(verifyOtpRequest());
   try {
     const user = await UserController.verifyOtp(number, Otp);
-    isRegistered == true ?
-      dispatch(verifyOtpSuccess(user)) : dispatch(verifyOtpSuccess());
     if (isRegistered == true) {
-      navigationRef.navigate(NAVIGATION.homeNavigator)
+      dispatch(verifyOtpSuccess(user))
     } else {
-      navigationRef.navigate(NAVIGATION.setupUserId, { "ID": user?.id });
+      navigationRef.navigate(NAVIGATION.setupUserId, { "ID": user?.id, number: number });
     }
 
 
@@ -152,21 +150,19 @@ export const checkUserName = (username) => async dispatch => {
   }
 };
 
-export const updateProfile = (dob, fullname, gender, id, primaryEmail, location, username) => async dispatch => {
+export const updateProfile = (dob, fullname, gender, id, primaryEmail, location, username, number) => async dispatch => {
 
   dispatch(updateProfileRequest());
   try {
     const user = await UserController.updateProfile(dob, fullname, gender, id, primaryEmail, location, username);
-    dispatch(updateProfileSuccess(user));
-    navigationRef.navigate(NAVIGATION.addProfilePicture)
+    navigationRef.navigate(NAVIGATION.addProfilePicture, { number: number })
   } catch (error) {
     dispatch(updateProfileError(error));
   }
 };
-export const uploadProfile = (file) => async dispatch => {
+export const uploadProfile = (file, number) => async dispatch => {
   dispatch(updateProfileRequest());
   try {
-    const number = "19184003493"
     const user = await UserController.upload_Profile_Pic(file, number);
     dispatch(updateProfileSuccess(user));
     navigationRef.navigate(NAVIGATION.homeNavigator)

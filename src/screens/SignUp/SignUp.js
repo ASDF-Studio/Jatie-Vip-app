@@ -30,7 +30,7 @@ import { faCheck } from '@fortawesome/pro-regular-svg-icons';
 
 export function SignUp({ route }) {
 
-  const { username, ID } = route.params;
+  const { username, ID, number } = route.params;
   const dispatch = useDispatch()
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -371,7 +371,7 @@ export function SignUp({ route }) {
       })
     }
     else {
-      dispatch(updateProfile(birthday, name, genderValue, ID, email, countryvalue, username))
+      dispatch(updateProfile(birthday, name, genderValue, ID, email, countryvalue, username, number))
     }
 
   }

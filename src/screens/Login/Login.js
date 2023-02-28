@@ -72,8 +72,8 @@ export function Login() {
 
   const onVerify = token => {
     setCaptchaToken(token)
-    var FinalNumber = countryCode + mobileNumber
-    dispatch(login(FinalNumber))
+    const finalNumber = countryCode + mobileNumber
+    dispatch(login(finalNumber))
     console.log('success!', token);
   }
 
