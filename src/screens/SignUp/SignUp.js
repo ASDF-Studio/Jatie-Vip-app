@@ -29,12 +29,13 @@ import { theme } from '@/theme';
 import { faCheck } from '@fortawesome/pro-regular-svg-icons';
 
 export function SignUp({ route }) {
+
   const { username, ID } = route.params;
   const dispatch = useDispatch()
-
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [birthday, setBirthday] = useState('');
+  const [formatedDate, setFormatedDate] = useState('');
   const [date, setDate] = useState(new Date());
   const [openDatePicker, setOpenDatePicker] = useState(false);
   const [mode, setMode] = useState('date');
@@ -318,9 +319,12 @@ export function SignUp({ route }) {
   const onChange = selectedDate => {
     const formattedDate = moment(selectedDate).format('MMM DD, yyyy');
     const birthDate = moment(selectedDate).format("yyyy/MM/DD");
+
     setBirthday(birthDate)
     setShow(false);
-    setDate(formattedDate);
+    setDate(selectedDate);
+    setFormatedDate(formattedDate)
+
   };
 
   const showMode = currentMode => {
@@ -354,20 +358,19 @@ export function SignUp({ route }) {
         type: "danger"
       })
     }
-    else if (genderValue == "") {
+    else if (genderValue == null) {
       showMessage({
         message: strings.SignUp.genderPlaceHolder,
         type: "danger"
       })
     }
-    else if (countryvalue == "") {
+    else if (countryvalue == null) {
       showMessage({
         message: strings.SignUp.countryPlaceHolder,
         type: "danger"
       })
     }
     else {
-
       dispatch(updateProfile(birthday, name, genderValue, ID, email, countryvalue, username))
     }
 
@@ -404,7 +407,8 @@ export function SignUp({ route }) {
             <TextInput
               // value={date}
               placeholder={strings.SignUp.dobPlaceHolder}
-              value={moment(date).format('MM-DD-YYYY')}
+              // value={moment(date).format('MM-DD-YYYY')}
+              value={formatedDate}
               style={styles.dobInput}
             />
             <View style={styles.calenderIcon}>
@@ -429,8 +433,8 @@ export function SignUp({ route }) {
             // locale = "fr"
             date={date}
             onConfirm={date => {
-              setShow(false);
-              setDate(date);
+              onChange(date)
+
             }}
             onCancel={() => {
               setShow(false);

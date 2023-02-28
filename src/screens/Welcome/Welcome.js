@@ -33,7 +33,10 @@ export function Welcome() {
           onPress={() => navigate(NAVIGATION.login)}
         />
         <Button title={strings.Welcome.signup}
-          onPress={() => navigate(NAVIGATION.login)}
+          onPress={() =>
+
+            navigate(NAVIGATION.login)
+          }
           style={styles.signButton} />
 
         <View style={styles.socialContainer}>

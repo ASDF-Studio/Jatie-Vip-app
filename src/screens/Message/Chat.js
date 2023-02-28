@@ -47,7 +47,6 @@ export default function Chat({ navigation, route }) {
   const [isImageList, setImageList] = useState(false);
   const [showImageView, setShowImageView] = useState(false);
   const [feedImages, setFeedImages] = useState([]);
-  // console.log(params)
 
   deleteFile = id => {
     setImageArray(imageArray.filter(a => a.id !== id));
@@ -159,8 +158,8 @@ export default function Chat({ navigation, route }) {
                               item.sendingImages.length == 1
                                 ? [styles.image, styles.image1]
                                 : item.sendingImages.length == 2
-                                ? [styles.image, styles.image2]
-                                : [styles.image, styles.image3]
+                                  ? [styles.image, styles.image2]
+                                  : [styles.image, styles.image3]
                             }
                           />
                         </TouchableOpacity>

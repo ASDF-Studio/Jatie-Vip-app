@@ -99,7 +99,9 @@ export function Login() {
         <Logo height={ms(142)} width={ms(142)} />
       </View>
       <Text style={TextStyles.title}>{strings.login.loginOrSignup}</Text>
-      <Text style={styles.subTitle}>{strings.login.enterPhoneNumber}</Text>
+      <Text
+
+        style={styles.subTitle}>{strings.login.enterPhoneNumber}</Text>
 
 
       <CountryPicker
@@ -108,7 +110,7 @@ export function Login() {
         style={{
           // Styles for whole modal [View]
           modal: {
-            height: 700,
+            height: 400,
 
           },
 

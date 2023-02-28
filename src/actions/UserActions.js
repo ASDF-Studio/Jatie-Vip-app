@@ -107,7 +107,8 @@ export const verifyOtp = (number, Otp, isRegistered) => async dispatch => {
   dispatch(verifyOtpRequest());
   try {
     const user = await UserController.verifyOtp(number, Otp);
-    dispatch(verifyOtpSuccess());
+    isRegistered == true ?
+      dispatch(verifyOtpSuccess(user)) : dispatch(verifyOtpSuccess());
     if (isRegistered == true) {
       navigationRef.navigate(NAVIGATION.homeNavigator)
     } else {
@@ -135,7 +136,6 @@ export const checkUserName = (username) => async dispatch => {
 
     }
     else {
-      console.log("DDDDDD")
       showMessage({
         message: strings.setupUserId.chooseAnother,
         type: "danger"
@@ -153,6 +153,7 @@ export const checkUserName = (username) => async dispatch => {
 };
 
 export const updateProfile = (dob, fullname, gender, id, primaryEmail, location, username) => async dispatch => {
+
   dispatch(updateProfileRequest());
   try {
     const user = await UserController.updateProfile(dob, fullname, gender, id, primaryEmail, location, username);

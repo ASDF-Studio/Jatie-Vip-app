@@ -11,7 +11,7 @@ import { navigationRef } from './RootNavigation';
 export function RootNavigator() {
   const user = useSelector(getUser);
   const scheme = useColorScheme();
-
+  console.log("USER+_+_+_", user)
   return (
     // Force use "light" color scheme for now
     <NavigationContainer ref={navigationRef} theme={theme['light']}>
