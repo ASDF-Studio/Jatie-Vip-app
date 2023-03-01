@@ -29,6 +29,7 @@ export function AddProfilePicture({ route }) {
 
   const { colors } = useTheme();
   const [image, setImage] = useState(null);
+  const [mimeType, setmimeType] = useState(null)
   const [isModalVisible, setModalVisible] = useState(false);
   const [cropImageModal, setCropImageModal] = useState();
 
@@ -80,6 +81,7 @@ export function AddProfilePicture({ route }) {
       .then(image => {
         console.log(image);
         setImage(image.path);
+        setmimeType(image.mime)
         setModalVisible(!isModalVisible);
         setCropImageModal(true);
       })
@@ -97,6 +99,7 @@ export function AddProfilePicture({ route }) {
       .then(image => {
         setModalVisible(!isModalVisible);
         setImage(image.path);
+        setmimeType(image.mime)
         setCropImageModal(true);
       })
       .catch(e => {
@@ -105,11 +108,13 @@ export function AddProfilePicture({ route }) {
   };
 
   const RemovePic = () => {
-    setImage(!image);
+    setImage(null);
+    setmimeType(null)
+
   };
   const handleFinish = () => {
 
-    dispatch(uploadProfile(image, number));
+    dispatch(uploadProfile(image, mimeType, number));
   };
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>

@@ -33,8 +33,7 @@ export class UserController {
           resolve(response);
         })
         .catch((error) => {
-
-          reject(new Error(error));
+          reject(error);
         });
     });
   }
@@ -75,20 +74,24 @@ export class UserController {
         });
     });
   }
-  static async upload_Profile_Pic(file, number) {
+  static async upload_Profile_Pic(file, mimeType, number) {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.UPLOAD_PROFILE_PIC;
       let filename = file.split("/").pop();
-      let fileType = filename.split(".").pop();
       var obj = {
         uri: file,
         name: filename,
-        type: fileType,
+        type: mimeType,
       };
       var data = new FormData()
       data.append('myimage', obj);
       data.append('phoneNumber', number)
-      HttpClient.post(endpoint, data)
+
+      const headers = {
+        'Content-Type': 'multipart/form-data'
+      }
+
+      HttpClient.post(endpoint, data, { headers })
         .then((response) => {
           resolve(response);
         })

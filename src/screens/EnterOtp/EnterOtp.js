@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { login, TYPES, verifyOtp } from '@/actions/UserActions';
 import { Button, ErrorView } from '@/components';
@@ -13,7 +13,9 @@ import { AuthHeader } from '@/components/AuthHeader';
 import { navigationRef } from '@/navigation/RootNavigation';
 import { NAVIGATION } from '@/constants';
 import { showMessage } from 'react-native-flash-message';
-import { theme } from '@/theme';
+import { TextStyles, theme } from '@/theme';
+import { globalReset } from '@/actions/GlobalActions';
+import { FontFamily } from '@/theme/Fonts';
 
 export function EnterOtp({ route }) {
   const { number, isRegistered } = route.params;
@@ -33,8 +35,6 @@ export function EnterOtp({ route }) {
   const validation = () => {
     if (code.length < 5) {
       setCodeError(true)
-      // showMessage({ message: "Please enter all fields", type: "danger", });
-
     }
     else {
       setCodeError(false)
@@ -44,8 +44,26 @@ export function EnterOtp({ route }) {
 
   const handleSubmit = () => {
     validation()
-    // navigationRef.navigate(NAVIGATION.setupUserId);
   };
+
+  const OTPErrorView = () => {
+    return (
+      <View style={{ marginBottom: 10, flexDirection: 'row', justifyContent: 'center' }}>
+        <Text style={[TextStyles.error, { color: theme.light.colors.error }]}>
+          {errors[0].message === "otp invalid" ? strings.enterOtp.sorryCodeDidnotMatch : errors[0].message}{' '}
+
+        </Text>
+        <TouchableOpacity onPress={() => {
+          setCode('')
+          dispatch(login(number))
+        }}>
+          <Text style={[TextStyles.error, { color: theme.light.colors.error, textDecorationLine: 'underline', fontFamily: FontFamily.BrandonGrotesque_medium }]}>
+            {strings.enterOtp.resend}
+          </Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }
 
   return (
     <View style={styles.container}>
@@ -65,18 +83,12 @@ export function EnterOtp({ route }) {
         autoFocus
         onTextChange={code => (setCode(code), setCodeError(false))}
         containerStyle={styles.otpContainer}
-        cellStyle={[styles.otpCell, { borderColor: codeError ? theme.light.colors.error : null }]}
-        cellStyleFocused={[styles.otpCellFocused, { borderColor: codeError ? theme.light.colors.error : null }]}
+        cellStyle={[styles.otpCell, { borderColor: codeError || errors.length > 0 ? theme.light.colors.error : null }]}
+        cellStyleFocused={[styles.otpCellFocused, { borderColor: codeError || errors.length > 0 ? theme.light.colors.error : null }]}
         textStyle={styles.otpText}
       />
 
-      {/* uncomment the following code to show error message */}
-
-      {/* <View style={{ marginBottom: 10 }}>
-        <Text style={[TextStyles.error, { color: theme.light.colors.error }]}>
-          {strings.enterOtp.sorryCodeDidnotMatch}
-        </Text>
-      </View> */}
+      {errors.length > 0 && <OTPErrorView />}
 
       <Button
         onPress={handleSubmit}

@@ -90,7 +90,8 @@ export const en = {
     enterTheVerificationCode:
       'Please enter the verification code that was sent to',
     edit: 'Edit',
-    sorryCodeDidnotMatch: 'Sorry, the code didn’t match. Resend',
+    sorryCodeDidnotMatch: 'Sorry, the code didn’t match.',
+    resend: 'Resend'
   },
   setupUserId: {
     title: 'Setup your \nUser ID',

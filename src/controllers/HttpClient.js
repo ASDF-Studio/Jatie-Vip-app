@@ -6,7 +6,6 @@ const client = axios.create({
   baseURL: Config.API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
-    // 'Content-Type': 'multipart/form-data'
   },
 });
 
@@ -26,7 +25,6 @@ client.interceptors.response.use(
 const setAuthorization = token => {
   client.defaults.headers.common.authorization = token;
 };
-
 
 const clearAuthorization = () => {
   delete client.defaults.headers.common.authorization;

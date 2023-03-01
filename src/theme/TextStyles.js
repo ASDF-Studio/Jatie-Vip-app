@@ -28,6 +28,6 @@ export const TextStyles = StyleSheet.create({
   error: {
     fontSize: ms(14, 0.3),
     fontFamily: FontFamily.BrandonGrotesque_regular,
-    fontSize: ms(18),
+    fontSize: ms(16),
   },
 });

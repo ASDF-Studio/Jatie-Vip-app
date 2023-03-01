@@ -3,6 +3,7 @@ import { UserController } from '@/controllers';
 import { strings } from '@/localization';
 import { navigationRef } from '@/navigation/RootNavigation';
 import { showMessage } from 'react-native-flash-message';
+import { globalReset } from './GlobalActions';
 
 export const TYPES = {
   CLEAR_STORE: 'CLEAR_STORE',
@@ -11,12 +12,12 @@ export const TYPES = {
   LOGIN_ERROR: 'LOGIN_ERROR',
   LOGIN_SUCCESS: 'LOGIN_SUCCESS',
   VERIFY_OTP: "VERIFY_OTP",
-  CHECK_USER_NAME: "CHECK_USER_NAME",
   VERIFY_OTP_REQUEST: "VERIFY_OTP_REQUEST",
   VERIFY_OTP_SUCCESS: "VERIFY_OTP_SUCCESS",
   VERIFY_OTP_ERROR: "VERIFY_OTP_ERROR",
-  CHECK_USERNAME_REQUEST: "VERIFY_OTP_REQUEST",
-  CHECK_USERNAME_SUCCESS: "VERIFY_OTP_SUCCESS",
+  CHECK_USER_NAME: "CHECK_USER_NAME",
+  CHECK_USERNAME_REQUEST: "CHECK_USERNAME_REQUEST",
+  CHECK_USERNAME_SUCCESS: "CHECK_USERNAME_SUCCESS",
   CHECK_USERNAME_ERROR: "CHECK_USERNAME_ERROR",
   UPDATE_PROFILE_REQUEST: "UPDATE_PROFILE_REQUEST",
   UPDATE_PROFILE_SUCCESS: "UPDATE_PROFILE_SUCCESS",
@@ -93,6 +94,7 @@ const clearStore = () => ({
 });
 
 export const login = (number) => async dispatch => {
+  dispatch(globalReset())
   dispatch(loginRequest());
   try {
     const user = await UserController.login(number);
@@ -104,6 +106,7 @@ export const login = (number) => async dispatch => {
 };
 
 export const verifyOtp = (number, Otp, isRegistered) => async dispatch => {
+  dispatch(globalReset())
   dispatch(verifyOtpRequest());
   try {
     const user = await UserController.verifyOtp(number, Otp);
@@ -112,20 +115,13 @@ export const verifyOtp = (number, Otp, isRegistered) => async dispatch => {
     } else {
       navigationRef.navigate(NAVIGATION.setupUserId, { "ID": user?.id, number: number });
     }
-
-
   } catch (error) {
-
     dispatch(verifyOtpError(error));
-    showMessage({
-      message: strings.enterOtp.sorryCodeDidnotMatch,
-      type: "danger"
-    })
-
   }
 };
 
 export const checkUserName = (username) => async dispatch => {
+  dispatch(globalReset())
   dispatch(checkUserNameRequest());
   try {
     const user = await UserController.checkUserName(username);
@@ -151,7 +147,7 @@ export const checkUserName = (username) => async dispatch => {
 };
 
 export const updateProfile = (dob, fullname, gender, id, primaryEmail, location, username, number) => async dispatch => {
-
+  dispatch(globalReset())
   dispatch(updateProfileRequest());
   try {
     const user = await UserController.updateProfile(dob, fullname, gender, id, primaryEmail, location, username);
@@ -160,10 +156,11 @@ export const updateProfile = (dob, fullname, gender, id, primaryEmail, location,
     dispatch(updateProfileError(error));
   }
 };
-export const uploadProfile = (file, number) => async dispatch => {
+export const uploadProfile = (file, mimeType, number) => async dispatch => {
+  dispatch(globalReset())
   dispatch(updateProfileRequest());
   try {
-    const user = await UserController.upload_Profile_Pic(file, number);
+    const user = await UserController.upload_Profile_Pic(file, mimeType, number);
     dispatch(updateProfileSuccess(user));
     navigationRef.navigate(NAVIGATION.homeNavigator)
   } catch (error) {

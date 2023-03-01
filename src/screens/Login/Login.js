@@ -62,8 +62,6 @@ export function Login() {
 
   const handleSubmit = () => {
     validation()
-    // navigationRef.navigate(NAVIGATION.addProfilePicture);
-    // dispatch(logi)
   };
   const send = () => {
     console.log('send!');
