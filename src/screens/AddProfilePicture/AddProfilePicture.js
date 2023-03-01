@@ -73,8 +73,9 @@ export function AddProfilePicture({ route }) {
   const OpenGallery = () => {
     ImageCropPicker.openPicker({
       width: 300,
-      height: 400,
+      height: 300,
       cropping: false,
+      compressImageQuality: 0.5
     })
       .then(image => {
         console.log(image);
@@ -89,8 +90,9 @@ export function AddProfilePicture({ route }) {
   const OpenCamera = () => {
     ImageCropPicker.openCamera({
       width: 300,
-      height: 400,
+      height: 300,
       cropping: false,
+      compressImageQuality: 0.5
     })
       .then(image => {
         setModalVisible(!isModalVisible);
