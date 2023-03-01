@@ -97,7 +97,7 @@ export const en = {
     title: 'Setup your \nUser ID',
     subtitle: 'Select your User ID',
     placeholder: '@username',
-    chooseAnother: "Sorry this username is already exist choose another one "
+    chooseAnother: "Sorry, this username is already taken, please choose another one."
   },
   profile: {
     message: 'This screen has the iOS native large header.',

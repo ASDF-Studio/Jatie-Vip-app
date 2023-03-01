@@ -48,7 +48,7 @@ export class UserController {
           resolve(response);
         })
         .catch((error) => {
-          reject(new Error(error));
+          reject(error);
         });
     });
   }

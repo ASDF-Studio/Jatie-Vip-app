@@ -15,7 +15,7 @@ export const TYPES = {
   VERIFY_OTP_REQUEST: "VERIFY_OTP_REQUEST",
   VERIFY_OTP_SUCCESS: "VERIFY_OTP_SUCCESS",
   VERIFY_OTP_ERROR: "VERIFY_OTP_ERROR",
-  CHECK_USER_NAME: "CHECK_USER_NAME",
+  CHECK_USERNAME: "CHECK_USERNAME",
   CHECK_USERNAME_REQUEST: "CHECK_USERNAME_REQUEST",
   CHECK_USERNAME_SUCCESS: "CHECK_USERNAME_SUCCESS",
   CHECK_USERNAME_ERROR: "CHECK_USERNAME_ERROR",
@@ -127,22 +127,13 @@ export const checkUserName = (username) => async dispatch => {
     const user = await UserController.checkUserName(username);
     dispatch(checkUserNameSuccess());
     if (user.status == true) {
-
     }
     else {
-      showMessage({
-        message: strings.setupUserId.chooseAnother,
-        type: "danger"
-      })
-      dispatch(checkUserNameError({ "valid": false }))
+      dispatch(checkUserNameError(user))
     }
 
   } catch (error) {
-    showMessage({
-      message: strings.setupUserId.chooseAnother,
-      type: "danger"
-    })
-    dispatch(checkUserNameRequest(error));
+    dispatch(checkUserNameError(error));
   }
 };
 

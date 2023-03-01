@@ -11,6 +11,7 @@ import { AuthHeader } from '@/components/AuthHeader';
 import { navigationRef } from '@/navigation/RootNavigation';
 import { NAVIGATION } from '@/constants';
 import { showMessage } from 'react-native-flash-message';
+import { TextStyles, theme } from '@/theme';
 
 export function SetupUserId({ route }) {
   const { ID, number } = route.params;
@@ -19,13 +20,14 @@ export function SetupUserId({ route }) {
   const dispatch = useDispatch();
 
   const isLoading = useSelector(state =>
-    isLoadingSelector([TYPES.CHECK_USER_NAME], state)
+    isLoadingSelector([TYPES.CHECK_USERNAME], state)
   );
 
   const errors = useSelector(
-    state => errorsSelector([TYPES.CHECK_USER_NAME], state),
+    state => errorsSelector([TYPES.CHECK_USERNAME], state),
     shallowEqual
   );
+
   const validation = () => {
     if (userId == "") {
       showMessage({
@@ -33,21 +35,25 @@ export function SetupUserId({ route }) {
         type: "danger"
       })
     } else if (errors.length <= 0) {
-
-
       navigationRef.navigate(NAVIGATION.signUp, { "username": userId, "ID": ID, number: number });
-
     }
   }
   const handleSubmit = () => {
     validation();
   };
   const OnChangehandler = (text) => {
-    // if (text !== "") {
     setUserId(text)
     dispatch(checkUserName(text))
+  }
 
-    // }
+  const UserNameErrorView = () => {
+    return (
+      <View style={{ marginBottom: 10, flexDirection: 'row', justifyContent: 'center' }}>
+        <Text style={[TextStyles.error, { color: theme.light.colors.error }]}>
+          {strings.setupUserId.chooseAnother}
+        </Text>
+      </View>
+    )
   }
 
   return (
@@ -60,7 +66,10 @@ export function SetupUserId({ route }) {
         onChangeText={(text) => { OnChangehandler(text) }}
         placeholder={strings.setupUserId.placeholder}
         value={userId}
+        style={errors.length > 0 ? { borderWidth: 0.8, borderColor: theme.light.colors.error } : {}}
       />
+
+      {errors.length > 0 && <UserNameErrorView />}
 
       <Button
         onPress={handleSubmit}
