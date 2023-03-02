@@ -55,7 +55,6 @@ export class UserController {
   static async updateProfile(dob, fullname, gender, id, primaryEmail, location, username) {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.UPDATE_USER;
-
       var data = JSON.stringify({
         "id": id,
         "fullname": fullname,
@@ -70,7 +69,7 @@ export class UserController {
           resolve(response);
         })
         .catch((error) => {
-          reject(new Error(error));
+          reject(error);
         });
     });
   }
@@ -86,7 +85,6 @@ export class UserController {
       var data = new FormData()
       data.append('myimage', obj);
       data.append('phoneNumber', number)
-
       const headers = {
         'Content-Type': 'multipart/form-data'
       }

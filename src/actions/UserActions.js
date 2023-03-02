@@ -7,21 +7,31 @@ import { globalReset } from './GlobalActions';
 
 export const TYPES = {
   CLEAR_STORE: 'CLEAR_STORE',
+
   LOGIN: 'LOGIN',
   LOGIN_REQUEST: 'LOGIN_REQUEST',
   LOGIN_ERROR: 'LOGIN_ERROR',
   LOGIN_SUCCESS: 'LOGIN_SUCCESS',
+
   VERIFY_OTP: "VERIFY_OTP",
   VERIFY_OTP_REQUEST: "VERIFY_OTP_REQUEST",
   VERIFY_OTP_SUCCESS: "VERIFY_OTP_SUCCESS",
   VERIFY_OTP_ERROR: "VERIFY_OTP_ERROR",
+
   CHECK_USERNAME: "CHECK_USERNAME",
   CHECK_USERNAME_REQUEST: "CHECK_USERNAME_REQUEST",
   CHECK_USERNAME_SUCCESS: "CHECK_USERNAME_SUCCESS",
   CHECK_USERNAME_ERROR: "CHECK_USERNAME_ERROR",
+
+  UPDATE_PROFILE: 'UPDATE_PROFILE',
   UPDATE_PROFILE_REQUEST: "UPDATE_PROFILE_REQUEST",
   UPDATE_PROFILE_SUCCESS: "UPDATE_PROFILE_SUCCESS",
   UPDATE_PROFILE_ERROR: "UPDATE_PROFILE_ERROR",
+
+  UPLOAD_PROFILE: 'UPLOAD_PROFILE',
+  UPLOAD_PROFILE_REQUEST: "UPLOAD_PROFILE_REQUEST",
+  UPLOAD_PROFILE_SUCCESS: "UPLOAD_PROFILE_SUCCESS",
+  UPLOAD_PROFILE_ERROR: "UPLOAD_PROFILE_ERROR",
 
 };
 
@@ -88,6 +98,23 @@ export const updateProfileSuccess = user => ({
   type: TYPES.UPDATE_PROFILE_SUCCESS,
   payload: { user },
 });
+
+
+const uploadProfileRequest = () => ({
+  type: TYPES.UPLOAD_PROFILE_REQUEST,
+  payload: null,
+});
+
+const uploadProfileError = error => ({
+  type: TYPES.UPLOAD_PROFILE_ERROR,
+  payload: { error },
+});
+
+const uploadProfileSuccess = user => ({
+  type: TYPES.UPLOAD_PROFILE_SUCCESS,
+  payload: { user },
+});
+
 const clearStore = () => ({
   type: TYPES.CLEAR_STORE,
   payload: null,
@@ -131,7 +158,6 @@ export const checkUserName = (username) => async dispatch => {
     else {
       dispatch(checkUserNameError(user))
     }
-
   } catch (error) {
     dispatch(checkUserNameError(error));
   }
@@ -143,27 +169,39 @@ export const updateProfile = (dob, fullname, gender, id, primaryEmail, location,
   try {
     const user = await UserController.updateProfile(dob, fullname, gender, id, primaryEmail, location, username);
     navigationRef.navigate(NAVIGATION.addProfilePicture, { number: number })
+    dispatch(updateProfileSuccess());
   } catch (error) {
+    showMessage({
+      message: error?.message,
+      type: "danger"
+    })
     dispatch(updateProfileError(error));
   }
 };
 export const uploadProfile = (file, mimeType, number) => async dispatch => {
   dispatch(globalReset())
-  dispatch(updateProfileRequest());
+  dispatch(uploadProfileRequest());
   try {
     const user = await UserController.upload_Profile_Pic(file, mimeType, number);
+
     dispatch(updateProfileSuccess(user));
+    dispatch(uploadProfileSuccess(user))
     navigationRef.navigate(NAVIGATION.homeNavigator)
   } catch (error) {
-    dispatch(updateProfileError(error));
+    showMessage({
+      message: error?.message,
+      type: "danger"
+    })
+    dispatch(uploadProfileError(error));
   }
 };
 export const logout = () => async dispatch => {
-  try {
-    await UserController.logout();
-  } finally {
-    dispatch(clearStore());
-  }
+  dispatch(clearStore());
+  // try {
+  //   // await UserController.logout();
+  // } finally {
+  //   dispatch(clearStore());
+  // }
 };
 
 

@@ -6,10 +6,11 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  ActivityIndicator
 } from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { TYPES, updateProfile } from '@/actions/UserActions';
-import { Button, TextField } from '@/components';
+import { Button, CustomLoader, TextField } from '@/components';
 import { strings } from '@/localization';
 import { styles } from '@/screens/SignUp/SignUp.style';
 import { errorsSelector } from '@/selectors/ErrorSelectors';
@@ -40,6 +41,8 @@ export function SignUp({ route }) {
   const [openDatePicker, setOpenDatePicker] = useState(false);
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
+
+  const [showLoader, setShowloader] = useState(false);
 
   const [openGenderDropDown, setOpenGenderDropDown] = useState(false);
   const [genderValue, setGenderValue] = useState(null);
@@ -303,17 +306,15 @@ export function SignUp({ route }) {
     { value: 'ZW', label: 'Zimbabwe' },
   ]);
   const isLoading = useSelector(state =>
-    isLoadingSelector([TYPES.LOGIN], state)
+    isLoadingSelector([TYPES.UPDATE_PROFILE], state)
   );
 
   const errors = useSelector(
-    state => errorsSelector([TYPES.LOGIN], state),
+    state => errorsSelector([TYPES.UPDATE_PROFILE], state),
     shallowEqual
   );
-
   const handleSubmit = () => {
     validation()
-    // navigationRef.navigate(NAVIGATION.addProfilePicture);
   };
 
   const onChange = selectedDate => {
@@ -389,7 +390,10 @@ export function SignUp({ route }) {
           placeholderStyle={styles.dropdowntextstyle}
         />
         <Text style={styles.subTitle}>{strings.SignUp.email}</Text>
+        <CustomLoader
+          open={isLoading}
 
+        />
         <TextField
           autoCapitalize="none"
           onChangeText={setEmail}

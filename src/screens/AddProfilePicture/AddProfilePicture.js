@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { login, TYPES, updateProfileSuccess, uploadProfile } from '@/actions/UserActions';
-import { Button, ErrorView } from '@/components';
+import { Button, CustomLoader, ErrorView } from '@/components';
 import { strings } from '@/localization';
 import { styles } from '@/screens/AddProfilePicture/AddProfilePhoto.styles';
 import { errorsSelector } from '@/selectors/ErrorSelectors';
@@ -23,6 +23,8 @@ import { close } from '@/assets';
 import { EditViewModal } from '@/components/CropPictureModal';
 import { navigationRef } from '@/navigation/RootNavigation';
 import { NAVIGATION } from '@/constants';
+import { showMessage } from 'react-native-flash-message';
+import { theme } from '@/theme';
 
 export function AddProfilePicture({ route }) {
   const { number } = route.params;
@@ -49,7 +51,7 @@ export function AddProfilePicture({ route }) {
   };
 
   const isLoading = useSelector(state =>
-    isLoadingSelector([TYPES.LOGIN], state)
+    isLoadingSelector([TYPES.UPDATE_PROFILE], state)
   );
 
   const errors = useSelector(
@@ -113,8 +115,16 @@ export function AddProfilePicture({ route }) {
 
   };
   const handleFinish = () => {
+    if (image == null) {
+      showMessage({
+        message: strings.profile.selecteImage,
+        type: "danger",
+      })
+    }
+    else {
+      dispatch(uploadProfile(image, mimeType, number));
+    }
 
-    dispatch(uploadProfile(image, mimeType, number));
   };
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
@@ -148,7 +158,11 @@ export function AddProfilePicture({ route }) {
           }}
           onPress={ReplaceImage}
         />
+        <CustomLoader
+          open={isLoading}
 
+
+        />
         {!image ? (
           <Button
             onPress={toggleModal}
