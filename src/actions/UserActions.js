@@ -163,13 +163,22 @@ export const checkUserName = (username) => async dispatch => {
   }
 };
 
-export const updateProfile = (dob, fullname, gender, id, primaryEmail, location, username, number) => async dispatch => {
+export const updateProfile = (dob, fullname, gender, id, primaryEmail, location, username, number, screen) => async dispatch => {
   dispatch(globalReset())
   dispatch(updateProfileRequest());
   try {
     const user = await UserController.updateProfile(dob, fullname, gender, id, primaryEmail, location, username);
-    navigationRef.navigate(NAVIGATION.addProfilePicture, { number: number })
-    dispatch(updateProfileSuccess());
+    if (screen == NAVIGATION.editProfile) {
+      dispatch(updateProfileSuccess(user));
+      showMessage({
+        message: strings.editProfile.updatedSuccess,
+        type: "success"
+      })
+    }
+    else {
+      navigationRef.navigate(NAVIGATION.addProfilePicture, { number: number, "USER_DATA": user })
+      dispatch(updateProfileSuccess());
+    }
   } catch (error) {
     showMessage({
       message: error?.message,
@@ -178,15 +187,12 @@ export const updateProfile = (dob, fullname, gender, id, primaryEmail, location,
     dispatch(updateProfileError(error));
   }
 };
-export const uploadProfile = (file, mimeType, number) => async dispatch => {
+export const uploadProfile = (file, mimeType, USER) => async dispatch => {
   dispatch(globalReset())
   dispatch(uploadProfileRequest());
   try {
-    const user = await UserController.upload_Profile_Pic(file, mimeType, number);
-
-    dispatch(updateProfileSuccess(user));
-    dispatch(uploadProfileSuccess(user))
-    navigationRef.navigate(NAVIGATION.homeNavigator)
+    const user = await UserController.upload_Profile_Pic(file, mimeType, USER?.contact);
+    dispatch(uploadProfileSuccess(USER))
   } catch (error) {
     showMessage({
       message: error?.message,

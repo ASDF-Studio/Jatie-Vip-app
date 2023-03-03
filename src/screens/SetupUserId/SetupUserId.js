@@ -12,6 +12,7 @@ import { navigationRef } from '@/navigation/RootNavigation';
 import { NAVIGATION } from '@/constants';
 import { showMessage } from 'react-native-flash-message';
 import { TextStyles, theme } from '@/theme';
+import { CustomErrorView } from '@/components/CustomErrorView';
 
 export function SetupUserId({ route }) {
   const { ID, number } = route.params;
@@ -70,6 +71,12 @@ export function SetupUserId({ route }) {
       />
 
       {errors.length > 0 && <UserNameErrorView />}
+      {/* {errors.length > 0 &&
+        <CustomErrorView
+          errors={errors}
+          ErrorScreen={NAVIGATION.setupUserId}
+        />
+      } */}
 
       <Button
         onPress={handleSubmit}

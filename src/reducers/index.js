@@ -8,5 +8,5 @@ export const rootReducer = combineReducers({
   error: errorReducer,
   status: statusReducer,
   user: userReducer,
-  userType : StatusReducer,
+  userType: StatusReducer,
 });

@@ -21,13 +21,12 @@ import ImageCropPicker from 'react-native-image-crop-picker';
 import Modal from 'react-native-modal';
 import { close } from '@/assets';
 import { EditViewModal } from '@/components/CropPictureModal';
-import { navigationRef } from '@/navigation/RootNavigation';
-import { NAVIGATION } from '@/constants';
 import { showMessage } from 'react-native-flash-message';
-import { theme } from '@/theme';
+import { getUser } from '@/selectors/UserSelectors';
 
 export function AddProfilePicture({ route }) {
-  const { number } = route.params;
+  const { USER_DATA } = route.params;
+  const user = useSelector(getUser)
 
   const { colors } = useTheme();
   const [image, setImage] = useState(null);
@@ -51,7 +50,7 @@ export function AddProfilePicture({ route }) {
   };
 
   const isLoading = useSelector(state =>
-    isLoadingSelector([TYPES.UPDATE_PROFILE], state)
+    isLoadingSelector([TYPES.UPLOAD_PROFILE], state)
   );
 
   const errors = useSelector(
@@ -63,14 +62,7 @@ export function AddProfilePicture({ route }) {
   };
 
   const handleSubmit = () => {
-
-    const dummyData = {
-      "status": true,
-      "id": "8ce35c01-baec-42fb-ac74-4f0b63239865",
-      "url": "https://jatievip.s3.us-east-2.amazonaws.com/photo-1677589077205.jpg",
-      "message": "profile pic uploaded successfully"
-    }
-    dispatch(updateProfileSuccess(dummyData));
+    dispatch(updateProfileSuccess(USER_DATA));
   };
 
   const OpenGallery = () => {
@@ -122,7 +114,7 @@ export function AddProfilePicture({ route }) {
       })
     }
     else {
-      dispatch(uploadProfile(image, mimeType, number));
+      dispatch(uploadProfile(image, mimeType, USER_DATA));
     }
 
   };
@@ -142,11 +134,11 @@ export function AddProfilePicture({ route }) {
 
         <EditViewModal
           textStyleHeading={styles.HeadingTextStyle}
-          style={{
+          style={[styles.EditViewModal, {
             alignSelf: 'center',
             width: Dimensions.get('window').width,
-          }}
-          style={styles.EditViewModal}
+          }]}
+          // style={styles.EditViewModal}
           sourceUrl={image}
           isVisible={cropImageModal}
           onImageCrop={res => {
@@ -160,8 +152,6 @@ export function AddProfilePicture({ route }) {
         />
         <CustomLoader
           open={isLoading}
-
-
         />
         {!image ? (
           <Button

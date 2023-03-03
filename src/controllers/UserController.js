@@ -88,7 +88,6 @@ export class UserController {
       const headers = {
         'Content-Type': 'multipart/form-data'
       }
-
       HttpClient.post(endpoint, data, { headers })
         .then((response) => {
           resolve(response);

@@ -7,12 +7,14 @@ import { CustomBottomTabBar } from '@/components/CustomBottomTabBar';
 import { MessageNavigator } from './MessageNavigator';
 import { ExclusiveNavigator } from './ExclusiveNavigator';
 import { GiveawayNavigator } from './GiveawayNavigator';
+import { AddProfilePicture } from '@/screens';
 
 const Tab = createBottomTabNavigator();
 
 export function AppNavigator() {
   return (
-    <Tab.Navigator screenOptions={{ headerShown: false }} tabBar={props => <CustomBottomTabBar {...props} />}>
+    <Tab.Navigator
+      screenOptions={{ headerShown: false }} tabBar={props => <CustomBottomTabBar {...props} />}>
       <Tab.Screen name={NAVIGATION.homeNavigator}
         component={HomeNavigator} />
       <Tab.Screen

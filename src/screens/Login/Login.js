@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { TYPES, ChooseUser, login } from '@/actions/UserActions';
-import { Button, ErrorView, TextField } from '@/components';
+import { Button, CustomLoader, ErrorView, TextField } from '@/components';
 import { strings } from '@/localization';
 import { styles } from '@/screens/Login/Login.styles';
 import { errorsSelector } from '@/selectors/ErrorSelectors';
@@ -53,13 +53,9 @@ export function Login() {
 
     }
     else {
-      // navigationRef.navigate(NAVIGATION.enterOtp, { "number": mobileNumber });
       recaptcha.current.open();
-
     }
   };
-
-
   const handleSubmit = () => {
     validation()
   };
@@ -72,12 +68,10 @@ export function Login() {
     setCaptchaToken(token)
     const finalNumber = countryCode + mobileNumber
     dispatch(login(finalNumber))
-    console.log('success!', token);
   }
 
   const onExpire = () => {
     setCaptchaToken("")
-    console.warn('expired!');
   }
 
   // testing purpose code
@@ -92,16 +86,12 @@ export function Login() {
 
   return (
     <View style={styles.container}>
-
       <View style={{ marginBottom: ms(10) }}>
         <Logo height={ms(142)} width={ms(142)} />
       </View>
       <Text style={TextStyles.title}>{strings.login.loginOrSignup}</Text>
       <Text
-
         style={styles.subTitle}>{strings.login.enterPhoneNumber}</Text>
-
-
       <CountryPicker
         enableModalAvoiding={true}
         show={show}
@@ -109,13 +99,8 @@ export function Login() {
           // Styles for whole modal [View]
           modal: {
             height: 400,
-
           },
-
-
         }}
-
-
         onBackdropPress={() => setShow(false)}
         // when picker button press you will get the country object with dial code
         pickerButtonOnPress={(item) => {

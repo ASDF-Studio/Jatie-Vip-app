@@ -16,6 +16,7 @@ import { showMessage } from 'react-native-flash-message';
 import { TextStyles, theme } from '@/theme';
 import { globalReset } from '@/actions/GlobalActions';
 import { FontFamily } from '@/theme/Fonts';
+import { CustomErrorView } from '@/components/CustomErrorView';
 
 export function EnterOtp({ route }) {
   const { number, isRegistered } = route.params;
@@ -89,6 +90,16 @@ export function EnterOtp({ route }) {
       />
 
       {errors.length > 0 && <OTPErrorView />}
+
+      {/* {errors.length > 0 &&
+        <CustomErrorView
+          number={number}
+          errors={errors}
+          setCode={setCode}
+          ErrorScreen={NAVIGATION.enterOtp}
+        />
+      } */}
+
 
       <Button
         onPress={handleSubmit}

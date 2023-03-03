@@ -17,7 +17,6 @@ import { errorsSelector } from '@/selectors/ErrorSelectors';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { AuthHeader } from '@/components/AuthHeader';
 import DropDownPicker from 'react-native-dropdown-picker';
-import { navigationRef } from '@/navigation/RootNavigation';
 import { NAVIGATION } from '@/constants';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import moment from 'moment';
@@ -372,7 +371,7 @@ export function SignUp({ route }) {
       })
     }
     else {
-      dispatch(updateProfile(birthday, name, genderValue, ID, email, countryvalue, username, number))
+      dispatch(updateProfile(birthday, name, genderValue, ID, email, countryvalue, username, number, NAVIGATION.signUp))
     }
 
   }
@@ -476,7 +475,6 @@ export function SignUp({ route }) {
         <Text style={styles.subTitle}>{strings.SignUp.country}</Text>
 
         <DropDownPicker
-
           open={openCountryDropDown}
           value={countryvalue}
           items={COUNTRY_LIST}

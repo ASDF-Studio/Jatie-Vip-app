@@ -8,6 +8,8 @@ export const userReducer = (state = {}, { payload, type }) => {
       return { ...state, ...payload.user };
     case TYPES.UPDATE_PROFILE_SUCCESS:
       return { ...state, ...payload.user };
+    case TYPES.UPLOAD_PROFILE_SUCCESS:
+      return { ...state, ...payload.user };
     case TYPES.CLEAR_STORE:
       return {};
     default:

@@ -26,8 +26,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import { FontFamily } from '@/theme/Fonts';
 import { Data } from './ProfileData/profileData';
 import { faSearch } from '@fortawesome/pro-regular-svg-icons';
+import { getUser } from '@/selectors/UserSelectors';
 
 export function Profile({ navigation }) {
+  const user = useSelector(getUser)
   const userType = useSelector(state => state.userType);
   const [status, setStatus] = useState(strings.profile.myStatus);
 
@@ -43,8 +45,12 @@ export function Profile({ navigation }) {
             }}
           />
           <View style={styles.headerText}>
-            <Text style={styles.nameTxt}>{Data.name}</Text>
-            <Text style={styles.userNameTxt}>{Data.userName}</Text>
+            <Text
+              numberOfLines={1}
+              style={styles.nameTxt}>{user?.fullName}</Text>
+            <Text
+              numberOfLines={1}
+              style={styles.userNameTxt}>{user?.username}</Text>
           </View>
         </View>
         <View style={styles.iconContiner}>
@@ -139,6 +145,7 @@ export const styles = StyleSheet.create({
     top: ms(25),
     paddingLeft: ms(3, 0.3),
     paddingTop: ms(10),
+    width: ms(100)
   },
   iconContiner: {
     flexDirection: 'row',

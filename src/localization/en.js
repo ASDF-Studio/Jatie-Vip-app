@@ -358,4 +358,7 @@ export const en = {
     submit: 'Submit',
     delete: 'Delete',
   },
+  editProfile: {
+    updatedSuccess: "Profile Updated Successfully"
+  }
 };
