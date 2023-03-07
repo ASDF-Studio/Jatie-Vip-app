@@ -8,7 +8,7 @@ import {
   Dimensions,
 } from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { login, TYPES, updateProfileSuccess, uploadProfile } from '@/actions/UserActions';
+import { TYPES, updateProfile } from '@/actions/UserActions';
 import { Button, CustomLoader, ErrorView } from '@/components';
 import { strings } from '@/localization';
 import { styles } from '@/screens/AddProfilePicture/AddProfilePhoto.styles';
@@ -23,11 +23,11 @@ import { close } from '@/assets';
 import { EditViewModal } from '@/components/CropPictureModal';
 import { showMessage } from 'react-native-flash-message';
 import { getUser } from '@/selectors/UserSelectors';
+import { NAVIGATION } from '@/constants';
 
 export function AddProfilePicture({ route }) {
-  const { USER_DATA } = route.params;
+  const { prevData } = route.params;
   const user = useSelector(getUser)
-
   const { colors } = useTheme();
   const [image, setImage] = useState(null);
   const [mimeType, setmimeType] = useState(null)
@@ -50,11 +50,11 @@ export function AddProfilePicture({ route }) {
   };
 
   const isLoading = useSelector(state =>
-    isLoadingSelector([TYPES.UPLOAD_PROFILE], state)
+    isLoadingSelector([TYPES.UPDATE_PROFILE], state)
   );
 
   const errors = useSelector(
-    state => errorsSelector([TYPES.LOGIN], state),
+    state => errorsSelector([TYPES.UPDATE_PROFILE_ERROR], state),
     shallowEqual
   );
   const closeModal = () => {
@@ -62,7 +62,7 @@ export function AddProfilePicture({ route }) {
   };
 
   const handleSubmit = () => {
-    dispatch(updateProfileSuccess(USER_DATA));
+    dispatch(updateProfile(prevData?.birthday, prevData?.name, prevData?.genderValue, prevData?.ID, prevData?.email, prevData?.countryvalue, prevData?.username, prevData?.number, null, null, NAVIGATION.addProfilePicture))
   };
 
   const OpenGallery = () => {
@@ -114,7 +114,7 @@ export function AddProfilePicture({ route }) {
       })
     }
     else {
-      dispatch(uploadProfile(image, mimeType, USER_DATA));
+      dispatch(updateProfile(prevData?.birthday, prevData?.name, prevData?.genderValue, prevData?.ID, prevData?.email, prevData?.countryvalue, prevData.username, prevData.number, image, mimeType, NAVIGATION.addProfilePicture))
     }
 
   };

@@ -4,6 +4,6 @@ export const API_END_POINTS = {
     LOGIN: "login",
     VERIFY_OTP: "verifyotp",
     CHECK_USERNAME: "getusername",
-    UPDATE_USER: "updateuser",
+    UPDATE_USER: "api/auth/updateuser",
     UPLOAD_PROFILE_PIC: "api/upload"
 };

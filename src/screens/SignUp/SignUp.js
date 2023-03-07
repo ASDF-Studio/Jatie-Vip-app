@@ -1,15 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
-  KeyboardAvoidingView,
-  ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
   View,
-  ActivityIndicator
 } from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { TYPES, updateProfile } from '@/actions/UserActions';
+import { TYPES } from '@/actions/UserActions';
 import { Button, CustomLoader, TextField } from '@/components';
 import { strings } from '@/localization';
 import { styles } from '@/screens/SignUp/SignUp.style';
@@ -27,6 +24,7 @@ import DatePicker from 'react-native-date-picker';
 import { faCalendar } from '@fortawesome/free-solid-svg-icons';
 import { theme } from '@/theme';
 import { faCheck } from '@fortawesome/pro-regular-svg-icons';
+import { navigationRef } from '@/navigation/RootNavigation';
 
 export function SignUp({ route }) {
   const { username, ID, number } = route.params;
@@ -39,9 +37,6 @@ export function SignUp({ route }) {
   const [openDatePicker, setOpenDatePicker] = useState(false);
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
-
-  const [showLoader, setShowloader] = useState(false);
-
   const [openGenderDropDown, setOpenGenderDropDown] = useState(false);
   const [genderValue, setGenderValue] = useState(null);
   const [genderItems, setGenderItems] = useState([
@@ -370,9 +365,13 @@ export function SignUp({ route }) {
       })
     }
     else {
-      dispatch(updateProfile(birthday, name, genderValue, ID, email, countryvalue, username, number, NAVIGATION.signUp))
+      var DATA = {
+        birthday, name, genderValue, ID, email, countryvalue, username, number,
+      }
+      navigationRef.navigate(NAVIGATION.addProfilePicture, {
+        prevData: DATA
+      })
     }
-
   }
   return (
     <KeyboardAwareScrollView>
@@ -423,11 +422,6 @@ export function SignUp({ route }) {
         </TouchableOpacity>
 
         {show && (
-          // <DateTimePicker
-          //   value={new Date(date)}
-          //   mode={mode}
-          //   onChange={onChange}
-          // />
           <DatePicker
             modal
             mode="date"

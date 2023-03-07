@@ -41,7 +41,7 @@ export function Profile({ navigation }) {
           <Image
             style={styles.headerImage}
             source={{
-              uri: Data.profilePic,
+              uri: user?.profilePic == null ? "" : user?.profilePic,
             }}
           />
           <View style={styles.headerText}>

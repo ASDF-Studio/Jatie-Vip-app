@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -13,7 +13,7 @@ import { theme, TextStyles } from '@/theme';
 import { FontFamily } from '@/theme/Fonts';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faCalendar, faClose, faPen } from '@fortawesome/free-solid-svg-icons';
-import { Icon, HorizontalLine, PopUp, Button } from '@/components';
+import { Icon, HorizontalLine, PopUp, Button, CustomLoader } from '@/components';
 import DatePicker from 'react-native-date-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { TopBackButton } from '@/components';
@@ -25,8 +25,10 @@ import { faCheck } from '@fortawesome/pro-regular-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
 import { showMessage } from 'react-native-flash-message';
-import { updateProfile, uploadProfile } from '@/actions/UserActions';
+import { updateProfile } from '@/actions/UserActions';
 import { COUNTRY_LIST, NAVIGATION } from '@/constants';
+import { isLoadingSelector } from '@/selectors/StatusSelectors';
+import { TYPES } from '@/actions/UserActions';
 
 export default function EditProfile({ navigation }) {
   const userNameInput_ref = useRef();
@@ -312,7 +314,6 @@ export default function EditProfile({ navigation }) {
   const [profileImage, setprofileimage] = useState(user?.profilePic || "");
   const [mimeType, setmimeType] = useState(null)
 
-
   const PickFromCamera = () => {
     ImagePicker.openCamera({
       width: ms(300),
@@ -340,6 +341,10 @@ export default function EditProfile({ navigation }) {
       console.log(image);
     });
   };
+
+  const isLoading = useSelector(state =>
+    isLoadingSelector([TYPES.UPDATE_PROFILE], state)
+  );
   const onChange = selectedDate => {
 
     const formattedDate = moment(selectedDate).format('MMM DD, yyyy');
@@ -387,10 +392,8 @@ export default function EditProfile({ navigation }) {
       })
     }
     else {
-      if (profileImage !== "") {
-        dispatch(uploadProfile(profileImage, mimeType, user))
-      }
-      dispatch(updateProfile(formatedDate, name, genderValue, user?.id, email, locationValue, userName, user?.number, NAVIGATION.editProfile))
+
+      dispatch(updateProfile(formatedDate, name, genderValue, user?.id, email, locationValue, userName, user?.number, profileImage, mimeType, NAVIGATION.editProfile))
     }
 
   }
@@ -416,8 +419,12 @@ export default function EditProfile({ navigation }) {
         nestedScrollEnabled={true}
         showsVerticalScrollIndicator={true}
       >
+        <CustomLoader
+          open={isLoading}
+        />
         <Text style={styles.profileTxt}>{strings.profile.profilePic}</Text>
         <View style={styles.ScrollViewContainer}>
+
           <View>
             <Image
               source={{

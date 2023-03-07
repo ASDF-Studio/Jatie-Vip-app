@@ -52,19 +52,30 @@ export class UserController {
         });
     });
   }
-  static async updateProfile(dob, fullname, gender, id, primaryEmail, location, username) {
+  static async updateProfile(dob, fullname, gender, id, primaryEmail, location, username, file, mimeType) {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.UPDATE_USER;
-      var data = JSON.stringify({
-        "id": id,
-        "fullname": fullname,
-        "primaryEmail": primaryEmail,
-        "location": location,
-        "username": username,
-        "dob": dob,
-        "gender": gender
-      });
-      HttpClient.post(endpoint, data)
+      var data = new FormData()
+      if (file !== "") {
+        let filename = file.split("/").pop();
+        var obj = {
+          uri: file,
+          name: filename,
+          type: mimeType,
+        };
+        data.append('myimage', obj);
+      }
+      data.append('id', id);
+      data.append('fullname', fullname);
+      data.append('primaryEmail', primaryEmail);
+      data.append('location', location);
+      data.append('username', username);
+      data.append('dob', dob);
+      data.append('gender', gender);
+      const headers = {
+        'Content-Type': 'multipart/form-data'
+      }
+      HttpClient.post(endpoint, data, { headers })
         .then((response) => {
           resolve(response);
         })

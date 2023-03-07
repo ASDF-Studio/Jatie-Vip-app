@@ -1,19 +1,16 @@
-import { useTheme } from '@react-navigation/native';
-import React, { useEffect, useState, useRef } from 'react';
-import { SafeAreaView, Text, TouchableOpacity, View, Keyboard } from 'react-native';
+
+import React, { useState, useRef } from 'react';
+import { Text, TouchableOpacity, View, Keyboard } from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { TYPES, ChooseUser, login } from '@/actions/UserActions';
-import { Button, CustomLoader, ErrorView, TextField } from '@/components';
+import { TYPES, login } from '@/actions/UserActions';
+import { Button, ErrorView, TextField } from '@/components';
 import { strings } from '@/localization';
 import { styles } from '@/screens/Login/Login.styles';
 import { errorsSelector } from '@/selectors/ErrorSelectors';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { ms } from 'react-native-size-matters';
 import { Logo } from '@/assets';
-import { TextStyles, theme } from '@/theme';
-import { navigationRef } from '@/navigation/RootNavigation';
-import { NAVIGATION } from '@/constants';
-import DropDownPicker from 'react-native-dropdown-picker';
+import { TextStyles } from '@/theme';
 import { showMessage } from "react-native-flash-message";
 import { SITE_KEY, CAPTCHA_BASE_URL } from '@/constants';
 import Recaptcha from 'react-native-recaptcha-that-works';
@@ -88,6 +85,7 @@ export function Login() {
 
   return (
     <KeyboardAwareScrollView
+      showsVerticalScrollIndicator={false}
       keyboardShouldPersistTaps={"handled"}
       contentContainerStyle={styles.mainContainer}
     >
@@ -146,13 +144,11 @@ export function Login() {
         />
 
         <ErrorView errors={errors} />
-
         <Button
           onPress={handleSubmit}
           style={styles.submitButton}
           title={isLoading ? strings.common.loading : strings.login.continue}
         />
-
         <Text style={styles.termsAndConditionsStyle}>
           {strings.login.byContinue}
           <Text style={styles.linkColor}>{strings.login.termsAndConditions}</Text>
