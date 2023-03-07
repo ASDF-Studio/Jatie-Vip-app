@@ -1,6 +1,6 @@
 import { useTheme } from '@react-navigation/native';
 import React, { useEffect, useState, useRef } from 'react';
-import { SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView, Text, TouchableOpacity, View, Keyboard } from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { TYPES, ChooseUser, login } from '@/actions/UserActions';
 import { Button, CustomLoader, ErrorView, TextField } from '@/components';
@@ -18,6 +18,7 @@ import { showMessage } from "react-native-flash-message";
 import { SITE_KEY, CAPTCHA_BASE_URL } from '@/constants';
 import Recaptcha from 'react-native-recaptcha-that-works';
 import { CountryPicker } from "react-native-country-codes-picker";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 export function Login() {
   const recaptcha = useRef();
 
@@ -30,7 +31,6 @@ export function Login() {
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.LOGIN], state)
   );
-
   const errors = useSelector(
     state => errorsSelector([TYPES.LOGIN], state),
     shallowEqual
@@ -54,6 +54,7 @@ export function Login() {
     }
     else {
       recaptcha.current.open();
+      Keyboard.dismiss()
     }
   };
   const handleSubmit = () => {
@@ -65,6 +66,7 @@ export function Login() {
   }
 
   const onVerify = token => {
+    // Keyboard.dismiss()
     setCaptchaToken(token)
     const finalNumber = countryCode + mobileNumber
     dispatch(login(finalNumber))
@@ -85,73 +87,79 @@ export function Login() {
 
 
   return (
-    <View style={styles.container}>
-      <View style={{ marginBottom: ms(10) }}>
-        <Logo height={ms(142)} width={ms(142)} />
-      </View>
-      <Text style={TextStyles.title}>{strings.login.loginOrSignup}</Text>
-      <Text
-        style={styles.subTitle}>{strings.login.enterPhoneNumber}</Text>
-      <CountryPicker
-        enableModalAvoiding={true}
-        show={show}
-        style={{
-          // Styles for whole modal [View]
-          modal: {
-            height: 400,
-          },
-        }}
-        onBackdropPress={() => setShow(false)}
-        // when picker button press you will get the country object with dial code
-        pickerButtonOnPress={(item) => {
-          setCountryCode(item.dial_code);
-          setShow(false);
-        }}
-      />
-      <View style={styles.inputFieldView}>
-        <TouchableOpacity
-          onPress={setShow}
-          style={styles.countryCodePicker}>
-          <Text style={styles.countryPickerText}>
-            {countryCode == "" ? "+1" : countryCode}
-          </Text>
-
-        </TouchableOpacity>
-        <TextField
-          style={styles.numberinput}
-          autoCapitalize="none"
-          onChangeText={setMobileNumber}
-          placeholder={strings.login.phoneNumber}
-          value={mobileNumber}
-          keyboardType="phone-pad"
+    <KeyboardAwareScrollView
+      keyboardShouldPersistTaps={"handled"}
+      contentContainerStyle={styles.mainContainer}
+    >
+      <View
+        style={styles.container}
+      >
+        <View style={{ marginBottom: ms(10) }}>
+          <Logo height={ms(142)} width={ms(142)} />
+        </View>
+        <Text style={TextStyles.title}>{strings.login.loginOrSignup}</Text>
+        <Text
+          style={styles.subTitle}>{strings.login.enterPhoneNumber}</Text>
+        <CountryPicker
+          enableModalAvoiding={true}
+          show={show}
+          style={{
+            // Styles for whole modal [View]
+            modal: {
+              height: 400,
+            },
+          }}
+          onBackdropPress={() => setShow(false)}
+          // when picker button press you will get the country object with dial code
+          pickerButtonOnPress={(item) => {
+            setCountryCode(item.dial_code);
+            setShow(false);
+          }}
         />
-      </View>
+        <View style={styles.inputFieldView}>
+          <TouchableOpacity
+            onPress={setShow}
+            style={styles.countryCodePicker}>
+            <Text style={styles.countryPickerText}>
+              {countryCode == "" ? "+1" : countryCode}
+            </Text>
 
-      <Recaptcha
-        ref={recaptcha}
-        siteKey={SITE_KEY}
-        baseUrl={CAPTCHA_BASE_URL}
-        onVerify={onVerify}
-        onExpire={onExpire}
-        size="normal"
-        explicit
-      />
+          </TouchableOpacity>
+          <TextField
+            style={styles.numberinput}
+            autoCapitalize="none"
+            onChangeText={setMobileNumber}
+            placeholder={strings.login.phoneNumber}
+            value={mobileNumber}
+            keyboardType="phone-pad"
+          />
+        </View>
 
-      <ErrorView errors={errors} />
+        <Recaptcha
+          ref={recaptcha}
+          siteKey={SITE_KEY}
+          baseUrl={CAPTCHA_BASE_URL}
+          onVerify={onVerify}
+          onExpire={onExpire}
+          size="normal"
+          explicit
+        />
 
-      <Button
-        onPress={handleSubmit}
-        style={styles.submitButton}
-        title={isLoading ? strings.common.loading : strings.login.continue}
-      />
+        <ErrorView errors={errors} />
 
-      <Text style={styles.termsAndConditionsStyle}>
-        {strings.login.byContinue}
-        <Text style={styles.linkColor}>{strings.login.termsAndConditions}</Text>
-        {strings.login.and}
-        <Text style={styles.linkColor}>{strings.login.privacyPolicy}</Text>
-      </Text>
-    </View >
+        <Button
+          onPress={handleSubmit}
+          style={styles.submitButton}
+          title={isLoading ? strings.common.loading : strings.login.continue}
+        />
 
+        <Text style={styles.termsAndConditionsStyle}>
+          {strings.login.byContinue}
+          <Text style={styles.linkColor}>{strings.login.termsAndConditions}</Text>
+          {strings.login.and}
+          <Text style={styles.linkColor}>{strings.login.privacyPolicy}</Text>
+        </Text>
+      </View >
+    </KeyboardAwareScrollView>
   );
 }

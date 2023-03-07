@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -29,9 +29,9 @@ import { updateProfile, uploadProfile } from '@/actions/UserActions';
 import { COUNTRY_LIST, NAVIGATION } from '@/constants';
 
 export default function EditProfile({ navigation }) {
+  const userNameInput_ref = useRef();
   const dispatch = useDispatch()
   const user = useSelector(getUser);
-  console.log("USER=====", user)
   const [date, setDate] = useState(new Date());
   const [openDatePicker, setOpenDatePicker] = useState(false);
   const [openPopUp, setOpenPopUp] = useState(false);
@@ -572,7 +572,7 @@ export default function EditProfile({ navigation }) {
               {strings.profile.userID}{' '}
             </Text>
             <TextInput
-
+              ref={userNameInput_ref}
               style={styles.textFiled}
               selectTextOnFocus={false}
               value={userName}
@@ -582,7 +582,7 @@ export default function EditProfile({ navigation }) {
               <Icon
                 icon={faPen}
                 color={theme.light.colors.info}
-              // onPress={() => setOpenDatePicker(true)}
+                onPress={() => userNameInput_ref.current.focus()}
               />
             </View>
           </View>

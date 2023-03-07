@@ -32,7 +32,7 @@ export function SetupUserId({ route }) {
   const validation = () => {
     if (userId == "") {
       showMessage({
-        message: "Please enter username",
+        message: strings.setupUserId.userNameValidation,
         type: "danger"
       })
     } else if (errors.length <= 0) {

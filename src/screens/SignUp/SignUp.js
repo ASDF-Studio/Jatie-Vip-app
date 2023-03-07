@@ -29,7 +29,6 @@ import { theme } from '@/theme';
 import { faCheck } from '@fortawesome/pro-regular-svg-icons';
 
 export function SignUp({ route }) {
-
   const { username, ID, number } = route.params;
   const dispatch = useDispatch()
   const [name, setName] = useState('');

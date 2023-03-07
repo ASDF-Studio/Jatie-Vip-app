@@ -34,7 +34,6 @@ export function Welcome() {
         />
         <Button title={strings.Welcome.signup}
           onPress={() =>
-
             navigate(NAVIGATION.login)
           }
           style={styles.signButton} />

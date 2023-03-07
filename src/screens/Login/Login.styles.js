@@ -10,8 +10,12 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: ms(20),
   },
+  mainContainer: {
+    flex: 1,
+  },
   submitButton: {
     marginTop: 20,
+
   },
   logoContainer: { marginBottom: ms(10) },
   linkColor: {
