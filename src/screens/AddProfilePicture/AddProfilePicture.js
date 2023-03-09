@@ -62,7 +62,7 @@ export function AddProfilePicture({ route }) {
   };
 
   const handleSubmit = () => {
-    dispatch(updateProfile(prevData?.birthday, prevData?.name, prevData?.genderValue, prevData?.ID, prevData?.email, prevData?.countryvalue, prevData?.username, prevData?.number, null, null, NAVIGATION.addProfilePicture))
+    dispatch(updateProfile(prevData?.birthday, prevData?.name, prevData?.genderValue, prevData?.ID, prevData?.email, prevData?.countryvalue, prevData?.username, prevData?.number, "", null, NAVIGATION.addProfilePicture))
   };
 
   const OpenGallery = () => {

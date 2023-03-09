@@ -401,6 +401,10 @@ export default function EditProfile({ navigation }) {
     validation()
 
   }
+  const onRemove = () => {
+    setprofileimage("")
+    setmimeType(null)
+  }
   return (
     <SafeAreaView style={styles.container}>
       <TopBackButton
@@ -440,7 +444,7 @@ export default function EditProfile({ navigation }) {
               onPress={() => setReplace(true)}
             />
             <Button
-              onPress={() => setprofileimage("")}
+              onPress={() => onRemove()}
               title={strings.addYourProfilePicture.remove}
               style={styles.removeBtn}
               textStyle={{

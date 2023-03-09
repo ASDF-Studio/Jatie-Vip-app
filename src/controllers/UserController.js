@@ -56,7 +56,7 @@ export class UserController {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.UPDATE_USER;
       var data = new FormData()
-      if (file !== "") {
+      if (mimeType !== null) {
         let filename = file.split("/").pop();
         var obj = {
           uri: file,
@@ -72,6 +72,7 @@ export class UserController {
       data.append('username', username);
       data.append('dob', dob);
       data.append('gender', gender);
+      data.append('profilePic', mimeType == null && file);
       const headers = {
         'Content-Type': 'multipart/form-data'
       }
