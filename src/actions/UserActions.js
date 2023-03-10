@@ -199,6 +199,7 @@ export const updateProfile = (dob, fullname, gender, id, primaryEmail, location,
         message: strings.editProfile.updatedSuccess,
         type: "success"
       })
+      navigationRef.navigate(NAVIGATION.profileSetting)
     }
   } catch (error) {
     showMessage({

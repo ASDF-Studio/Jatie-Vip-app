@@ -23,7 +23,7 @@ export function Login() {
   const [mobileNumber, setMobileNumber] = useState('');
   const [captchaToken, setCaptchaToken] = useState("");
   const [show, setShow] = useState(false);
-  const [countryCode, setCountryCode] = useState('');
+  const [countryCode, setCountryCode] = useState('+1');
 
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.LOGIN], state)
@@ -119,7 +119,7 @@ export function Login() {
             onPress={setShow}
             style={styles.countryCodePicker}>
             <Text style={styles.countryPickerText}>
-              {countryCode == "" ? "+1" : countryCode}
+              {countryCode}
             </Text>
 
           </TouchableOpacity>

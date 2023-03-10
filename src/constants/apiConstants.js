@@ -1,12 +1,12 @@
-export const API_BASE_URL = "https://staging.jatievip.com/";
+export const API_BASE_URL = "https://staging.jatievip.com/api/";
 
 export const API_END_POINTS = {
-    LOGIN: "login",
-    VERIFY_OTP: "verifyotp",
-    CHECK_USERNAME: "getusername",
-    UPDATE_USER: "api/auth/updateuser",
-    UPLOAD_PROFILE_PIC: "api/upload",
+    LOGIN: "auth/login",
+    VERIFY_OTP: "auth/verifyotp",
+    CHECK_USERNAME: "auth/getusername",
+    UPDATE_USER: "auth/updateuser",
+    UPLOAD_PROFILE_PIC: "auth/upload",
 
-    //User NewsFeed
-    CREATE_POST: "api/newsfeed/create",
+    //use create post
+    CREATE_POST: "newsfeed/create"
 };
