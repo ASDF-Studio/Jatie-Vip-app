@@ -5,5 +5,8 @@ export const API_END_POINTS = {
     VERIFY_OTP: "verifyotp",
     CHECK_USERNAME: "getusername",
     UPDATE_USER: "api/auth/updateuser",
-    UPLOAD_PROFILE_PIC: "api/upload"
+    UPLOAD_PROFILE_PIC: "api/upload",
+
+    //User NewsFeed
+    CREATE_POST: "api/newsfeed/create",
 };

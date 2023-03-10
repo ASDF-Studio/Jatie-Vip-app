@@ -32,12 +32,15 @@ import { useState } from 'react';
 import Modal from 'react-native-modal';
 import { close } from '@/assets';
 import ImageCropPicker from 'react-native-image-crop-picker';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUser } from '@/selectors/UserSelectors';
 
 let nextId = 0;
 
 export default function Post({ navigation }) {
   const userType = useSelector(state => state.userType);
+  const dispatch = useDispatch()
+  const user = useSelector(getUser);
   const [imageArray, setImageArray] = useState([]);
   const [isModalVisible, setModalVisible] = useState(false);
   const [isImage, setIsImage] = useState();
@@ -59,42 +62,42 @@ export default function Post({ navigation }) {
     {
       isImage == strings.exclusive.image
         ? ImageCropPicker.openPicker({
-            width: 300,
-            height: 400,
-            mediaType: strings.exclusive.image,
-            multiple: true,
-          })
-            .then(images => {
-              images.forEach(item => {
-                imageArray.push({
-                  id: nextId++,
-                  image: item.path,
-                  video: null,
-                });
-                setModalVisible(!isModalVisible);
-              });
-            })
-            .catch(e => {
-              console.log('Error: ' + e);
-            })
-        : ImageCropPicker.openPicker({
-            width: 300,
-            height: 400,
-            mediaType: strings.exclusive.video,
-            multiple: true,
-            loadingLabelText: 'loading',
-          })
-            .then(video => {
+          width: 300,
+          height: 400,
+          mediaType: strings.exclusive.image,
+          multiple: true,
+        })
+          .then(images => {
+            images.forEach(item => {
               imageArray.push({
                 id: nextId++,
-                image: null,
-                video: video.path,
+                image: item.path,
+                video: null,
               });
               setModalVisible(!isModalVisible);
-            })
-            .catch(e => {
-              console.log('Error: ' + e);
             });
+          })
+          .catch(e => {
+            console.log('Error: ' + e);
+          })
+        : ImageCropPicker.openPicker({
+          width: 300,
+          height: 400,
+          mediaType: strings.exclusive.video,
+          multiple: true,
+          loadingLabelText: 'loading',
+        })
+          .then(video => {
+            imageArray.push({
+              id: nextId++,
+              image: null,
+              video: video.path,
+            });
+            setModalVisible(!isModalVisible);
+          })
+          .catch(e => {
+            console.log('Error: ' + e);
+          });
     }
   };
 
@@ -102,40 +105,70 @@ export default function Post({ navigation }) {
     {
       isImage == strings.exclusive.image
         ? ImageCropPicker.openCamera({
-            width: 300,
-            height: 400,
-            cropping: false,
-          })
-            .then(image => {
-              imageArray.push({
-                id: nextId++,
-                image: image.path,
-                video: null,
-              });
-              setModalVisible(!isModalVisible);
-            })
-            .catch(e => {
-              console.log('Error: ' + e);
-            })
-        : ImageCropPicker.openCamera({
-            width: 300,
-            height: 400,
-            cropping: false,
-            mediaType: strings.exclusive.video,
-          })
-            .then(image => {
-              imageArray.push({
-                id: nextId++,
-                image: null,
-                video: image.path,
-              });
-              setModalVisible(!isModalVisible);
-            })
-            .catch(e => {
-              console.log('Error: ' + e);
+          width: 300,
+          height: 400,
+          cropping: false,
+        })
+          .then(image => {
+            imageArray.push({
+              id: nextId++,
+              image: image.path,
+              video: null,
             });
+            setModalVisible(!isModalVisible);
+          })
+          .catch(e => {
+            console.log('Error: ' + e);
+          })
+        : ImageCropPicker.openCamera({
+          width: 300,
+          height: 400,
+          cropping: false,
+          mediaType: strings.exclusive.video,
+        })
+          .then(image => {
+            imageArray.push({
+              id: nextId++,
+              image: null,
+              video: image.path,
+            });
+            setModalVisible(!isModalVisible);
+          })
+          .catch(e => {
+            console.log('Error: ' + e);
+          });
     }
   };
+
+  const validation = () => {
+    if (postBody == '') {
+      showMessage({
+        message: strings.home.postBody,
+        type: "danger"
+      })
+    }
+    // else if (postTitle == '') {
+    //   showMessage({
+    //     message: strings.home.postTitle,
+    //     type: "danger"
+    //   })
+    // } 
+    // else if (postImg == "") {
+    //   showMessage({
+    //     message: strings.SignUp.dobPlaceHolder,
+    //     type: "danger"
+    //   })
+    // }
+    else {
+
+      dispatch(createPost(user?.id, postTitle, postBody, postImg, NAVIGATION.postOptions))
+    }
+
+  }
+  const onSave = () => {
+    validation()
+
+  }
   return (
     <SafeAreaView style={styles.contianer}>
       <View style={styles.header}>
@@ -227,6 +260,7 @@ export default function Post({ navigation }) {
                 disabled={postTxt.length ? false : true}
                 opacity={postTxt.length ? 1 : 0.4}
                 style={styles.freeButton}
+                onPress={onSave}
               />
             )}
             {/* show only for Admin */}

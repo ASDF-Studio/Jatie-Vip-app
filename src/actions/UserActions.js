@@ -33,6 +33,12 @@ export const TYPES = {
   UPLOAD_PROFILE_SUCCESS: "UPLOAD_PROFILE_SUCCESS",
   UPLOAD_PROFILE_ERROR: "UPLOAD_PROFILE_ERROR",
 
+  //user create post
+  CREATE_POST: 'CREATE_POST',
+  CREATE_POST_REQUEST: "CREATE_POST_REQUEST",
+  CREATE_POST_SUCCESS: "CREATE_POST_SUCCESS",
+  CREATE_POST_ERROR: "CREATE_POST_ERROR",
+
 };
 
 const loginRequest = () => ({
@@ -114,6 +120,25 @@ const uploadProfileSuccess = user => ({
   type: TYPES.UPLOAD_PROFILE_SUCCESS,
   payload: { user },
 });
+
+//create post
+export const createPostSuccess = user => ({
+  type: TYPES.CREATE_POST_SUCCESS,
+  payload: { user },
+});
+
+
+const createPostRequest = () => ({
+  type: TYPES.CREATE_POST_REQUEST,
+  payload: null,
+});
+
+const createPostError = error => ({
+  type: TYPES.CREATE_POST_ERROR,
+  payload: { error },
+});
+// end create post
+
 
 const clearStore = () => ({
   type: TYPES.CLEAR_STORE,
@@ -204,6 +229,29 @@ export const logout = () => async dispatch => {
   // } finally {
   //   dispatch(clearStore());
   // }
+};
+
+// create post action
+
+export const createPost = (dob, fullname, gender, id, primaryEmail, location, username, number, file, mimeType, screen) => async dispatch => {
+  dispatch(globalReset())
+  dispatch(createPostRequest());
+  try {
+    const user = await UserController.updateProfile(dob, fullname, gender, id, primaryEmail, location, username, file, mimeType);
+    dispatch(createPostSuccess(user))
+    if (screen == NAVIGATION.editProfile) {
+      showMessage({
+        message: strings.editProfile.updatedSuccess,
+        type: "success"
+      })
+    }
+  } catch (error) {
+    showMessage({
+      message: error?.message,
+      type: "danger"
+    })
+    dispatch(createPostError(error));
+  }
 };
 
 

@@ -54,6 +54,11 @@ export const en = {
     report: 'Report this post',
     deletePost: 'Delete Post',
     reportPost: 'Report Post',
+
+    // createpost
+
+    postTitle: 'Enter Post Title',
+    postBody: 'Enter Post Body',
   },
   sortBy: {
     recent: 'Recent',
