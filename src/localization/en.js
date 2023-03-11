@@ -366,5 +366,8 @@ export const en = {
   },
   editProfile: {
     updatedSuccess: "Profile Updated Successfully"
+  },
+  createPost: {
+    updatedSuccess: "Post Successfull"
   }
 };

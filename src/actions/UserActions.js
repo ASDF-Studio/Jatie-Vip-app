@@ -234,15 +234,15 @@ export const logout = () => async dispatch => {
 
 // create post action
 
-export const createPost = (dob, fullname, gender, id, primaryEmail, location, username, number, file, mimeType, screen) => async dispatch => {
+export const createPost = (id, postTitle, postBody, file, screen) => async dispatch => {
   dispatch(globalReset())
   dispatch(createPostRequest());
   try {
-    const user = await UserController.updateProfile(dob, fullname, gender, id, primaryEmail, location, username, file, mimeType);
+    const user = await UserController.createPost(id, postTitle, postBody, file);
     dispatch(createPostSuccess(user))
-    if (screen == NAVIGATION.editProfile) {
+    if (screen == NAVIGATION.home) {
       showMessage({
-        message: strings.editProfile.updatedSuccess,
+        message: strings.createPost.updatedSuccess,
         type: "success"
       })
     }

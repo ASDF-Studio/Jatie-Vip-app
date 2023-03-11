@@ -34,6 +34,7 @@ import { close } from '@/assets';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
+import { createPost } from '@/actions/UserActions';
 
 let nextId = 0;
 
@@ -44,9 +45,14 @@ export default function Post({ navigation }) {
   const [imageArray, setImageArray] = useState([]);
   const [isModalVisible, setModalVisible] = useState(false);
   const [isImage, setIsImage] = useState();
-  const [postTxt, setPostTxt] = useState('');
+  // const [postTxt, setPostTxt] = useState('');
   const [vipOnly, setVipOnly] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  const [postTitle, setPostTitle] = useState('User share post');
+  const [postBody, setPostBody] = useState('');
+  const [postImg, setPostImg] = useState('');
+  const [mimeType, setmimeType] = useState(null)
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -161,7 +167,7 @@ export default function Post({ navigation }) {
     // }
     else {
 
-      dispatch(createPost(user?.id, postTitle, postBody, postImg, NAVIGATION.postOptions))
+      dispatch(createPost(user?.id, postTitle, postBody, postImg, NAVIGATION.home))
     }
 
   }
@@ -184,7 +190,8 @@ export default function Post({ navigation }) {
             <TextInput
               placeholder={strings.home.whatOnYourMind}
               style={styles.InputTextBoxDEsc}
-              onChangeText={val => setPostTxt(val)}
+              value={postBody}
+              onChangeText={val => setPostBody(val)}
               editable
               multiline
               numberOfLines={6}
@@ -250,15 +257,15 @@ export default function Post({ navigation }) {
               <Button
                 title={strings.home.post}
                 style={styles.vipButton}
-                disabled={postTxt.length == 0 ? false : true}
-                opacity={postTxt.length ? 1 : 0.4}
+                disabled={postBody.length == 0 ? false : true}
+                opacity={postBody.length ? 1 : 0.4}
               />
             )}
             {userType.user == strings.userType.free && (
               <Button
                 title={strings.home.post}
-                disabled={postTxt.length ? false : true}
-                opacity={postTxt.length ? 1 : 0.4}
+                disabled={postBody.length ? false : true}
+                opacity={postBody.length ? 1 : 0.4}
                 style={styles.freeButton}
                 onPress={onSave}
               />
@@ -267,9 +274,10 @@ export default function Post({ navigation }) {
             {userType.user == strings.userType.admin && (
               <Button
                 title={strings.home.next}
-                opacity={postTxt.length ? 1 : 0.4}
-                disabled={postTxt.length ? false : true}
-                onPress={() => navigation.navigate(NAVIGATION.postOptions)}
+                opacity={postBody.length ? 1 : 0.4}
+                disabled={postBody.length ? false : true}
+                onPress={onSave}
+                // onPress={() => navigation.navigate(NAVIGATION.postOptions)}
                 style={styles.adminButton}
               />
             )}

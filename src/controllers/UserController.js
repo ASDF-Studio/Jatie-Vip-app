@@ -110,6 +110,39 @@ export class UserController {
     });
   }
 
+  // create Post
+
+  static async createPost(id, postTitle, postBody, file) {
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.CREATE_POST;
+      var data = new FormData()
+      // if (mimeType !== null) {
+      //   let filename = file.split("/").pop();
+      //   var obj = {
+      //     uri: file,
+      //     name: filename,
+      //     type: mimeType,
+      //   };
+      //   data.append('myimage', obj);
+      // }
+      data.append('id', id);
+      data.append('postTitle', postTitle);
+      data.append('postBody', postBody);
+      // data.append('postImg', mimeType == null && file);
+      data.append('postImg', file);
+      const headers = {
+        'Content-Type': 'multipart/form-data'
+      }
+      HttpClient.post(endpoint, data, { headers })
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
+
   static async logout() {
     return new Promise(resolve => {
       setTimeout(resolve, 500);
