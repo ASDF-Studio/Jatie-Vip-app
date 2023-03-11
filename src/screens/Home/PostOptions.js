@@ -1,4 +1,5 @@
 import { AppSwitch, Button, TextField, TopBackButton } from '@/components';
+import { NAVIGATION } from '@/constants';
 import { strings } from '@/localization';
 import { TextStyles, theme } from '@/theme';
 import { FontFamily } from '@/theme/Fonts';
@@ -6,6 +7,7 @@ import { faCalendar } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import React from 'react';
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   View,
   Text,
@@ -16,13 +18,18 @@ import {
 } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import { ms } from 'react-native-size-matters';
+import { getUser } from '@/selectors/UserSelectors';
+import { createPost } from '@/actions/UserActions';
 
-export default function PostOptions({ navigation }) {
+export default function PostOptions({ route, navigation }) {
+  const { prevData } = route.params;
   const [schedulePost, setSchedulePost] = useState(false);
   const [vipOnly, setVipOnly] = useState(false);
   const [pinPost, setPinPost] = useState(false);
   const [goingLIve, setGoingLive] = useState(false);
   const [ad, setAd] = useState(false);
+  const user = useSelector(getUser);
+  const dispatch = useDispatch()
 
   const [postDate, setPostDate] = useState(new Date());
   const [openPostDatePicker, setOpenPostDatePicker] = useState(false);
@@ -33,6 +40,10 @@ export default function PostOptions({ navigation }) {
 
   const [expiringDate, setExpiringDate] = useState(new Date());
   const [openExpiringDatePicker, setOpenExpiringDatePicker] = useState(false);
+
+  const handleSubmit = () => {
+    dispatch(createPost(user?.id, prevData?.postTitle, prevData?.postBody, prevData?.postImg, prevData?.mimeType, prevData?.imageArray, NAVIGATION.home))
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -229,7 +240,7 @@ export default function PostOptions({ navigation }) {
           <View style={styles.buttomContainer}>
             <Button
               title={strings.home.post}
-              // onPress = {}
+              onPress={handleSubmit}
               style={styles.buttonPost}
             />
           </View>

@@ -112,24 +112,30 @@ export class UserController {
 
   // create Post
 
-  static async createPost(id, postTitle, postBody, file) {
+  static async createPost(id, postTitle, postBody, file, mimeType, imageArray) {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.CREATE_POST;
       var data = new FormData()
-      // if (mimeType !== null) {
-      //   let filename = file.split("/").pop();
-      //   var obj = {
-      //     uri: file,
-      //     name: filename,
-      //     type: mimeType,
-      //   };
-      //   data.append('myimage', obj);
-      // }
+      if (mimeType !== null) {
+        var obj = [];
+        {
+          imageArray.map(item => {
+            let filename = item.image.split("/").pop();
+            obj = [{
+              uri: item.image,
+              name: filename,
+              type: item.mimeType,
+            }];
+          });
+
+          data.append('myimage', obj);
+        }
+      }
       data.append('id', id);
       data.append('postTitle', postTitle);
       data.append('postBody', postBody);
-      // data.append('postImg', mimeType == null && file);
-      data.append('postImg', file);
+      data.append('postImg', mimeType == null && file);
+      // data.append('postImg', file);
       const headers = {
         'Content-Type': 'multipart/form-data'
       }
