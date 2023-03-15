@@ -68,6 +68,7 @@ export default function AdminPost({ navigation }) {
           height: 400,
           mediaType: strings.exclusive.image,
           multiple: true,
+          compressImageQuality: 0.5
         })
           .then(images => {
             images.forEach(item => {
@@ -94,6 +95,7 @@ export default function AdminPost({ navigation }) {
           height: 400,
           mediaType: strings.exclusive.video,
           multiple: true,
+          compressImageQuality: 0.5,
           loadingLabelText: 'loading',
         })
           .then(video => {
@@ -124,6 +126,7 @@ export default function AdminPost({ navigation }) {
           width: 300,
           height: 400,
           cropping: false,
+          compressImageQuality: 0.5,
         })
           .then(image => {
             imageArray.push({
@@ -148,6 +151,7 @@ export default function AdminPost({ navigation }) {
           height: 400,
           cropping: false,
           mediaType: strings.exclusive.video,
+          compressImageQuality: 0.5,
         })
           .then(image => {
             imageArray.push({
@@ -195,7 +199,6 @@ export default function AdminPost({ navigation }) {
       var DATA = {
         postTitle, postBody, postImg, mimeType, imageArray
       }
-      console.log(DATA);
       navigationRef.navigate(NAVIGATION.postOptions, {
         prevData: DATA
       })

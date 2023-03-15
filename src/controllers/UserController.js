@@ -142,6 +142,7 @@ export class UserController {
       HttpClient.post(endpoint, data, { headers })
         .then((response) => {
           resolve(response);
+          // console.log(response);
         })
         .catch((error) => {
           reject(error);

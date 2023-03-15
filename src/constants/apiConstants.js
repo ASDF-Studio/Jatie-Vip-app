@@ -8,5 +8,5 @@ export const API_END_POINTS = {
     UPLOAD_PROFILE_PIC: "auth/upload",
 
     //use create post
-    CREATE_POST: "newsfeed/create"
+    CREATE_POST: "post/create"
 };

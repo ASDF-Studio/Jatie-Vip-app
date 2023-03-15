@@ -194,6 +194,7 @@ export const updateProfile = (dob, fullname, gender, id, primaryEmail, location,
   try {
     const user = await UserController.updateProfile(dob, fullname, gender, id, primaryEmail, location, username, file, mimeType);
     dispatch(updateProfileSuccess(user))
+    // console.log(user);
     if (screen == NAVIGATION.editProfile) {
       showMessage({
         message: strings.editProfile.updatedSuccess,
@@ -240,6 +241,7 @@ export const createPost = (id, postTitle, postBody, file, mimeType, imageArray, 
   try {
     const user = await UserController.createPost(id, postTitle, postBody, file, mimeType, imageArray);
     dispatch(createPostSuccess(user))
+    // console.log(user);
     if (screen == NAVIGATION.home) {
       showMessage({
         message: strings.createPost.updatedSuccess,
