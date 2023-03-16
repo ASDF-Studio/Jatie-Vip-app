@@ -196,7 +196,8 @@ export default function Post({ navigation }) {
 
   }
   const onSave = () => {
-    validation()
+    // validation()
+    console.log(userType.user, strings.userType.admin);
 
   }
   return (
@@ -285,15 +286,15 @@ export default function Post({ navigation }) {
                 opacity={postBody.length ? 1 : 0.4}
               />
             )}
-            {/* {userType.user == strings.userType.free && ( */}
-            <Button
-              title={strings.home.post}
-              disabled={postBody.length ? false : true}
-              opacity={postBody.length ? 1 : 0.4}
-              style={styles.freeButton}
-            // onPress={onSave}
-            />
-            {/* )} */}
+            {userType.user == strings.userType.free && (
+              <Button
+                title={strings.home.post}
+                disabled={postBody.length ? false : true}
+                opacity={postBody.length ? 1 : 0.4}
+                style={styles.freeButton}
+                onPress={onSave}
+              />
+            )}
             {/* show only for Admin */}
             {userType.user == strings.userType.admin && (
               <Button

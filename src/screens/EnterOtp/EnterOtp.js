@@ -17,6 +17,7 @@ import { TextStyles, theme } from '@/theme';
 import { globalReset } from '@/actions/GlobalActions';
 import { FontFamily } from '@/theme/Fonts';
 import { CustomErrorView } from '@/components/CustomErrorView';
+import { getUser } from '@/selectors/UserSelectors';
 
 export function EnterOtp({ route }) {
   const { number, isRegistered } = route.params;
@@ -24,6 +25,8 @@ export function EnterOtp({ route }) {
   const dispatch = useDispatch();
   const [code, setCode] = useState('');
   const [codeError, setCodeError] = useState(false);
+
+  const user = useSelector(getUser);
 
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.VERIFY_OTP], state)
@@ -52,7 +55,6 @@ export function EnterOtp({ route }) {
       <View style={{ marginBottom: 10, flexDirection: 'row', justifyContent: 'center' }}>
         <Text style={[TextStyles.error, { color: theme.light.colors.error }]}>
           {errors[0].message === "otp invalid" ? strings.enterOtp.sorryCodeDidnotMatch : errors[0].message}{' '}
-
         </Text>
         <TouchableOpacity onPress={() => {
           setCode('')

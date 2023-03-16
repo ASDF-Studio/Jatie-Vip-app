@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { strings } from '@/localization';
 import { theme, TextStyles } from '@/theme';
 import { ms, vs } from 'react-native-size-matters';
@@ -56,6 +56,7 @@ import {
 import { Logo } from '@/assets';
 import { Data } from './Data/HomeData';
 import { faBell, faSearch } from '@fortawesome/pro-regular-svg-icons';
+import { UserController } from '@/controllers';
 
 export function Home({ navigation }) {
   const userType = useSelector(state => state.userType);
@@ -79,7 +80,18 @@ export function Home({ navigation }) {
 
   const [reportOptionValue, setReportOptionValue] = useState('');
   const [reportComment, setReportCommnet] = useState('');
+  const [allPinnedPost, setAllPinnedPost] = useState([]);
 
+  useEffect(() => {
+    getAllPinnedPost();
+  }, []);
+
+  const getAllPinnedPost = async (id) => {
+    const data = await UserController.getAllPinnedPost();
+    setAllPinnedPost(data.data);
+    // console.log("pinned data", allPinnedPost);
+  }
+  let counter = 1;
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="transparent" />
@@ -155,7 +167,113 @@ export function Home({ navigation }) {
                 // path={SeeSchedulePost}
                 />
               )}
+
+              <FlatList
+                data={allPinnedPost}
+                key={props => props.id}
+                renderItem={({ item }) => (
+                  <View style={styles.cardContainer}>
+                    <Card>
+                      <CardHeader
+                        fullName={'Jatie Vip'}
+                        userName={'@JatieVip'}
+                        profilePic={'https://res.cloudinary.com/hawktech-cloud/image/upload/v1674712476/d24dae39-1a64-47d5-af65-e14b5a1c533c_tmcsua.png'}
+                        time={item.post.created_at}
+                        isOfficial={true}
+                        showPin={true}
+                      />
+                      <CardBody text={item.post.postBody} />
+                      {/* images */}
+                      {item.post.postImg.length <= 2 ? (
+                        <View style={styles.imageContainer}>
+                          {item?.post?.postImg?.map(data => (
+                            counter = counter + 1,
+                            <TouchableOpacity
+                              key={counter}
+                              style={styles.touchContainer}
+                              onPress={() => {
+                                setShowImageView(true),
+                                  setFeedImages(item.post.postImg)
+                              }}
+                            >
+                              <Image
+                                source={{
+                                  uri: data,
+                                }}
+                                style={styles.image}
+                              />
+                            </TouchableOpacity>
+                          ))}
+                        </View>
+                      ) : item.post.postImg.length > 2 ? (
+                        counter = 1,
+                        <View style={styles.imageContainer}>
+                          {item?.post?.postImg?.map(data =>
+                            counter == 1 ? (
+                              counter = counter + 1,
+                              <TouchableOpacity
+                                key={counter}
+                                style={styles.touchContainer}
+                                onPress={() => {
+                                  setShowImageView(true),
+                                    setFeedImages(item.post.postImg);
+                                  console.log(item.post.postImg)
+                                }}
+                              >
+                                <Image
+                                  source={{
+                                    uri: data,
+                                  }}
+                                  key={counter}
+                                  style={styles.image}
+                                />
+                              </TouchableOpacity>
+                            ) : counter == 2 ? (
+                              counter = counter + 1,
+                              <TouchableOpacity
+                                key={counter}
+                                style={styles.touchContainer}
+                                onPress={() => {
+                                  setShowImageView(true),
+                                    setFeedImages(item.post.postImg);
+                                }}
+                              >
+                                <ImageBackground
+                                  source={{
+                                    uri: data,
+                                  }}
+                                  key={counter}
+                                  style={[styles.image, styles.moreImage]}
+                                >
+                                  <TouchableOpacity
+                                    onPress={() => {
+                                      setShowImageView(true),
+                                        setFeedImages(item.post.postImg);
+                                    }}
+                                  >
+                                    <Text style={styles.extraImage}>
+                                      {strings.message.plus}
+                                      {item.post.postImg.length - 1}
+                                    </Text>
+                                  </TouchableOpacity>
+                                </ImageBackground>
+                              </TouchableOpacity>
+                            ) : null
+                          )}
+                        </View>
+                      ) : null}
+                      <CardFooter
+                        likeCount={10}
+                        disLikeCount={1}
+                        commentCount={5}
+                        morePress={() => setOpen(true)}
+                      />
+                    </Card>
+                  </View>
+                )}
+              />
             </View>
+
           }
           data={Data}
           keyExtractor={item => item.id}

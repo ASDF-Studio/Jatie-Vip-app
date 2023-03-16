@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { strings } from '@/localization';
 import { Icon } from '@/components';
 import { theme } from '@/theme';
@@ -9,34 +9,38 @@ import { FontFamily } from '@/theme/Fonts';
 
 export const ShareFeed = ({ onPress }) => {
   return (
-    <View style={styles.feedContainer}>
-      <View style={styles.feedIconContainer}>
-        <Icon icon={faNewspaper} size={ms(15)} style={styles.feedIcon} />
-      </View>
-      <View
-        style={{
-          position: 'absolute',
-          left: '18%',
-        }}
-      >
-        <Text style={styles.feedTitle}>{strings.profile.feedTitle}</Text>
+    <TouchableOpacity
+      onPress={onPress}
+    >
+      <View style={styles.feedContainer}>
+        <View style={styles.feedIconContainer}>
+          <Icon icon={faNewspaper} size={ms(15)} style={styles.feedIcon} />
+        </View>
         <View
           style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
+            position: 'absolute',
+            left: '18%',
           }}
         >
-          <Text style={styles.feedLebel}>{strings.profile.feedLebel} </Text>
+          <Text style={styles.feedTitle}>{strings.profile.feedTitle}</Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            <Text style={styles.feedLebel}>{strings.profile.feedLebel} </Text>
+          </View>
         </View>
+        <Icon
+          icon={faArrowRight}
+          size={ms(14)}
+          color={theme.light.colors.info}
+          onPress={onPress}
+        />
       </View>
-      <Icon
-        icon={faArrowRight}
-        size={ms(14)}
-        color={theme.light.colors.info}
-        onPress={onPress}
-      />
-    </View>
+    </TouchableOpacity>
   );
 };
 

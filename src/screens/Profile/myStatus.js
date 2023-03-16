@@ -10,6 +10,7 @@ import {
   CardFooter,
   CardBody,
   HorizontalLine,
+  AppImageViewer,
 } from '@/components';
 import { ms } from 'react-native-size-matters';
 import { strings } from '@/localization';
@@ -46,7 +47,6 @@ export default function MyStatus() {
         renderItem={({ item }) => (
           <View style={styles.cardContainer}>
             <Card>
-              {/* {getTime("2023-03-16T09:53:22.555524+00:00")} */}
               <CardHeader
                 fullName={user?.fullName}
                 userName={user?.username}
@@ -55,7 +55,7 @@ export default function MyStatus() {
               />
               <CardBody text={item.postBody} />
               {/* images */}
-              <View style={styles.imageContainer}>
+              {/* <View style={styles.imageContainer}>
                 {item?.postImg?.map(data => (
                   counter = counter + 1,
                   <TouchableOpacity
@@ -74,16 +74,17 @@ export default function MyStatus() {
                     />
                   </TouchableOpacity>
                 ))}
-              </View>
-              {/* {item.postImg.length <= 2 ? (
+              </View> */}
+              {item.postImg.length <= 2 ? (
                 <View style={styles.imageContainer}>
                   {item?.postImg?.map(data => (
+                    counter = counter + 1,
                     <TouchableOpacity
-                      key={props => props.id}
+                      key={counter}
                       style={styles.touchContainer}
                       onPress={() => {
                         setShowImageView(true),
-                          setFeedImages(item.postImg);
+                          setFeedImages(item.postImg)
                       }}
                     >
                       <Image
@@ -96,29 +97,32 @@ export default function MyStatus() {
                   ))}
                 </View>
               ) : item.postImg.length > 2 ? (
+                counter = 1,
                 <View style={styles.imageContainer}>
                   {item?.postImg?.map(data =>
                     counter == 1 ? (
                       counter = counter + 1,
                       <TouchableOpacity
-                        key={props => props.id}
+                        key={counter}
                         style={styles.touchContainer}
                         onPress={() => {
                           setShowImageView(true),
                             setFeedImages(item.postImg);
+                          console.log(item.postImg)
                         }}
                       >
                         <Image
                           source={{
                             uri: data,
                           }}
-                          key={props => props.id}
+                          key={counter}
                           style={styles.image}
                         />
                       </TouchableOpacity>
-                    ) : counter >= 2 ? (
+                    ) : counter == 2 ? (
+                      counter = counter + 1,
                       <TouchableOpacity
-                        key={props => props.id}
+                        key={counter}
                         style={styles.touchContainer}
                         onPress={() => {
                           setShowImageView(true),
@@ -129,7 +133,7 @@ export default function MyStatus() {
                           source={{
                             uri: data,
                           }}
-                          key={props => props.id}
+                          key={counter}
                           style={[styles.image, styles.moreImage]}
                         >
                           <TouchableOpacity
@@ -148,7 +152,7 @@ export default function MyStatus() {
                     ) : null
                   )}
                 </View>
-              ) : null} */}
+              ) : null}
               <CardFooter
                 likeCount={10}
                 disLikeCount={1}
@@ -167,6 +171,13 @@ export default function MyStatus() {
         )}
       />
 
+      {showImageView && (
+        <AppImageViewer
+          visible={showImageView}
+          setVisible={() => setShowImageView(false)}
+          images={feedImages}
+        />
+      )}
       {/* {userPost.map((item, index) => {
         console.log(item.data.id)
       })} */}

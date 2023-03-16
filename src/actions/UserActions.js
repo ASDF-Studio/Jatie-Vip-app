@@ -161,9 +161,24 @@ export const verifyOtp = (number, Otp, isRegistered) => async dispatch => {
   dispatch(globalReset())
   dispatch(verifyOtpRequest());
   try {
+    // let selectedValue = "";
     const user = await UserController.verifyOtp(number, Otp);
     if (isRegistered == true) {
+      console.log("user", user.isAdmin)
       dispatch(verifyOtpSuccess(user))
+      if (user?.isAdmin == true) {
+        let selectedValue = "Admin";
+        dispatch(ChooseUser(selectedValue))
+        console.log("selectedValueeee", selectedValue)
+      } else if (user?.isVIP == true) {
+        let selectedValue = "VIP";
+        dispatch(ChooseUser(selectedValue))
+        console.log("selectedValueeee", selectedValue)
+      } else {
+        let selectedValue = "Free";
+        dispatch(ChooseUser(selectedValue))
+        console.log("selectedValueeee", selectedValue)
+      }
     } else {
       navigationRef.navigate(NAVIGATION.setupUserId, { "ID": user?.id, number: number });
     }

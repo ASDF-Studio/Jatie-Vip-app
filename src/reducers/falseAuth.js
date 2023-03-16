@@ -1,26 +1,26 @@
 
 let initalStates = {
-    user : 'Amdin'
+    user: 'Free'
 }
 
-export default AuthReducer = (state = initalStates, action)=>{
-    switch(action.type){
+export default AuthReducer = (state = initalStates, action) => {
+    switch (action.type) {
         case 'Admin':
             return {
-                user : 'Admin',
-               
+                user: 'Admin',
+
             }
-        case 'Free' : 
+        case 'Free':
             return {
-                user : 'Free'
+                user: 'Free'
             }
-        
-        case 'VIP':{
+
+        case 'VIP': {
             return {
-                user : 'VIP'
+                user: 'VIP'
             }
         }
-        default :{
+        default: {
             return state
         }
     }

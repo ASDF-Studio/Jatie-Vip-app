@@ -151,6 +151,8 @@ export class UserController {
     });
   }
 
+  // post by user id
+
   static async postByUserId(id) {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.POST_BY_USERID;
@@ -158,6 +160,23 @@ export class UserController {
         "userId": id
       });
       HttpClient.post(endpoint, data)
+        .then((response) => {
+
+          resolve(response);
+          // console.log(response)
+        })
+        .catch((error) => {
+          reject(new Error(error.message));
+        });
+    });
+  }
+
+  // get all pinned post
+
+  static async getAllPinnedPost() {
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.ALL_PINNED_POST;
+      HttpClient.post(endpoint)
         .then((response) => {
 
           resolve(response);

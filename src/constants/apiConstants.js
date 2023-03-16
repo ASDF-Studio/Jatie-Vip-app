@@ -10,4 +10,8 @@ export const API_END_POINTS = {
     //use create post
     CREATE_POST: "post/create",
     POST_BY_USERID: "post/post_by_user_id",
+
+    //admin pinned post
+
+    ALL_PINNED_POST: "post/all_pinned_post",
 };
