@@ -35,6 +35,7 @@ import ImageCropPicker from 'react-native-image-crop-picker';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
 import { createPost } from '@/actions/UserActions';
+import { navigationRef } from '@/navigation/RootNavigation';
 
 let nextId = 0;
 
@@ -51,7 +52,7 @@ export default function Post({ navigation }) {
 
   const [postTitle, setPostTitle] = useState('User share post');
   const [postBody, setPostBody] = useState('');
-  const [postImg, setPostImg] = useState('');
+  const [postImg, setPostImg] = useState(null);
   const [mimeType, setmimeType] = useState(null);
 
   const toggleModal = () => {
@@ -72,14 +73,18 @@ export default function Post({ navigation }) {
           height: 400,
           mediaType: strings.exclusive.image,
           multiple: true,
+          compressImageQuality: 0.5
         })
           .then(images => {
             images.forEach(item => {
               imageArray.push({
                 id: nextId++,
                 image: item.path,
+                imageMime: item.mime,
                 video: null,
               });
+              setPostImg(item.path);
+              setmimeType(item.mime);
               setModalVisible(!isModalVisible);
             });
           })
@@ -91,6 +96,7 @@ export default function Post({ navigation }) {
           height: 400,
           mediaType: strings.exclusive.video,
           multiple: true,
+          compressImageQuality: 0.5,
           loadingLabelText: 'loading',
         })
           .then(video => {
@@ -98,7 +104,10 @@ export default function Post({ navigation }) {
               id: nextId++,
               image: null,
               video: video.path,
+              videoMime: video.mime,
             });
+            setPostImg(video.path);
+            setmimeType(video.mime);
             setModalVisible(!isModalVisible);
           })
           .catch(e => {
@@ -114,6 +123,7 @@ export default function Post({ navigation }) {
           width: 300,
           height: 400,
           cropping: false,
+          compressImageQuality: 0.5,
         })
           .then(image => {
             imageArray.push({
@@ -121,6 +131,8 @@ export default function Post({ navigation }) {
               image: image.path,
               video: null,
             });
+            setPostImg(image.path);
+            setmimeType(image.mime);
             setModalVisible(!isModalVisible);
           })
           .catch(e => {
@@ -131,13 +143,17 @@ export default function Post({ navigation }) {
           height: 400,
           cropping: false,
           mediaType: strings.exclusive.video,
+          compressImageQuality: 0.5,
         })
           .then(image => {
             imageArray.push({
               id: nextId++,
               image: null,
               video: image.path,
+              videoMime: image.mime,
             });
+            setPostImg(image.path);
+            setmimeType(image.mime);
             setModalVisible(!isModalVisible);
           })
           .catch(e => {
@@ -167,7 +183,15 @@ export default function Post({ navigation }) {
     // }
     else {
 
-      dispatch(createPost(user?.id, postTitle, postBody, postImg, NAVIGATION.home))
+      // dispatch(createPost(user?.id, postTitle, postBody, postImg, mimeType, imageArray, NAVIGATION.profile))
+      // console.log(postImg, mimeType);
+
+      // var DATA = {
+      //   postTitle, postBody, postImg, mimeType, imageArray
+      // }
+      // navigationRef.navigate(NAVIGATION.postOptions, {
+      //   prevData: DATA
+      // })
     }
 
   }
@@ -261,15 +285,15 @@ export default function Post({ navigation }) {
                 opacity={postBody.length ? 1 : 0.4}
               />
             )}
-            {userType.user == strings.userType.free && (
-              <Button
-                title={strings.home.post}
-                disabled={postBody.length ? false : true}
-                opacity={postBody.length ? 1 : 0.4}
-                style={styles.freeButton}
-                onPress={onSave}
-              />
-            )}
+            {/* {userType.user == strings.userType.free && ( */}
+            <Button
+              title={strings.home.post}
+              disabled={postBody.length ? false : true}
+              opacity={postBody.length ? 1 : 0.4}
+              style={styles.freeButton}
+            // onPress={onSave}
+            />
+            {/* )} */}
             {/* show only for Admin */}
             {userType.user == strings.userType.admin && (
               <Button

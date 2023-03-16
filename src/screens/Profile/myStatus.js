@@ -37,6 +37,7 @@ export default function MyStatus() {
     setUserPost(data.data);
     console.log("data", id);
   }
+  let counter = 1;
   return (
     <View>
       <FlatList
@@ -45,18 +46,20 @@ export default function MyStatus() {
         renderItem={({ item }) => (
           <View style={styles.cardContainer}>
             <Card>
+              {/* {getTime("2023-03-16T09:53:22.555524+00:00")} */}
               <CardHeader
                 fullName={user?.fullName}
                 userName={user?.username}
                 profilePic={user?.profilePic}
-                time={10}
+                time={item.created_at}
               />
               <CardBody text={item.postBody} />
               {/* images */}
               <View style={styles.imageContainer}>
                 {item?.postImg?.map(data => (
+                  counter = counter + 1,
                   <TouchableOpacity
-                    key={props => props.id}
+                    key={counter}
                     style={styles.touchContainer}
                     onPress={() => {
                       setShowImageView(true),
@@ -95,7 +98,8 @@ export default function MyStatus() {
               ) : item.postImg.length > 2 ? (
                 <View style={styles.imageContainer}>
                   {item?.postImg?.map(data =>
-                    data.id <= 1 ? (
+                    counter == 1 ? (
+                      counter = counter + 1,
                       <TouchableOpacity
                         key={props => props.id}
                         style={styles.touchContainer}
@@ -112,7 +116,7 @@ export default function MyStatus() {
                           style={styles.image}
                         />
                       </TouchableOpacity>
-                    ) : data.id == 2 ? (
+                    ) : counter >= 2 ? (
                       <TouchableOpacity
                         key={props => props.id}
                         style={styles.touchContainer}

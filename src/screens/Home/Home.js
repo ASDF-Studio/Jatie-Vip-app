@@ -152,7 +152,7 @@ export function Home({ navigation }) {
                 <SeeSchedulePost
                   title={strings.home.seeSchedulePost}
                   navigation={navigation}
-                  // path={SeeSchedulePost}
+                // path={SeeSchedulePost}
                 />
               )}
             </View>
@@ -166,7 +166,7 @@ export function Home({ navigation }) {
                   fullName={item.name}
                   userName={item.userName}
                   profilePic={item.image}
-                  time={10}
+                  time={"2023-01-16T09:53:22.555524+00:00"}
                   isOfficial={item.isOffical}
                   showPin={true}
                 />
@@ -423,7 +423,7 @@ export function Home({ navigation }) {
             paddingBottom={8}
           />
           {(userType.user == `${strings.userType.free}`) |
-          (userType.user == `${strings.userType.vip}`) ? (
+            (userType.user == `${strings.userType.vip}`) ? (
             <>
               <ModalList
                 title={strings.home.report}

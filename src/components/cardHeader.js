@@ -17,6 +17,40 @@ export const CardHeader = ({
   isOfficial,
   showPin,
 }) => {
+
+  const getTime = (t2) => {
+    const t1 = new Date().getTime();
+    const t3 = new Date(t2).getTime();
+    let ts = parseInt((t1 - t3) / 60000);
+    if (ts < 60) {
+      return ts + " mins ago";
+    }
+    if (ts >= 60) {
+      let hour = parseInt(ts / 60);
+      if (hour > 24) {
+        let day = parseInt(hour / 24);
+        if (day > 7) {
+          let week = parseInt(day / 7);
+          if (week > 4) {
+            let month = parseInt(week / 4);
+            if (month > 12) {
+              let year = parseInt(month / 12);
+              return year + " years ago"
+            } else {
+              return month + " months ago";
+            }
+          } else {
+            return week + " weeks ago";
+          }
+        } else {
+          return day + " days ago";
+        }
+      } else {
+        return hour + " hours ago";
+      }
+    }
+  };
+
   return (
     <View style={styles.postHeader}>
       <View style={{ flexDirection: 'row' }}>
@@ -40,7 +74,7 @@ export const CardHeader = ({
         {time ? (
           <Text style={[styles.timeTxt, { paddingRight: showPin ? 40 : 0 }]}>
             {' '}
-            {time} mins ago
+            {getTime(time)}
           </Text>
         ) : null}
         {showPin ? (
