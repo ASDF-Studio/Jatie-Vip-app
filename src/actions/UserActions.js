@@ -247,6 +247,7 @@ export const createPost = (id, postTitle, postBody, file, mimeType, imageArray, 
         message: strings.createPost.updatedSuccess,
         type: "success"
       })
+      navigationRef.navigate(NAVIGATION.home)
     }
   } catch (error) {
     showMessage({

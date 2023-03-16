@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   StyleSheet,
   View,
@@ -52,7 +52,7 @@ export default function Post({ navigation }) {
   const [postTitle, setPostTitle] = useState('User share post');
   const [postBody, setPostBody] = useState('');
   const [postImg, setPostImg] = useState('');
-  const [mimeType, setmimeType] = useState(null)
+  const [mimeType, setmimeType] = useState(null);
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);

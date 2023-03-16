@@ -78,12 +78,8 @@ export default function AdminPost({ navigation }) {
                 imageMime: item.mime,
                 video: null,
               });
-              postImg.push({
-                image: item.path,
-              });
-              mimeType.push({
-                imageMime: item.mime,
-              });
+              postImg.push(item.path);
+              mimeType.push(item.mime);
               setModalVisible(!isModalVisible);
             });
           })
@@ -105,12 +101,8 @@ export default function AdminPost({ navigation }) {
               video: video.path,
               videoMime: video.mime,
             });
-            postImg.push({
-              video: video.path,
-            });
-            mimeType.push({
-              videoMime: video.mime,
-            });
+            postImg.push(video.path);
+            mimeType.push(video.mime);
             setModalVisible(!isModalVisible);
           })
           .catch(e => {
@@ -135,12 +127,8 @@ export default function AdminPost({ navigation }) {
               imageMime: image.mime,
               video: null,
             });
-            postImg.push({
-              image: image.path,
-            });
-            mimeType.push({
-              imageMime: image.mime,
-            });
+            postImg.push("https://d2wwqw32p0xkid.cloudfront.net/photo-1678865071807");
+            mimeType.push(image.mime);
             setModalVisible(!isModalVisible);
           })
           .catch(e => {
@@ -160,12 +148,8 @@ export default function AdminPost({ navigation }) {
               video: image.path,
               videoMime: image.mime,
             });
-            postImg.push({
-              video: image.path,
-            });
-            mimeType.push({
-              videoMime: image.mime,
-            });
+            postImg.push(image.path);
+            mimeType.push(image.mime);
             setModalVisible(!isModalVisible);
           })
           .catch(e => {
