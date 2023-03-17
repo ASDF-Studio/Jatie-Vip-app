@@ -57,6 +57,7 @@ import { Logo } from '@/assets';
 import { Data } from './Data/HomeData';
 import { faBell, faSearch } from '@fortawesome/pro-regular-svg-icons';
 import { UserController } from '@/controllers';
+import { useIsFocused } from "@react-navigation/native";
 
 export function Home({ navigation }) {
   const userType = useSelector(state => state.userType);
@@ -83,10 +84,20 @@ export function Home({ navigation }) {
   const [allPinnedPost, setAllPinnedPost] = useState([]);
   const [allPost, setAllPost] = useState([]);
 
+  // useEffect(() => {
+  //   getAllPinnedPost();
+  //   getAllPost();
+  // }, []);
+
+  const focus = useIsFocused();
+
   useEffect(() => {
-    getAllPinnedPost();
-    getAllPost();
-  }, []);
+    if (focus == true) {
+      getAllPinnedPost();
+      getAllPost();
+      console.log('RUN');
+    }
+  }, [focus]);
 
   const getAllPinnedPost = async () => {
     const data = await UserController.getAllPinnedPost();

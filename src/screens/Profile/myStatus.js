@@ -19,6 +19,7 @@ import { UserController } from '@/controllers';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
 import { FontFamily } from '@/theme/Fonts';
+import { useIsFocused } from "@react-navigation/native";
 
 export default function MyStatus() {
   const [open, setOpen] = useState(false);
@@ -29,9 +30,18 @@ export default function MyStatus() {
   const [userId, setUser] = useState("ce656365-b90f-4b5f-aab6-b436051171f5");
 
   const [userPost, setUserPost] = useState([]);
+  // useEffect(() => {
+  //   getUserPostById(user?.id);
+  // }, []);
+
+  const focus = useIsFocused();
+
   useEffect(() => {
-    getUserPostById(user?.id);
-  }, []);
+    if (focus == true) {
+      getUserPostById(user?.id);
+      console.log('RUN STATUS');
+    }
+  }, [focus]);
 
   const getUserPostById = async (id) => {
     const data = await UserController.postByUserId(id);
