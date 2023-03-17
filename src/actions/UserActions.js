@@ -256,7 +256,7 @@ export const createPost = (id, postTitle, postBody, file, mimeType, imageArray, 
   try {
     const user = await UserController.createPost(id, postTitle, postBody, file, mimeType, imageArray);
     dispatch(createPostSuccess(user))
-    console.log("Action file", file);
+    // console.log("Action file", user);
     if (screen == NAVIGATION.home) {
       showMessage({
         message: strings.createPost.updatedSuccess,

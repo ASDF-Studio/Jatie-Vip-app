@@ -113,31 +113,22 @@ export class UserController {
   // create Post
 
   static async createPost(id, postTitle, postBody, file, mimeType, imageArray) {
-    return new Promise((resolve, reject) => {
-      console.log("Controller file", file)
+    return new Promise(async (resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.CREATE_POST;
-      var data = new FormData()
+      let data = new FormData()
       if (mimeType !== null) {
-        var obj = [];
+        let obj = [];
         imageArray.map(item => {
           let filename = item.image.split("/").pop();
-          obj.push = [{
+          obj = {
             uri: item.image,
             name: filename,
-            type: item.mimeType,
-          }];
+            type: item.imageMime,
+          };
+          data.append('myimage', obj);
         });
-        data.append('myimage', obj);
       }
-      // if (mimeType !== null) {
-      //   let filename = file.split("/").pop();
-      //   var obj = {
-      //     uri: file,
-      //     name: filename,
-      //     type: mimeType,
-      //   };
-      //   data.append('myimage', obj);
-      // }
+
       data.append('userId', id);
       data.append('postTitle', postTitle);
       data.append('postBody', postBody);
@@ -145,7 +136,9 @@ export class UserController {
       const headers = {
         'Content-Type': 'multipart/form-data'
       }
-      HttpClient.post(endpoint, data, { headers })
+
+
+      await HttpClient.post(endpoint, data, { headers })
         .then((response) => {
           resolve(response);
           console.log("Final response", response);
