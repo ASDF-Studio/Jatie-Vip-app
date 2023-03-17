@@ -52,8 +52,8 @@ export default function Post({ navigation }) {
 
   const [postTitle, setPostTitle] = useState('User share post');
   const [postBody, setPostBody] = useState('');
-  const [postImg, setPostImg] = useState(null);
-  const [mimeType, setmimeType] = useState(null);
+  const [postImg, setPostImg] = useState([]);
+  const [mimeType, setmimeType] = useState([]);
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -183,7 +183,7 @@ export default function Post({ navigation }) {
     // }
     else {
 
-      // dispatch(createPost(user?.id, postTitle, postBody, postImg, mimeType, imageArray, NAVIGATION.profile))
+      dispatch(createPost(user?.id, postTitle, postBody, postImg, mimeType, imageArray, NAVIGATION.profile))
       // console.log(postImg, mimeType);
 
       // var DATA = {
@@ -196,8 +196,8 @@ export default function Post({ navigation }) {
 
   }
   const onSave = () => {
-    // validation()
-    console.log(userType.user, strings.userType.admin);
+    validation()
+    // console.log(userType.user, strings.userType.admin);
 
   }
   return (

@@ -114,36 +114,41 @@ export class UserController {
 
   static async createPost(id, postTitle, postBody, file, mimeType, imageArray) {
     return new Promise((resolve, reject) => {
-      console.log(file)
+      console.log("Controller file", file)
       const endpoint = API_BASE_URL + API_END_POINTS.CREATE_POST;
       var data = new FormData()
       if (mimeType !== null) {
         var obj = [];
-        {
-          imageArray.map(item => {
-            let filename = item.image.split("/").pop();
-            obj = [{
-              uri: item.image,
-              name: filename,
-              type: item.mimeType,
-            }];
-          });
-
-          data.append('myimage', obj);
-        }
+        imageArray.map(item => {
+          let filename = item.image.split("/").pop();
+          obj.push = [{
+            uri: item.image,
+            name: filename,
+            type: item.mimeType,
+          }];
+        });
+        data.append('myimage', obj);
       }
+      // if (mimeType !== null) {
+      //   let filename = file.split("/").pop();
+      //   var obj = {
+      //     uri: file,
+      //     name: filename,
+      //     type: mimeType,
+      //   };
+      //   data.append('myimage', obj);
+      // }
       data.append('userId', id);
       data.append('postTitle', postTitle);
       data.append('postBody', postBody);
       data.append('postImg', mimeType == null && file);
-      // data.append('postImg', file);
       const headers = {
         'Content-Type': 'multipart/form-data'
       }
       HttpClient.post(endpoint, data, { headers })
         .then((response) => {
           resolve(response);
-          console.log("Hello", response);
+          console.log("Final response", response);
         })
         .catch((error) => {
           reject(error);
@@ -176,6 +181,21 @@ export class UserController {
   static async getAllPinnedPost() {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.ALL_PINNED_POST;
+      HttpClient.post(endpoint)
+        .then((response) => {
+
+          resolve(response);
+          // console.log(response)
+        })
+        .catch((error) => {
+          reject(new Error(error.message));
+        });
+    });
+  }
+
+  static async getAllPost() {
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.ALL_POST;
       HttpClient.post(endpoint)
         .then((response) => {
 

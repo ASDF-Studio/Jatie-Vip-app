@@ -12,6 +12,8 @@ export const API_END_POINTS = {
     POST_BY_USERID: "post/post_by_user_id",
 
     //admin pinned post
-
     ALL_PINNED_POST: "post/all_pinned_post",
+
+    // View all post
+    ALL_POST: "post/all_post",
 };

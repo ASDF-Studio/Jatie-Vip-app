@@ -108,7 +108,7 @@ export default function MyStatus() {
                         onPress={() => {
                           setShowImageView(true),
                             setFeedImages(item.postImg);
-                          console.log(item.postImg)
+                          // console.log(feedImages)
                         }}
                       >
                         <Image

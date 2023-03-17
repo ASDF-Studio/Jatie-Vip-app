@@ -32,8 +32,10 @@ import { useState } from 'react';
 import Modal from 'react-native-modal';
 import { close } from '@/assets';
 import ImageCropPicker from 'react-native-image-crop-picker';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { navigationRef } from '@/navigation/RootNavigation';
+import { createPost } from '@/actions/UserActions';
+import { getUser } from '@/selectors/UserSelectors';
 
 let nextId = 0;
 
@@ -49,6 +51,8 @@ export default function AdminPost({ navigation }) {
   const [postBody, setPostBody] = useState('');
   const [postImg, setPostImg] = useState([]);
   const [mimeType, setmimeType] = useState([]);
+  const dispatch = useDispatch();
+  const user = useSelector(getUser);
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -64,8 +68,8 @@ export default function AdminPost({ navigation }) {
     {
       isImage == strings.exclusive.image
         ? ImageCropPicker.openPicker({
-          width: 300,
-          height: 400,
+          width: ms(300),
+          height: ms(400),
           mediaType: strings.exclusive.image,
           multiple: true,
           compressImageQuality: 0.5
@@ -80,6 +84,7 @@ export default function AdminPost({ navigation }) {
               });
               postImg.push(item.path);
               mimeType.push(item.mime);
+              console.log(item);
               setModalVisible(!isModalVisible);
             });
           })
@@ -101,8 +106,8 @@ export default function AdminPost({ navigation }) {
               video: video.path,
               videoMime: video.mime,
             });
-            postImg.push(video.path);
-            mimeType.push(video.mime);
+            setPostImg(video.path);
+            setmimeType(video.mime);
             setModalVisible(!isModalVisible);
           })
           .catch(e => {
@@ -127,8 +132,8 @@ export default function AdminPost({ navigation }) {
               imageMime: image.mime,
               video: null,
             });
-            postImg.push("https://d2wwqw32p0xkid.cloudfront.net/photo-1678865071807");
-            mimeType.push(image.mime);
+            setPostImg(image.path);
+            setmimeType(image.mime);
             setModalVisible(!isModalVisible);
           })
           .catch(e => {
@@ -148,8 +153,8 @@ export default function AdminPost({ navigation }) {
               video: image.path,
               videoMime: image.mime,
             });
-            postImg.push(image.path);
-            mimeType.push(image.mime);
+            setPostImg(image.path);
+            setmimeType(image.mime);
             setModalVisible(!isModalVisible);
           })
           .catch(e => {
@@ -179,13 +184,24 @@ export default function AdminPost({ navigation }) {
     // }
     else {
 
-      // dispatch(createPost(user?.id, postTitle, postBody, postImg, NAVIGATION.home))
       var DATA = {
         postTitle, postBody, postImg, mimeType, imageArray
       }
-      navigationRef.navigate(NAVIGATION.postOptions, {
-        prevData: DATA
-      })
+
+      {
+        userType.user == strings.userType.free && (
+          dispatch(createPost(user?.id, postTitle, postBody, postImg, mimeType, imageArray, NAVIGATION.home))
+
+          // console.log("postImggg", postImg)
+        )
+      }
+      {
+        userType.user == strings.userType.admin && (
+          navigationRef.navigate(NAVIGATION.postOptions, {
+            prevData: DATA
+          })
+        )
+      }
     }
 
   }
@@ -285,6 +301,7 @@ export default function AdminPost({ navigation }) {
                 opacity={postBody.length ? 1 : 0.4}
                 style={styles.postButton}
                 disabled={postBody.length ? false : true}
+                onPress={onSave}
               />
             )}
             {/* show only for Admin */}
@@ -292,7 +309,6 @@ export default function AdminPost({ navigation }) {
               <Button
                 title={strings.home.next}
                 opacity={postBody.length ? 1 : 0.4}
-                y
                 // onPress={() => navigation.navigate(NAVIGATION.postOptions)}
                 style={styles.postButton}
                 disabled={postBody.length ? false : true}

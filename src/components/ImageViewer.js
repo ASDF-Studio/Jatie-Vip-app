@@ -1,8 +1,8 @@
 import { theme } from "@/theme"
 import { faClose } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"
-import React from "react"
-import {Modal, StyleSheet, Text, View, TouchableOpacity } from "react-native"
+import React, { useState } from "react"
+import { Modal, StyleSheet, Text, View, TouchableOpacity } from "react-native"
 import ImageViewer from "react-native-image-zoom-viewer"
 import { ms } from "react-native-size-matters"
 
@@ -18,31 +18,38 @@ import { ms } from "react-native-size-matters"
 // ]
 
 
-export const AppImageViewer = ( {visible, setVisible, images } )=>{
-    
-    return(
+export const AppImageViewer = ({ visible, setVisible, images }) => {
+    // const [imageUrl, setImageUrl] = useState([]);
+    // {
+    //     images?.map(image => (
+    //         setImageUrl("url : " + image)
+    //     ))
+
+    //     console.log(imageUrl)
+    // }
+    return (
         <View>
             <Modal
-                visible = {visible}
-                transparent = {true}
+                visible={visible}
+                transparent={true}
             >
-                <TouchableOpacity 
-                    style = {styles.closeIcon}
-                    onPress = {setVisible}
+                <TouchableOpacity
+                    style={styles.closeIcon}
+                    onPress={setVisible}
                 >
-                    <FontAwesomeIcon 
+                    <FontAwesomeIcon
                         icon={faClose}
-                        size = {30}
-                        color = {theme.light.colors.white}
+                        size={30}
+                        color={theme.light.colors.white}
                     />
                 </TouchableOpacity>
                 <ImageViewer
                     imageUrls={images}
                     enableSwipeDown
-                    onCancel={()=> console.log("cancel")}
-                    // backgroundColor  = {theme.light.colors.primaryBg}
+                    onCancel={() => console.log("cancel")}
+                // backgroundColor  = {theme.light.colors.primaryBg}
                 />
-                
+
 
 
             </Modal>
@@ -52,10 +59,10 @@ export const AppImageViewer = ( {visible, setVisible, images } )=>{
 
 
 const styles = StyleSheet.create({
-    closeIcon : {
-        position : 'absolute',  
-        zIndex : 1,
-        right : ms(15),
-        top : ms(10)
+    closeIcon: {
+        position: 'absolute',
+        zIndex: 1,
+        right: ms(15),
+        top: ms(10)
     }
 })
