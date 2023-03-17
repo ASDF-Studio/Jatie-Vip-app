@@ -41,11 +41,9 @@ export default function MyStatus() {
     if (focus == true) {
       if (userType.user === strings.userType.free) {
         getUserPostById(user?.id);
-        console.log('RUN STATUS');
       }
       if (userType.user === strings.userType.admin) {
         getAllPostByAdmin();
-        console.log('RUN STATUS ADMIN');
       }
     }
   }, [focus]);
