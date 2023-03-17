@@ -19,10 +19,11 @@ import {
 import DatePicker from 'react-native-date-picker';
 import { ms } from 'react-native-size-matters';
 import { getUser } from '@/selectors/UserSelectors';
-import { createPost } from '@/actions/UserActions';
+import { createPostByAdmin } from '@/actions/UserActions';
 
 export default function PostOptions({ route, navigation }) {
-  const { prevData } = route.params;
+  const { prevData, navigationPath } = route.params;
+  console.log('######## navigationPath', navigationPath)
   const [schedulePost, setSchedulePost] = useState(false);
   const [vipOnly, setVipOnly] = useState(false);
   const [pinPost, setPinPost] = useState(false);
@@ -42,7 +43,12 @@ export default function PostOptions({ route, navigation }) {
   const [openExpiringDatePicker, setOpenExpiringDatePicker] = useState(false);
 
   const handleSubmit = () => {
-    dispatch(createPost(user?.id, prevData?.postTitle, prevData?.postBody, prevData?.postImg, prevData?.mimeType, prevData?.imageArray, NAVIGATION.home))
+    if (navigationPath === 'home') {
+      dispatch(createPostByAdmin(user?.id, prevData?.postTitle, prevData?.postBody, prevData?.postImg, prevData?.mimeType, prevData?.imageArray, NAVIGATION.home))
+    }
+    if (navigationPath === 'profile') {
+      dispatch(createPostByAdmin(user?.id, prevData?.postTitle, prevData?.postBody, prevData?.postImg, prevData?.mimeType, prevData?.imageArray, NAVIGATION.profile))
+    }
   };
 
   return (

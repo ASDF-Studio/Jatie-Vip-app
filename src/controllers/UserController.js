@@ -110,7 +110,7 @@ export class UserController {
     });
   }
 
-  // create Post
+  // create post
 
   static async createPost(id, postTitle, postBody, file, mimeType, imageArray) {
     return new Promise(async (resolve, reject) => {
@@ -137,6 +137,44 @@ export class UserController {
         'Content-Type': 'multipart/form-data'
       }
 
+
+      await HttpClient.post(endpoint, data, { headers })
+        .then((response) => {
+          resolve(response);
+          console.log("Final response", response);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
+
+  // create post by admin
+
+  static async createPostByAdmin(id, postTitle, postBody, file, mimeType, imageArray) {
+    return new Promise(async (resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.CREATE_POST_ADMIN;
+      let data = new FormData()
+      if (mimeType !== null) {
+        let obj = [];
+        imageArray.map(item => {
+          let filename = item.image.split("/").pop();
+          obj = {
+            uri: item.image,
+            name: filename,
+            type: item.imageMime,
+          };
+          data.append('myimage', obj);
+        });
+      }
+
+      data.append('userId', id);
+      data.append('postTitle', postTitle);
+      data.append('postBody', postBody);
+      data.append('postImg', mimeType == null && file);
+      const headers = {
+        'Content-Type': 'multipart/form-data'
+      }
 
       await HttpClient.post(endpoint, data, { headers })
         .then((response) => {

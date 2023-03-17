@@ -50,7 +50,7 @@ export default function Post({ navigation }) {
   const [vipOnly, setVipOnly] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const [postTitle, setPostTitle] = useState('User share post');
+  const [postTitle, setPostTitle] = useState('');
   const [postBody, setPostBody] = useState('');
   const [postImg, setPostImg] = useState([]);
   const [mimeType, setmimeType] = useState([]);
@@ -183,8 +183,25 @@ export default function Post({ navigation }) {
     // }
     else {
 
-      dispatch(createPost(user?.id, postTitle, postBody, postImg, mimeType, imageArray, NAVIGATION.profile))
-      // console.log(postImg, mimeType);
+      let DATA = {
+        postTitle, postBody, postImg, mimeType, imageArray
+      }
+
+      {
+        userType.user == strings.userType.free && (
+          dispatch(createPost(user?.id, postTitle, postBody, postImg, mimeType, imageArray, NAVIGATION.profile))
+        )
+      }
+      {
+        userType.user == strings.userType.admin && (
+          navigationRef.navigate(NAVIGATION.postOptions, {
+            prevData: DATA,
+            navigationPath: 'profile'
+          })
+        )
+      }
+
+      // dispatch(createPost(user?.id, postTitle, postBody, postImg, mimeType, imageArray, NAVIGATION.profile))
 
       // var DATA = {
       //   postTitle, postBody, postImg, mimeType, imageArray

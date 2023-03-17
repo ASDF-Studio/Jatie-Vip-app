@@ -2,6 +2,7 @@ import { NAVIGATION } from '@/constants';
 import { UserController } from '@/controllers';
 import { strings } from '@/localization';
 import { navigationRef } from '@/navigation/RootNavigation';
+import { StackActions } from '@react-navigation/native';
 import { showMessage } from 'react-native-flash-message';
 import { globalReset } from './GlobalActions';
 
@@ -248,7 +249,7 @@ export const logout = () => async dispatch => {
   // }
 };
 
-// create post action
+// create_post action
 
 export const createPost = (id, postTitle, postBody, file, mimeType, imageArray, screen) => async dispatch => {
   dispatch(globalReset())
@@ -262,6 +263,7 @@ export const createPost = (id, postTitle, postBody, file, mimeType, imageArray, 
         message: strings.createPost.updatedSuccess,
         type: "success"
       })
+      navigationRef.dispatch(StackActions.popToTop())
       navigationRef.navigate(NAVIGATION.home)
     }
     if (screen == NAVIGATION.profile) {
@@ -269,6 +271,41 @@ export const createPost = (id, postTitle, postBody, file, mimeType, imageArray, 
         message: strings.createPost.updatedSuccess,
         type: "success"
       })
+      navigationRef.dispatch(StackActions.popToTop())
+      navigationRef.navigate(NAVIGATION.profile)
+    }
+  } catch (error) {
+    showMessage({
+      message: error?.message,
+      type: "danger"
+    })
+    dispatch(createPostError(error));
+  }
+};
+
+// create_post_by_admin action
+
+export const createPostByAdmin = (id, postTitle, postBody, file, mimeType, imageArray, screen) => async dispatch => {
+  dispatch(globalReset())
+  dispatch(createPostRequest());
+  try {
+    const user = await UserController.createPostByAdmin(id, postTitle, postBody, file, mimeType, imageArray);
+    dispatch(createPostSuccess(user))
+    // console.log("Action file", user);
+    if (screen == NAVIGATION.home) {
+      showMessage({
+        message: strings.createPost.updatedSuccess,
+        type: "success"
+      })
+      navigationRef.dispatch(StackActions.popToTop())
+      navigationRef.navigate(NAVIGATION.home)
+    }
+    if (screen == NAVIGATION.profile) {
+      showMessage({
+        message: strings.createPost.updatedSuccess,
+        type: "success"
+      })
+      navigationRef.dispatch(StackActions.popToTop())
       navigationRef.navigate(NAVIGATION.profile)
     }
   } catch (error) {

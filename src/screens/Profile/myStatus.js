@@ -55,12 +55,12 @@ export default function MyStatus() {
     setUserPost(data.data);
   }
 
-  {
-    userType.user == strings.userType.free && (
-      dispatch(createPost(user?.id, postTitle, postBody, postImg, mimeType, imageArray, NAVIGATION.home))
+  // {
+  //   userType.user == strings.userType.free && (
+  //     dispatch(createPost(user?.id, postTitle, postBody, postImg, mimeType, imageArray, NAVIGATION.home))
 
-    )
-  }
+  //   )
+  // }
 
   const getUserPostById = async (id) => {
     const data = await UserController.postByUserId(id);

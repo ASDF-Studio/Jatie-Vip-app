@@ -47,7 +47,7 @@ export default function AdminPost({ navigation }) {
   const [postTxt, setPostTxt] = useState('');
   const [vipOnly, setVipOnly] = useState(false);
 
-  const [postTitle, setPostTitle] = useState('User share post');
+  const [postTitle, setPostTitle] = useState('');
   const [postBody, setPostBody] = useState('');
   const [postImg, setPostImg] = useState([]);
   const [mimeType, setmimeType] = useState([]);
@@ -184,21 +184,22 @@ export default function AdminPost({ navigation }) {
     // }
     else {
 
-      var DATA = {
+      let DATA = {
         postTitle, postBody, postImg, mimeType, imageArray
       }
 
-      {
-        userType.user == strings.userType.free && (
-          dispatch(createPost(user?.id, postTitle, postBody, postImg, mimeType, imageArray, NAVIGATION.home))
+      // let navigationPath = 'home';
 
-          // console.log("postImggg", postImg)
+      {
+        userType.user === strings.userType.free && (
+          dispatch(createPost(user?.id, postTitle, postBody, postImg, mimeType, imageArray, NAVIGATION.home))
         )
       }
       {
-        userType.user == strings.userType.admin && (
+        userType.user === strings.userType.admin && (
           navigationRef.navigate(NAVIGATION.postOptions, {
-            prevData: DATA
+            prevData: DATA,
+            navigationPath: 'home'
           })
         )
       }
