@@ -63,7 +63,6 @@ export default function MyStatus() {
   const getUserPostById = async (id) => {
     const data = await UserController.postByUserId(id);
     setUserPost(data.data);
-    console.log("data", id);
   }
 
   let counter = 1;
