@@ -95,7 +95,6 @@ export function Home({ navigation }) {
     if (focus == true) {
       getAllPinnedPost();
       getAllPost();
-      console.log('RUN');
     }
   }, [focus]);
 
