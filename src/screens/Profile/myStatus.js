@@ -30,6 +30,7 @@ export default function MyStatus() {
   const [userId, setUser] = useState("ce656365-b90f-4b5f-aab6-b436051171f5");
 
   const [userPost, setUserPost] = useState([]);
+  const userType = useSelector(state => state.userType);
   // useEffect(() => {
   //   getUserPostById(user?.id);
   // }, []);
@@ -38,16 +39,35 @@ export default function MyStatus() {
 
   useEffect(() => {
     if (focus == true) {
-      getUserPostById(user?.id);
-      console.log('RUN STATUS');
+      if (userType.user === strings.userType.free) {
+        getUserPostById(user?.id);
+        console.log('RUN STATUS');
+      }
+      if (userType.user === strings.userType.admin) {
+        getAllPostByAdmin();
+        console.log('RUN STATUS ADMIN');
+      }
     }
   }, [focus]);
+
+  const getAllPostByAdmin = async () => {
+    const data = await UserController.getAllPostByAdmin();
+    setUserPost(data.data);
+  }
+
+  {
+    userType.user == strings.userType.free && (
+      dispatch(createPost(user?.id, postTitle, postBody, postImg, mimeType, imageArray, NAVIGATION.home))
+
+    )
+  }
 
   const getUserPostById = async (id) => {
     const data = await UserController.postByUserId(id);
     setUserPost(data.data);
     console.log("data", id);
   }
+
   let counter = 1;
   return (
     <View>

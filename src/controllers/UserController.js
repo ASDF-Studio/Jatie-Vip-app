@@ -169,6 +169,22 @@ export class UserController {
     });
   }
 
+  // all post by admin
+
+  static async getAllPostByAdmin() {
+    return new Promise(async (resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.ALL_POST_ADMIN;
+      await HttpClient.post(endpoint)
+        .then((response) => {
+          resolve(response);
+          // console.log(response)
+        })
+        .catch((error) => {
+          reject(new Error(error.message));
+        });
+    });
+  }
+
   // get all pinned post
 
   static async getAllPinnedPost() {
