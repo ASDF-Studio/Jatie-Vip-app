@@ -47,7 +47,7 @@ export default function AdminPost({ navigation }) {
   const [postTxt, setPostTxt] = useState('');
   const [vipOnly, setVipOnly] = useState(false);
 
-  const [postTitle, setPostTitle] = useState('User share post');
+  const [postTitle, setPostTitle] = useState('');
   const [postBody, setPostBody] = useState('');
   const [postImg, setPostImg] = useState([]);
   const [mimeType, setmimeType] = useState([]);

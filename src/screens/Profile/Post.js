@@ -50,7 +50,7 @@ export default function Post({ navigation }) {
   const [vipOnly, setVipOnly] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const [postTitle, setPostTitle] = useState('User share post');
+  const [postTitle, setPostTitle] = useState('');
   const [postBody, setPostBody] = useState('');
   const [postImg, setPostImg] = useState([]);
   const [mimeType, setmimeType] = useState([]);

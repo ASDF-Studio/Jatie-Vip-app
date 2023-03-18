@@ -405,9 +405,9 @@ export function Home({ navigation }) {
             <View style={styles.cardContainer}>
               <Card>
                 <CardHeader
-                  fullName={"Jhon Hoe"}
-                  userName={"Jhon"}
-                  profilePic={'https://t4.ftcdn.net/jpg/00/88/53/89/360_F_88538986_5Bi4eJ667pocsO3BIlbN4fHKz8yUFSuA.jpg'}
+                  fullName={item.user.fullName}
+                  userName={item.user.username}
+                  profilePic={item.user.profilePic}
                   time={item.created_at}
                 // isOfficial={item.isOffical}
                 // showPin={true}
