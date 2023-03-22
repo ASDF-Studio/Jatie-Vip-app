@@ -27,7 +27,8 @@ export const en = {
     shareToFeed: 'Share to Feed',
     whatOnYourMind: "What's on your mind?",
     shareToVipOnly: 'Share to VIPs Only',
-    post: 'post',
+    post: 'Post',
+    update: 'Update',
     next: 'Next',
     postOptions: 'Post Options',
     schedulePost: 'Schedule Post',
@@ -369,5 +370,8 @@ export const en = {
   },
   createPost: {
     updatedSuccess: "Post Successfull"
+  },
+  updatePost: {
+    updatedSuccess: "Update Successfull"
   }
 };

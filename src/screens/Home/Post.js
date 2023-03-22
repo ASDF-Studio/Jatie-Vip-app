@@ -84,7 +84,6 @@ export default function AdminPost({ navigation }) {
               });
               postImg.push(item.path);
               mimeType.push(item.mime);
-              console.log(item);
               setModalVisible(!isModalVisible);
             });
           })

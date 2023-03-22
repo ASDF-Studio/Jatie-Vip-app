@@ -40,6 +40,12 @@ export const TYPES = {
   CREATE_POST_SUCCESS: "CREATE_POST_SUCCESS",
   CREATE_POST_ERROR: "CREATE_POST_ERROR",
 
+  //user update post
+  UPDATE_POST: 'UPDATE_POST',
+  UPDATE_POST_REQUEST: "UPDATE_POST_REQUEST",
+  UPDATE_POST_SUCCESS: "UPDATE_POST_SUCCESS",
+  UPDATE_POST_ERROR: "UPDATE_POST_ERROR",
+
 };
 
 const loginRequest = () => ({
@@ -138,8 +144,23 @@ const createPostError = error => ({
   type: TYPES.CREATE_POST_ERROR,
   payload: { error },
 });
-// end create post
 
+//update Post
+export const updatePostSuccess = user => ({
+  type: TYPES.UPDATE_POST_SUCCESS,
+  payload: { user },
+});
+
+
+const updatePostRequest = () => ({
+  type: TYPES.UPDATE_POST_REQUEST,
+  payload: null,
+});
+
+const updatePostError = error => ({
+  type: TYPES.UPDATE_POST_ERROR,
+  payload: { error },
+});
 
 const clearStore = () => ({
   type: TYPES.CLEAR_STORE,
@@ -170,15 +191,12 @@ export const verifyOtp = (number, Otp, isRegistered) => async dispatch => {
       if (user?.isAdmin == true) {
         let selectedValue = "Admin";
         dispatch(ChooseUser(selectedValue))
-        console.log("selectedValueeee", selectedValue)
       } else if (user?.isVIP == true) {
         let selectedValue = "VIP";
         dispatch(ChooseUser(selectedValue))
-        console.log("selectedValueeee", selectedValue)
       } else {
         let selectedValue = "Free";
         dispatch(ChooseUser(selectedValue))
-        console.log("selectedValueeee", selectedValue)
       }
     } else {
       navigationRef.navigate(NAVIGATION.setupUserId, { "ID": user?.id, number: number });
@@ -314,6 +332,39 @@ export const createPostByAdmin = (id, postTitle, postBody, file, mimeType, image
       type: "danger"
     })
     dispatch(createPostError(error));
+  }
+};
+
+// create_post action
+
+export const updatePost = (id, userId, postTitle, postBody, file, preImageArray, mimeType, preMimeType, imageArray, userType, screen) => async dispatch => {
+  dispatch(globalReset())
+  dispatch(updatePostRequest());
+  try {
+    const user = await UserController.updatePost(id, userId, postTitle, postBody, file, preImageArray, mimeType, preMimeType, imageArray, userType);
+    dispatch(updatePostSuccess(user))
+    if (screen == NAVIGATION.home) {
+      showMessage({
+        message: strings.updatePost.updatedSuccess,
+        type: "success"
+      })
+      navigationRef.dispatch(StackActions.popToTop())
+      navigationRef.navigate(NAVIGATION.home)
+    }
+    if (screen == NAVIGATION.profile) {
+      showMessage({
+        message: strings.updatePost.updatedSuccess,
+        type: "success"
+      })
+      navigationRef.dispatch(StackActions.popToTop())
+      navigationRef.navigate(NAVIGATION.profile)
+    }
+  } catch (error) {
+    showMessage({
+      message: error?.message,
+      type: "danger"
+    })
+    dispatch(updatePostError(error));
   }
 };
 

@@ -54,6 +54,7 @@ export const NAVIGATION = {
   addProfilePicture: 'AddProfilePicture',
   adjustPicture: 'AdjustPicture',
   post: 'Post',
+  updatePost: 'UpdatePost',
 
   //Exclusive
   exclusiveThumbnail: 'ExclusiveThumbnail', //onPress thumbnail navigator

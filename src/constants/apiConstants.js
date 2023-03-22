@@ -11,6 +11,12 @@ export const API_END_POINTS = {
     CREATE_POST: "post/create",
     POST_BY_USERID: "post/post_by_user_id",
 
+    //update Post
+    UPDATE_POST: "post/update",
+
+    //update post
+    POST_BY_ID: "post/single_post",
+
     //admin pinned post
     ALL_PINNED_POST: "post/all_pinned_post",
     ALL_POST_ADMIN: "post/all_post_admin",

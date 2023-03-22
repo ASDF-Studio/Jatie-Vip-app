@@ -184,7 +184,7 @@ export function Home({ navigation }) {
                 // path={SeeSchedulePost}
                 />
               )}
-              {allPinnedPost ? (
+              {/* {allPinnedPost ? (
                 <FlatList
                   data={allPinnedPost}
                   key={props => props.id}
@@ -289,7 +289,7 @@ export function Home({ navigation }) {
                     </View>
                   )}
                 />
-              ) : null}
+              ) : null} */}
 
               {allPost.Admin_Post ? (
                 <FlatList

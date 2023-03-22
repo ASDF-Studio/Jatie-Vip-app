@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Alert, FlatList, StyleSheet, Image, TouchableOpacity, ImageBackground, Text } from 'react-native';
+import { View, Alert, FlatList, StyleSheet, Image, TouchableOpacity, ImageBackground, Text, SafeAreaView } from 'react-native';
 import { theme } from '@/theme';
 import { faTrash, faPen } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -20,14 +20,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
 import { FontFamily } from '@/theme/Fonts';
 import { useIsFocused } from "@react-navigation/native";
+import { NAVIGATION } from '@/constants';
+import { navigationRef } from '@/navigation/RootNavigation';
 
-export default function MyStatus() {
+export default function MyStatus(navigation) {
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch()
   const user = useSelector(getUser);
   const [showImageView, setShowImageView] = useState(false);
   const [feedImages, setFeedImages] = useState([]);
   const [userId, setUser] = useState("ce656365-b90f-4b5f-aab6-b436051171f5");
+  const [postId, setpostId] = useState(null);
 
   const [userPost, setUserPost] = useState([]);
   const userType = useSelector(state => state.userType);
@@ -60,7 +63,7 @@ export default function MyStatus() {
 
   let counter = 1;
   return (
-    <View>
+    <SafeAreaView>
       <FlatList
         data={userPost}
         key={props => props.id}
@@ -184,7 +187,7 @@ export default function MyStatus() {
                 // commentCount={item.comment}
                 // commentPress = {()=> Alert.alert("Comment")}
                 // sharePress = {()=> Alert.alert("share")}
-                morePress={() => setOpen(true)}
+                morePress={() => { setOpen(true); setpostId(item.id) }}
               />
             </Card>
           </View>
@@ -209,7 +212,14 @@ export default function MyStatus() {
             icon={faPen}
             iconBg={theme.light.colors.infoBgLight}
             iconColor={theme.light.colors.info}
+            onPress={() => {
+              navigationRef.navigate(NAVIGATION.updatePost, {
+                prevData: { postId },
+              }), setOpen(false);
+            }}
+          // onPress={console.log('##########         postId', postId)}
           />
+
           <HorizontalLine
             color={theme.light.colors.infoBgLight}
             paddingTop={15}
@@ -223,7 +233,7 @@ export default function MyStatus() {
           />
         </ModalDown>
       )}
-    </View>
+    </SafeAreaView>
   );
 }
 

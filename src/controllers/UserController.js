@@ -148,7 +148,50 @@ export class UserController {
         });
     });
   }
+  //update post
+  static async updatePost(id, userId, postTitle, postBody, file, preImageArray, mimeType, preMimeType, imageArray, userType) {
+    return new Promise(async (resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.UPDATE_POST;
+      let data = new FormData()
+      if (mimeType !== null) {
+        let obj = [];
+        imageArray.map(item => {
+          let filename = item.image.split("/").pop();
+          obj = {
+            uri: item.image,
+            name: filename,
+            type: item.imageMime,
+          };
+          data.append('myimage', obj);
+        });
+      }
+      if (preMimeType == null) {
+        preImageArray.map(item => {
+          data.append('postImg', item.image);
+          console.log('########   postImg', item.image)
+        });
+      }
+      data.append('id', id);
+      data.append('userId', userId);
+      data.append('postTitle', postTitle);
+      data.append('postBody', postBody);
+      // data.append('postImg', preFile);
+      data.append('userType', userType);
+      const headers = {
+        'Content-Type': 'multipart/form-data'
+      }
 
+
+      await HttpClient.post(endpoint, data, { headers })
+        .then((response) => {
+          resolve(response);
+          console.log("Final response", response);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
   // create post by admin
 
   static async createPostByAdmin(id, postTitle, postBody, file, mimeType, imageArray) {
@@ -199,7 +242,23 @@ export class UserController {
         .then((response) => {
 
           resolve(response);
-          // console.log(response)
+        })
+        .catch((error) => {
+          reject(new Error(error.message));
+        });
+    });
+  }
+
+  // post by id
+  static async postById(id) {
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.POST_BY_ID;
+      var data = JSON.stringify({
+        "id": id
+      });
+      HttpClient.post(endpoint, data)
+        .then((response) => {
+          resolve(response);
         })
         .catch((error) => {
           reject(new Error(error.message));
@@ -215,7 +274,6 @@ export class UserController {
       await HttpClient.post(endpoint)
         .then((response) => {
           resolve(response);
-          // console.log(response)
         })
         .catch((error) => {
           reject(new Error(error.message));
@@ -232,7 +290,6 @@ export class UserController {
         .then((response) => {
 
           resolve(response);
-          // console.log(response)
         })
         .catch((error) => {
           reject(new Error(error.message));
@@ -247,7 +304,6 @@ export class UserController {
         .then((response) => {
 
           resolve(response);
-          // console.log(response)
         })
         .catch((error) => {
           reject(new Error(error.message));
