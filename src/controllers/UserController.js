@@ -141,7 +141,6 @@ export class UserController {
       await HttpClient.post(endpoint, data, { headers })
         .then((response) => {
           resolve(response);
-          console.log("Final response", response);
         })
         .catch((error) => {
           reject(error);
@@ -168,7 +167,6 @@ export class UserController {
       if (preMimeType == null) {
         preImageArray.map(item => {
           data.append('postImg', item.image);
-          console.log('########   postImg', item.image)
         });
       }
       data.append('id', id);
@@ -181,11 +179,9 @@ export class UserController {
         'Content-Type': 'multipart/form-data'
       }
 
-
       await HttpClient.post(endpoint, data, { headers })
         .then((response) => {
           resolve(response);
-          console.log("Final response", response);
         })
         .catch((error) => {
           reject(error);
@@ -253,6 +249,24 @@ export class UserController {
   static async postById(id) {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.POST_BY_ID;
+      var data = JSON.stringify({
+        "id": id
+      });
+      HttpClient.post(endpoint, data)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((error) => {
+          reject(new Error(error.message));
+        });
+    });
+  }
+
+
+  // post by admin id
+  static async postByAdminId(id) {
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.POST_BY_ADMIN_ID;
       var data = JSON.stringify({
         "id": id
       });

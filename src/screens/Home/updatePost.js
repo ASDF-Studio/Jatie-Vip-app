@@ -35,32 +35,82 @@ import { close } from '@/assets';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
-import { TYPES, createPost } from '@/actions/UserActions';
+import { TYPES, updatePost } from '@/actions/UserActions';
 import { navigationRef } from '@/navigation/RootNavigation';
+// import { useIsFocused } from '@react-navigation/native';
+import { UserController } from '@/controllers';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 
-let nextId = 0;
+let nextId = 100;
+let preNextId = 100;
+let next = 10;
+let preNext = 10;
 
-export default function Post({ navigation }) {
+export default function UpdatePost({ route, navigation }) {
+  const { prevData } = route.params;
   const userType = useSelector(state => state.userType);
   const dispatch = useDispatch()
   const user = useSelector(getUser);
-  const [imageArray, setImageArray] = useState([]);
   const [isModalVisible, setModalVisible] = useState(false);
   const [isImage, setIsImage] = useState();
-  // const [postTxt, setPostTxt] = useState('');
   const [vipOnly, setVipOnly] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [user_Type] = useState(userType.user);
+  const [imageArrayDisplay, setImageArrayDisplay] = useState([]);
 
+  const [imageArray, setImageArray] = useState([]);
   const [postTitle, setPostTitle] = useState('');
   const [postBody, setPostBody] = useState('');
   const [postImg, setPostImg] = useState([]);
   const [mimeType, setmimeType] = useState([]);
+  //edit post
+  const [postDetails, setPostDetails] = useState([]);
+  const [preImageArray, setPreImageArray] = useState([]);
+  const [prePostImg, setPrePostImg] = useState([]);
+  const [preMimeType, setPreMimeType] = useState(null);
 
+  // const focus = useIsFocused();
+
+  useEffect(() => {
+    // if (focus == true) {
+    getPostById(prevData?.postId)
+    // }
+  }, []);
+
+  const getPostById = async (id) => {
+    let data;
+    {
+      userType.user == strings.userType.admin ? (
+        data = await UserController.postByAdminId(id)
+      ) : (
+        data = await UserController.postById(id)
+      )
+    }
+    setPostDetails(data);
+    setPostTitle(data.data.postTitle);
+    setPostBody(data.data.postBody);
+    setPostTitle(data.data.postTitle);
+    {
+      data?.data.postImg.map(item => (
+        preImageArray.push({
+          id: next--,
+          image: item,
+          imageMime: null,
+          video: null,
+        }),
+        imageArrayDisplay.push({
+          id: preNext--,
+          image: item,
+          imageMime: null,
+          video: null,
+        })
+      ))
+      setPrePostImg(data.data.postImg)
+    }
+  }
   const isLoading = useSelector(state =>
-    isLoadingSelector([TYPES.CREATE_POST], state)
+    isLoadingSelector([TYPES.UPDATE_POST], state)
   );
-
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
@@ -68,7 +118,12 @@ export default function Post({ navigation }) {
     setModalVisible(!isModalVisible);
   };
   deleteFile = id => {
-    setImageArray(imageArray.filter(a => a.id !== id));
+    setImageArrayDisplay(imageArrayDisplay.filter(a => a.id !== id));
+    if (id >= 100) {
+      setImageArray(imageArray.filter(a => a.id !== id));
+    } else {
+      setPreImageArray(preImageArray.filter(a => a.id !== id));
+    }
   };
 
   const OpenGallery = () => {
@@ -85,6 +140,12 @@ export default function Post({ navigation }) {
             images.forEach(item => {
               imageArray.push({
                 id: nextId++,
+                image: item.path,
+                imageMime: item.mime,
+                video: null,
+              });
+              imageArrayDisplay.push({
+                id: preNextId++,
                 image: item.path,
                 imageMime: item.mime,
                 video: null,
@@ -112,8 +173,14 @@ export default function Post({ navigation }) {
               video: video.path,
               videoMime: video.mime,
             });
-            setPostImg(video.path);
-            setmimeType(video.mime);
+            imageArrayDisplay.push({
+              id: preNextId++,
+              image: null,
+              imageMime: video.mime,
+              video: null,
+            });
+            postImg.push(video.path);
+            mimeType.push(video.mime);
             setModalVisible(!isModalVisible);
           })
           .catch(e => {
@@ -138,8 +205,14 @@ export default function Post({ navigation }) {
               imageMime: image.mime,
               video: null,
             });
-            setPostImg(image.path);
-            setmimeType(image.mime);
+            imageArrayDisplay.push({
+              id: preNextId++,
+              image: image.path,
+              imageMime: image.mime,
+              video: null,
+            });
+            postImg.push(image.path);
+            mimeType.push(image.mime);
             setModalVisible(!isModalVisible);
           })
           .catch(e => {
@@ -159,8 +232,14 @@ export default function Post({ navigation }) {
               video: image.path,
               videoMime: image.mime,
             });
-            setPostImg(image.path);
-            setmimeType(image.mime);
+            imageArrayDisplay.push({
+              id: preNextId++,
+              image: null,
+              video: image.path,
+              videoMime: image.mime,
+            });
+            postImg.push(image.path);
+            mimeType.push(image.mime);
             setModalVisible(!isModalVisible);
           })
           .catch(e => {
@@ -191,12 +270,13 @@ export default function Post({ navigation }) {
     else {
 
       let DATA = {
-        postTitle, postBody, postImg, mimeType, imageArray
+        postTitle, postBody, postImg, preImageArray, mimeType, preMimeType, imageArray, user_Type
       }
 
       {
         userType.user == strings.userType.free && (
-          dispatch(createPost(user?.id, postTitle, postBody, postImg, mimeType, imageArray, NAVIGATION.profile))
+          dispatch(updatePost(prevData?.postId, user?.id, postTitle, postBody, postImg, preImageArray, mimeType, preMimeType, imageArray, user_Type, NAVIGATION.home))
+          // console.log("DATA", DATA)
         )
       }
       {
@@ -221,8 +301,6 @@ export default function Post({ navigation }) {
   }
   const onSave = () => {
     validation()
-    // console.log(userType.user, strings.userType.admin);
-
   }
   return (
     <SafeAreaView style={styles.contianer}>
@@ -256,7 +334,8 @@ export default function Post({ navigation }) {
         {imageArray.length ? (
           <HorizontalLine color={theme.light.colors.infoBgLight} />
         ) : null}
-        {FileUpload(imageArray)}
+        {/* {FileUpload(imageArray)} */}
+        {FileUpload(imageArrayDisplay)}
         <View style={styles.BottomFileContainer}>
           <View style={styles.iconContainer}>
             <Icon
@@ -315,7 +394,7 @@ export default function Post({ navigation }) {
             )}
             {userType.user == strings.userType.free && (
               <Button
-                title={strings.home.post}
+                title={prevData?.postId ? strings.home.update : strings.home.post}
                 disabled={postBody.length ? false : true}
                 opacity={postBody.length ? 1 : 0.4}
                 style={styles.freeButton}

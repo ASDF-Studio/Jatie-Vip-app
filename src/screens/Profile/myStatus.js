@@ -217,9 +217,7 @@ export default function MyStatus(navigation) {
                 prevData: { postId },
               }), setOpen(false);
             }}
-          // onPress={console.log('##########         postId', postId)}
           />
-
           <HorizontalLine
             color={theme.light.colors.infoBgLight}
             paddingTop={15}

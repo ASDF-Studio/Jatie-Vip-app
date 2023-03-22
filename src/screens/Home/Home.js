@@ -12,6 +12,7 @@ import {
   faTrash,
   faUserPlus,
   faXmark,
+  faPen,
 } from '@fortawesome/free-solid-svg-icons';
 import { useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -58,9 +59,12 @@ import { Data } from './Data/HomeData';
 import { faBell, faSearch } from '@fortawesome/pro-regular-svg-icons';
 import { UserController } from '@/controllers';
 import { useIsFocused } from "@react-navigation/native";
+import { getUser } from '@/selectors/UserSelectors';
+import { navigationRef } from '@/navigation/RootNavigation';
 
 export function Home({ navigation }) {
   const userType = useSelector(state => state.userType);
+  const user = useSelector(getUser);
   const [vipArea, setVipArea] = useState(strings.home.vipArea);
   const [open, setOpen] = useState(false);
   const [openToast, setOpenToast] = useState(false);
@@ -83,6 +87,8 @@ export function Home({ navigation }) {
   const [reportComment, setReportCommnet] = useState('');
   const [allPinnedPost, setAllPinnedPost] = useState([]);
   const [allPost, setAllPost] = useState([]);
+  const [postUserId, setPostUserId] = useState(null);
+  const [postId, setpostId] = useState(null);
 
   // useEffect(() => {
   //   getAllPinnedPost();
@@ -390,7 +396,7 @@ export function Home({ navigation }) {
                           likeCount={10}
                           disLikeCount={1}
                           commentCount={5}
-                          morePress={() => setOpen(true)}
+                          morePress={() => { setOpen(true); setPostUserId(item.userId); setpostId(item.id) }}
                         />
                       </Card>
                     </View>
@@ -502,7 +508,7 @@ export function Home({ navigation }) {
                   disLikeCount={1}
                   commentCount={5}
                   commentPress={() => navigation.navigate(NAVIGATION.comments)}
-                  morePress={() => setOpen(true)}
+                  morePress={() => { setOpen(true); setPostUserId(item.userId); setpostId(item.id) }}
                 />
               </Card>
               {/* sponsored post
@@ -632,67 +638,97 @@ export function Home({ navigation }) {
       )}
       {/*  Slide up for follow, edit , review  */}
       {open && (
-        <ModalDown open={open} setOpen={setOpen}>
-          <ModalList
-            title={strings.operations.follow + strings.home.DummyUser}
-            icon={faUserPlus}
-            iconColor={theme.light.colors.primary}
-            iconBg={theme.light.colors.primaryBgLight}
-          />
-          <ModalList
-            title={strings.operations.sendPrivateMessage}
-            icon={faMessage}
-            iconColor={theme.light.colors.success}
-            iconBg={theme.light.colors.successBgLight}
-          />
-          <HorizontalLine
-            color={theme.light.colors.infoBgLight}
-            paddingTop={15}
-            paddingBottom={8}
-          />
-          {(userType.user == `${strings.userType.free}`) |
-            (userType.user == `${strings.userType.vip}`) ? (
-            <>
-              <ModalList
-                title={strings.home.report}
-                icon={faFlag}
-                iconColor={theme.light.colors.secondary}
-                iconBg={theme.light.colors.infoBgLight}
-                onPress={() => {
-                  setOpenReport(true);
-                  setOpen(false);
-                }}
-              />
-              <ModalList
-                title={strings.operations.block + strings.home.DummyUser}
-                icon={faXmark}
-                iconColor={theme.light.colors.secondary}
-                iconBg={theme.light.colors.infoBgLight}
-              />
-            </>
-          ) : userType.user == `${strings.userType.admin}` ? (
-            <>
-              <ModalList
-                title={strings.home.deletePost}
-                icon={faTrash}
-                iconColor={theme.light.colors.secondary}
-                iconBg={theme.light.colors.infoBgLight}
-              />
-              <ModalList
-                title={strings.operations.block + strings.home.DummyUser}
-                icon={faXmark}
-                iconColor={theme.light.colors.secondary}
-                iconBg={theme.light.colors.infoBgLight}
-              />
-              <ModalList
-                title={strings.operations.ban + strings.home.DummyUser}
-                icon={faFlag}
-                iconColor={theme.light.colors.secondary}
-                iconBg={theme.light.colors.infoBgLight}
-              />
-            </>
-          ) : null}
-        </ModalDown>
+        (postUserId == user?.id ? (
+          <ModalDown open={open} setOpen={setOpen}>
+            <ModalList
+              title={strings.profile.editPost}
+              icon={faPen}
+              iconBg={theme.light.colors.infoBgLight}
+              iconColor={theme.light.colors.info}
+              onPress={() => {
+                navigationRef.navigate(NAVIGATION.updatePost, {
+                  prevData: { postId },
+                }), setOpen(false);
+              }}
+            // onPress={() => navigation.navigate(NAVIGATION.postOptions)}
+            />
+            <HorizontalLine
+              color={theme.light.colors.infoBgLight}
+              paddingTop={15}
+              paddingBottom={8}
+            />
+            <ModalList
+              title={strings.operations.delete}
+              icon={faTrash}
+              iconBg={theme.light.colors.infoBgLight}
+              iconColor={theme.light.colors.secondary}
+            />
+          </ModalDown>
+        ) :
+          <ModalDown open={open} setOpen={setOpen}>
+            <ModalList
+              title={strings.operations.follow + strings.home.DummyUser}
+              icon={faUserPlus}
+              iconColor={theme.light.colors.primary}
+              iconBg={theme.light.colors.primaryBgLight}
+            />
+            <ModalList
+              title={strings.operations.sendPrivateMessage}
+              icon={faMessage}
+              iconColor={theme.light.colors.success}
+              iconBg={theme.light.colors.successBgLight}
+            />
+            <HorizontalLine
+              color={theme.light.colors.infoBgLight}
+              paddingTop={15}
+              paddingBottom={8}
+            />
+            {(userType.user == `${strings.userType.free}`) |
+              (userType.user == `${strings.userType.vip}`) ? (
+              <>
+                <ModalList
+                  title={strings.home.report}
+                  icon={faFlag}
+                  iconColor={theme.light.colors.secondary}
+                  iconBg={theme.light.colors.infoBgLight}
+                  onPress={() => {
+                    setOpenReport(true);
+                    setOpen(false);
+                  }}
+                />
+                <ModalList
+                  title={strings.operations.block + strings.home.DummyUser}
+                  icon={faXmark}
+                  iconColor={theme.light.colors.secondary}
+                  iconBg={theme.light.colors.infoBgLight}
+                />
+              </>
+            ) : userType.user == `${strings.userType.admin}` ? (
+              <>
+                <ModalList
+                  title={strings.home.deletePost}
+                  icon={faTrash}
+                  iconColor={theme.light.colors.secondary}
+                  iconBg={theme.light.colors.infoBgLight}
+                />
+                <ModalList
+                  title={strings.operations.block + strings.home.DummyUser}
+                  icon={faXmark}
+                  iconColor={theme.light.colors.secondary}
+                  iconBg={theme.light.colors.infoBgLight}
+                />
+                <ModalList
+                  title={strings.operations.ban + strings.home.DummyUser}
+                  icon={faFlag}
+                  iconColor={theme.light.colors.secondary}
+                  iconBg={theme.light.colors.infoBgLight}
+                />
+              </>
+            ) :
+              null
+            }
+          </ModalDown>
+        )
       )}
 
       <ReportOnPostModal open={openReport} setOpen={setOpenReport}>

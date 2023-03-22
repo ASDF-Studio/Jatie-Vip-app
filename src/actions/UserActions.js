@@ -186,7 +186,7 @@ export const verifyOtp = (number, Otp, isRegistered) => async dispatch => {
     // let selectedValue = "";
     const user = await UserController.verifyOtp(number, Otp);
     if (isRegistered == true) {
-      console.log("user", user.isAdmin)
+      // console.log("user", user.isAdmin)
       dispatch(verifyOtpSuccess(user))
       if (user?.isAdmin == true) {
         let selectedValue = "Admin";
@@ -275,7 +275,6 @@ export const createPost = (id, postTitle, postBody, file, mimeType, imageArray, 
   try {
     const user = await UserController.createPost(id, postTitle, postBody, file, mimeType, imageArray);
     dispatch(createPostSuccess(user))
-    // console.log("Action file", user);
     if (screen == NAVIGATION.home) {
       showMessage({
         message: strings.createPost.updatedSuccess,
@@ -309,7 +308,6 @@ export const createPostByAdmin = (id, postTitle, postBody, file, mimeType, image
   try {
     const user = await UserController.createPostByAdmin(id, postTitle, postBody, file, mimeType, imageArray);
     dispatch(createPostSuccess(user))
-    // console.log("Action file", user);
     if (screen == NAVIGATION.home) {
       showMessage({
         message: strings.createPost.updatedSuccess,

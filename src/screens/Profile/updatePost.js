@@ -12,6 +12,7 @@ import {
 import {
   AppSwitch,
   Button,
+  CustomLoader,
   HorizontalLine,
   Icon,
   TopBackButton,
@@ -34,10 +35,11 @@ import { close } from '@/assets';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
-import { updatePost } from '@/actions/UserActions';
+import { TYPES, updatePost } from '@/actions/UserActions';
 import { navigationRef } from '@/navigation/RootNavigation';
 // import { useIsFocused } from '@react-navigation/native';
 import { UserController } from '@/controllers';
+import { isLoadingSelector } from '@/selectors/StatusSelectors';
 
 let nextId = 100;
 let preNextId = 100;
@@ -76,7 +78,14 @@ export default function UpdatePost({ route, navigation }) {
   }, []);
 
   const getPostById = async (id) => {
-    const data = await UserController.postById(id);
+    let data;
+    {
+      userType.user == strings.userType.admin ? (
+        data = await UserController.postByAdminId(id)
+      ) : (
+        data = await UserController.postById(id)
+      )
+    }
     setPostDetails(data);
     setPostTitle(data.data.postTitle);
     setPostBody(data.data.postBody);
@@ -99,7 +108,9 @@ export default function UpdatePost({ route, navigation }) {
       setPrePostImg(data.data.postImg)
     }
   }
-
+  const isLoading = useSelector(state =>
+    isLoadingSelector([TYPES.UPDATE_POST], state)
+  );
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
@@ -265,7 +276,6 @@ export default function UpdatePost({ route, navigation }) {
       {
         userType.user == strings.userType.free && (
           dispatch(updatePost(prevData?.postId, user?.id, postTitle, postBody, postImg, preImageArray, mimeType, preMimeType, imageArray, user_Type, NAVIGATION.profile))
-          // console.log("DATA", DATA)
         )
       }
       {
@@ -292,7 +302,6 @@ export default function UpdatePost({ route, navigation }) {
     validation()
   }
   return (
-    console.log(user?.id),
     <SafeAreaView style={styles.contianer}>
       <View style={styles.header}>
         <TopBackButton onPress={() => navigation.goBack()} />
@@ -301,6 +310,9 @@ export default function UpdatePost({ route, navigation }) {
         </Text>
       </View>
       <HorizontalLine />
+      <CustomLoader
+        open={isLoading}
+      />
       <ScrollView>
         <View style={styles.postContainer}>
           <View style={styles.TextBoxDEsc}>

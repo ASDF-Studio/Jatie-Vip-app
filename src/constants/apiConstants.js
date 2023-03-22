@@ -16,6 +16,7 @@ export const API_END_POINTS = {
 
     //update post
     POST_BY_ID: "post/single_post",
+    POST_BY_ADMIN_ID: "post/single_post_admin",
 
     //admin pinned post
     ALL_PINNED_POST: "post/all_pinned_post",

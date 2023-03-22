@@ -12,6 +12,7 @@ import {
 import {
   AppSwitch,
   Button,
+  CustomLoader,
   HorizontalLine,
   Icon,
   TopBackButton,
@@ -34,8 +35,9 @@ import { close } from '@/assets';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import { useDispatch, useSelector } from 'react-redux';
 import { navigationRef } from '@/navigation/RootNavigation';
-import { createPost } from '@/actions/UserActions';
+import { TYPES, createPost } from '@/actions/UserActions';
 import { getUser } from '@/selectors/UserSelectors';
+import { isLoadingSelector } from '@/selectors/StatusSelectors';
 
 let nextId = 0;
 
@@ -54,6 +56,9 @@ export default function AdminPost({ navigation }) {
   const dispatch = useDispatch();
   const user = useSelector(getUser);
 
+  const isLoading = useSelector(state =>
+    isLoadingSelector([TYPES.CREATE_POST], state)
+  );
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
@@ -218,6 +223,9 @@ export default function AdminPost({ navigation }) {
         </Text>
       </View>
       <HorizontalLine color={theme.light.colors.primaryBgLight} />
+      <CustomLoader
+        open={isLoading}
+      />
       <ScrollView>
         <View style={styles.postContainer}>
           <View style={styles.TextBoxDEsc}>

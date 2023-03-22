@@ -12,6 +12,7 @@ export const NAVIGATION = {
   scheduledPost: 'ScheduledPost',
   notification: 'Notification',
   search: 'Search',
+  updatePost: 'UpdatePost',
 
   // message
   message: 'Message',
