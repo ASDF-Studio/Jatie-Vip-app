@@ -13,6 +13,7 @@ import {
   AppImageViewer,
   PopUp,
   Button,
+  CustomLoader,
 } from '@/components';
 import { ms } from 'react-native-size-matters';
 import { strings } from '@/localization';
@@ -24,7 +25,8 @@ import { FontFamily } from '@/theme/Fonts';
 import { useIsFocused } from "@react-navigation/native";
 import { NAVIGATION } from '@/constants';
 import { navigationRef } from '@/navigation/RootNavigation';
-import { deletePost } from '@/actions/UserActions';
+import { TYPES, deletePost } from '@/actions/UserActions';
+import { isLoadingSelector } from '@/selectors/StatusSelectors';
 
 export default function MyStatus(navigation) {
   const [open, setOpen] = useState(false);
@@ -59,6 +61,10 @@ export default function MyStatus(navigation) {
     }
   }, [focus]);
 
+  const isLoading = useSelector(state =>
+    isLoadingSelector([TYPES.DELETE_POST], state)
+  );
+
   const getAllPostByAdmin = async () => {
     const data = await UserController.getAllPostByAdmin();
     setUserPost(data.data);
@@ -71,6 +77,7 @@ export default function MyStatus(navigation) {
   const onDelete = () => {
     dispatch(deletePost(postId, postUserId, user?.id, userType.user, NAVIGATION.profile));
     if (userType.user === strings.userType.free) {
+      console.log("Reload called")
       getUserPostById(user?.id);
     }
     if (userType.user === strings.userType.admin) {
@@ -85,6 +92,9 @@ export default function MyStatus(navigation) {
   }
   return (
     <SafeAreaView>
+      <CustomLoader
+        open={isLoading}
+      />
       <FlatList
         data={userPost}
         key={props => props.id}
