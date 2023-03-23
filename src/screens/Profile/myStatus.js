@@ -28,9 +28,12 @@ export default function MyStatus(navigation) {
   const dispatch = useDispatch()
   const user = useSelector(getUser);
   const [showImageView, setShowImageView] = useState(false);
-  const [feedImages, setFeedImages] = useState([]);
   const [userId, setUser] = useState("ce656365-b90f-4b5f-aab6-b436051171f5");
   const [postId, setpostId] = useState(null);
+  const [postTitle, setPostTitle] = useState('');
+  const [postBody, setPostBody] = useState('');
+  const [postImg, setPostImg] = useState([]);
+  const [feedImages, setFeedImages] = useState([]);
 
   const [userPost, setUserPost] = useState([]);
   const userType = useSelector(state => state.userType);
@@ -62,6 +65,9 @@ export default function MyStatus(navigation) {
   }
 
   let counter = 1;
+  let DATA = {
+    postId, postTitle, postBody, postImg
+  }
   return (
     <SafeAreaView>
       <FlatList
@@ -187,7 +193,13 @@ export default function MyStatus(navigation) {
                 // commentCount={item.comment}
                 // commentPress = {()=> Alert.alert("Comment")}
                 // sharePress = {()=> Alert.alert("share")}
-                morePress={() => { setOpen(true); setpostId(item.id) }}
+                morePress={() => {
+                  setOpen(true);
+                  setpostId(item.id);
+                  setPostTitle(item.postTitle)
+                  setPostBody(item.postBody);
+                  setPostImg(item.postImg);
+                }}
               />
             </Card>
           </View>
@@ -204,7 +216,6 @@ export default function MyStatus(navigation) {
       {/* {userPost.map((item, index) => {
         console.log(item.data.id)
       })} */}
-
       {open && (
         <ModalDown open={open} setOpen={setOpen}>
           <ModalList
@@ -214,9 +225,10 @@ export default function MyStatus(navigation) {
             iconColor={theme.light.colors.info}
             onPress={() => {
               navigationRef.navigate(NAVIGATION.updatePost, {
-                prevData: { postId },
+                prevData: { DATA },
               }), setOpen(false);
             }}
+          // onPress={console.log(DATA.postTitle)}
           />
           <HorizontalLine
             color={theme.light.colors.infoBgLight}

@@ -178,10 +178,11 @@ export class UserController {
       const headers = {
         'Content-Type': 'multipart/form-data'
       }
-
+      console.log("##########    Data", data)
       await HttpClient.post(endpoint, data, { headers })
         .then((response) => {
           resolve(response);
+          console.log("Final response", response);
         })
         .catch((error) => {
           reject(error);

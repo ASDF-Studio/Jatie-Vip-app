@@ -89,6 +89,9 @@ export function Home({ navigation }) {
   const [allPost, setAllPost] = useState([]);
   const [postUserId, setPostUserId] = useState(null);
   const [postId, setpostId] = useState(null);
+  const [postTitle, setPostTitle] = useState('');
+  const [postBody, setPostBody] = useState('');
+  const [postImg, setPostImg] = useState([]);
 
   // useEffect(() => {
   //   getAllPinnedPost();
@@ -112,9 +115,11 @@ export function Home({ navigation }) {
   const getAllPost = async () => {
     const data = await UserController.getAllPost();
     setAllPost(data.data);
-    // console.log("pinned data", allPinnedPost);
   }
   let counter = 1;
+  let DATA = {
+    postId, postTitle, postBody, postImg
+  }
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="transparent" />
@@ -192,31 +197,31 @@ export function Home({ navigation }) {
               )}
               {/* {allPinnedPost ? (
                 <FlatList
-                  data={allPinnedPost}
+                  data={allPinnedPost.data}
                   key={props => props.id}
                   listKey={counter}
                   renderItem={({ item }) => (
                     <View style={styles.cardContainer}>
                       <Card>
                         <CardHeader
-                          fullName={item.post.user.fullName}
-                          userName={item.post.user.username}
-                          profilePic={item.post.user.profilePic}
-                          time={item.post.created_at}
+                          fullName={item.Admin_Post.user.fullName}
+                          userName={item.Admin_Post.user.username}
+                          profilePic={item.Admin_Post.user.profilePic}
+                          time={item.Admin_Post.created_at}
                           isOfficial={false}
                           showPin={true}
                         />
-                        <CardBody text={item.post.postBody} />
-                        {item.post.postImg.length <= 2 ? (
+                        <CardBody text={item.Admin_Post.postBody} />
+                        {item.postImg.length <= 2 ? (
                           <View style={styles.imageContainer}>
-                            {item?.post?.postImg?.map(data => (
+                            {item?.Admin_Post.postImg?.map(data => (
                               counter = counter + 1,
                               <TouchableOpacity
                                 key={counter}
                                 style={styles.touchContainer}
                                 onPress={() => {
                                   setShowImageView(true),
-                                    setFeedImages(item.post.postImg)
+                                    setFeedImages(item.Admin_Post.postImg)
                                 }}
                               >
                                 <Image
@@ -228,10 +233,10 @@ export function Home({ navigation }) {
                               </TouchableOpacity>
                             ))}
                           </View>
-                        ) : item.post.postImg.length > 2 ? (
+                        ) : item.Admin_Post.postImg.length > 2 ? (
                           counter = 1,
                           <View style={styles.imageContainer}>
-                            {item?.post?.postImg?.map(data =>
+                            {item?.Admin_Post.postImg?.map(data =>
                               counter == 1 ? (
                                 counter = counter + 1,
                                 <TouchableOpacity
@@ -239,8 +244,7 @@ export function Home({ navigation }) {
                                   style={styles.touchContainer}
                                   onPress={() => {
                                     setShowImageView(true),
-                                      setFeedImages(item.post.postImg);
-                                    console.log(item.post.postImg)
+                                      setFeedImages(item.Admin_Post.postImg);
                                   }}
                                 >
                                   <Image
@@ -258,7 +262,7 @@ export function Home({ navigation }) {
                                   style={styles.touchContainer}
                                   onPress={() => {
                                     setShowImageView(true),
-                                      setFeedImages(item.post.postImg);
+                                      setFeedImages(item.Admin_Post.postImg);
                                   }}
                                 >
                                   <ImageBackground
@@ -271,12 +275,12 @@ export function Home({ navigation }) {
                                     <TouchableOpacity
                                       onPress={() => {
                                         setShowImageView(true),
-                                          setFeedImages(item.post.postImg);
+                                          setFeedImages(item.Admin_Post.postImg);
                                       }}
                                     >
                                       <Text style={styles.extraImage}>
                                         {strings.message.plus}
-                                        {item.post.postImg.length - 1}
+                                        {item.Admin_Post.postImg.length - 1}
                                       </Text>
                                     </TouchableOpacity>
                                   </ImageBackground>
@@ -289,7 +293,14 @@ export function Home({ navigation }) {
                           likeCount={10}
                           disLikeCount={1}
                           commentCount={5}
-                          morePress={() => setOpen(true)}
+                          morePress={() => {
+                            setOpen(true);
+                            setPostUserId(item.userId);
+                            setpostId(item.id);
+                            setPostTitle(item.postTitle)
+                            setPostBody(item.postBody);
+                            setPostImg(item.postImg);
+                          }}
                         />
                       </Card>
                     </View>
@@ -396,7 +407,14 @@ export function Home({ navigation }) {
                           likeCount={10}
                           disLikeCount={1}
                           commentCount={5}
-                          morePress={() => { setOpen(true); setPostUserId(item.userId); setpostId(item.id) }}
+                          morePress={() => {
+                            setOpen(true);
+                            setPostUserId(item.userId);
+                            setpostId(item.id);
+                            setPostTitle(item.postTitle)
+                            setPostBody(item.postBody);
+                            setPostImg(item.postImg);
+                          }}
                         />
                       </Card>
                     </View>
@@ -508,7 +526,14 @@ export function Home({ navigation }) {
                   disLikeCount={1}
                   commentCount={5}
                   commentPress={() => navigation.navigate(NAVIGATION.comments)}
-                  morePress={() => { setOpen(true); setPostUserId(item.userId); setpostId(item.id) }}
+                  morePress={() => {
+                    setOpen(true);
+                    setPostUserId(item.userId);
+                    setpostId(item.id);
+                    setPostTitle(item.postTitle)
+                    setPostBody(item.postBody);
+                    setPostImg(item.postImg);
+                  }}
                 />
               </Card>
               {/* sponsored post
@@ -647,7 +672,7 @@ export function Home({ navigation }) {
               iconColor={theme.light.colors.info}
               onPress={() => {
                 navigationRef.navigate(NAVIGATION.updatePost, {
-                  prevData: { postId },
+                  prevData: { DATA },
                 }), setOpen(false);
               }}
             // onPress={() => navigation.navigate(NAVIGATION.postOptions)}

@@ -59,6 +59,8 @@ export default function UpdatePost({ route, navigation }) {
   const [imageArrayDisplay, setImageArrayDisplay] = useState([]);
 
   const [imageArray, setImageArray] = useState([]);
+  const [postId, setPostId] = useState('');
+  const [userId, setUserId] = useState('');
   const [postTitle, setPostTitle] = useState('');
   const [postBody, setPostBody] = useState('');
   const [postImg, setPostImg] = useState([]);
@@ -68,30 +70,26 @@ export default function UpdatePost({ route, navigation }) {
   const [preImageArray, setPreImageArray] = useState([]);
   const [prePostImg, setPrePostImg] = useState([]);
   const [preMimeType, setPreMimeType] = useState(null);
+  const [actionType] = useState('Update');
 
   // const focus = useIsFocused();
 
   useEffect(() => {
     // if (focus == true) {
-    getPostById(prevData?.postId)
+    // getPostById(prevData?.postId)
+    getPostById(prevData?.DATA)
+    // console.log(prevData?.DATA.postImg)
     // }
   }, []);
 
-  const getPostById = async (id) => {
-    let data;
-    {
-      userType.user == strings.userType.admin ? (
-        data = await UserController.postByAdminId(id)
-      ) : (
-        data = await UserController.postById(id)
-      )
-    }
+  const getPostById = async (data) => {
     setPostDetails(data);
-    setPostTitle(data.data.postTitle);
-    setPostBody(data.data.postBody);
-    setPostTitle(data.data.postTitle);
+    setPostId(data.postId);
+    setUserId(user?.id);
+    setPostTitle(data.postTitle);
+    setPostBody(data.postBody);
     {
-      data?.data.postImg.map(item => (
+      data?.postImg.map(item => (
         preImageArray.push({
           id: next--,
           image: item,
@@ -105,7 +103,7 @@ export default function UpdatePost({ route, navigation }) {
           video: null,
         })
       ))
-      setPrePostImg(data.data.postImg)
+      setPrePostImg(data.postImg)
     }
   }
   const isLoading = useSelector(state =>
@@ -270,20 +268,20 @@ export default function UpdatePost({ route, navigation }) {
     else {
 
       let DATA = {
-        postTitle, postBody, postImg, preImageArray, mimeType, preMimeType, imageArray, user_Type
+        postId, userId, postTitle, postBody, postImg, preImageArray, mimeType, preMimeType, imageArray, user_Type, actionType
       }
 
       {
         userType.user == strings.userType.free && (
-          dispatch(updatePost(prevData?.postId, user?.id, postTitle, postBody, postImg, preImageArray, mimeType, preMimeType, imageArray, user_Type, NAVIGATION.profile))
+          dispatch(updatePost(postId, userId, postTitle, postBody, postImg, preImageArray, mimeType, preMimeType, imageArray, user_Type, NAVIGATION.profile))
         )
       }
       {
         userType.user == strings.userType.admin && (
           navigationRef.navigate(NAVIGATION.postOptions, {
             prevData: DATA,
-            navigationPath: 'profile'
           })
+          // dispatch(updatePost(postId, userId, postTitle, postBody, postImg, preImageArray, mimeType, preMimeType, imageArray, user_Type, NAVIGATION.profile))
         )
       }
 

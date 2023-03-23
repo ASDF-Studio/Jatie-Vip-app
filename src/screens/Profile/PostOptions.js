@@ -43,9 +43,9 @@ export default function PostOptions({ route, navigation }) {
 
   const handleSubmit = () => {
     if (prevData?.actionType === "Update") {
-      dispatch(updatePost(prevData?.postId, prevData?.userId, prevData?.postTitle, prevData?.postBody, prevData?.postImg, prevData?.preImageArray, prevData?.mimeType, prevData?.preMimeType, prevData?.imageArray, prevData?.user_Type, NAVIGATION.home))
+      dispatch(updatePost(prevData?.postId, prevData?.userId, prevData?.postTitle, prevData?.postBody, prevData?.postImg, prevData?.preImageArray, prevData?.mimeType, prevData?.preMimeType, prevData?.imageArray, prevData?.user_Type, NAVIGATION.profile))
     } else {
-      dispatch(createPostByAdmin(user?.id, prevData?.postTitle, prevData?.postBody, prevData?.postImg, prevData?.mimeType, prevData?.imageArray, NAVIGATION.home))
+      dispatch(createPostByAdmin(user?.id, prevData?.postTitle, prevData?.postBody, prevData?.postImg, prevData?.mimeType, prevData?.imageArray, NAVIGATION.profile))
     }
   };
 

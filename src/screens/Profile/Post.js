@@ -203,7 +203,6 @@ export default function Post({ navigation }) {
         userType.user == strings.userType.admin && (
           navigationRef.navigate(NAVIGATION.postOptions, {
             prevData: DATA,
-            navigationPath: 'profile'
           })
         )
       }

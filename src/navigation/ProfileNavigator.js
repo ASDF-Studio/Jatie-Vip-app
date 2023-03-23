@@ -23,6 +23,7 @@ import ManageReportOnProfile from '@/screens/Profile/manageReportOnProfile';
 import ManageReportOnPostAllComments from '@/screens/Profile/manageReportOnPost AllComments';
 import Post from '@/screens/Profile/Post';
 import UpdatePost from '@/screens/Profile/updatePost';
+import PostOptions from '@/screens/Profile/PostOptions';
 
 const Stack = createNativeStackNavigator();
 
@@ -83,6 +84,7 @@ export function ProfileNavigator() {
       />
       <Stack.Screen name={NAVIGATION.post} component={Post} />
       <Stack.Screen name={NAVIGATION.updatePost} component={UpdatePost} />
+      <Stack.Screen name={NAVIGATION.postOptions} component={PostOptions} />
     </Stack.Navigator>
   );
 }
