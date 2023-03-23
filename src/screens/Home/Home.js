@@ -14,7 +14,7 @@ import {
   faXmark,
   faPen,
 } from '@fortawesome/free-solid-svg-icons';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { FontFamily } from '@/theme/Fonts';
 import { NAVIGATION } from '@/constants';
@@ -46,6 +46,7 @@ import {
   Icon,
   ModalDown,
   ModalList,
+  PopUp,
   ReportOnPostModal,
   SeeSchedulePost,
   ShareFeed,
@@ -61,10 +62,12 @@ import { UserController } from '@/controllers';
 import { useIsFocused } from "@react-navigation/native";
 import { getUser } from '@/selectors/UserSelectors';
 import { navigationRef } from '@/navigation/RootNavigation';
+import { deletePost } from '@/actions/UserActions';
 
 export function Home({ navigation }) {
   const userType = useSelector(state => state.userType);
   const user = useSelector(getUser);
+  const dispatch = useDispatch()
   const [vipArea, setVipArea] = useState(strings.home.vipArea);
   const [open, setOpen] = useState(false);
   const [openToast, setOpenToast] = useState(false);
@@ -93,6 +96,9 @@ export function Home({ navigation }) {
   const [postBody, setPostBody] = useState('');
   const [postImg, setPostImg] = useState([]);
 
+  // for delete
+  const [openReplace, setReplace] = useState(false);
+
   // useEffect(() => {
   //   getAllPinnedPost();
   //   getAllPost();
@@ -115,6 +121,10 @@ export function Home({ navigation }) {
   const getAllPost = async () => {
     const data = await UserController.getAllPost();
     setAllPost(data.data);
+  }
+  const onDelete = () => {
+    dispatch(deletePost(postId, postUserId, user?.id, userType.user, NAVIGATION.home));
+    getAllPost();
   }
   let counter = 1;
   let DATA = {
@@ -324,7 +334,6 @@ export function Home({ navigation }) {
                           showPin={false}
                         />
                         <CardBody text={item.postBody} />
-                        {/* images */}
                         {item.postImg.length <= 2 ? (
                           <View style={styles.imageContainer}>
                             {item?.postImg?.map(data => (
@@ -675,7 +684,6 @@ export function Home({ navigation }) {
                   prevData: { DATA },
                 }), setOpen(false);
               }}
-            // onPress={() => navigation.navigate(NAVIGATION.postOptions)}
             />
             <HorizontalLine
               color={theme.light.colors.infoBgLight}
@@ -687,6 +695,7 @@ export function Home({ navigation }) {
               icon={faTrash}
               iconBg={theme.light.colors.infoBgLight}
               iconColor={theme.light.colors.secondary}
+              onPress={() => { setReplace(true), setOpen(false) }}
             />
           </ModalDown>
         ) :
@@ -735,6 +744,7 @@ export function Home({ navigation }) {
                   icon={faTrash}
                   iconColor={theme.light.colors.secondary}
                   iconBg={theme.light.colors.infoBgLight}
+                  onPress={() => { setReplace(true), setOpen(false) }}
                 />
                 <ModalList
                   title={strings.operations.block + strings.home.DummyUser}
@@ -755,7 +765,24 @@ export function Home({ navigation }) {
           </ModalDown>
         )
       )}
-
+      {/* Replace Popup */}
+      {openReplace && (
+        <PopUp open={openReplace} setOpen={setReplace}>
+          <View style={styles.ConfirmationTextContainer}>
+            <Text style={styles.ConfirmationText}>{strings.alert.delete}</Text>
+          </View>
+          <Button
+            title={strings.operations.yes}
+            style={styles.confirmButton}
+            onPress={() => { onDelete(), setReplace(false) }}
+          />
+          <Button
+            title={strings.operations.no}
+            style={styles.cancelButton}
+            onPress={() => setReplace(false)}
+          />
+        </PopUp>
+      )}
       <ReportOnPostModal open={openReport} setOpen={setOpenReport}>
         <View style={styles.reportPostContainer}>
           <TopBackButton
@@ -1073,5 +1100,25 @@ const styles = StyleSheet.create({
   },
   arrowIconStyle: {
     color: theme.light.colors.infoBgLight,
+  },
+
+  // delet confirm
+
+  confirmButton: {
+    margin: ms(5),
+  },
+  cancelButton: {
+    margin: ms(5),
+  },
+  ConfirmationTextContainer: {
+    paddingLeft: ms(15),
+    paddingRight: ms(15),
+    paddingBottom: ms(15),
+  },
+  ConfirmationText: {
+    fontFamily: FontFamily.BrandonGrotesque_bold,
+    fontSize: ms(16, 0.3),
+    lineHeight: ms(22),
+    color: theme.light.colors.text,
   },
 });

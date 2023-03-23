@@ -33,6 +33,7 @@ export default function MyStatus(navigation) {
   const [showImageView, setShowImageView] = useState(false);
   const [userId, setUser] = useState("ce656365-b90f-4b5f-aab6-b436051171f5");
   const [postId, setpostId] = useState(null);
+  const [postUserId, setPostUserId] = useState(null);
   const [postTitle, setPostTitle] = useState('');
   const [postBody, setPostBody] = useState('');
   const [postImg, setPostImg] = useState([]);
@@ -68,14 +69,14 @@ export default function MyStatus(navigation) {
     setUserPost(data.data);
   }
   const onDelete = () => {
-    dispatch(deletePost(postId, user?.id, userType.user, NAVIGATION.profile));
+    dispatch(deletePost(postId, postUserId, user?.id, userType.user, NAVIGATION.profile));
     if (userType.user === strings.userType.free) {
       getUserPostById(user?.id);
     }
     if (userType.user === strings.userType.admin) {
       getAllPostByAdmin();
     }
-    // console.log(postId, user?.id, userType.user);
+    // console.log(postId, postUserId, user?.id, userType.user);
   }
 
   let counter = 1;
@@ -210,7 +211,8 @@ export default function MyStatus(navigation) {
                 morePress={() => {
                   setOpen(true);
                   setpostId(item.id);
-                  setPostTitle(item.postTitle)
+                  setPostUserId(item.userId);
+                  setPostTitle(item.postTitle);
                   setPostBody(item.postBody);
                   setPostImg(item.postImg);
                 }}
@@ -263,6 +265,9 @@ export default function MyStatus(navigation) {
       {/* Replace Popup */}
       {openReplace && (
         <PopUp open={openReplace} setOpen={setReplace}>
+          <View style={styles.ConfirmationTextContainer}>
+            <Text style={styles.ConfirmationText}>{strings.alert.delete}</Text>
+          </View>
           <Button
             title={strings.operations.yes}
             style={styles.confirmButton}
@@ -322,5 +327,16 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     margin: ms(5),
+  },
+  ConfirmationTextContainer: {
+    paddingLeft: ms(15),
+    paddingRight: ms(15),
+    paddingBottom: ms(15),
+  },
+  ConfirmationText: {
+    fontFamily: FontFamily.BrandonGrotesque_bold,
+    fontSize: ms(16, 0.3),
+    lineHeight: ms(22),
+    color: theme.light.colors.text,
   },
 });

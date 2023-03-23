@@ -192,11 +192,12 @@ export class UserController {
 
   //delete post
 
-  static async deletePost(id, userId, userType) {
+  static async deletePost(id, postUserId, userId, userType) {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.DELETE_POST;
       var data = JSON.stringify({
         "id": id,
+        "postUserID": postUserId,
         "userId": userId,
         "userType": userType,
       });

@@ -391,11 +391,11 @@ export const updatePost = (id, userId, postTitle, postBody, file, preImageArray,
 
 // update_post action
 
-export const deletePost = (id, userId, userType, screen) => async dispatch => {
+export const deletePost = (id, postUserId, userId, userType, screen) => async dispatch => {
   dispatch(globalReset())
   dispatch(deletePostRequest());
   try {
-    const user = await UserController.deletePost(id, userId, userType);
+    const user = await UserController.deletePost(id, postUserId, userId, userType);
     dispatch(deletePostSuccess(user))
     if (screen == NAVIGATION.home) {
       showMessage({

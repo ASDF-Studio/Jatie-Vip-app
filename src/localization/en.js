@@ -365,6 +365,9 @@ export const en = {
     submit: 'Submit',
     delete: 'Delete',
   },
+  alert: {
+    delete: 'Are you sure you want to delete this post?'
+  },
   editProfile: {
     updatedSuccess: "Profile Updated Successfully"
   },
