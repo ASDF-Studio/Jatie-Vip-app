@@ -68,7 +68,13 @@ export default function MyStatus(navigation) {
     setUserPost(data.data);
   }
   const onDelete = () => {
-    dispatch(deletePost(postId, user?.id, userType.user, NAVIGATION.profile))
+    dispatch(deletePost(postId, user?.id, userType.user, NAVIGATION.profile));
+    if (userType.user === strings.userType.free) {
+      getUserPostById(user?.id);
+    }
+    if (userType.user === strings.userType.admin) {
+      getAllPostByAdmin();
+    }
     // console.log(postId, user?.id, userType.user);
   }
 
