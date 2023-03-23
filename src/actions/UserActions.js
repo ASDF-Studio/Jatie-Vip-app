@@ -46,6 +46,12 @@ export const TYPES = {
   UPDATE_POST_SUCCESS: "UPDATE_POST_SUCCESS",
   UPDATE_POST_ERROR: "UPDATE_POST_ERROR",
 
+  //user delete post
+  DELETE_POST: 'DELETE_POST',
+  DELETE_POST_REQUEST: "DELETE_POST_REQUEST",
+  DELETE_POST_SUCCESS: "DELETE_POST_SUCCESS",
+  DELETE_POST_ERROR: "DELETE_POST_ERROR",
+
 };
 
 const loginRequest = () => ({
@@ -159,6 +165,23 @@ const updatePostRequest = () => ({
 
 const updatePostError = error => ({
   type: TYPES.UPDATE_POST_ERROR,
+  payload: { error },
+});
+
+//delete Post
+export const deletePostSuccess = user => ({
+  type: TYPES.DELETE_POST_SUCCESS,
+  payload: { user },
+});
+
+
+const deletePostRequest = () => ({
+  type: TYPES.DELETE_POST_REQUEST,
+  payload: null,
+});
+
+const deletePostError = error => ({
+  type: TYPES.DELETE_POST_ERROR,
   payload: { error },
 });
 
@@ -333,7 +356,7 @@ export const createPostByAdmin = (id, postTitle, postBody, file, mimeType, image
   }
 };
 
-// create_post action
+// update_post action
 
 export const updatePost = (id, userId, postTitle, postBody, file, preImageArray, mimeType, preMimeType, imageArray, userType, screen) => async dispatch => {
   dispatch(globalReset())
@@ -363,6 +386,37 @@ export const updatePost = (id, userId, postTitle, postBody, file, preImageArray,
       type: "danger"
     })
     dispatch(updatePostError(error));
+  }
+};
+
+// update_post action
+
+export const deletePost = (id, userId, userType, screen) => async dispatch => {
+  dispatch(globalReset())
+  dispatch(deletePostRequest());
+  try {
+    const user = await UserController.deletePost(id, userId, userType);
+    dispatch(deletePostSuccess(user))
+    if (screen == NAVIGATION.home) {
+      showMessage({
+        message: strings.deletePost.deletedSuccess,
+        type: "success"
+      })
+      navigationRef.navigate(NAVIGATION.home)
+    }
+    if (screen == NAVIGATION.profile) {
+      showMessage({
+        message: strings.deletePost.deletedSuccess,
+        type: "success"
+      })
+      navigationRef.navigate(NAVIGATION.profile)
+    }
+  } catch (error) {
+    showMessage({
+      message: error?.message,
+      type: "danger"
+    })
+    dispatch(deletePostError(error));
   }
 };
 

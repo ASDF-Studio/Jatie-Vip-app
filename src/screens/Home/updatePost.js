@@ -75,11 +75,7 @@ export default function UpdatePost({ route, navigation }) {
   // const focus = useIsFocused();
 
   useEffect(() => {
-    // if (focus == true) {
-    // getPostById(prevData?.postId)
     getPostById(prevData?.DATA)
-    // console.log(prevData?.DATA.postImg)
-    // }
   }, []);
 
   const getPostById = async (data) => {

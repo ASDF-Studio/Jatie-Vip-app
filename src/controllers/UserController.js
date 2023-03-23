@@ -189,6 +189,30 @@ export class UserController {
         });
     });
   }
+
+  //delete post
+
+  static async deletePost(id, userId, userType) {
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.DELETE_POST;
+      var data = JSON.stringify({
+        "id": id,
+        "userId": userId,
+        "userType": userType,
+      });
+
+      console.log("##########    Data", data)
+      HttpClient.post(endpoint, data)
+        .then((response) => {
+          resolve(response);
+          console.log("Final response", response);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
+
   // create post by admin
 
   static async createPostByAdmin(id, postTitle, postBody, file, mimeType, imageArray) {
@@ -227,7 +251,7 @@ export class UserController {
     });
   }
 
-  // post by user id
+  // // post by user id
 
   static async postByUserId(id) {
     return new Promise((resolve, reject) => {

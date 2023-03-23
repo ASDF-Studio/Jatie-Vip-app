@@ -373,5 +373,8 @@ export const en = {
   },
   updatePost: {
     updatedSuccess: "Update Successfull"
+  },
+  deletePost: {
+    deletedSuccess: "Delete Successfull"
   }
 };

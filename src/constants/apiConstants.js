@@ -14,7 +14,10 @@ export const API_END_POINTS = {
     //update Post
     UPDATE_POST: "post/update",
 
-    //update post
+    //delete post
+    DELETE_POST: "post/delete",
+
+    //post by id
     POST_BY_ID: "post/single_post",
     POST_BY_ADMIN_ID: "post/single_post_admin",
 

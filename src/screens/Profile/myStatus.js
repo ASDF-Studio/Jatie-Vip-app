@@ -11,6 +11,8 @@ import {
   CardBody,
   HorizontalLine,
   AppImageViewer,
+  PopUp,
+  Button,
 } from '@/components';
 import { ms } from 'react-native-size-matters';
 import { strings } from '@/localization';
@@ -22,6 +24,7 @@ import { FontFamily } from '@/theme/Fonts';
 import { useIsFocused } from "@react-navigation/native";
 import { NAVIGATION } from '@/constants';
 import { navigationRef } from '@/navigation/RootNavigation';
+import { deletePost } from '@/actions/UserActions';
 
 export default function MyStatus(navigation) {
   const [open, setOpen] = useState(false);
@@ -37,6 +40,7 @@ export default function MyStatus(navigation) {
 
   const [userPost, setUserPost] = useState([]);
   const userType = useSelector(state => state.userType);
+  const [openReplace, setReplace] = useState(false);
   // useEffect(() => {
   //   getUserPostById(user?.id);
   // }, []);
@@ -62,6 +66,10 @@ export default function MyStatus(navigation) {
   const getUserPostById = async (id) => {
     const data = await UserController.postByUserId(id);
     setUserPost(data.data);
+  }
+  const onDelete = () => {
+    dispatch(deletePost(postId, user?.id, userType.user, NAVIGATION.profile))
+    // console.log(postId, user?.id, userType.user);
   }
 
   let counter = 1;
@@ -228,7 +236,7 @@ export default function MyStatus(navigation) {
                 prevData: { DATA },
               }), setOpen(false);
             }}
-          // onPress={console.log(DATA.postTitle)}
+          // onPress={console.log(postId, user?.id)}
           />
           <HorizontalLine
             color={theme.light.colors.infoBgLight}
@@ -240,8 +248,26 @@ export default function MyStatus(navigation) {
             icon={faTrash}
             iconBg={theme.light.colors.infoBgLight}
             iconColor={theme.light.colors.secondary}
+            // onPress={console.log(postId, user?.id)}
+            onPress={() => { setReplace(true), setOpen(false) }}
           />
         </ModalDown>
+      )}
+
+      {/* Replace Popup */}
+      {openReplace && (
+        <PopUp open={openReplace} setOpen={setReplace}>
+          <Button
+            title={strings.operations.yes}
+            style={styles.confirmButton}
+            onPress={() => { onDelete(), setReplace(false) }}
+          />
+          <Button
+            title={strings.operations.no}
+            style={styles.cancelButton}
+            onPress={() => setReplace(false)}
+          />
+        </PopUp>
       )}
     </SafeAreaView>
   );
@@ -284,5 +310,11 @@ const styles = StyleSheet.create({
     fontSize: ms(24, 0.3),
     width: '100%',
     padding: 35,
+  },
+  confirmButton: {
+    margin: ms(5),
+  },
+  cancelButton: {
+    margin: ms(5),
   },
 });
