@@ -86,6 +86,29 @@ export default function MyStatus(navigation) {
     // console.log(postId, postUserId, user?.id, userType.user);
   }
 
+  const onUpVote = async (id, postUserID, likeUserID) => {
+    const data = await UserController.upVote(id, postUserID, likeUserID);
+    console.log(data);
+    if (userType.user === strings.userType.free) {
+      console.log("Reload called")
+      getUserPostById(user?.id);
+    }
+    if (userType.user === strings.userType.admin) {
+      getAllPostByAdmin();
+    }
+  }
+
+  const onDownVote = async (id, postUserID, likeUserID) => {
+    const data = await UserController.downVote(id, postUserID, likeUserID);
+    if (userType.user === strings.userType.free) {
+      console.log("Reload called")
+      getUserPostById(user?.id);
+    }
+    if (userType.user === strings.userType.admin) {
+      getAllPostByAdmin();
+    }
+  }
+
   let counter = 1;
   let DATA = {
     postId, postTitle, postBody, postImg
@@ -208,16 +231,13 @@ export default function MyStatus(navigation) {
                 </View>
               ) : null}
               <CardFooter
-                likeCount={10}
-                disLikeCount={1}
+                likePress={() => onUpVote(item.id, item.userId, user?.id)}
+                likeCount={item.upVote}
+                disLikePress={() => onDownVote(item.id, item.userId, user?.id)}
+                disLikeCount={item.downVote}
+                commentPress={() => console.log("Comment")}
                 commentCount={5}
-                // likeCount={item.like}
-                // likePress = {()=> Alert.alert("like")}
-                // disLikeCount={item.disLike}
-                // disLikePress = {()=> Alert.alert("dislike")}
-                // commentCount={item.comment}
-                // commentPress = {()=> Alert.alert("Comment")}
-                // sharePress = {()=> Alert.alert("share")}
+                sharePress={() => console.log("share")}
                 morePress={() => {
                   setOpen(true);
                   setpostId(item.id);

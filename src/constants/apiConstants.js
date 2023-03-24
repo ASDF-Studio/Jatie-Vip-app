@@ -17,6 +17,10 @@ export const API_END_POINTS = {
     //delete post
     DELETE_POST: "post/delete",
 
+    //vote post
+    UPVOTE_POST: "post/upvote",
+    DOWNVOTE_POST: "post/downvote",
+
     //post by id
     POST_BY_ID: "post/single_post",
     POST_BY_ADMIN_ID: "post/single_post_admin",

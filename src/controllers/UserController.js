@@ -214,6 +214,52 @@ export class UserController {
     });
   }
 
+  //up voted
+
+  static async upVote(id, postUserId, userId) {
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.UPVOTE_POST;
+      var data = JSON.stringify({
+        "id": id,
+        "postUserID": postUserId,
+        "likeUserID": userId,
+      });
+
+      console.log("##########    Data", data)
+      HttpClient.post(endpoint, data)
+        .then((response) => {
+          resolve(response);
+          console.log("Final response", response);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
+
+  // down vote
+
+  static async downVote(id, postUserId, userId) {
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.DOWNVOTE_POST;
+      var data = JSON.stringify({
+        "id": id,
+        "postUserID": postUserId,
+        "unlikeUserID": userId,
+      });
+
+      console.log("##########    Data", data)
+      HttpClient.post(endpoint, data)
+        .then((response) => {
+          resolve(response);
+          console.log("Final response", response);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
+
   // create post by admin
 
   static async createPostByAdmin(id, postTitle, postBody, file, mimeType, imageArray) {

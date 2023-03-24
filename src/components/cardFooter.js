@@ -24,23 +24,23 @@ export const CardFooter = ({
       <View style={styles.reactionContainer}>
         <TouchableOpacity
           style={[styles.iconContainer, styles.likeIconContainer]}
+          onPress={likePress}
         >
           <FontAwesomeIcon
             icon={faCircleUp}
             size={ms(13)}
             color={theme.light.colors.success}
-            onPress={likePress}
           />
           <Text style={styles.likeTxt}>{likeCount} </Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.iconContainer, styles.disLikeIconContainer]}
+          onPress={disLikePress}
         >
           <FontAwesomeIcon
             icon={faCircleDown}
             size={ms(13)}
             color={theme.light.colors.error}
-            onPress={disLikePress}
           />
           <Text style={styles.disLikeText}>{disLikeCount} </Text>
         </TouchableOpacity>
@@ -53,7 +53,7 @@ export const CardFooter = ({
             size={ms(13)}
             color={theme.light.colors.info}
             footerfooter
-            // onPress={commentPress}
+          // onPress={commentPress}
           />
           <Text style={styles.commentsTxt}>{commentCount} </Text>
         </TouchableOpacity>

@@ -125,6 +125,18 @@ export function Home({ navigation }) {
   const onDelete = () => {
     dispatch(deletePost(postId, postUserId, user?.id, userType.user, NAVIGATION.home));
     getAllPost();
+    // getAllPinnedPost();
+  }
+  const onUpVote = async (id, postUserID, likeUserID) => {
+    const data = await UserController.upVote(id, postUserID, likeUserID);
+    getAllPost();
+    // getAllPinnedPost();
+  }
+
+  const onDownVote = async (id, postUserID, likeUserID) => {
+    const data = await UserController.downVote(id, postUserID, likeUserID);
+    getAllPost();
+    // getAllPinnedPost();
   }
   let counter = 1;
   let DATA = {
@@ -300,8 +312,10 @@ export function Home({ navigation }) {
                           </View>
                         ) : null}
                         <CardFooter
-                          likeCount={10}
-                          disLikeCount={1}
+                          likePress={() => onUpVote(item.id, item.userId, user?.id)}
+                likeCount={item.upVote}
+                disLikePress={() => onDownVote(item.id, item.userId, user?.id)}
+                disLikeCount={item.downVote}
                           commentCount={5}
                           morePress={() => {
                             setOpen(true);
@@ -413,9 +427,10 @@ export function Home({ navigation }) {
                           </View>
                         ) : null}
                         <CardFooter
-                          likeCount={10}
-                          disLikeCount={1}
-                          commentCount={5}
+                          likePress={() => onUpVote(item.id, item.userId, user?.id)}
+                          likeCount={item.upVote}
+                          disLikePress={() => onDownVote(item.id, item.userId, user?.id)}
+                          disLikeCount={item.downVote}
                           morePress={() => {
                             setOpen(true);
                             setPostUserId(item.userId);
@@ -531,9 +546,10 @@ export function Home({ navigation }) {
                   </View>
                 ) : null}
                 <CardFooter
-                  likeCount={10}
-                  disLikeCount={1}
-                  commentCount={5}
+                  likePress={() => onUpVote(item.id, item.userId, user?.id)}
+                  likeCount={item.upVote}
+                  disLikePress={() => onDownVote(item.id, item.userId, user?.id)}
+                  disLikeCount={item.downVote}
                   commentPress={() => navigation.navigate(NAVIGATION.comments)}
                   morePress={() => {
                     setOpen(true);
