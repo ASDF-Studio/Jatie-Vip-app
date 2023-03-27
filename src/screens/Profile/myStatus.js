@@ -25,7 +25,7 @@ import { FontFamily } from '@/theme/Fonts';
 import { useIsFocused } from "@react-navigation/native";
 import { NAVIGATION } from '@/constants';
 import { navigationRef } from '@/navigation/RootNavigation';
-import { TYPES, deletePost } from '@/actions/UserActions';
+import { TYPES, deletePost, downVote, upVote } from '@/actions/UserActions';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 
 export default function MyStatus(navigation) {
@@ -84,29 +84,32 @@ export default function MyStatus(navigation) {
       getAllPostByAdmin();
     }
     // console.log(postId, postUserId, user?.id, userType.user);
+    console.log("ondelete");
   }
 
   const onUpVote = async (id, postUserID, likeUserID) => {
     const data = await UserController.upVote(id, postUserID, likeUserID);
-    console.log(data);
-    if (userType.user === strings.userType.free) {
-      console.log("Reload called")
-      getUserPostById(user?.id);
-    }
-    if (userType.user === strings.userType.admin) {
-      getAllPostByAdmin();
-    }
+    // console.log(data);
+    // if (userType.user === strings.userType.free) {
+    //   console.log("Reload called")
+    //   getUserPostById(user?.id);
+    // }
+    // if (userType.user === strings.userType.admin) {
+    //   getAllPostByAdmin();
+    // }
+    // dispatch(upVote(id, postUserID, likeUserID));
   }
 
   const onDownVote = async (id, postUserID, likeUserID) => {
     const data = await UserController.downVote(id, postUserID, likeUserID);
-    if (userType.user === strings.userType.free) {
-      console.log("Reload called")
-      getUserPostById(user?.id);
-    }
-    if (userType.user === strings.userType.admin) {
-      getAllPostByAdmin();
-    }
+    // if (userType.user === strings.userType.free) {
+    //   console.log("Reload called")
+    //   getUserPostById(user?.id);
+    // }
+    // if (userType.user === strings.userType.admin) {
+    //   getAllPostByAdmin();
+    // }
+    // dispatch(downVote(id, postUserID, likeUserID));
   }
 
   let counter = 1;
@@ -231,10 +234,15 @@ export default function MyStatus(navigation) {
                 </View>
               ) : null}
               <CardFooter
-                likePress={() => onUpVote(item.id, item.userId, user?.id)}
+                // likePress={() => onUpVote(item.id, item.userId, user?.id)}
+                // disLikePress={() => onDownVote(item.id, item.userId, user?.id)}
+                postID={item.id}
+                postUserID={item.userId}
+                userID={user?.id}
                 likeCount={item.upVote}
-                disLikePress={() => onDownVote(item.id, item.userId, user?.id)}
                 disLikeCount={item.downVote}
+                upVoteUserID={item.upVoteUserId}
+                downVoteUserID={item.downVoteUserId}
                 commentPress={() => console.log("Comment")}
                 commentCount={5}
                 sharePress={() => console.log("share")}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Icon } from '@/components';
 import { theme, TextStyles } from '@/theme';
@@ -8,41 +8,97 @@ import { ms } from 'react-native-size-matters';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faCircleDown, faComment } from '@fortawesome/free-regular-svg-icons';
 import { faShareNodes } from '@fortawesome/pro-regular-svg-icons';
+import { UserController } from '@/controllers';
 
 export const CardFooter = ({
+  postID,
+  postUserID,
+  userID,
   likeCount,
   disLikeCount,
   commentCount,
-  likePress,
-  disLikePress,
+  // likePress,
+  // disLikePress,
+  upVoteUserID,
+  downVoteUserID,
   commentPress,
   sharePress,
   morePress,
 }) => {
+  const [upVote, setUpVote] = useState(likeCount);
+  const [downVote, setDownVote] = useState(disLikeCount);
+  let upVoteCount = 0;
+  let downVoteCount = 0;
+
+  const upVoteHandel = () => {
+    // upVoteUserID.length == 0 ? (
+    //   onUpVote(postID, postUserID, userID)
+    // ) : (
+    //   upVoteUserID.map(data => (
+    //     data == userID ? null : onUpVote(postID, postUserID, userID)
+    //   ))
+    // )
+    onUpVote(postID, postUserID, userID)
+  }
+  const downVoteHandel = () => {
+    // downVoteUserID.length == 0 ? (
+    //   onDownVote(postID, postUserID, userID)
+    // ) : (
+    //   downVoteUserID.map(data => (
+    //     data == userID ? null : onDownVote(postID, postUserID, userID)
+    //   ))
+    // )
+    onDownVote(postID, postUserID, userID)
+  }
+
+  const onUpVote = async (postID, postUserID, userID) => {
+    const data = await UserController.upVote(postID, postUserID, userID);
+    {
+      data.data.map(data => (
+        upVoteCount = data.upVote,
+        downVoteCount = data.downVote
+      ))
+    }
+    setUpVote(upVoteCount)
+    setDownVote(downVoteCount)
+  }
+
+  const onDownVote = async (postID, postUserID, userID) => {
+    const data = await UserController.downVote(postID, postUserID, userID);
+    {
+      data.data.map(data => (
+        // console.log("downVote", data),
+        upVoteCount = data.upVote,
+        downVoteCount = data.downVote
+      ))
+    }
+    setUpVote(upVoteCount)
+    setDownVote(downVoteCount)
+  }
   return (
     <View style={styles.footer}>
       <View style={styles.reactionContainer}>
         <TouchableOpacity
           style={[styles.iconContainer, styles.likeIconContainer]}
-          onPress={likePress}
+          onPress={() => upVoteHandel()}
         >
           <FontAwesomeIcon
             icon={faCircleUp}
             size={ms(13)}
             color={theme.light.colors.success}
           />
-          <Text style={styles.likeTxt}>{likeCount} </Text>
+          <Text style={styles.likeTxt}>{upVote} </Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.iconContainer, styles.disLikeIconContainer]}
-          onPress={disLikePress}
+          onPress={() => downVoteHandel()}
         >
           <FontAwesomeIcon
             icon={faCircleDown}
             size={ms(13)}
             color={theme.light.colors.error}
           />
-          <Text style={styles.disLikeText}>{disLikeCount} </Text>
+          <Text style={styles.disLikeText}>{downVote} </Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.iconContainer, styles.commentsIconContainer]}

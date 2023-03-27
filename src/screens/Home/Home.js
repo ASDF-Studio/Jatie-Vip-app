@@ -427,10 +427,15 @@ export function Home({ navigation }) {
                           </View>
                         ) : null}
                         <CardFooter
-                          likePress={() => onUpVote(item.id, item.userId, user?.id)}
+                          // likePress={() => onUpVote(item.id, item.userId, user?.id)}
+                          // disLikePress={() => onDownVote(item.id, item.userId, user?.id)}
+                          postID={item.id}
+                          postUserID={item.userId}
+                          userID={user?.id}
                           likeCount={item.upVote}
-                          disLikePress={() => onDownVote(item.id, item.userId, user?.id)}
                           disLikeCount={item.downVote}
+                          commentPress={() => console.log("Comment")}
+                          commentCount={5}
                           morePress={() => {
                             setOpen(true);
                             setPostUserId(item.userId);
@@ -546,10 +551,14 @@ export function Home({ navigation }) {
                   </View>
                 ) : null}
                 <CardFooter
-                  likePress={() => onUpVote(item.id, item.userId, user?.id)}
+                  // likePress={() => onUpVote(item.id, item.userId, user?.id)}
+                  // disLikePress={() => onDownVote(item.id, item.userId, user?.id)}
+                  postID={item.id}
+                  postUserID={item.userId}
+                  userID={user?.id}
                   likeCount={item.upVote}
-                  disLikePress={() => onDownVote(item.id, item.userId, user?.id)}
                   disLikeCount={item.downVote}
+                  commentCount={5}
                   commentPress={() => navigation.navigate(NAVIGATION.comments)}
                   morePress={() => {
                     setOpen(true);
