@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faCircleDown, faComment } from '@fortawesome/free-regular-svg-icons';
 import { faShareNodes } from '@fortawesome/pro-regular-svg-icons';
 import { UserController } from '@/controllers';
+import { strings } from '@/localization';
 
 export const CardFooter = ({
   postID,
@@ -31,49 +32,37 @@ export const CardFooter = ({
   let downVoteCount = 0;
 
   const upVoteHandel = () => {
-    // upVoteUserID.length == 0 ? (
-    //   onUpVote(postID, postUserID, userID)
-    // ) : (
-    //   upVoteUserID.map(data => (
-    //     data == userID ? null : onUpVote(postID, postUserID, userID)
-    //   ))
-    // )
+
     onUpVote(postID, postUserID, userID)
   }
   const downVoteHandel = () => {
-    // downVoteUserID.length == 0 ? (
-    //   onDownVote(postID, postUserID, userID)
-    // ) : (
-    //   downVoteUserID.map(data => (
-    //     data == userID ? null : onDownVote(postID, postUserID, userID)
-    //   ))
-    // )
+
     onDownVote(postID, postUserID, userID)
   }
 
   const onUpVote = async (postID, postUserID, userID) => {
+
     const data = await UserController.upVote(postID, postUserID, userID);
-    {
-      data.data.map(data => (
-        upVoteCount = data.upVote,
-        downVoteCount = data.downVote
-      ))
+    if (data?.message !== strings.home.upVoteAgain) {
+      var upVotenumber = parseInt(upVote)
+      var downVoteNumber = parseInt(downVote)
+      setUpVote(upVotenumber + 1)
+      if (downVoteNumber !== 0) {
+        setDownVote(downVoteNumber - 1)
+      }
     }
-    setUpVote(upVoteCount)
-    setDownVote(downVoteCount)
   }
 
   const onDownVote = async (postID, postUserID, userID) => {
     const data = await UserController.downVote(postID, postUserID, userID);
-    {
-      data.data.map(data => (
-        // console.log("downVote", data),
-        upVoteCount = data.upVote,
-        downVoteCount = data.downVote
-      ))
+    if (data?.message !== strings.home.downVoteAgain) {
+      var upVotenumber = parseInt(upVote)
+      var downVoteNumber = parseInt(downVote)
+      if (upVotenumber !== 0) {
+        setUpVote(upVotenumber - 1)
+      }
+      setDownVote(downVoteNumber + 1)
     }
-    setUpVote(upVoteCount)
-    setDownVote(downVoteCount)
   }
   return (
     <View style={styles.footer}>

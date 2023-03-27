@@ -37,6 +37,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ms } from 'react-native-size-matters';
 import { Data, SingleData } from './Data/commentsData';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 export default function Comments({ navigation }) {
   const [openReplyTo, setOpenReplyTo] = useState(false);
@@ -57,53 +58,55 @@ export default function Comments({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.headerContainer}>
-        <TopBackButton
-          onPress={() => navigation.goBack()}
-          style={styles.TopBackButton}
-        />
-        <Text style={styles.headTxt}> {strings.home.comments} </Text>
-      </View>
-      <HorizontalLine color={theme.light.colors.infoBgLight} paddingTop={15} />
-      <View style={styles.commentContainer}>
-        <FlatList
-          data={Data}
-          keyExtractor={item => item.id}
-          renderItem={({ item }) => (
-            <CommentCard
-              name={item.name}
-              userName={item.userName}
-              imageUrl={item.proflePic}
-              time={10}
-              commentTxt={item.commentTxt}
-              likeCount={10}
-              disLikeCount={2}
-              replyPress={() => setOpenReplyTo(true)}
-              morePress={() => setOpen(true)}
-            />
-          )}
-        />
-      </View>
-      {openReplyTo && (
-        <View style={styles.replyToContainer}>
-          <View style={styles.replay}>
-            <Text style={styles.replyTxt}> {strings.home.replyTo} </Text>
-            <Text style={styles.replayFontWeight}> {SingleData.name}</Text>
-          </View>
-          <TouchableOpacity
-            onPress={() => setOpenReplyTo(false)}
-            style={styles.closeIconContainer}
-          >
-            <FontAwesomeIcon
-              icon={faClose}
-              size={ms(13)}
-              color={theme.light.colors.white}
-            />
-          </TouchableOpacity>
+      <KeyboardAwareScrollView>
+        <View style={styles.headerContainer}>
+          <TopBackButton
+            onPress={() => navigation.goBack()}
+            style={styles.TopBackButton}
+          />
+          <Text style={styles.headTxt}> {strings.home.comments} </Text>
         </View>
-      )}
+        <HorizontalLine color={theme.light.colors.infoBgLight} paddingTop={15} />
+        <View style={styles.commentContainer}>
+          <FlatList
+            data={Data}
+            keyExtractor={item => item.id}
+            renderItem={({ item }) => (
+              <CommentCard
+                name={item.name}
+                userName={item.userName}
+                imageUrl={item.proflePic}
+                time={10}
+                commentTxt={item.commentTxt}
+                likeCount={10}
+                disLikeCount={2}
+                replyPress={() => setOpenReplyTo(true)}
+                morePress={() => setOpen(true)}
+              />
+            )}
+          />
+        </View>
+        {openReplyTo && (
+          <View style={styles.replyToContainer}>
+            <View style={styles.replay}>
+              <Text style={styles.replyTxt}> {strings.home.replyTo} </Text>
+              <Text style={styles.replayFontWeight}> {SingleData.name}</Text>
+            </View>
+            <TouchableOpacity
+              onPress={() => setOpenReplyTo(false)}
+              style={styles.closeIconContainer}
+            >
+              <FontAwesomeIcon
+                icon={faClose}
+                size={ms(13)}
+                color={theme.light.colors.white}
+              />
+            </TouchableOpacity>
+          </View>
+        )}
 
-      <CommentInput />
+        <CommentInput />
+      </KeyboardAwareScrollView>
 
       {/*  Slide up for follow, edit , review  */}
       {open && (
@@ -203,6 +206,7 @@ export default function Comments({ navigation }) {
           onPressOk={setOpenToast}
         />
       )}
+
     </SafeAreaView>
   );
 }

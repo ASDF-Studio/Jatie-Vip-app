@@ -388,7 +388,7 @@ export class UserController {
       const endpoint = API_BASE_URL + API_END_POINTS.ALL_POST;
       HttpClient.post(endpoint)
         .then((response) => {
-
+          // console.log("ALL_POST_RESPONSE", JSON.stringify(response))
           resolve(response);
         })
         .catch((error) => {

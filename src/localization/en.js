@@ -60,6 +60,8 @@ export const en = {
 
     postTitle: 'Enter Post Title',
     postBody: 'Enter Post Body',
+    upVoteAgain: "This user already upvoted the post",
+    downVoteAgain: "This user already downvoted the post"
   },
   sortBy: {
     recent: 'Recent',

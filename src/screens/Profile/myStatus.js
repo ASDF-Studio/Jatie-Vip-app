@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Alert, FlatList, StyleSheet, Image, TouchableOpacity, ImageBackground, Text, SafeAreaView } from 'react-native';
+import { View, Alert, FlatList, StyleSheet, Image, TouchableOpacity, ImageBackground, Text, SafeAreaView, ActivityIndicator } from 'react-native';
 import { theme } from '@/theme';
 import { faTrash, faPen } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -44,6 +44,7 @@ export default function MyStatus(navigation) {
   const [userPost, setUserPost] = useState([]);
   const userType = useSelector(state => state.userType);
   const [openReplace, setReplace] = useState(false);
+  const [loader, setLoader] = useState(true);
   // useEffect(() => {
   //   getUserPostById(user?.id);
   // }, []);
@@ -67,12 +68,20 @@ export default function MyStatus(navigation) {
 
   const getAllPostByAdmin = async () => {
     const data = await UserController.getAllPostByAdmin();
-    setUserPost(data.data);
+    if (data) {
+      setLoader(false);
+      setUserPost(data.data);
+    }
+
   }
 
   const getUserPostById = async (id) => {
     const data = await UserController.postByUserId(id);
-    setUserPost(data.data);
+    if (data) {
+      setLoader(false);
+      setUserPost(data.data);
+    }
+
   }
   const onDelete = () => {
     dispatch(deletePost(postId, postUserId, user?.id, userType.user, NAVIGATION.profile));
@@ -118,147 +127,153 @@ export default function MyStatus(navigation) {
   }
   return (
     <SafeAreaView>
-      <CustomLoader
-        open={isLoading}
-      />
-      <FlatList
-        data={userPost}
-        key={props => props.id}
-        renderItem={({ item }) => (
-          <View style={styles.cardContainer}>
-            <Card>
-              <CardHeader
-                fullName={user?.fullName}
-                userName={user?.username}
-                profilePic={user?.profilePic}
-                time={item.created_at}
-              />
-              <CardBody text={item.postBody} />
-              {/* images */}
-              {/* <View style={styles.imageContainer}>
-                {item?.postImg?.map(data => (
-                  counter = counter + 1,
-                  <TouchableOpacity
-                    key={counter}
-                    style={styles.touchContainer}
-                    onPress={() => {
-                      setShowImageView(true),
-                        setFeedImages(item.postImg);
-                    }}
-                  >
-                    <Image
-                      source={{
-                        uri: data,
-                      }}
-                      style={styles.image}
-                    />
-                  </TouchableOpacity>
-                ))}
-              </View> */}
-              {item.postImg.length <= 2 ? (
-                <View style={styles.imageContainer}>
-                  {item?.postImg?.map(data => (
-                    counter = counter + 1,
-                    <TouchableOpacity
-                      key={counter}
-                      style={styles.touchContainer}
-                      onPress={() => {
-                        setShowImageView(true),
-                          setFeedImages(item.postImg)
-                      }}
-                    >
-                      <Image
-                        source={{
-                          uri: data,
-                        }}
-                        style={styles.image}
-                      />
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              ) : item.postImg.length > 2 ? (
-                counter = 1,
-                <View style={styles.imageContainer}>
-                  {item?.postImg?.map(data =>
-                    counter == 1 ? (
+      {loader ?
+        <ActivityIndicator
+          size={'large'}
+          color={theme.light.colors.activeTabIcon}
+          style={{ alignSelf: "center", marginTop: 50 }}
+          animating={loader}
+        /> : <FlatList
+          data={userPost}
+          key={props => props.id}
+          renderItem={({ item }) => (
+            <View style={styles.cardContainer}>
+              <Card>
+                <CardHeader
+                  fullName={user?.fullName}
+                  userName={user?.username}
+                  profilePic={user?.profilePic}
+                  time={item.created_at}
+                />
+                <CardBody text={item?.postBody} />
+                {/* images */}
+                {/* <View style={styles.imageContainer}>
+            {item?.postImg?.map(data => (
+              counter = counter + 1,
+              <TouchableOpacity
+                key={counter}
+                style={styles.touchContainer}
+                onPress={() => {
+                  setShowImageView(true),
+                    setFeedImages(item.postImg);
+                }}
+              >
+                <Image
+                  source={{
+                    uri: data,
+                  }}
+                  style={styles.image}
+                />
+              </TouchableOpacity>
+            ))}
+          </View> */}
+                {item?.postImg?.length <= 2 ? (
+                  <View style={styles.imageContainer}>
+                    {item?.postImg?.map(data => (
                       counter = counter + 1,
                       <TouchableOpacity
                         key={counter}
                         style={styles.touchContainer}
                         onPress={() => {
                           setShowImageView(true),
-                            setFeedImages(item.postImg);
-                          // console.log(feedImages)
+                            setFeedImages(item?.postImg)
                         }}
                       >
                         <Image
                           source={{
                             uri: data,
                           }}
-                          key={counter}
                           style={styles.image}
                         />
                       </TouchableOpacity>
-                    ) : counter == 2 ? (
-                      counter = counter + 1,
-                      <TouchableOpacity
-                        key={counter}
-                        style={styles.touchContainer}
-                        onPress={() => {
-                          setShowImageView(true),
-                            setFeedImages(item.postImg);
-                        }}
-                      >
-                        <ImageBackground
-                          source={{
-                            uri: data,
-                          }}
+                    ))}
+                  </View>
+                ) : item?.postImg?.length > 2 ? (
+                  counter = 1,
+                  <View style={styles.imageContainer}>
+                    {item?.postImg?.map(data =>
+                      counter == 1 ? (
+                        counter = counter + 1,
+                        <TouchableOpacity
                           key={counter}
-                          style={[styles.image, styles.moreImage]}
+                          style={styles.touchContainer}
+                          onPress={() => {
+                            setShowImageView(true),
+                              setFeedImages(item?.postImg);
+                            // console.log(feedImages)
+                          }}
                         >
-                          <TouchableOpacity
-                            onPress={() => {
-                              setShowImageView(true),
-                                setFeedImages(item.postImg);
+                          <Image
+                            source={{
+                              uri: data,
                             }}
+                            key={counter}
+                            style={styles.image}
+                          />
+                        </TouchableOpacity>
+                      ) : counter == 2 ? (
+                        counter = counter + 1,
+                        <TouchableOpacity
+                          key={counter}
+                          style={styles.touchContainer}
+                          onPress={() => {
+                            setShowImageView(true),
+                              setFeedImages(item?.postImg);
+                          }}
+                        >
+                          <ImageBackground
+                            source={{
+                              uri: data,
+                            }}
+                            key={counter}
+                            style={[styles.image, styles.moreImage]}
                           >
-                            <Text style={styles.extraImage}>
-                              {strings.message.plus}
-                              {item.postImg.length - 1}
-                            </Text>
-                          </TouchableOpacity>
-                        </ImageBackground>
-                      </TouchableOpacity>
-                    ) : null
-                  )}
-                </View>
-              ) : null}
-              <CardFooter
-                // likePress={() => onUpVote(item.id, item.userId, user?.id)}
-                // disLikePress={() => onDownVote(item.id, item.userId, user?.id)}
-                postID={item.id}
-                postUserID={item.userId}
-                userID={user?.id}
-                likeCount={item.upVote}
-                disLikeCount={item.downVote}
-                upVoteUserID={item.upVoteUserId}
-                downVoteUserID={item.downVoteUserId}
-                commentPress={() => console.log("Comment")}
-                commentCount={5}
-                sharePress={() => console.log("share")}
-                morePress={() => {
-                  setOpen(true);
-                  setpostId(item.id);
-                  setPostUserId(item.userId);
-                  setPostTitle(item.postTitle);
-                  setPostBody(item.postBody);
-                  setPostImg(item.postImg);
-                }}
-              />
-            </Card>
-          </View>
-        )}
-      />
+                            <TouchableOpacity
+                              onPress={() => {
+                                setShowImageView(true),
+                                  setFeedImages(item?.postImg);
+                              }}
+                            >
+                              <Text style={styles.extraImage}>
+                                {strings.message.plus}
+                                {item?.postImg?.length - 1}
+                              </Text>
+                            </TouchableOpacity>
+                          </ImageBackground>
+                        </TouchableOpacity>
+                      ) : null
+                    )}
+                  </View>
+                ) : null}
+                <CardFooter
+                  // likePress={() => onUpVote(item.id, item.userId, user?.id)}
+                  // disLikePress={() => onDownVote(item.id, item.userId, user?.id)}
+                  postID={item?.id}
+                  postUserID={item?.userId}
+                  userID={user?.id}
+                  likeCount={item?.upVote}
+                  disLikeCount={item?.downVote}
+                  upVoteUserID={item?.upVoteUserId}
+                  downVoteUserID={item?.downVoteUserId}
+                  commentPress={() => console.log("Comment")}
+                  commentCount={5}
+                  sharePress={() => console.log("share")}
+                  morePress={() => {
+                    setOpen(true);
+                    setpostId(item?.id);
+                    setPostUserId(item?.userId);
+                    setPostTitle(item?.postTitle);
+                    setPostBody(item?.postBody);
+                    setPostImg(item?.postImg);
+                  }}
+                />
+              </Card>
+            </View>
+          )}
+        />
+      }
+
+
 
       {showImageView && (
         <AppImageViewer
