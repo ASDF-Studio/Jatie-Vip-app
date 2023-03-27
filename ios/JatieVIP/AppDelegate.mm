@@ -7,6 +7,7 @@
 #import "RNBootSplash.h"
 
 #import <React/RCTAppSetupUtils.h>
+#import <Firebase.h>
 
 #if RCT_NEW_ARCH_ENABLED
 #import <React/CoreModulesPlugins.h>
@@ -62,7 +63,8 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
 
   [RNBootSplash initWithStoryboard:@"BootSplash" rootView:rootView];
 
-
+  [FIRApp configure];
+  
   return YES;
 }
 

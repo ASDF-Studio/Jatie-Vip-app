@@ -17,29 +17,32 @@
 		0BE7530C2948A689003E42AA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		0BE753102948A689003E42AA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		0BE753112948A689003E42AA /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0B35362629487F55009B1CC4 /* BootSplash.storyboard */; };
+		0BEBF4F329D1A8690061C6A7 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0BEBF4F229D1A8690061C6A7 /* GoogleService-Info.plist */; };
+		0BEBF4F429D1A8690061C6A7 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0BEBF4F229D1A8690061C6A7 /* GoogleService-Info.plist */; };
+		0BEBF4F529D1A8690061C6A7 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0BEBF4F229D1A8690061C6A7 /* GoogleService-Info.plist */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		2B39DB5C0C0129E23C404AD6 /* libPods-JatieVIPCommonPods-JatieVIP.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3EA4C1D7B36031F37E3BF30 /* libPods-JatieVIPCommonPods-JatieVIP.a */; };
 		2D2F0FAA81544AD48C4BA82E /* Recoleta-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 66CA798C1C394B98A23DAC8A /* Recoleta-Black.ttf */; };
 		326B097762A645688ACECE73 /* Recoleta-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3E2A86DA44A242D88DD0C1BC /* Recoleta-Medium.ttf */; };
 		387B49EA8EC94DFF9716BB8B /* Recoleta-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 161A0BAB381A49D897A133AB /* Recoleta-Thin.ttf */; };
 		5C0E443350C04DCABB3522F0 /* BrandonGrotesque-ThinItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = BB4C1255746D451EBFC2FB77 /* BrandonGrotesque-ThinItalic.otf */; };
-		673CE9825C57379265EF109C /* libPods-JatieVIPCommonPods-JatieVIPDev.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 643EF7691C967ECA030B0DF7 /* libPods-JatieVIPCommonPods-JatieVIPDev.a */; };
 		72A91A90E7B64AF6B1C9FB9D /* BrandonGrotesque-MediumItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 365FA88F413F4CAE8FCE37DB /* BrandonGrotesque-MediumItalic.otf */; };
 		75B9475F671E4C279C3F7800 /* BrandonGrotesque-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = 6F714FADECD94BFB9C525E44 /* BrandonGrotesque-Black.otf */; };
 		877D066EC4AC4DE0B0FD1CFB /* BrandonGrotesque-LightItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = DDC80FF2E87246E696DFD31B /* BrandonGrotesque-LightItalic.otf */; };
+		8FD1C2AD4726C1D402000964 /* libPods-JatieVIPCommonPods-JatieVIPStaging.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B1ED3DD9578FA01F1EFB654E /* libPods-JatieVIPCommonPods-JatieVIPStaging.a */; };
 		9AAE3D4D26A74506B0FFA598 /* Recoleta-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D5D6D3F684884F0F8E02EB25 /* Recoleta-SemiBold.ttf */; };
 		9E4BC4D2E3DC4FC09F6754B8 /* BrandonGrotesque-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = A522AB3D3458474FA71A76AD /* BrandonGrotesque-Medium.otf */; };
+		A63541382C890B5B1EE9B6B7 /* libPods-JatieVIPCommonPods-JatieVIPDev.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FAF6C860D4CD94CB50D37C7 /* libPods-JatieVIPCommonPods-JatieVIPDev.a */; };
 		B591AB09DE7E4D5BA144D6D2 /* Recoleta-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 29FCAB1F02C14E359CB1E64C /* Recoleta-Light.ttf */; };
 		BC6D0DFD8D83488E8CC225EB /* BrandonGrotesque-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = EAEA88FD91234D14883E3B8B /* BrandonGrotesque-Bold.otf */; };
 		BD4592894E5F45E5A935AF49 /* BrandonGrotesque-RegularItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = FCF678835649404A86BB025A /* BrandonGrotesque-RegularItalic.otf */; };
-		C58F6FA3AA4E4963262CB741 /* libPods-JatieVIPCommonPods-JatieVIP.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EABCE7FC3AEEA4B47A19CE0A /* libPods-JatieVIPCommonPods-JatieVIP.a */; };
+		C576E72AB33C948D04E5406C /* libPods-JatieVIPCommonPods-JatieVIPTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B4C562DE998B35F8CCB2C4 /* libPods-JatieVIPCommonPods-JatieVIPTests.a */; };
 		CCF72E0799F54F16B60462AA /* Recoleta-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9BBD4796F9F34EC392C52D1C /* Recoleta-Bold.ttf */; };
-		CDEFAAFDFB7350FBB67CFBE5 /* libPods-JatieVIPCommonPods-JatieVIPStaging.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 31977D9CA0FA44C436A6EF92 /* libPods-JatieVIPCommonPods-JatieVIPStaging.a */; };
 		D1074DD5C6F04526942AE120 /* Recoleta-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 59718F5FBC4F4B5EA0F22C54 /* Recoleta-Regular.ttf */; };
 		DCDF128A0EFD436EAE96C4A1 /* BrandonGrotesque-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 965DA0119491402B81B92B98 /* BrandonGrotesque-Light.otf */; };
 		E0CFEF44C9FD42C4BFBD74CB /* BrandonGrotesque-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8377C8888121481C924C4A55 /* BrandonGrotesque-BoldItalic.otf */; };
-		EA2E2599682011DC713811C2 /* libPods-JatieVIPCommonPods-JatieVIPTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6EC4775AF800A5E680C73941 /* libPods-JatieVIPCommonPods-JatieVIPTests.a */; };
 		F5BDE58CCECD4335811FBEFC /* BrandonGrotesque-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 663E97D2F6E64EBDBCA3F6E0 /* BrandonGrotesque-Regular.otf */; };
 /* End PBXBuildFile section */
 
@@ -57,13 +60,13 @@
 		00E356EE1AD99517003FC87E /* JatieVIPTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JatieVIPTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* JatieVIPTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JatieVIPTests.m; sourceTree = "<group>"; };
-		08ACD145D0F3DDE7FA4A2CC6 /* Pods-JatieVIPCommonPods-JatieVIPDev.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JatieVIPCommonPods-JatieVIPDev.release.xcconfig"; path = "Target Support Files/Pods-JatieVIPCommonPods-JatieVIPDev/Pods-JatieVIPCommonPods-JatieVIPDev.release.xcconfig"; sourceTree = "<group>"; };
+		011C439D6282101347412719 /* Pods-JatieVIPCommonPods-JatieVIPStaging.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JatieVIPCommonPods-JatieVIPStaging.release.xcconfig"; path = "Target Support Files/Pods-JatieVIPCommonPods-JatieVIPStaging/Pods-JatieVIPCommonPods-JatieVIPStaging.release.xcconfig"; sourceTree = "<group>"; };
 		0B35362629487F55009B1CC4 /* BootSplash.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = BootSplash.storyboard; sourceTree = "<group>"; };
-		0B476C55EB5924B8D5A28295 /* Pods-JatieVIPCommonPods-JatieVIPStaging.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JatieVIPCommonPods-JatieVIPStaging.debug.xcconfig"; path = "Target Support Files/Pods-JatieVIPCommonPods-JatieVIPStaging/Pods-JatieVIPCommonPods-JatieVIPStaging.debug.xcconfig"; sourceTree = "<group>"; };
 		0BE753052948A131003E42AA /* JatieVIPDev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JatieVIPDev.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0BE753062948A131003E42AA /* JatieVIP dev-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "JatieVIP dev-Info.plist"; path = "/Users/itech/Desktop/Live_Projects/reactnativetemplateapp/ios/JatieVIP dev-Info.plist"; sourceTree = "<absolute>"; };
 		0BE753182948A689003E42AA /* JatieVIPStaging.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JatieVIPStaging.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0BE753192948A689003E42AA /* JatieVIP staging-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "JatieVIP staging-Info.plist"; path = "/Users/itech/Desktop/Live_Projects/reactnativetemplateapp/ios/JatieVIP staging-Info.plist"; sourceTree = "<absolute>"; };
+		0BEBF4F229D1A8690061C6A7 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* JatieVIP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JatieVIP.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = JatieVIP/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = JatieVIP/AppDelegate.mm; sourceTree = "<group>"; };
@@ -71,30 +74,31 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = JatieVIP/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = JatieVIP/main.m; sourceTree = "<group>"; };
 		161A0BAB381A49D897A133AB /* Recoleta-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Recoleta-Thin.ttf"; path = "../src/assets/fonts/Recoleta-Thin.ttf"; sourceTree = "<group>"; };
-		288E704BFD9AE4D07C7E24FB /* Pods-JatieVIPCommonPods-JatieVIPTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JatieVIPCommonPods-JatieVIPTests.release.xcconfig"; path = "Target Support Files/Pods-JatieVIPCommonPods-JatieVIPTests/Pods-JatieVIPCommonPods-JatieVIPTests.release.xcconfig"; sourceTree = "<group>"; };
 		29FCAB1F02C14E359CB1E64C /* Recoleta-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Recoleta-Light.ttf"; path = "../src/assets/fonts/Recoleta-Light.ttf"; sourceTree = "<group>"; };
-		31977D9CA0FA44C436A6EF92 /* libPods-JatieVIPCommonPods-JatieVIPStaging.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-JatieVIPCommonPods-JatieVIPStaging.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2DA6A0015480D1485A602100 /* Pods-JatieVIPCommonPods-JatieVIPTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JatieVIPCommonPods-JatieVIPTests.debug.xcconfig"; path = "Target Support Files/Pods-JatieVIPCommonPods-JatieVIPTests/Pods-JatieVIPCommonPods-JatieVIPTests.debug.xcconfig"; sourceTree = "<group>"; };
 		365FA88F413F4CAE8FCE37DB /* BrandonGrotesque-MediumItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BrandonGrotesque-MediumItalic.otf"; path = "../src/assets/fonts/BrandonGrotesque-MediumItalic.otf"; sourceTree = "<group>"; };
 		3E2A86DA44A242D88DD0C1BC /* Recoleta-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Recoleta-Medium.ttf"; path = "../src/assets/fonts/Recoleta-Medium.ttf"; sourceTree = "<group>"; };
-		555F933C49B4584A795188BC /* Pods-JatieVIPCommonPods-JatieVIP.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JatieVIPCommonPods-JatieVIP.debug.xcconfig"; path = "Target Support Files/Pods-JatieVIPCommonPods-JatieVIP/Pods-JatieVIPCommonPods-JatieVIP.debug.xcconfig"; sourceTree = "<group>"; };
+		434813FA0E253FABF68DCB5D /* Pods-JatieVIPCommonPods-JatieVIP.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JatieVIPCommonPods-JatieVIP.debug.xcconfig"; path = "Target Support Files/Pods-JatieVIPCommonPods-JatieVIP/Pods-JatieVIPCommonPods-JatieVIP.debug.xcconfig"; sourceTree = "<group>"; };
+		4FAF6C860D4CD94CB50D37C7 /* libPods-JatieVIPCommonPods-JatieVIPDev.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-JatieVIPCommonPods-JatieVIPDev.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		53185D5D3AFA118955DFA49A /* Pods-JatieVIPCommonPods-JatieVIP.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JatieVIPCommonPods-JatieVIP.release.xcconfig"; path = "Target Support Files/Pods-JatieVIPCommonPods-JatieVIP/Pods-JatieVIPCommonPods-JatieVIP.release.xcconfig"; sourceTree = "<group>"; };
 		59718F5FBC4F4B5EA0F22C54 /* Recoleta-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Recoleta-Regular.ttf"; path = "../src/assets/fonts/Recoleta-Regular.ttf"; sourceTree = "<group>"; };
-		643EF7691C967ECA030B0DF7 /* libPods-JatieVIPCommonPods-JatieVIPDev.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-JatieVIPCommonPods-JatieVIPDev.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		663E97D2F6E64EBDBCA3F6E0 /* BrandonGrotesque-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BrandonGrotesque-Regular.otf"; path = "../src/assets/fonts/BrandonGrotesque-Regular.otf"; sourceTree = "<group>"; };
 		66CA798C1C394B98A23DAC8A /* Recoleta-Black.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Recoleta-Black.ttf"; path = "../src/assets/fonts/Recoleta-Black.ttf"; sourceTree = "<group>"; };
-		6BE2568F3C6994AE2EC3AC28 /* Pods-JatieVIPCommonPods-JatieVIPTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JatieVIPCommonPods-JatieVIPTests.debug.xcconfig"; path = "Target Support Files/Pods-JatieVIPCommonPods-JatieVIPTests/Pods-JatieVIPCommonPods-JatieVIPTests.debug.xcconfig"; sourceTree = "<group>"; };
-		6EC4775AF800A5E680C73941 /* libPods-JatieVIPCommonPods-JatieVIPTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-JatieVIPCommonPods-JatieVIPTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		6ED3BE1F92AEFB6A102CAB5C /* Pods-JatieVIPCommonPods-JatieVIPDev.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JatieVIPCommonPods-JatieVIPDev.debug.xcconfig"; path = "Target Support Files/Pods-JatieVIPCommonPods-JatieVIPDev/Pods-JatieVIPCommonPods-JatieVIPDev.debug.xcconfig"; sourceTree = "<group>"; };
 		6F714FADECD94BFB9C525E44 /* BrandonGrotesque-Black.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BrandonGrotesque-Black.otf"; path = "../src/assets/fonts/BrandonGrotesque-Black.otf"; sourceTree = "<group>"; };
-		82D216D4BEC0ABC4ECB35F16 /* Pods-JatieVIPCommonPods-JatieVIPStaging.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JatieVIPCommonPods-JatieVIPStaging.release.xcconfig"; path = "Target Support Files/Pods-JatieVIPCommonPods-JatieVIPStaging/Pods-JatieVIPCommonPods-JatieVIPStaging.release.xcconfig"; sourceTree = "<group>"; };
+		79B4C562DE998B35F8CCB2C4 /* libPods-JatieVIPCommonPods-JatieVIPTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-JatieVIPCommonPods-JatieVIPTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8377C8888121481C924C4A55 /* BrandonGrotesque-BoldItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BrandonGrotesque-BoldItalic.otf"; path = "../src/assets/fonts/BrandonGrotesque-BoldItalic.otf"; sourceTree = "<group>"; };
-		85B9E2E4199177C8589D5E91 /* Pods-JatieVIPCommonPods-JatieVIP.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JatieVIPCommonPods-JatieVIP.release.xcconfig"; path = "Target Support Files/Pods-JatieVIPCommonPods-JatieVIP/Pods-JatieVIPCommonPods-JatieVIP.release.xcconfig"; sourceTree = "<group>"; };
+		957283147564A9FC798D540F /* Pods-JatieVIPCommonPods-JatieVIPTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JatieVIPCommonPods-JatieVIPTests.release.xcconfig"; path = "Target Support Files/Pods-JatieVIPCommonPods-JatieVIPTests/Pods-JatieVIPCommonPods-JatieVIPTests.release.xcconfig"; sourceTree = "<group>"; };
 		965DA0119491402B81B92B98 /* BrandonGrotesque-Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BrandonGrotesque-Light.otf"; path = "../src/assets/fonts/BrandonGrotesque-Light.otf"; sourceTree = "<group>"; };
 		9BBD4796F9F34EC392C52D1C /* Recoleta-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Recoleta-Bold.ttf"; path = "../src/assets/fonts/Recoleta-Bold.ttf"; sourceTree = "<group>"; };
+		A3EA4C1D7B36031F37E3BF30 /* libPods-JatieVIPCommonPods-JatieVIP.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-JatieVIPCommonPods-JatieVIP.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A522AB3D3458474FA71A76AD /* BrandonGrotesque-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BrandonGrotesque-Medium.otf"; path = "../src/assets/fonts/BrandonGrotesque-Medium.otf"; sourceTree = "<group>"; };
+		A52A7BFAF960F29BF6666E18 /* Pods-JatieVIPCommonPods-JatieVIPDev.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JatieVIPCommonPods-JatieVIPDev.release.xcconfig"; path = "Target Support Files/Pods-JatieVIPCommonPods-JatieVIPDev/Pods-JatieVIPCommonPods-JatieVIPDev.release.xcconfig"; sourceTree = "<group>"; };
+		B1ED3DD9578FA01F1EFB654E /* libPods-JatieVIPCommonPods-JatieVIPStaging.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-JatieVIPCommonPods-JatieVIPStaging.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB4C1255746D451EBFC2FB77 /* BrandonGrotesque-ThinItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BrandonGrotesque-ThinItalic.otf"; path = "../src/assets/fonts/BrandonGrotesque-ThinItalic.otf"; sourceTree = "<group>"; };
+		D11D0BADFFC61B847F417243 /* Pods-JatieVIPCommonPods-JatieVIPDev.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JatieVIPCommonPods-JatieVIPDev.debug.xcconfig"; path = "Target Support Files/Pods-JatieVIPCommonPods-JatieVIPDev/Pods-JatieVIPCommonPods-JatieVIPDev.debug.xcconfig"; sourceTree = "<group>"; };
+		D530DB680BD6BFAF0A56560E /* Pods-JatieVIPCommonPods-JatieVIPStaging.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JatieVIPCommonPods-JatieVIPStaging.debug.xcconfig"; path = "Target Support Files/Pods-JatieVIPCommonPods-JatieVIPStaging/Pods-JatieVIPCommonPods-JatieVIPStaging.debug.xcconfig"; sourceTree = "<group>"; };
 		D5D6D3F684884F0F8E02EB25 /* Recoleta-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Recoleta-SemiBold.ttf"; path = "../src/assets/fonts/Recoleta-SemiBold.ttf"; sourceTree = "<group>"; };
 		DDC80FF2E87246E696DFD31B /* BrandonGrotesque-LightItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BrandonGrotesque-LightItalic.otf"; path = "../src/assets/fonts/BrandonGrotesque-LightItalic.otf"; sourceTree = "<group>"; };
-		EABCE7FC3AEEA4B47A19CE0A /* libPods-JatieVIPCommonPods-JatieVIP.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-JatieVIPCommonPods-JatieVIP.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EAEA88FD91234D14883E3B8B /* BrandonGrotesque-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BrandonGrotesque-Bold.otf"; path = "../src/assets/fonts/BrandonGrotesque-Bold.otf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FCF678835649404A86BB025A /* BrandonGrotesque-RegularItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BrandonGrotesque-RegularItalic.otf"; path = "../src/assets/fonts/BrandonGrotesque-RegularItalic.otf"; sourceTree = "<group>"; };
@@ -105,7 +109,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EA2E2599682011DC713811C2 /* libPods-JatieVIPCommonPods-JatieVIPTests.a in Frameworks */,
+				C576E72AB33C948D04E5406C /* libPods-JatieVIPCommonPods-JatieVIPTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -113,7 +117,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				673CE9825C57379265EF109C /* libPods-JatieVIPCommonPods-JatieVIPDev.a in Frameworks */,
+				A63541382C890B5B1EE9B6B7 /* libPods-JatieVIPCommonPods-JatieVIPDev.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -121,7 +125,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CDEFAAFDFB7350FBB67CFBE5 /* libPods-JatieVIPCommonPods-JatieVIPStaging.a in Frameworks */,
+				8FD1C2AD4726C1D402000964 /* libPods-JatieVIPCommonPods-JatieVIPStaging.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -129,7 +133,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C58F6FA3AA4E4963262CB741 /* libPods-JatieVIPCommonPods-JatieVIP.a in Frameworks */,
+				2B39DB5C0C0129E23C404AD6 /* libPods-JatieVIPCommonPods-JatieVIP.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -161,6 +165,7 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				0BEBF4F229D1A8690061C6A7 /* GoogleService-Info.plist */,
 				0B35362629487F55009B1CC4 /* BootSplash.storyboard */,
 			);
 			name = JatieVIP;
@@ -170,10 +175,10 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				EABCE7FC3AEEA4B47A19CE0A /* libPods-JatieVIPCommonPods-JatieVIP.a */,
-				643EF7691C967ECA030B0DF7 /* libPods-JatieVIPCommonPods-JatieVIPDev.a */,
-				31977D9CA0FA44C436A6EF92 /* libPods-JatieVIPCommonPods-JatieVIPStaging.a */,
-				6EC4775AF800A5E680C73941 /* libPods-JatieVIPCommonPods-JatieVIPTests.a */,
+				A3EA4C1D7B36031F37E3BF30 /* libPods-JatieVIPCommonPods-JatieVIP.a */,
+				4FAF6C860D4CD94CB50D37C7 /* libPods-JatieVIPCommonPods-JatieVIPDev.a */,
+				B1ED3DD9578FA01F1EFB654E /* libPods-JatieVIPCommonPods-JatieVIPStaging.a */,
+				79B4C562DE998B35F8CCB2C4 /* libPods-JatieVIPCommonPods-JatieVIPTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -217,14 +222,14 @@
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				555F933C49B4584A795188BC /* Pods-JatieVIPCommonPods-JatieVIP.debug.xcconfig */,
-				85B9E2E4199177C8589D5E91 /* Pods-JatieVIPCommonPods-JatieVIP.release.xcconfig */,
-				6ED3BE1F92AEFB6A102CAB5C /* Pods-JatieVIPCommonPods-JatieVIPDev.debug.xcconfig */,
-				08ACD145D0F3DDE7FA4A2CC6 /* Pods-JatieVIPCommonPods-JatieVIPDev.release.xcconfig */,
-				0B476C55EB5924B8D5A28295 /* Pods-JatieVIPCommonPods-JatieVIPStaging.debug.xcconfig */,
-				82D216D4BEC0ABC4ECB35F16 /* Pods-JatieVIPCommonPods-JatieVIPStaging.release.xcconfig */,
-				6BE2568F3C6994AE2EC3AC28 /* Pods-JatieVIPCommonPods-JatieVIPTests.debug.xcconfig */,
-				288E704BFD9AE4D07C7E24FB /* Pods-JatieVIPCommonPods-JatieVIPTests.release.xcconfig */,
+				434813FA0E253FABF68DCB5D /* Pods-JatieVIPCommonPods-JatieVIP.debug.xcconfig */,
+				53185D5D3AFA118955DFA49A /* Pods-JatieVIPCommonPods-JatieVIP.release.xcconfig */,
+				D11D0BADFFC61B847F417243 /* Pods-JatieVIPCommonPods-JatieVIPDev.debug.xcconfig */,
+				A52A7BFAF960F29BF6666E18 /* Pods-JatieVIPCommonPods-JatieVIPDev.release.xcconfig */,
+				D530DB680BD6BFAF0A56560E /* Pods-JatieVIPCommonPods-JatieVIPStaging.debug.xcconfig */,
+				011C439D6282101347412719 /* Pods-JatieVIPCommonPods-JatieVIPStaging.release.xcconfig */,
+				2DA6A0015480D1485A602100 /* Pods-JatieVIPCommonPods-JatieVIPTests.debug.xcconfig */,
+				957283147564A9FC798D540F /* Pods-JatieVIPCommonPods-JatieVIPTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -260,12 +265,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "JatieVIPTests" */;
 			buildPhases = (
-				2681CF96F7575CF2F0560DA4 /* [CP] Check Pods Manifest.lock */,
+				E8A698ED86575A8B55926297 /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				E59A6ECE500624A442DB1447 /* [CP] Embed Pods Frameworks */,
-				EC8484FAF4FCE431837C927F /* [CP] Copy Pods Resources */,
+				D95A078B37DF747EC0C062A5 /* [CP] Embed Pods Frameworks */,
+				55203111E5166E7C619997DA /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -281,14 +286,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0BE753022948A131003E42AA /* Build configuration list for PBXNativeTarget "JatieVIPDev" */;
 			buildPhases = (
-				BBDBE1F722F64E185A6ED092 /* [CP] Check Pods Manifest.lock */,
+				01C0FAA4A1405CFCBADB8CAB /* [CP] Check Pods Manifest.lock */,
 				0BE752F62948A131003E42AA /* Start Packager */,
 				0BE752F72948A131003E42AA /* Sources */,
 				0BE752FA2948A131003E42AA /* Frameworks */,
 				0BE752FC2948A131003E42AA /* Resources */,
 				0BE752FF2948A131003E42AA /* Bundle React Native code and images */,
-				EB097F8E38E39E1DF84F7A01 /* [CP] Embed Pods Frameworks */,
-				B5833F8A232ECC5D5E17E7BA /* [CP] Copy Pods Resources */,
+				699C1C1C76ADEC94F9C3125E /* [CP] Embed Pods Frameworks */,
+				239AB61E9C0896440654C967 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -303,14 +308,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0BE753152948A689003E42AA /* Build configuration list for PBXNativeTarget "JatieVIPStaging" */;
 			buildPhases = (
-				44014EE17A207840ADFB7B7C /* [CP] Check Pods Manifest.lock */,
+				F807269D2584D84F82B79D73 /* [CP] Check Pods Manifest.lock */,
 				0BE753092948A689003E42AA /* Start Packager */,
 				0BE7530A2948A689003E42AA /* Sources */,
 				0BE7530D2948A689003E42AA /* Frameworks */,
 				0BE7530F2948A689003E42AA /* Resources */,
 				0BE753122948A689003E42AA /* Bundle React Native code and images */,
-				479D981F3311AE76EBD4E5A0 /* [CP] Embed Pods Frameworks */,
-				424DAF1C5742FEACA22938F6 /* [CP] Copy Pods Resources */,
+				B40F765E2C6069233B5CFB1B /* [CP] Embed Pods Frameworks */,
+				7693CF2D0859A421F2E14C91 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -325,14 +330,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "JatieVIP" */;
 			buildPhases = (
-				8988A98F75A34980B91A9687 /* [CP] Check Pods Manifest.lock */,
+				490EF556E795DB4A04BF8150 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				7C24F33BCB130C9419FB8791 /* [CP] Embed Pods Frameworks */,
-				42B927A1E5B5207DA1E7DEB8 /* [CP] Copy Pods Resources */,
+				C53BC75CE575F772D0C7F833 /* [CP] Embed Pods Frameworks */,
+				D5064ECEA68430AB8DD1AFB3 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -395,6 +400,7 @@
 			files = (
 				0BE752FD2948A131003E42AA /* Images.xcassets in Resources */,
 				0BE752FE2948A131003E42AA /* BootSplash.storyboard in Resources */,
+				0BEBF4F429D1A8690061C6A7 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -404,6 +410,7 @@
 			files = (
 				0BE753102948A689003E42AA /* Images.xcassets in Resources */,
 				0BE753112948A689003E42AA /* BootSplash.storyboard in Resources */,
+				0BEBF4F529D1A8690061C6A7 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -428,6 +435,7 @@
 				9E4BC4D2E3DC4FC09F6754B8 /* BrandonGrotesque-Medium.otf in Resources */,
 				72A91A90E7B64AF6B1C9FB9D /* BrandonGrotesque-MediumItalic.otf in Resources */,
 				F5BDE58CCECD4335811FBEFC /* BrandonGrotesque-Regular.otf in Resources */,
+				0BEBF4F329D1A8690061C6A7 /* GoogleService-Info.plist in Resources */,
 				BD4592894E5F45E5A935AF49 /* BrandonGrotesque-RegularItalic.otf in Resources */,
 				5C0E443350C04DCABB3522F0 /* BrandonGrotesque-ThinItalic.otf in Resources */,
 			);
@@ -451,6 +459,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"../node_modules/react-native/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"../node_modules/react-native/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
+		};
+		01C0FAA4A1405CFCBADB8CAB /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-JatieVIPCommonPods-JatieVIPDev-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
 		};
 		0BE752F62948A131003E42AA /* Start Packager */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -522,119 +552,24 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"../node_modules/react-native/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"../node_modules/react-native/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
 		};
-		2681CF96F7575CF2F0560DA4 /* [CP] Check Pods Manifest.lock */ = {
+		239AB61E9C0896440654C967 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-JatieVIPCommonPods-JatieVIPTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		424DAF1C5742FEACA22938F6 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIPStaging/Pods-JatieVIPCommonPods-JatieVIPStaging-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIPDev/Pods-JatieVIPCommonPods-JatieVIPDev-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIPStaging/Pods-JatieVIPCommonPods-JatieVIPStaging-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIPDev/Pods-JatieVIPCommonPods-JatieVIPDev-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIPStaging/Pods-JatieVIPCommonPods-JatieVIPStaging-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIPDev/Pods-JatieVIPCommonPods-JatieVIPDev-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		42B927A1E5B5207DA1E7DEB8 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIP/Pods-JatieVIPCommonPods-JatieVIP-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIP/Pods-JatieVIPCommonPods-JatieVIP-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIP/Pods-JatieVIPCommonPods-JatieVIP-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		44014EE17A207840ADFB7B7C /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-JatieVIPCommonPods-JatieVIPStaging-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		479D981F3311AE76EBD4E5A0 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIPStaging/Pods-JatieVIPCommonPods-JatieVIPStaging-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIPStaging/Pods-JatieVIPCommonPods-JatieVIPStaging-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIPStaging/Pods-JatieVIPCommonPods-JatieVIPStaging-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		7C24F33BCB130C9419FB8791 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIP/Pods-JatieVIPCommonPods-JatieVIP-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIP/Pods-JatieVIPCommonPods-JatieVIP-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIP/Pods-JatieVIPCommonPods-JatieVIP-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		8988A98F75A34980B91A9687 /* [CP] Check Pods Manifest.lock */ = {
+		490EF556E795DB4A04BF8150 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -656,63 +591,24 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		B5833F8A232ECC5D5E17E7BA /* [CP] Copy Pods Resources */ = {
+		55203111E5166E7C619997DA /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIPDev/Pods-JatieVIPCommonPods-JatieVIPDev-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIPTests/Pods-JatieVIPCommonPods-JatieVIPTests-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIPDev/Pods-JatieVIPCommonPods-JatieVIPDev-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIPTests/Pods-JatieVIPCommonPods-JatieVIPTests-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIPDev/Pods-JatieVIPCommonPods-JatieVIPDev-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIPTests/Pods-JatieVIPCommonPods-JatieVIPTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		BBDBE1F722F64E185A6ED092 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-JatieVIPCommonPods-JatieVIPDev-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		E59A6ECE500624A442DB1447 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIPTests/Pods-JatieVIPCommonPods-JatieVIPTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIPTests/Pods-JatieVIPCommonPods-JatieVIPTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIPTests/Pods-JatieVIPCommonPods-JatieVIPTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		EB097F8E38E39E1DF84F7A01 /* [CP] Embed Pods Frameworks */ = {
+		699C1C1C76ADEC94F9C3125E /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -729,21 +625,133 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIPDev/Pods-JatieVIPCommonPods-JatieVIPDev-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		EC8484FAF4FCE431837C927F /* [CP] Copy Pods Resources */ = {
+		7693CF2D0859A421F2E14C91 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIPTests/Pods-JatieVIPCommonPods-JatieVIPTests-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIPStaging/Pods-JatieVIPCommonPods-JatieVIPStaging-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIPTests/Pods-JatieVIPCommonPods-JatieVIPTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIPStaging/Pods-JatieVIPCommonPods-JatieVIPStaging-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIPTests/Pods-JatieVIPCommonPods-JatieVIPTests-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIPStaging/Pods-JatieVIPCommonPods-JatieVIPStaging-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B40F765E2C6069233B5CFB1B /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIPStaging/Pods-JatieVIPCommonPods-JatieVIPStaging-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIPStaging/Pods-JatieVIPCommonPods-JatieVIPStaging-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIPStaging/Pods-JatieVIPCommonPods-JatieVIPStaging-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C53BC75CE575F772D0C7F833 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIP/Pods-JatieVIPCommonPods-JatieVIP-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIP/Pods-JatieVIPCommonPods-JatieVIP-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIP/Pods-JatieVIPCommonPods-JatieVIP-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D5064ECEA68430AB8DD1AFB3 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIP/Pods-JatieVIPCommonPods-JatieVIP-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIP/Pods-JatieVIPCommonPods-JatieVIP-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIP/Pods-JatieVIPCommonPods-JatieVIP-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D95A078B37DF747EC0C062A5 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIPTests/Pods-JatieVIPCommonPods-JatieVIPTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIPTests/Pods-JatieVIPCommonPods-JatieVIPTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-JatieVIPCommonPods-JatieVIPTests/Pods-JatieVIPCommonPods-JatieVIPTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E8A698ED86575A8B55926297 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-JatieVIPCommonPods-JatieVIPTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F807269D2584D84F82B79D73 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-JatieVIPCommonPods-JatieVIPStaging-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
@@ -816,7 +824,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6BE2568F3C6994AE2EC3AC28 /* Pods-JatieVIPCommonPods-JatieVIPTests.debug.xcconfig */;
+			baseConfigurationReference = 2DA6A0015480D1485A602100 /* Pods-JatieVIPCommonPods-JatieVIPTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -843,7 +851,7 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 288E704BFD9AE4D07C7E24FB /* Pods-JatieVIPCommonPods-JatieVIPTests.release.xcconfig */;
+			baseConfigurationReference = 957283147564A9FC798D540F /* Pods-JatieVIPCommonPods-JatieVIPTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
@@ -867,7 +875,7 @@
 		};
 		0BE753032948A131003E42AA /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6ED3BE1F92AEFB6A102CAB5C /* Pods-JatieVIPCommonPods-JatieVIPDev.debug.xcconfig */;
+			baseConfigurationReference = D11D0BADFFC61B847F417243 /* Pods-JatieVIPCommonPods-JatieVIPDev.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -893,7 +901,7 @@
 		};
 		0BE753042948A131003E42AA /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 08ACD145D0F3DDE7FA4A2CC6 /* Pods-JatieVIPCommonPods-JatieVIPDev.release.xcconfig */;
+			baseConfigurationReference = A52A7BFAF960F29BF6666E18 /* Pods-JatieVIPCommonPods-JatieVIPDev.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -917,7 +925,7 @@
 		};
 		0BE753162948A689003E42AA /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0B476C55EB5924B8D5A28295 /* Pods-JatieVIPCommonPods-JatieVIPStaging.debug.xcconfig */;
+			baseConfigurationReference = D530DB680BD6BFAF0A56560E /* Pods-JatieVIPCommonPods-JatieVIPStaging.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -943,7 +951,7 @@
 		};
 		0BE753172948A689003E42AA /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 82D216D4BEC0ABC4ECB35F16 /* Pods-JatieVIPCommonPods-JatieVIPStaging.release.xcconfig */;
+			baseConfigurationReference = 011C439D6282101347412719 /* Pods-JatieVIPCommonPods-JatieVIPStaging.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -967,7 +975,7 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 555F933C49B4584A795188BC /* Pods-JatieVIPCommonPods-JatieVIP.debug.xcconfig */;
+			baseConfigurationReference = 434813FA0E253FABF68DCB5D /* Pods-JatieVIPCommonPods-JatieVIP.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1000,7 +1008,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 85B9E2E4199177C8589D5E91 /* Pods-JatieVIPCommonPods-JatieVIP.release.xcconfig */;
+			baseConfigurationReference = 53185D5D3AFA118955DFA49A /* Pods-JatieVIPCommonPods-JatieVIP.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;

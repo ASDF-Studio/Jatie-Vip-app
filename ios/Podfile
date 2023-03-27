@@ -8,6 +8,10 @@ production = ENV["PRODUCTION"] == "1"
 
 abstract_target 'JatieVIPCommonPods' do
   config = use_native_modules!
+  pod 'Firebase', :modular_headers => true
+  pod 'FirebaseCoreInternal', :modular_headers => true
+  pod 'FirebaseCore', :modular_headers => true
+  pod 'GoogleUtilities', :modular_headers => true
   pod 'react-native-image-crop-tools', :path => '../node_modules/react-native-image-crop-tools'
   
   target 'JatieVIPDev' do
