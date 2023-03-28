@@ -10,6 +10,9 @@ import { faCircleDown, faComment } from '@fortawesome/free-regular-svg-icons';
 import { faShareNodes } from '@fortawesome/pro-regular-svg-icons';
 import { UserController } from '@/controllers';
 import { strings } from '@/localization';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllPostData } from '@/selectors/PostSelectors';
+import { getAllPostSuccess } from '@/actions/PostActions';
 
 export const CardFooter = ({
   postID,
@@ -25,43 +28,156 @@ export const CardFooter = ({
   commentPress,
   sharePress,
   morePress,
+  postData,
+  postIndex,
+  postType
 }) => {
+  const dispatch = useDispatch()
   const [upVote, setUpVote] = useState(likeCount);
   const [downVote, setDownVote] = useState(disLikeCount);
-  let upVoteCount = 0;
-  let downVoteCount = 0;
-
+  const ALLPOST = useSelector(getAllPostData)
+  const postArray = ALLPOST?.data
   const upVoteHandel = () => {
 
-    onUpVote(postID, postUserID, userID)
+    onUpVote(postID, userID)
   }
   const downVoteHandel = () => {
 
-    onDownVote(postID, postUserID, userID)
+    onDownVote(postID, userID)
   }
 
-  const onUpVote = async (postID, postUserID, userID) => {
+  const onUpVote = async (postID, userID,) => {
+    var arr = {}
+    arr = postArray;
+    if (postType == "Admin") {
+      var upVotenumber = parseInt(arr.Admin_Post[postIndex].upVote)
+      var downVoteNumber = parseInt(arr.Admin_Post[postIndex].downVote)
+      if (!arr.Admin_Post[postIndex].has_upvoted) {
+        setUpVote(upVotenumber + 1)
+        arr.Admin_Post[postIndex].has_upvoted = true;
+        arr.Admin_Post[postIndex].upVote = upVotenumber + 1;
+        var data = {
+          "data": arr
+        }
+        dispatch(getAllPostSuccess(data))
+        if (!arr.Admin_Post[postIndex].has_downvoted) {
+          if (downVoteNumber !== 0) {
+            setDownVote(downVoteNumber - 1)
+          }
 
-    const data = await UserController.upVote(postID, postUserID, userID);
-    if (data?.message !== strings.home.upVoteAgain) {
-      var upVotenumber = parseInt(upVote)
-      var downVoteNumber = parseInt(downVote)
-      setUpVote(upVotenumber + 1)
-      if (downVoteNumber !== 0) {
-        setDownVote(downVoteNumber - 1)
+        }
+        const apiData = await UserController.upVote(postID, userID);
+      }
+      else {
+        setUpVote(upVotenumber - 1)
+        arr.Admin_Post[postIndex].has_upvoted = false;
+        arr.Admin_Post[postIndex].upVote = upVotenumber - 1;
+        var data = {
+          "data": arr
+        }
+        dispatch(getAllPostSuccess(data))
+        const apiData = await UserController.upVote(postID, userID);
+      }
+    } else {
+      var upVotenumber = parseInt(arr.Regular_Post[postIndex].upVote)
+      var downVoteNumber = parseInt(arr.Regular_Post[postIndex].downVote)
+      if (!arr.Regular_Post[postIndex].has_upvoted) {
+        setUpVote(upVotenumber + 1)
+        arr.Regular_Post[postIndex].has_upvoted = true;
+        arr.Regular_Post[postIndex].upVote = upVotenumber + 1
+
+        var data = {
+          "data": arr
+        }
+        dispatch(getAllPostSuccess(data))
+        if (!arr.Admin_Post[postIndex].has_downvoted) {
+          if (downVoteNumber !== 0) {
+            setDownVote(downVoteNumber - 1)
+          }
+        }
+        const apiData = await UserController.upVote(postID, userID);
+      }
+      else {
+        setUpVote(upVotenumber - 1)
+        arr.Regular_Post[postIndex].has_upvoted = false;
+        arr.Regular_Post[postIndex].upVote = upVotenumber - 1
+        var data = {
+          "data": arr
+        }
+        dispatch(getAllPostSuccess(data))
+
+        const apiData = await UserController.upVote(postID, userID);
       }
     }
+
   }
 
-  const onDownVote = async (postID, postUserID, userID) => {
-    const data = await UserController.downVote(postID, postUserID, userID);
-    if (data?.message !== strings.home.downVoteAgain) {
-      var upVotenumber = parseInt(upVote)
-      var downVoteNumber = parseInt(downVote)
-      if (upVotenumber !== 0) {
-        setUpVote(upVotenumber - 1)
+  const onDownVote = async (postID, userID) => {
+    var arr = {}
+    arr = postArray;
+
+    if (postType == "Admin") {
+      var upVotenumber = parseInt(arr.Admin_Post[postIndex].upVote)
+      var downVoteNumber = parseInt(arr.Admin_Post[postIndex].downVote)
+      if (!arr.Admin_Post[postIndex].has_downvoted) {
+        setDownVote(downVoteNumber + 1)
+        arr.Admin_Post[postIndex].has_downvoted = true;
+        arr.Admin_Post[postIndex].downVote = downVoteNumber + 1;
+        var data = {
+          "data": arr
+        }
+        dispatch(getAllPostSuccess(data))
+        if (!arr.Admin_Post[postIndex].has_upvoted) {
+          if (upVotenumber !== 0) {
+            setUpVote(upVotenumber - 1)
+          }
+        }
+        const apiData = await UserController.downVote(postID, userID);
       }
-      setDownVote(downVoteNumber + 1)
+      else {
+        setDownVote(downVoteNumber - 1)
+        arr.Admin_Post[postIndex].has_downvoted = false;
+        arr.Admin_Post[postIndex].downVote = downVoteNumber - 1;
+        var data = {
+          "data": arr
+        }
+        dispatch(getAllPostSuccess(data))
+        // if (!arr.Admin_Post[postIndex].has_upvoted) {
+        //   setUpVote(upVotenumber - 1)
+        // }
+        const apiData = await UserController.downVote(postID, userID);
+      }
+    } else {
+      var upVotenumber = parseInt(arr.Regular_Post[postIndex].upVote)
+      var downVoteNumber = parseInt(arr.Regular_Post[postIndex].downVote)
+      if (!arr.Regular_Post[postIndex].has_downvoted) {
+        setDownVote(downVoteNumber + 1)
+        arr.Regular_Post[postIndex].has_downvoted = true;
+        arr.Regular_Post[postIndex].downVote = downVoteNumber + 1;
+        var data = {
+          "data": arr
+        }
+
+        if (!arr.Admin_Post[postIndex].has_upvoted) {
+          if (upVotenumber !== 0) {
+            setUpVote(upVotenumber - 1)
+          }
+        }
+        dispatch(getAllPostSuccess(data))
+        const apiData = await UserController.downVote(postID, userID);
+      }
+      else {
+
+        setDownVote(downVoteNumber - 1)
+        arr.Regular_Post[postIndex].has_downvoted = false;
+        arr.Regular_Post[postIndex].has_downvoted = downVoteNumber - 1;
+
+        var data = {
+          "data": arr
+        }
+        dispatch(getAllPostSuccess(data))
+        const apiData = await UserController.downVote(postID, userID);
+      }
     }
   }
   return (
@@ -72,6 +188,7 @@ export const CardFooter = ({
           onPress={() => upVoteHandel()}
         >
           <FontAwesomeIcon
+            onPress={() => upVoteHandel()}
             icon={faCircleUp}
             size={ms(13)}
             color={theme.light.colors.success}
@@ -83,6 +200,7 @@ export const CardFooter = ({
           onPress={() => downVoteHandel()}
         >
           <FontAwesomeIcon
+            onPress={() => downVoteHandel()}
             icon={faCircleDown}
             size={ms(13)}
             color={theme.light.colors.error}

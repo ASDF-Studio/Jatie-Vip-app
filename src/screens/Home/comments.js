@@ -2,6 +2,7 @@ import {
   Button,
   CommentCard,
   CommentInput,
+  CustomLoader,
   HorizontalLine,
   Icon,
   ModalDown,
@@ -32,16 +33,29 @@ import {
   FlatList,
   TouchableOpacity,
   TextInput,
+  ActivityIndicator,
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ms } from 'react-native-size-matters';
 import { Data, SingleData } from './Data/commentsData';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { getCommentsByPostId, TYPES } from '@/actions/PostActions';
+import { isLoadingSelector } from '@/selectors/StatusSelectors';
+import { Loader } from '@/components/Loader';
+import { getCommentsByPostIdData } from '@/selectors/PostSelectors';
+import { getUser } from '@/selectors/UserSelectors';
 
-export default function Comments({ navigation }) {
+export default function Comments({ navigation, route }) {
+  const { DATA } = route.params;
+  const USER = useSelector(getUser)
+  const COMMENTS = useSelector(getCommentsByPostIdData)
+  console.log("MIKEEEEfgfvgdvddEEEEEE-=-LATESSTSs43t3T4STSTS", JSON.stringify(COMMENTS))
+  const dispatch = useDispatch()
   const [openReplyTo, setOpenReplyTo] = useState(false);
-
+  const [commentsList, setCommentsList] = useState(COMMENTS?.data)
   //Option and Report
   const [open, setOpen] = useState(false);
   const [openToast, setOpenToast] = useState(false);
@@ -56,7 +70,20 @@ export default function Comments({ navigation }) {
   const [reportOptionValue, setReportOptionValue] = useState('');
   const [reportComment, setReportCommnet] = useState('');
 
+  const isLoading = useSelector(state =>
+    isLoadingSelector([TYPES.GET_COMMENTS_BY_POST_ID], state)
+  );
+  console.log("iuiuiu", isLoading)
+  useEffect(() => {
+    dispatch(getCommentsByPostId(DATA?.id, USER?.id))
+
+  }, [])
+  const onComment = () => {
+
+  }
+  console.log("COMMMES)()(S)(S", JSON.stringify(commentsList))
   return (
+
     <SafeAreaView style={styles.container}>
       <KeyboardAwareScrollView>
         <View style={styles.headerContainer}>
@@ -68,23 +95,34 @@ export default function Comments({ navigation }) {
         </View>
         <HorizontalLine color={theme.light.colors.infoBgLight} paddingTop={15} />
         <View style={styles.commentContainer}>
-          <FlatList
-            data={Data}
-            keyExtractor={item => item.id}
-            renderItem={({ item }) => (
-              <CommentCard
-                name={item.name}
-                userName={item.userName}
-                imageUrl={item.proflePic}
-                time={10}
-                commentTxt={item.commentTxt}
-                likeCount={10}
-                disLikeCount={2}
-                replyPress={() => setOpenReplyTo(true)}
-                morePress={() => setOpen(true)}
-              />
-            )}
-          />
+          {isLoading == true ?
+            <Loader
+              visible={true}
+              size={"large"}
+
+            />
+            : <FlatList
+              data={commentsList}
+              keyExtractor={item => item.id}
+              renderItem={({ item, index }) => (
+                <CommentCard
+                  name={"mike"}
+                  userId={USER?.id}
+                  commentIndex={index}
+                  commentId={item?.id}
+                  userName={item?.user?.userName}
+                  imageUrl={item?.user?.profilePic}
+                  time={10}
+                  commentTxt={item?.commentBody}
+                  likeCount={item?.upVote}
+                  disLikeCount={item?.downVote}
+                  replyPress={() => setOpenReplyTo(true)}
+                  morePress={() => setOpen(true)}
+                />
+              )}
+            />
+          }
+
         </View>
         {openReplyTo && (
           <View style={styles.replyToContainer}>
@@ -104,8 +142,15 @@ export default function Comments({ navigation }) {
             </TouchableOpacity>
           </View>
         )}
+        {
+          !isLoading &&
+          <CommentInput
+            postId={DATA?.id}
+            userId={DATA?.userId}
+          />
 
-        <CommentInput />
+        }
+
       </KeyboardAwareScrollView>
 
       {/*  Slide up for follow, edit , review  */}

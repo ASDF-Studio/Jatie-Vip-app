@@ -89,6 +89,34 @@ export const TYPES = {
     GET_POST_BY_USER_ID_SUCCESS: "GET_POST_BY_USER_ID_SUCCESS",
     GET_POST_BY_USER_ID_ERROR: "GET_POST_BY_USER_ID_ERROR",
 
+    //Comment on post
+
+    COMMENT_ON_POST: "COMMENT_ON_POST",
+    COMMENT_ON_POST_REQUEST: "COMMENT_ON_POST_REQUEST",
+    COMMENT_ON_POST_SUCCESS: "COMMENT_ON_POST_SUCCESS",
+    COMMENT_ON_POST_ERROR: "COMMENT_ON_POST_ERROR",
+
+    //Comments by post id
+
+    GET_COMMENTS_BY_POST_ID: "GET_COMMENTS_BY_POST_ID",
+    GET_COMMENTS_BY_POST_ID_REQUEST: "GET_COMMENTS_BY_POST_ID_REQUEST",
+    GET_COMMENTS_BY_POST_ID_SUCCESS: "GET_COMMENTS_BY_POST_ID_SUCCESS",
+    GET_COMMENTS_BY_POST_ID_ERROR: "GET_COMMENTS_BY_POST_ID_ERROR",
+
+
+    //Comments votUp
+
+    VOTE_UP_COMMENT: "VOTE_UP_COMMENT",
+    VOTE_UP_COMMENT_REQUEST: "VOTE_UP_COMMENT_REQUEST",
+    VOTE_UP_COMMENT_SUCCESS: "VOTE_UP_COMMENT_SUCCESS",
+    VOTE_UP_COMMENT_ERROR: "VOTE_UP_COMMENT_ERROR",
+
+    //Comments donwVote
+
+    VOTE_DOWN_COMMENT: "VOTE_DOWN_COMMENT",
+    VOTE_DOWN_COMMENT_REQUEST: "VOTE_DOWN_COMMENT_REQUEST",
+    VOTE_DOWN_COMMENT_SUCCESS: "VOTE_DOWN_COMMENT_SUCCESS",
+    VOTE_DOWN_COMMENT_ERROR: "VOTE_DOWN_COMMENT_ERROR",
 
 };
 export const createPostSuccess = user => ({
@@ -109,7 +137,7 @@ const createPostError = error => ({
 
 //GET ALL POST 
 
-const getAllPostSuccess = post => ({
+export const getAllPostSuccess = post => ({
     type: TYPES.GET_ALL_POST_SUCCESS,
     payload: { post },
 });
@@ -144,12 +172,27 @@ const getAllPinPostError = error => ({
 });
 
 
+export const commentOnPostSuccess = comment => ({
+    type: TYPES.COMMENT_ON_POST_SUCCESS,
+    payload: { comment },
+});
+
+
+const commentOnPostRequest = () => ({
+    type: TYPES.COMMENT_ON_POST_REQUEST,
+    payload: null,
+});
 
 
 
+const commentOnPostError = error => ({
+    type: TYPES.COMMENT_ON_POST_ERROR,
+    payload: { error },
+});
 
 
-//update Post
+
+//Comment
 export const updatePostSuccess = post => ({
     type: TYPES.UPDATE_POST_SUCCESS,
     payload: { post },
@@ -165,6 +208,80 @@ const updatePostError = error => ({
     type: TYPES.UPDATE_POST_ERROR,
     payload: { error },
 });
+
+const getCommentByPostIdError = error => ({
+    type: TYPES.GET_COMMENTS_BY_POST_ID_ERROR,
+    payload: { error },
+});
+
+
+export const getCommentsByPostIdSuccess = comments => ({
+    type: TYPES.GET_COMMENTS_BY_POST_ID_SUCCESS,
+    payload: { comments },
+});
+
+
+const getCommentsByPostIdRequest = () => ({
+    type: TYPES.GET_COMMENTS_BY_POST_ID_REQUEST,
+    payload: null,
+});
+
+
+
+
+
+
+const voteUpCommentError = error => ({
+    type: TYPES.VOTE_UP_COMMENT_ERROR,
+    payload: { error },
+});
+
+
+export const voteUpCommentSuccess = comments => ({
+    type: TYPES.VOTE_UP_COMMENT_SUCCESS,
+    payload: { comments },
+});
+
+
+const voteUpCommentRequest = () => ({
+    type: TYPES.VOTE_UP_COMMENT_REQUEST,
+    payload: null,
+});
+
+
+
+
+
+const voteDownCommentError = error => ({
+    type: TYPES.VOTE_DOWN_COMMENT_ERROR,
+    payload: { error },
+});
+
+
+export const voteDownCommentSuccess = comments => ({
+    type: TYPES.VOTE_DOWN_COMMENT_SUCCESS,
+    payload: { comments },
+});
+
+
+const voteDownCommentRequest = () => ({
+    type: TYPES.VOTE_DOWN_COMMENT_REQUEST,
+    payload: null,
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //delete Post
 export const deletePostSuccess = user => ({
@@ -318,11 +435,11 @@ export const deletePost = (id, postUserId, userId, userType, screen) => async di
     }
 };
 
-export const getAllPost = () => async dispatch => {
+export const getAllPost = (userId) => async dispatch => {
     dispatch(getAllPostRequest());
     try {
-        const post = await PostController.getAllPost();
-        // console.log("poopspospopso", post)
+        const post = await PostController.getAllPost(userId);
+        console.log("ALL_POST=-=-=-=-", JSON.stringify(post))
         dispatch(getAllPostSuccess(post))
 
     } catch (error) {
@@ -342,3 +459,59 @@ export const getAllPinPost = () => async dispatch => {
     }
 
 };
+
+export const commentOnPost = (postId, userId, commentBody) => async dispatch => {
+    dispatch(commentOnPostRequest())
+    try {
+        const comment = await PostController.commentOnPost(postId, userId, commentBody)
+        dispatch(commentOnPostSuccess(comment))
+        // console.log("NEWWW_COMMENT", JSON.stringify(comment))
+    } catch (error) {
+        dispatch(commentOnPostError(error))
+    }
+};
+
+export const getCommentsByPostId = (postId, userId) => async dispatch => {
+    dispatch(getCommentsByPostIdRequest())
+    try {
+        const comments = await PostController.getCommentsByPostId(postId, userId)
+        dispatch(getCommentsByPostIdSuccess(comments))
+    } catch (error) {
+        console.log("ERROOROORR", error)
+        dispatch(getCommentByPostIdError(error))
+    }
+};
+
+export const voteUpComment = (id, userId) => async dispatch => {
+    dispatch(voteUpCommentRequest())
+    try {
+        const comments = await PostController.voteUpComment(id, userId)
+        dispatch(voteUpCommentSuccess(comments))
+    } catch (error) {
+
+        dispatch(voteUpCommentError(error))
+    }
+};
+
+export const voteDownComment = (id, userId) => async dispatch => {
+    dispatch(voteDownCommentRequest())
+    try {
+        const comments = await PostController.voteDownComment(id, userId)
+        dispatch(voteDownCommentSuccess(comments))
+    } catch (error) {
+
+        console.log("ERROOROORR", error)
+        dispatch(voteDownCommentError(error))
+    }
+};
+
+// export const updateComment = (postId, userId, commentBody) => async dispatch => {
+//     dispatch(commentOnPostRequest())
+//     try {
+//         const comment = await PostController.commentOnPost(postId, userId, commentBody)
+//         dispatch(commentOnPostSuccess(comment))
+//     } catch (error) {
+
+//     }
+
+// }

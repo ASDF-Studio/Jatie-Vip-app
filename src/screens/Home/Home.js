@@ -97,6 +97,7 @@ export function Home({ navigation }) {
   const [reportComment, setReportCommnet] = useState('');
   const [allPinnedPost, setAllPinnedPost] = useState([]);
   const [allPost, setAllPost] = useState(ALLPOST?.data ? ALLPOST.data : []);
+  console.log("ALLLLLLL", JSON.stringify(allPost))
   const [postUserId, setPostUserId] = useState(null);
   const [postId, setpostId] = useState(null);
   const [postTitle, setPostTitle] = useState('');
@@ -111,7 +112,7 @@ export function Home({ navigation }) {
   useEffect(() => {
     if (focus == true) {
       // dispatch(getAllPinPost())
-      dispatch(getAllPost())
+      dispatch(getAllPost(user?.id))
     }
   }, [focus]);
   const isLoading = useSelector(state =>
@@ -431,14 +432,17 @@ export function Home({ navigation }) {
                           ) : null}
                           <CardFooter
 
-                            likePress={() => onUpVote(item?.id, item?.userId, user?.id,)}
-                            disLikePress={() => onDownVote(item?.id, item?.userId, user?.id)}
+                            likePress={() => onUpVote(item?.id, item?.userId, user?.id, item)}
+                            disLikePress={() => onDownVote(item?.id, item?.userId, user?.id, item)}
                             postID={item.id}
+                            postData={item}
+                            postIndex={index}
+                            postType="Regular"
                             postUserID={item.userId}
                             userID={user?.id}
                             likeCount={item?.upVote}
                             disLikeCount={item?.downVote}
-                            commentPress={() => navigationRef.navigate(NAVIGATION.comments)}
+                            commentPress={() => navigationRef.navigate(NAVIGATION.comments, { DATA: item })}
                             commentCount={5}
                             morePress={() => {
                               setOpen(true);
@@ -458,7 +462,7 @@ export function Home({ navigation }) {
             }
             data={allPost.Regular_Post}
             keyExtractor={item => item.id}
-            renderItem={({ item }) => (
+            renderItem={({ item, index }) => (
               <View style={styles.cardContainer}>
                 <Card>
                   <CardHeader
@@ -555,15 +559,18 @@ export function Home({ navigation }) {
                     </View>
                   ) : null}
                   <CardFooter
-                    likePress={() => onUpVote(item.id, item.userId, user?.id)}
-                    disLikePress={() => onDownVote(item.id, item.userId, user?.id)}
+                    likePress={() => onUpVote(item.id, item.userId, user?.id, item)}
+                    disLikePress={() => onDownVote(item.id, item.userId, user?.id, item)}
                     postID={item.id}
+                    postType="Regular"
                     postUserID={item?.userId}
                     userID={user?.id}
                     likeCount={item?.upVote}
                     disLikeCount={item?.downVote}
                     commentCount={5}
-                    commentPress={() => navigation.navigate(NAVIGATION.comments)}
+                    postData={item}
+                    postIndex={index}
+                    commentPress={() => navigation.navigate(NAVIGATION.comments, { DATA: item })}
                     morePress={() => {
                       setOpen(true);
                       setPostUserId(item?.userId);

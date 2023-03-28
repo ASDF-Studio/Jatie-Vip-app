@@ -72,11 +72,9 @@ export class PostController {
             const headers = {
                 'Content-Type': 'multipart/form-data'
             }
-            console.log("##########    Data", data)
             await HttpClient.post(endpoint, data, { headers })
                 .then((response) => {
-                    resolve(response);
-                    console.log("Final response", response);
+                    resolve(response)
                 })
                 .catch((error) => {
                     reject(error);
@@ -276,13 +274,17 @@ export class PostController {
                 });
         });
     }
-
-    static async getAllPost() {
+    //get All post 
+    static async getAllPost(userId) {
         return new Promise((resolve, reject) => {
             const endpoint = API_BASE_URL + API_END_POINTS.ALL_POST;
-            HttpClient.post(endpoint)
+            const body = JSON.stringify({
+                "loggedInUserId": userId
+            })
+            console.log("POOSOOSOSOSOS", body)
+            HttpClient.post(endpoint, body)
                 .then((response) => {
-                    console.log("PIN______", JSON.stringify(response))
+                    console.log("response__+_+__POSOOSOSOSOSOSSO", response)
                     resolve(response);
                 })
                 .catch((error) => {
@@ -290,6 +292,86 @@ export class PostController {
                 });
         });
     }
+    //comment on post 
+
+    static async commentOnPost(postId, userId, commentBody) {
+        return new Promise((resolve, reject) => {
+            const endpoint = API_BASE_URL + API_END_POINTS.COMMENT_ON_POST;
+            var body = JSON.stringify({
+                "postId": postId,
+                "userId": userId,
+                "commentBody": commentBody
+            });
+            console.log("COMMENT_BODY", JSON.stringify(body))
+            HttpClient.post(endpoint, body)
+                .then((response) => {
+                    console.log("COMMENT_RESPONSE-=-=-=-=-=0---=0=0=0==0", JSON.stringify(response))
+                    resolve(response)
+                }).catch((error) => {
+                    reject(error)
+                });
+        })
+    }
+
+    // comments by post id
+    static async getCommentsByPostId(postId, userID) {
+        return new Promise((resolve, reject) => {
+            const endpoint = API_BASE_URL + API_END_POINTS.GET_COMMENT_BY_POST_ID;
+
+            var body = JSON.stringify({
+                "postId": postId,
+                "loggedInUserId": userID
+            });
+            console.log("COMMENT_BODY=--=-=-=-=-=-=-=---", JSON.stringify(body))
+            HttpClient.post(endpoint, body)
+                .then((response) => {
+                    console.log("COMMENT_RESPONSE=-=-=-=-=-=-=", JSON.stringify(response))
+                    resolve(response)
+                }).catch((error) => {
+                    console.log("EROOOPOPIIUIUI", error)
+                    reject(error)
+                });
+        })
+    }
+
+    //vote up comment
+
+    static async voteUpComment(id, userId) {
+        return new Promise((resolve, reject) => {
+            const endpoint = API_BASE_URL + API_END_POINTS.VOTE_UP_COMMENT;
+
+            var body = JSON.stringify({
+                "id": id,
+                "likeUserID": userId,
+            });
+            HttpClient.post(endpoint, body)
+                .then((response) => {
+                    resolve(response)
+                }).catch((error) => {
+                    reject(error)
+                });
+        })
+    }
+
+    //vote Down comment
+
+    static async voteDownComment(id, userId) {
+        return new Promise((resolve, reject) => {
+            const endpoint = API_BASE_URL + API_END_POINTS.VOTE_DOWN_COMMENT;
+            var body = JSON.stringify({
+                "id": id,
+                "likeUserID": userId,
+            });
+            console.log("BOSYYSYSYS", body)
+            HttpClient.post(endpoint, body)
+                .then((response) => {
+                    resolve(response)
+                }).catch((error) => {
+                    reject(error)
+                });
+        })
+    }
+
 
     static async logout() {
         return new Promise(resolve => {

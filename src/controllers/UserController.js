@@ -216,12 +216,11 @@ export class UserController {
 
   //up voted
 
-  static async upVote(id, postUserId, userId) {
+  static async upVote(id, userId) {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.UPVOTE_POST;
       var data = JSON.stringify({
         "id": id,
-        "postUserID": postUserId,
         "likeUserID": userId,
       });
 
@@ -229,7 +228,7 @@ export class UserController {
       HttpClient.post(endpoint, data)
         .then((response) => {
           resolve(response);
-          console.log("Final response", response);
+          console.log("Final response-=-=-=-=-=-=-=-=-=", response);
         })
         .catch((error) => {
           reject(error);
@@ -239,12 +238,11 @@ export class UserController {
 
   // down vote
 
-  static async downVote(id, postUserId, userId) {
+  static async downVote(id, userId) {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.DOWNVOTE_POST;
       var data = JSON.stringify({
         "id": id,
-        "postUserID": postUserId,
         "unlikeUserID": userId,
       });
 

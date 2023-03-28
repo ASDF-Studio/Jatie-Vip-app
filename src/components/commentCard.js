@@ -9,6 +9,9 @@ import { FontFamily } from '@/theme/Fonts';
 import { ScrollView } from 'react-native-gesture-handler';
 import { CommentHeader } from './commentHeader';
 import { faCircleDown, faReplyAll } from '@fortawesome/pro-regular-svg-icons';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { voteDownComment, voteUpComment } from '@/actions/PostActions';
 
 export const CommentCard = ({
   name,
@@ -22,8 +25,25 @@ export const CommentCard = ({
   disLikePress,
   replyPress,
   morePress,
+  userId, commentId, commentIndex
 }) => {
+  const dispatch = useDispatch()
+  const [upVote, setUpVote] = useState(likeCount);
+  const [downVote, setDownVote] = useState(disLikeCount);
+
+  const onLikeComment = () => {
+    try {
+      dispatch(voteUpComment(commentId, userId))
+    } catch (error) {
+
+    }
+    setUpVote(likeCount + 3)
+  }
+  const onDisLikeComment = () => {
+    dispatch(voteDownComment(commentId, userId))
+  }
   return (
+
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
         <View>
@@ -42,26 +62,29 @@ export const CommentCard = ({
         <View style={styles.footer}>
           <View style={styles.reacContainer}>
             <TouchableOpacity
+
+              onPress={onLikeComment}
               style={[styles.iconContainer, styles.likeContainer]}
             >
               <Icon
                 icon={faCircleUp}
                 size={ms(13)}
                 color={theme.light.colors.success}
-                onPress={likePress}
+                onPress={onLikeComment}
               />
-              <Text style={styles.likeTxt}>{likeCount} </Text>
+              <Text style={styles.likeTxt}>{upVote} </Text>
             </TouchableOpacity>
             <TouchableOpacity
+              onPress={onDisLikeComment}
               style={[styles.iconContainer, styles.disLikeContainer]}
             >
               <Icon
                 icon={faCircleDown}
                 size={ms(13)}
                 color={theme.light.colors.error}
-                onPress={disLikePress}
+                onPress={onDisLikeComment}
               />
-              <Text style={styles.disLikeTxt}> {disLikeCount} </Text>
+              <Text style={styles.disLikeTxt}> {downVote} </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.iconContainer, styles.ReplyAllContainer]}
