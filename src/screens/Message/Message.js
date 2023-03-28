@@ -34,11 +34,34 @@ import { NAVIGATION } from '@/constants';
 import { Logo } from '@/assets';
 import { Data } from './MessageData/messageData';
 import { faSearch } from '@fortawesome/pro-regular-svg-icons';
+import firestore from '@react-native-firebase/firestore';
+import { useEffect } from 'react';
+import { getUser } from '@/selectors/UserSelectors';
+import { useSelector } from 'react-redux';
+import { useIsFocused } from '@react-navigation/native';
 
 export function Message({ navigation }) {
   const [unreadOnlySwitch, setUnreadonlySwitch] = useState(false);
   const [archiveSwitch, setArchiveSwitch] = useState(false);
   const [openCrud, setOpenCrud] = useState(false);
+  const user = useSelector(getUser);
+
+  const focus = useIsFocused()
+
+  const messagePayload = {
+    user: { name: user?.fullName, username: user?.username, id: user?.id, role: 'free' },
+    status: { isOnline: false, isTyping: false, isRead: false },
+    message: { type: 'image', imageURL: '', text: '' },
+    creationDate: new Date()
+  }
+
+  // useEffect(() => {
+  //   firestore()
+  //     .collection('iOS').add(messagePayload)
+  //     .then(() => {
+  //       console.log('User added!');
+  //     });
+  // }, [focus])
 
   return (
     <SafeAreaView style={styles.container}>

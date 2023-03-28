@@ -2,7 +2,7 @@ import { theme } from "@/theme"
 import { faClose } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"
 import React, { useState } from "react"
-import { Modal, StyleSheet, Text, View, TouchableOpacity } from "react-native"
+import { Modal, StyleSheet, Text, View, TouchableOpacity, SafeAreaView } from "react-native"
 import ImageViewer from "react-native-image-zoom-viewer"
 import { ms } from "react-native-size-matters"
 
@@ -50,8 +50,6 @@ export const AppImageViewer = ({ visible, setVisible, images }) => {
                     onCancel={() => { }}
                 // backgroundColor  = {theme.light.colors.primaryBg}
                 />
-
-
 
             </Modal>
         </View>

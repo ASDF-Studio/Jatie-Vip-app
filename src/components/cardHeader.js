@@ -57,7 +57,7 @@ export const CardHeader = ({
         <Image
           style={styles.Image}
           source={{
-            uri: profilePic,
+            uri: profilePic || null,
           }}
         />
         <View style={{ paddingLeft: ms(5) }}>

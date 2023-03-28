@@ -10,6 +10,7 @@ import {
   FlatList,
   ScrollView,
   ImageBackground,
+  Dimensions,
 } from 'react-native';
 import { theme } from '@/theme';
 import {
@@ -37,6 +38,14 @@ import {
 import ImageCropPicker from 'react-native-image-crop-picker';
 import { Data } from './MessageData/chatData';
 import { faPaperPlaneTop, faSearch } from '@fortawesome/pro-regular-svg-icons';
+import { Bubble, Composer, GiftedChat, InputToolbar, Send } from 'react-native-gifted-chat'
+import { useCallback } from 'react';
+import { useEffect } from 'react';
+import moment from 'moment';
+import { getUser } from '@/selectors/UserSelectors';
+import { useSelector } from 'react-redux';
+import firestore from '@react-native-firebase/firestore';
+
 
 let nextId = 0;
 
@@ -47,11 +56,18 @@ export default function Chat({ navigation, route }) {
   const [isImageList, setImageList] = useState(false);
   const [showImageView, setShowImageView] = useState(false);
   const [feedImages, setFeedImages] = useState([]);
+  const [messages, setMessages] = useState([]);
+  const [messageType, setMessageType] = useState(0);
+  const user = useSelector(getUser);
+
 
   deleteFile = id => {
     setImageArray(imageArray.filter(a => a.id !== id));
     imageArray.length == 1 ? setImageList(false) : setImageList(true);
   };
+
+
+
   const UploadImages = () => {
     ImageCropPicker.openPicker({
       width: 300,
@@ -73,249 +89,441 @@ export default function Chat({ navigation, route }) {
       });
   };
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <View>
-          <TopBackButton
-            onPress={() => navigation.goBack()}
-            style={styles.TopBackButton}
-          />
-        </View>
-        <View style={styles.headerIconContainer}>
-          <Icon icon={faSearch} size={ms(22)} style={styles.searchIcon} />
-          <Icon icon={faBell} size={ms(22)} style={styles.bellIcon} />
-        </View>
-      </View>
-      <View style={styles.userContainer}>
-        <View style={styles.userImageContainer}>
-          <Image
-            source={{
-              uri: Data.profilePic,
-            }}
-            style={styles.userImage}
-          />
-          <View style={styles.userNameTxtContainer}>
-            <Text style={styles.fullnameTxt}> {Data.name} </Text>
-            <Text style={styles.usernameTxt}> {Data.userName} </Text>
-          </View>
-        </View>
-        <View>
-          <Icon icon={faEllipsis} size={ms(16)} style={styles.userIcon} />
-        </View>
-      </View>
-      <HorizontalLine />
+  useEffect(() => {
+    setMessages([
+      {
+        _id: 1,
+        text: 'Hello developer',
+        createdAt: new Date(),
+        user: {
+          _id: 2,
+          name: 'React Native',
+          avatar: 'https://placeimg.com/140/140/any',
+        },
+      },
+    ])
+  }, [])
 
-      <View style={styles.messageBody}>
-        <FlatList
-          data={Data.messaging.conversation}
-          keyExtractor={item => item.messageId}
-          contentContainerStyle={styles.contentContainerStyle}
-          initialScrollIndex={Data.messaging.conversation.length - 1}
-          renderItem={({ item }) => (
-            <View style={styles.messgaeBodyContainer}>
-              {/* only Text sending */}
 
-              {item.sendingTxt.length > 0 ? (
-                <View style={styles.messageContainer}>
-                  <TouchableOpacity
-                    style={styles.messageTxtContainer}
-                    onLongPress={() => setOpenCrud(true)}
-                  >
-                    <Text style={styles.messageTxt}>{item.sendingTxt} </Text>
-                  </TouchableOpacity>
-                  <View>
-                    <Image
-                      source={{
-                        uri: Data.messaging.profilePic,
-                      }}
-                      style={styles.messageWithImage}
-                    />
-                  </View>
-                </View>
-              ) : null}
+  const onSend = useCallback((messages = []) => {
 
-              {/*  only images sending */}
+    const messagePayload = {
+      user: { name: user?.fullName, username: user?.username, id: user?.id, role: 'free' },
+      status: { isOnline: false, isTyping: false, isRead: false },
+      message: { type: messageType, imageURL: imageArray, text: messages[0].text ?? '' },
+      creationDate: new Date()
+    }
 
-              {item.sendingImages.length > 0 ? (
-                <View>
-                  {item.sendingImages.length <= 3 ? (
-                    <View style={styles.imageContainer}>
-                      {item?.sendingImages?.map(data => (
-                        <TouchableOpacity
-                          style={styles.touchContainer}
-                          key={data.id}
-                          onPress={() => {
-                            setShowImageView(true),
-                              setFeedImages(item.sendingImages);
-                          }}
-                        >
-                          <Image
-                            source={{
-                              uri: data.url,
-                            }}
-                            style={
-                              item.sendingImages.length == 1
-                                ? [styles.image, styles.image1]
-                                : item.sendingImages.length == 2
-                                  ? [styles.image, styles.image2]
-                                  : [styles.image, styles.image3]
-                            }
-                          />
-                        </TouchableOpacity>
-                      ))}
-                    </View>
-                  ) : item.sendingImages.length > 3 ? (
-                    <View style={styles.imageContainer}>
-                      {item?.sendingImages?.map(data =>
-                        data.id <= 2 ? (
-                          <TouchableOpacity
-                            style={styles.touchContainer}
-                            key={data.id}
-                            onPress={() => {
-                              setShowImageView(true),
-                                setFeedImages(item.sendingImages);
-                            }}
-                          >
-                            <Image
-                              source={{
-                                uri: data.url,
-                              }}
-                              key={data.id}
-                              style={[styles.image, styles.image3]}
-                            />
-                          </TouchableOpacity>
-                        ) : data.id == 3 ? (
-                          <TouchableOpacity
-                            style={styles.touchContainer}
-                            key={data.id}
-                            onPress={() => {
-                              setShowImageView(true),
-                                setFeedImages(item.sendingImages);
-                            }}
-                          >
-                            <ImageBackground
-                              source={{
-                                uri: data.url,
-                              }}
-                              key={data.id}
-                              style={[styles.image, styles.moreImage]}
-                            >
-                              <Text style={styles.sendingImagesText}>
-                                {strings.message.plus}
-                                {item.sendingImages.length - 2}
-                              </Text>
-                            </ImageBackground>
-                          </TouchableOpacity>
-                        ) : null
-                      )}
-                    </View>
-                  ) : null}
-                  <View>
-                    <Image
-                      source={{
-                        uri: Data.messaging.profilePic,
-                      }}
-                      style={styles.messageWithImage}
-                    />
-                  </View>
-                </View>
-              ) : null}
+    firestore()
+      .collection('final').add(messagePayload)
+      .then(() => {
+        console.log('Message added!');
+        setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
+      });
 
-              {item.replyingTxt.length > 0 ? (
-                <View style={styles.replyContainer}>
-                  <Text style={[styles.messageTxt, styles.messageTxtBlack]}>
-                    {item.replyingTxt}
-                  </Text>
-                </View>
-              ) : null}
-            </View>
-          )}
-        />
-        <View>
-          {isImageList == false ? null : FileUpload(imageArray)}
-          <View style={styles.txtInputContainer}>
-            <TextInput
-              placeholder={strings.message.typeYourmessageHere}
-              style={styles.inputBox}
-            ></TextInput>
-            <View style={styles.inputBoxIconContainer}>
-              <TouchableOpacity
-                style={[styles.boxIcon, styles.inputBoxIconColor]}
-                onPress={UploadImages}
-              >
-                <FontAwesomeIcon
-                  icon={faImage}
-                  size={ms(16)}
-                  color={theme.light.colors.success}
-                />
+  }, [])
+
+  const renderCustomBubbleView = (props) => {
+
+    const isCurrentUser = props.currentMessage.user._id === user?.id
+
+    /**
+     * @param {*} type 0 for Text message & type 1 for Image message & type 2 for Text+Image message.
+     */
+
+
+    return (
+      <View style={styles.messageContainer}>
+        <View
+          style={[styles.messageTxtContainer, { backgroundColor: isCurrentUser ? theme.light.colors.white : theme.light.colors.primaryBgDarkest }]}
+          onLongPress={() => setOpenCrud(true)}
+        >
+          {/* Render View for Text */}
+          {messageType === 0 && <Text style={[styles.messageTxt, { color: isCurrentUser ? theme.light.colors.black : theme.light.colors.white }]}>{props.currentMessage.text} </Text>}
+
+          {/* Render View for Image */}
+          {messageType === 1 && <View style={{ flexDirection: 'row', flex: 1 }}>
+            {imageArray.map((item) => (
+              <TouchableOpacity onPress={() => setShowImageView(true)} style={{ borderRadius: ms(8), flexGrow: 1, justifyContent: 'space-between', margin: 5 }}>
+                <Image style={{ borderRadius: ms(8), height: Dimensions.get('screen').width / 4, width: Dimensions.get('screen').width / 4.2, resizeMode: 'cover' }} source={{ uri: item.image || null }} />
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.boxIcon, styles.sendBoxIcon]}>
+            ))}
+          </View>}
+
+          {/* Render View for Text + Image */}
+          {messageType === 2 &&
+            <View>
+              <Text style={[styles.messageTxt, { color: isCurrentUser ? theme.light.colors.black : theme.light.colors.white }]}>{props.currentMessage.text} </Text>
+              <View style={{ flexDirection: 'row', flex: 1 }}>
+                {imageArray.map((item) => (
+                  <TouchableOpacity onPress={() => setShowImageView(true)} style={{ borderRadius: ms(8), flexGrow: 1, justifyContent: 'space-between', margin: 5 }}>
+                    <Image style={{ borderRadius: ms(8), height: Dimensions.get('screen').width / 4, width: Dimensions.get('screen').width / 4.2, resizeMode: 'cover' }} source={{ uri: item.image || null }} />
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+          }
+          <Text style={{ fontSize: 10, alignSelf: isCurrentUser ? 'flex-end' : 'flex-start' }}>{moment(props.currentMessage.createdAt).format("LT")}</Text>
+        </View>
+      </View>
+    )
+  }
+
+  const renderCustomInputToolbar = (props) => {
+    return (
+      <InputToolbar
+        {...props}
+        textInputStyle={{ fontSize: 18, fontFamily: FontFamily.BrandonGrotesque_regular, lineHeight: 22, alignSelf: 'center' }}
+        containerStyle={{ height: 60, justifyContent: 'center', }}
+        renderSend={(props) =>
+          <View style={styles.inputBoxIconContainer}>
+            <TouchableOpacity
+              style={[styles.boxIcon, styles.inputBoxIconColor]}
+              onPress={UploadImages}
+            >
+              <FontAwesomeIcon
+                icon={faImage}
+                size={ms(16)}
+                color={theme.light.colors.success}
+              />
+            </TouchableOpacity>
+            <Send {...props}>
+              <View
+                style={[styles.boxIcon, styles.sendBoxIcon]}>
                 <FontAwesomeIcon
                   icon={faPaperPlaneTop}
                   size={ms(16)}
                   color={theme.light.colors.primary}
                 />
-              </TouchableOpacity>
-            </View>
+              </View>
+            </Send>
+          </View>
+        }
+      />
+    );
+  }
+
+  const renderChatHeader = () => {
+    return (
+      <View>
+        <View style={styles.header}>
+          <View>
+            <TopBackButton
+              onPress={() => navigation.goBack()}
+              style={styles.TopBackButton}
+            />
+          </View>
+          <View style={styles.headerIconContainer}>
+            <Icon icon={faSearch} size={ms(22)} style={styles.searchIcon} />
+            <Icon icon={faBell} size={ms(22)} style={styles.bellIcon} />
           </View>
         </View>
+        <View style={styles.userContainer}>
+          <View style={styles.userImageContainer}>
+            <Image
+              source={{
+                uri: Data.profilePic,
+              }}
+              style={styles.userImage}
+            />
+            <View style={styles.userNameTxtContainer}>
+              <Text style={styles.fullnameTxt}> {Data.name} </Text>
+              <Text style={styles.usernameTxt}> {Data.userName} </Text>
+            </View>
+          </View>
+          <View>
+            <Icon icon={faEllipsis} size={ms(16)} style={styles.userIcon} />
+          </View>
+        </View>
+        <HorizontalLine />
       </View>
+    )
+  }
 
-      {/*  image view modal */}
-      {showImageView && (
-        <AppImageViewer
-          visible={showImageView}
-          setVisible={() => setShowImageView(false)}
-          images={feedImages}
-        />
-      )}
+  const renderChatFooterView = () => {
+    return (
+      <View>
+        {isImageList == false ? null : FileUpload(imageArray)}
+      </View>
+    )
+  }
 
-      {openCrud && (
-        <ModalDown open={openCrud} setOpen={setOpenCrud}>
-          <ModalList
-            title={strings.message.archive}
-            icon={faBoxArchive}
-            iconColor={theme.light.colors.primary}
-            iconBg={theme.light.colors.primaryBgLight}
-          />
-          <ModalList
-            title={strings.message.snoozeNotification}
-            icon={faBellSlash}
-            iconColor={theme.light.colors.info}
-            iconBg={theme.light.colors.infoBgLight}
-          />
-          <ModalList
-            title={strings.message.snoozeNotification}
-            icon={faTrash}
-            iconColor={theme.light.colors.error}
-            iconBg={theme.light.colors.infoBgLight}
-          />
-          <HorizontalLine
-            color={theme.light.colors.infoBgLight}
-            paddingTop={15}
-            paddingBottom={8}
-          />
-          <ModalList
-            title={strings.operations.report}
-            icon={faFlag}
-            iconColor={theme.light.colors.secondary}
-            iconBg={theme.light.colors.infoBgLight}
-            onPress={() => {
-              // setOpenReport(true)
-              // setOpen(false)
-            }}
-          />
-          <ModalList
-            title={strings.operations.block + strings.home.DummyUser}
-            icon={faXmark}
-            iconColor={theme.light.colors.secondary}
-            iconBg={theme.light.colors.infoBgLight}
-          />
-        </ModalDown>
-      )}
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      {renderChatHeader()}
+      <GiftedChat
+        messages={messages}
+        onSend={messages => onSend(messages)}
+        isTyping
+        showUserAvatar
+        alwaysShowSend
+        placeholder='Type your message here'
+        renderBubble={renderCustomBubbleView}
+        messagesContainerStyle={{ paddingBottom: 20, backgroundColor: theme.light.colors.chatBackground }}
+        renderInputToolbar={renderCustomInputToolbar}
+        renderChatFooter={renderChatFooterView} // Shows user selected images as preview
+
+        user={{
+          _id: user?.id,
+          name: user?.username,
+          avatar: user.profilePic
+        }}
+
+      />
+      <AppImageViewer
+        visible={showImageView}
+        setVisible={() => setShowImageView(false)}
+        images={['https://placeimg.com/500/500/any', 'https://placeimg.com/550/500/any', 'https://placeimg.com/600/500/any']}
+      />
     </SafeAreaView>
-  );
+  )
+
+  //   return (
+  //     <SafeAreaView style={styles.container}>
+  //       {/* <View> */}
+
+  //       <View style={styles.header}>
+  //         <View>
+  //           <TopBackButton
+  //             onPress={() => navigation.goBack()}
+  //             style={styles.TopBackButton}
+  //           />
+  //         </View>
+  //         <View style={styles.headerIconContainer}>
+  //           <Icon icon={faSearch} size={ms(22)} style={styles.searchIcon} />
+  //           <Icon icon={faBell} size={ms(22)} style={styles.bellIcon} />
+  //         </View>
+  //       </View>
+  //       <View style={styles.userContainer}>
+  //         <View style={styles.userImageContainer}>
+  //           <Image
+  //             source={{
+  //               uri: Data.profilePic,
+  //             }}
+  //             style={styles.userImage}
+  //           />
+  //           <View style={styles.userNameTxtContainer}>
+  //             <Text style={styles.fullnameTxt}> {Data.name} </Text>
+  //             <Text style={styles.usernameTxt}> {Data.userName} </Text>
+  //           </View>
+  //         </View>
+  //         <View>
+  //           <Icon icon={faEllipsis} size={ms(16)} style={styles.userIcon} />
+  //         </View>
+  //       </View>
+  //       <HorizontalLine />
+
+  //       <View style={styles.messageBody}>
+  //         <FlatList
+  //           data={Data.messaging.conversation}
+  //           keyExtractor={item => item.messageId}
+  //           contentContainerStyle={styles.contentContainerStyle}
+  //           initialScrollIndex={Data.messaging.conversation.length - 1}
+  //           renderItem={({ item }) => (
+  //             <View style={styles.messgaeBodyContainer}>
+  //               {/* only Text sending */}
+
+  //               {item.sendingTxt.length > 0 ? (
+  //                 <View style={styles.messageContainer}>
+  //                   <TouchableOpacity
+  //                     style={styles.messageTxtContainer}
+  //                     onLongPress={() => setOpenCrud(true)}
+  //                   >
+  //                     <Text style={styles.messageTxt}>{item.sendingTxt} </Text>
+  //                   </TouchableOpacity>
+  //                   <View>
+  //                     <Image
+  //                       source={{
+  //                         uri: Data.messaging.profilePic,
+  //                       }}
+  //                       style={styles.messageWithImage}
+  //                     />
+  //                   </View>
+  //                 </View>
+  //               ) : null}
+
+  //               {/*  only images sending */}
+
+  //               {item.sendingImages.length > 0 ? (
+  //                 <View>
+  //                   {item.sendingImages.length <= 3 ? (
+  //                     <View style={styles.imageContainer}>
+  //                       {item?.sendingImages?.map(data => (
+  //                         <TouchableOpacity
+  //                           style={styles.touchContainer}
+  //                           key={data.id}
+  //                           onPress={() => {
+  //                             setShowImageView(true),
+  //                               setFeedImages(item.sendingImages);
+  //                           }}
+  //                         >
+  //                           <Image
+  //                             source={{
+  //                               uri: data.url,
+  //                             }}
+  //                             style={
+  //                               item.sendingImages.length == 1
+  //                                 ? [styles.image, styles.image1]
+  //                                 : item.sendingImages.length == 2
+  //                                   ? [styles.image, styles.image2]
+  //                                   : [styles.image, styles.image3]
+  //                             }
+  //                           />
+  //                         </TouchableOpacity>
+  //                       ))}
+  //                     </View>
+  //                   ) : item.sendingImages.length > 3 ? (
+  //                     <View style={styles.imageContainer}>
+  //                       {item?.sendingImages?.map(data =>
+  //                         data.id <= 2 ? (
+  //                           <TouchableOpacity
+  //                             style={styles.touchContainer}
+  //                             key={data.id}
+  //                             onPress={() => {
+  //                               setShowImageView(true),
+  //                                 setFeedImages(item.sendingImages);
+  //                             }}
+  //                           >
+  //                             <Image
+  //                               source={{
+  //                                 uri: data.url,
+  //                               }}
+  //                               key={data.id}
+  //                               style={[styles.image, styles.image3]}
+  //                             />
+  //                           </TouchableOpacity>
+  //                         ) : data.id == 3 ? (
+  //                           <TouchableOpacity
+  //                             style={styles.touchContainer}
+  //                             key={data.id}
+  //                             onPress={() => {
+  //                               setShowImageView(true),
+  //                                 setFeedImages(item.sendingImages);
+  //                             }}
+  //                           >
+  //                             <ImageBackground
+  //                               source={{
+  //                                 uri: data.url,
+  //                               }}
+  //                               key={data.id}
+  //                               style={[styles.image, styles.moreImage]}
+  //                             >
+  //                               <Text style={styles.sendingImagesText}>
+  //                                 {strings.message.plus}
+  //                                 {item.sendingImages.length - 2}
+  //                               </Text>
+  //                             </ImageBackground>
+  //                           </TouchableOpacity>
+  //                         ) : null
+  //                       )}
+  //                     </View>
+  //                   ) : null}
+  //                   <View>
+  //                     <Image
+  //                       source={{
+  //                         uri: Data.messaging.profilePic,
+  //                       }}
+  //                       style={styles.messageWithImage}
+  //                     />
+  //                   </View>
+  //                 </View>
+  //               ) : null}
+
+  //               {item.replyingTxt.length > 0 ? (
+  //                 <View style={styles.replyContainer}>
+  //                   <Text style={[styles.messageTxt, styles.messageTxtBlack]}>
+  //                     {item.replyingTxt}
+  //                   </Text>
+  //                 </View>
+  //               ) : null}
+  //             </View>
+  //           )}
+  //         />
+  //         <View>
+  //           {isImageList == false ? null : FileUpload(imageArray)}
+  //           <View style={styles.txtInputContainer}>
+  //             <TextInput
+  //               placeholder={strings.message.typeYourmessageHere}
+  //               style={styles.inputBox}
+  //             ></TextInput>
+  //             <View style={styles.inputBoxIconContainer}>
+  //               <TouchableOpacity
+  //                 style={[styles.boxIcon, styles.inputBoxIconColor]}
+  //                 onPress={UploadImages}
+  //               >
+  //                 <FontAwesomeIcon
+  //                   icon={faImage}
+  //                   size={ms(16)}
+  //                   color={theme.light.colors.success}
+  //                 />
+  //               </TouchableOpacity>
+  //               <TouchableOpacity style={[styles.boxIcon, styles.sendBoxIcon]}>
+  //                 <FontAwesomeIcon
+  //                   icon={faPaperPlaneTop}
+  //                   size={ms(16)}
+  //                   color={theme.light.colors.primary}
+  //                 />
+  //               </TouchableOpacity>
+  //             </View>
+  //           </View>
+  //         </View>
+  //       </View>
+
+  //       {/*  image view modal */}
+  //       {showImageView && (
+  //         <AppImageViewer
+  //           visible={showImageView}
+  //           setVisible={() => setShowImageView(false)}
+  //           images={feedImages}
+  //         />
+  //       )}
+
+  //       {openCrud && (
+  //         <ModalDown open={openCrud} setOpen={setOpenCrud}>
+  //           <ModalList
+  //             title={strings.message.archive}
+  //             icon={faBoxArchive}
+  //             iconColor={theme.light.colors.primary}
+  //             iconBg={theme.light.colors.primaryBgLight}
+  //           />
+  //           <ModalList
+  //             title={strings.message.snoozeNotification}
+  //             icon={faBellSlash}
+  //             iconColor={theme.light.colors.info}
+  //             iconBg={theme.light.colors.infoBgLight}
+  //           />
+  //           <ModalList
+  //             title={strings.message.snoozeNotification}
+  //             icon={faTrash}
+  //             iconColor={theme.light.colors.error}
+  //             iconBg={theme.light.colors.infoBgLight}
+  //           />
+  //           <HorizontalLine
+  //             color={theme.light.colors.infoBgLight}
+  //             paddingTop={15}
+  //             paddingBottom={8}
+  //           />
+  //           <ModalList
+  //             title={strings.operations.report}
+  //             icon={faFlag}
+  //             iconColor={theme.light.colors.secondary}
+  //             iconBg={theme.light.colors.infoBgLight}
+  //             onPress={() => {
+  //               // setOpenReport(true)
+  //               // setOpen(false)
+  //             }}
+  //           />
+  //           <ModalList
+  //             title={strings.operations.block + strings.home.DummyUser}
+  //             icon={faXmark}
+  //             iconColor={theme.light.colors.secondary}
+  //             iconBg={theme.light.colors.infoBgLight}
+  //           />
+  //         </ModalDown>
+  //       )}
+  //       {/* </View> */}
+  //     </SafeAreaView>
+  //   );
 }
 
 export const FileUpload = imageArray => {
@@ -338,16 +546,18 @@ export const FileUpload = imageArray => {
                       style={styles.thumbnail}
                       source={{ uri: item.image }}
                     />
-                    <View style={styles.minus}>
+                    <TouchableOpacity
+                      activeOpacity={1}
+                      onPress={() => {
+                        deleteFile(item.id);
+                      }}
+                      style={styles.minus}>
                       <Text
                         style={styles.minusTxt}
-                        onPress={() => {
-                          deleteFile(item.id);
-                        }}
                       >
                         {strings.giveaway.minus}
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   </View>
                 ) : null;
               }
@@ -423,11 +633,11 @@ const styles = StyleSheet.create({
   },
   messgaeBodyContainer: { margin: ms(10) },
   messageContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    // flexDirection: 'row',
+    // justifyContent: 'space-between',
+
   },
   messageTxtContainer: {
-    width: '85%',
     backgroundColor: theme.light.colors.primaryBgDarkest,
     borderRadius: 10,
     padding: ms(10),
@@ -456,9 +666,9 @@ const styles = StyleSheet.create({
   },
   txtInputContainer: {
     backgroundColor: theme.light.colors.white,
-    position: 'absolute',
-    bottom: 0,
+    justifyContent: 'center',
     width: '100%',
+    height: 60,
     borderTopWidth: 1,
     borderColor: theme.light.colors.infoBgLight,
   },
@@ -470,10 +680,10 @@ const styles = StyleSheet.create({
   },
   inputBoxIconContainer: {
     flexDirection: 'row',
-    alignContent: 'center',
-    position: 'absolute',
-    right: ms(8),
-    top: ms(3),
+    alignItems: 'center'
+    // position: 'absolute',
+    // right: ms(8),
+    // top: ms(3),
   },
   boxIcon: {
     margin: ms(5),
@@ -538,7 +748,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     flexDirection: 'row',
-    marginBottom: vs(50),
+    // marginBottom: vs(50),
     paddingTop: ms(10),
     position: 'relative',
   },
