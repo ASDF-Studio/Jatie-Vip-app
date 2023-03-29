@@ -45,6 +45,7 @@ import moment from 'moment';
 import { getUser } from '@/selectors/UserSelectors';
 import { useSelector } from 'react-redux';
 import firestore from '@react-native-firebase/firestore';
+import { CHATS, MESSAGES } from '@/constants/firebaseConstants';
 
 
 let nextId = 0;
@@ -53,7 +54,6 @@ export default function Chat({ navigation, route }) {
   // const params = route.params;
   const [openCrud, setOpenCrud] = useState(false);
   const [imageArray, setImageArray] = useState([]);
-  const [isImageList, setImageList] = useState(false);
   const [showImageView, setShowImageView] = useState(false);
   const [feedImages, setFeedImages] = useState([]);
   const [messages, setMessages] = useState([]);
@@ -61,14 +61,57 @@ export default function Chat({ navigation, route }) {
   const user = useSelector(getUser);
 
 
-  deleteFile = id => {
-    setImageArray(imageArray.filter(a => a.id !== id));
-    imageArray.length == 1 ? setImageList(false) : setImageList(true);
+  const deleteImage = id => {
+    setImageArray(oldValues => {
+      return oldValues.filter(a => a.id !== id)
+    })
+  };
+
+  const renderSelectedImagesPreview = imageArray => {
+    return (
+      <ScrollView
+        horizontal={true}
+        showsHorizontalScrollIndicator={false}
+        style={styles.BottomContainer}
+      >
+        {imageArray ? (
+          <View style={styles.BottomFileContainer}>
+            <View style={styles.FileContainer}>
+              {imageArray.map(item => {
+                if (item == null) {
+                  return;
+                } else {
+                  return item.image ? (
+                    <View style={styles.fileSpacing} key={item.id}>
+                      <Image
+                        style={styles.thumbnail}
+                        source={{ uri: item.image }}
+                      />
+                      <TouchableOpacity
+                        activeOpacity={1}
+                        onPress={() => deleteImage(item.id)}
+                        style={styles.minus}>
+                        <Text
+                          style={styles.minusTxt}
+                        >
+                          {strings.giveaway.minus}
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  ) : null;
+                }
+              })}
+            </View>
+          </View>
+        ) : null}
+      </ScrollView>
+    );
   };
 
 
 
-  const UploadImages = () => {
+  const UploadImages = async () => {
+
     ImageCropPicker.openPicker({
       width: 300,
       height: 400,
@@ -76,12 +119,10 @@ export default function Chat({ navigation, route }) {
     })
       .then(images => {
         images.forEach(item => {
-          imageArray.push({
+          setImageArray(oldValues => [...oldValues, {
             id: nextId++,
             image: item.path,
-          });
-          setImageList(false);
-          setImageList(true);
+          }])
         });
       })
       .catch(e => {
@@ -90,47 +131,84 @@ export default function Chat({ navigation, route }) {
   };
 
   useEffect(() => {
-    setMessages([
-      {
-        _id: 1,
-        text: 'Hello developer',
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: 'React Native',
-          avatar: 'https://placeimg.com/140/140/any',
-        },
-      },
-    ])
+
+    // const messagePayload = {
+    //   _id: Math.round(Math.random() * 100000000),
+    //   user: { name: 'Dummy Kumar', username: 'Dummy', avatar: 'https://placeimg.com/140/140/any', _id: 'dummyUser', role: 'free' },
+    //   status: { isOnline: false, isTyping: false, isRead: false },
+    //   message: { type: 0, imageURL: [], text: 'Hello Mantu' },
+    //   createdAt: new Date(),
+    //   sentTo: 'realUser',
+    //   sentBy: 'dummyUser'
+    // }
+    // setMessages(oldValues => [...oldValues, messagePayload])
+  }, [])
+
+  useEffect(() => {
+    const chatQuery = firestore().collection(CHATS).doc(`dummyuser-${user?.id}`).collection(MESSAGES).orderBy('createdAt', 'asc')
+
+    const unsubscribe = chatQuery
+      .onSnapshot(querySnapshot => {
+        const kmessages = [];
+        querySnapshot.forEach(documentSnapshot => {
+          kmessages.push({
+            ...documentSnapshot.data(),
+            _id: documentSnapshot.id,
+          });
+        });
+        console.log('Messages retrieved!', kmessages);
+        setMessages((oldValues) => [...oldValues, ...kmessages])
+      });
+
+    return unsubscribe;
+
   }, [])
 
 
-  const onSend = useCallback((messages = []) => {
+
+
+  const onSend = (messages = []) => {
+    const chatMessage = messages[0]?.text;
+    console.log('check message', chatMessage)
+    console.log('check images -->', imageArray)
+
+    const getMessageType = () => {
+      if (imageArray.length > 0 && chatMessage) {
+        setMessageType(2)
+        return 2
+      } else if (imageArray.length > 0 && !chatMessage) {
+        setMessageType(1)
+        return 1
+      } else if (imageArray.length === 0 && chatMessage) {
+        setMessageType(0)
+        return 0
+      }
+    }
 
     const messagePayload = {
-      user: { name: user?.fullName, username: user?.username, id: user?.id, role: 'free' },
+      user: { name: user?.fullName, username: user?.username, _id: user?.id, role: 'free' },
       status: { isOnline: false, isTyping: false, isRead: false },
-      message: { type: messageType, imageURL: imageArray, text: messages[0].text ?? '' },
-      creationDate: new Date()
+      message: { type: getMessageType(), imageURL: imageArray, text: chatMessage ?? '' },
+      createdAt: new Date(),
+      sentTo: 'dummyUser',
+      sentBy: user?.id,
+      _id: Math.round(Math.random() * 100000000)
     }
 
     firestore()
-      .collection('final').add(messagePayload)
+      .collection(CHATS).doc(`dummyuser-${user?.id}`).collection(MESSAGES).add(messagePayload)
       .then(() => {
         console.log('Message added!');
         setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
+        // setImageArray([])
       });
 
-  }, [])
+  }
+
 
   const renderCustomBubbleView = (props) => {
-
+    console.log('check current message', props.currentMessage)
     const isCurrentUser = props.currentMessage.user._id === user?.id
-
-    /**
-     * @param {*} type 0 for Text message & type 1 for Image message & type 2 for Text+Image message.
-     */
-
 
     return (
       <View style={styles.messageContainer}>
@@ -139,7 +217,7 @@ export default function Chat({ navigation, route }) {
           onLongPress={() => setOpenCrud(true)}
         >
           {/* Render View for Text */}
-          {messageType === 0 && <Text style={[styles.messageTxt, { color: isCurrentUser ? theme.light.colors.black : theme.light.colors.white }]}>{props.currentMessage.text} </Text>}
+          {messageType === 0 && <Text style={[styles.messageTxt, { color: isCurrentUser ? theme.light.colors.black : theme.light.colors.white }]}>{props.currentMessage.message?.text} </Text>}
 
           {/* Render View for Image */}
           {messageType === 1 && <View style={{ flexDirection: 'row', flex: 1 }}>
@@ -187,7 +265,7 @@ export default function Chat({ navigation, route }) {
                 color={theme.light.colors.success}
               />
             </TouchableOpacity>
-            <Send {...props}>
+            <Send {...props} >
               <View
                 style={[styles.boxIcon, styles.sendBoxIcon]}>
                 <FontAwesomeIcon
@@ -243,7 +321,7 @@ export default function Chat({ navigation, route }) {
   const renderChatFooterView = () => {
     return (
       <View>
-        {isImageList == false ? null : FileUpload(imageArray)}
+        {imageArray.length > 0 && renderSelectedImagesPreview(imageArray)}
       </View>
     )
   }
@@ -254,7 +332,7 @@ export default function Chat({ navigation, route }) {
       <GiftedChat
         messages={messages}
         onSend={messages => onSend(messages)}
-        isTyping
+        // isTyping
         showUserAvatar
         alwaysShowSend
         placeholder='Type your message here'
@@ -266,7 +344,7 @@ export default function Chat({ navigation, route }) {
         user={{
           _id: user?.id,
           name: user?.username,
-          avatar: user.profilePic
+          avatar: user?.profilePic
         }}
 
       />
@@ -526,48 +604,7 @@ export default function Chat({ navigation, route }) {
   //   );
 }
 
-export const FileUpload = imageArray => {
-  return (
-    <ScrollView
-      horizontal={true}
-      showsHorizontalScrollIndicator={false}
-      style={styles.BottomContainer}
-    >
-      {imageArray ? (
-        <View style={styles.BottomFileContainer}>
-          <View style={styles.FileContainer}>
-            {imageArray.map(item => {
-              if (item == null) {
-                return;
-              } else {
-                return item.image ? (
-                  <View style={styles.fileSpacing} key={item.id}>
-                    <Image
-                      style={styles.thumbnail}
-                      source={{ uri: item.image }}
-                    />
-                    <TouchableOpacity
-                      activeOpacity={1}
-                      onPress={() => {
-                        deleteFile(item.id);
-                      }}
-                      style={styles.minus}>
-                      <Text
-                        style={styles.minusTxt}
-                      >
-                        {strings.giveaway.minus}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                ) : null;
-              }
-            })}
-          </View>
-        </View>
-      ) : null}
-    </ScrollView>
-  );
-};
+
 
 const styles = StyleSheet.create({
   container: {
