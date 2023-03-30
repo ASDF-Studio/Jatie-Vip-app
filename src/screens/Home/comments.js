@@ -79,11 +79,11 @@ export default function Comments({ navigation, route }) {
     dispatch(getCommentsByPostId(DATA?.id, USER?.id))
 
   }, [focus])
-  useEffect(() => { scrollToBottom() }, [COMMENTS])
 
   const scrollToBottom = () => {
     flatListRef.current.scrollToEnd({ animated: true });
   };
+
   return (
 
     <SafeAreaView style={styles.container}>
@@ -111,6 +111,7 @@ export default function Comments({ navigation, route }) {
               data={COMMENTS}
               ref={flatListRef}
               keyExtractor={item => item.id}
+              onContentSizeChange={scrollToBottom}
               renderItem={({ item, index }) => (
                 <CommentCard
                   name={item?.user?.fullName}
