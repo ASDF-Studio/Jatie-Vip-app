@@ -67,11 +67,9 @@ export const CardFooter = ({
       arr[postIndex].has_upvoted = false;
       arr[postIndex].upVote = upVotenumber - 1;
     }
-
     dispatch(getAllPostSuccess(arr))
     const apiData = await UserController.upVote(postID, userID);
   }
-
   const onDownVote = async (postID, userID) => {
     var arr = []
     arr = postArray;

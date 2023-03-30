@@ -34,6 +34,24 @@ export const TYPES = {
   UPLOAD_PROFILE_SUCCESS: "UPLOAD_PROFILE_SUCCESS",
   UPLOAD_PROFILE_ERROR: "UPLOAD_PROFILE_ERROR",
 
+
+
+  //FOLLOW USER
+
+  FOLLOW_USER: "FOLLOW_USER",
+  FOLLOW_USER_REQUEST: "FOLLOW_USER_REQUEST",
+  FOLLOW_USER_SUCCESS: "FOLLOW_USER_SUCCESS",
+  FOLLOW_USER_ERROR: "FOLLOW_USER_ERROR",
+
+
+  //UNFOLLOW USER
+
+  UN_FOLLOW_USER: "UN_FOLLOW_USER",
+  UN_FOLLOW_USER_REQUEST: "UN_FOLLOW_USER_REQUEST",
+  UN_FOLLOW_USER_SUCCESS: "UN_FOLLOW_USER_SUCCESS",
+  UN_FOLLOW_USER_ERROR: "UN_FOLLOW_USER_ERROR",
+
+
   //user create post
   CREATE_POST: 'CREATE_POST',
   CREATE_POST_REQUEST: "CREATE_POST_REQUEST",
@@ -133,6 +151,44 @@ const uploadProfileSuccess = user => ({
   type: TYPES.UPLOAD_PROFILE_SUCCESS,
   payload: { user },
 });
+
+export const followUserSuccess = user => ({
+  type: TYPES.FOLLOW_USER_SUCCESS,
+  payload: { user },
+});
+
+
+const followUserRequest = () => ({
+  type: TYPES.FOLLOW_USER_REQUEST,
+  payload: null,
+});
+
+const followUserError = error => ({
+  type: TYPES.FOLLOW_USER_ERROR,
+  payload: { error },
+});
+
+export const unFollowUserSuccess = comment => ({
+  type: TYPES.UN_FOLLOW_USER_SUCCESS,
+  payload: { comment },
+});
+
+
+const unFollowUserRequest = () => ({
+  type: TYPES.UN_FOLLOW_USER_REQUEST,
+  payload: null,
+});
+
+const unFollowUserError = error => ({
+  type: TYPES.UN_FOLLOW_USER_ERROR,
+  payload: { error },
+});
+
+
+
+
+
+
 
 //create post
 export const createPostSuccess = user => ({
@@ -279,6 +335,30 @@ export const uploadProfile = (file, mimeType, USER) => async dispatch => {
     dispatch(uploadProfileError(error));
   }
 };
+
+
+export const followUser = (followerId, followId, postIndex) => async dispatch => {
+  dispatch(followUserRequest());
+  try {
+    const user = await UserController.followUser(followerId, followId);
+    dispatch(followUserSuccess(postIndex));
+  } catch (error) {
+    dispatch(followUserError(error))
+  }
+};
+
+
+export const unFollowUser = (unFollowerId, followId) => async dispatch => {
+  dispatch(unFollowUserRequest());
+  try {
+    const user = await UserController.unFollowUser(unFollowerId, followId);
+    dispatch(unFollowUserSuccess(user));
+  } catch (error) {
+
+    dispatch(unFollowUserError(error))
+  }
+};
+
 export const logout = () => async dispatch => {
   dispatch(clearStore());
   // try {

@@ -1,7 +1,6 @@
 import { TYPES } from '@/actions/PostActions';
 
 export const postReducer = (state = {}, { payload, type }) => {
-  console.log("PayLOddsfsdfdsfdsfdsfsewdewAD_)__)_)_)_", JSON.stringify(payload))
   switch (type) {
     case TYPES.VOTE_DOWN_SUCCESS:
       return {
@@ -23,6 +22,12 @@ export const postReducer = (state = {}, { payload, type }) => {
         ...payload.post
 
       }
+    case TYPES.GET_ALL_PIN_POST_SUCCESS:
+      return {
+        ...state,
+        pinedPost: payload.post.data
+
+      }
     case TYPES.GET_ALL_POST_SUCCESS:
       return {
         ...state,
@@ -35,11 +40,25 @@ export const postReducer = (state = {}, { payload, type }) => {
         postComments: payload?.comments
       }
     case TYPES.COMMENT_ON_POST_SUCCESS:
+
       const updatedComments = [...state.postComments, payload.comment?.data[0]];
       return {
         ...state,
         postComments: updatedComments
       };
+    case TYPES.EDIT_COMMENT_SUCCESS:
+      var myArr = state.postComments
+      myArr[payload.commentIndex] = payload.commentData?.data[0];
+      return {
+        ...state,
+        postComments: [...myArr]
+      };
+    case TYPES.DELETE_COMMENT_SUCCESS:
+      // return (console.log("ARARARAY", payload))
+      const newItems = state.postComments.filter(item => item.id !== payload.comment?.id);
+      // Return a new state object with the updated items array
+      return { ...state, postComments: newItems };
+
     case TYPES.CLEAR_STORE:
       return {};
     default:

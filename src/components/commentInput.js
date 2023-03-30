@@ -11,12 +11,19 @@ import { faPaperPlaneTop } from '@fortawesome/pro-regular-svg-icons';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { showMessage } from "react-native-flash-message";
-import { commentOnPost, TYPES } from '@/actions/PostActions';
+import { commentOnPost, editComment, getCommentsByPostId, TYPES } from '@/actions/PostActions';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { Loader } from './Loader';
-export const CommentInput = ({ postId, userId }) => {
+import { useEffect } from 'react';
+export const CommentInput = React.forwardRef((props, ref,) => {
   const dispatch = useDispatch()
   const [comment, setComment] = useState('');
+  const [postId, setPostId] = useState('');
+  const [userId, setUserId] = useState('');
+  const [isEdit, setIsEdit] = useState(false);
+  const [commentId, setCommentId] = useState('');
+
+
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.COMMENT_ON_POST], state)
   );
@@ -27,11 +34,26 @@ export const CommentInput = ({ postId, userId }) => {
         backgroundColor: theme.light.colors.activeTabIcon
       });
     } else {
+      console.log("ISEDIT__", props.isEdit, "COMMEEEE", props.commentData)
       setComment('')
-      // dispatch(commentOnPostSuccess)
-      dispatch(commentOnPost(postId, userId, comment))
 
+      if (!isEdit) {
+        dispatch(commentOnPost(props.postId, props.userId, comment.trim()))
+        props.updateParentState()
+      } else {
+        setIsEdit(false)
+        dispatch(editComment(props.commentId, props.userId, comment.trim(), props.commentIndex))
+        props.updateParentState()
+      }
     }
+  }
+  React.useImperativeHandle(ref, () => ({
+    childFunction
+  }));
+  const childFunction = () => {
+    console.log("props=-=-=-=-=-=-=>", JSON.stringify(props));
+    setIsEdit(true)
+    setComment(props.commentData)
   }
   return (
     <View style={styles.container}>
@@ -63,7 +85,7 @@ export const CommentInput = ({ postId, userId }) => {
 
     </View>
   );
-};
+})
 
 const styles = StyleSheet.create({
   container: {

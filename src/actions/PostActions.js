@@ -118,6 +118,24 @@ export const TYPES = {
     VOTE_DOWN_COMMENT_SUCCESS: "VOTE_DOWN_COMMENT_SUCCESS",
     VOTE_DOWN_COMMENT_ERROR: "VOTE_DOWN_COMMENT_ERROR",
 
+    //Edit comment
+
+    EDIT_COMMENT: "EDIT_COMMENT",
+    EDIT_COMMENT_REQUEST: "EDIT_COMMENT_REQUEST",
+    EDIT_COMMENT_SUCCESS: "EDIT_COMMENT_SUCCESS",
+    EDIT_COMMENT_ERROR: "EDIT_COMMENT_ERROR",
+
+    //Update Comment
+
+    DELETE_COMMENT: "DELETE_COMMENT",
+    DELETE_COMMENT_REQUEST: "DELETE_COMMENT_REQUEST",
+    DELETE_COMMENT_SUCCESS: "DELETE_COMMENT_SUCCESS",
+    DELETE_COMMENT_ERROR: "DELETE_COMMENT_ERROR",
+
+
+
+
+
 };
 export const createPostSuccess = user => ({
     type: TYPES.CREATE_POST_SUCCESS,
@@ -192,6 +210,67 @@ const commentOnPostError = error => ({
 
 
 
+// Edit comment
+
+export const editCommentSuccess = comment => ({
+    type: TYPES.EDIT_COMMENT_SUCCESS,
+    payload: comment,
+});
+
+
+const editCommentRequest = () => ({
+    type: TYPES.EDIT_COMMENT_REQUEST,
+    payload: null,
+});
+
+
+
+const editCommentError = error => ({
+    type: TYPES.EDIT_COMMENT_ERROR,
+    payload: { error },
+});
+
+// update comment
+
+export const deleteCommentSuccess = comment => ({
+    type: TYPES.DELETE_COMMENT_SUCCESS,
+    payload: { comment },
+});
+
+
+const deleteCommentRequest = () => ({
+    type: TYPES.DELETE_COMMENT_REQUEST,
+    payload: null,
+});
+
+const deleteCommentError = error => ({
+    type: TYPES.DELETE_COMMENT_ERROR,
+    payload: { error },
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //Comment
 export const updatePostSuccess = post => ({
     type: TYPES.UPDATE_POST_SUCCESS,
@@ -262,19 +341,6 @@ const voteDownCommentRequest = () => ({
     type: TYPES.VOTE_DOWN_COMMENT_REQUEST,
     payload: null,
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 //delete Post
@@ -445,6 +511,7 @@ export const getAllPinPost = () => async dispatch => {
     dispatch(getAllPinPostRequest());
     try {
         const post = await PostController.getAllPinnedPost();
+        console.log("responser=-=-=-=-", JSON.stringify(post))
         dispatch(getAllPinPostSuccess(post))
 
     } catch (error) {
@@ -464,6 +531,52 @@ export const commentOnPost = (postId, userId, commentBody) => async dispatch => 
     //     dispatch(commentOnPostError(error))
     // }
 };
+
+export const editComment = (id, userId, commentBody, commentIndex) => async dispatch => {
+    dispatch(editCommentRequest());
+    // try {
+    const comment = await PostController.editComment(id, userId, commentBody);
+    var object = {
+        commentData: comment,
+        commentIndex: commentIndex
+    }
+    console.log("OBJECTTTT", JSON.stringify(object))
+    dispatch(editCommentSuccess(object))
+    // } catch (error) {
+    //     console.log("NEWdfdfdfdWW_COMMENT_erorr", error)
+    //     dispatch(editCommentError(error))
+    // }
+};
+
+export const deleteComment = (id, userId) => async dispatch => {
+    dispatch(deleteCommentRequest());
+    try {
+        const comment = await PostController.DeleteComment(id, userId);
+        console.log("DELETETETETE", JSON.stringify(comment))
+        showMessage({
+            message: strings.deleteCommentSuccsess.deletedSuccess,
+            type: "success"
+        })
+        dispatch(deleteCommentSuccess(comment?.data[0]));
+    } catch (error) {
+        //     alert(error)
+        //     console.log("NEWdfdfdfdWW_COMMENT_erorr", error)
+        dispatch(deleteCommentError(error))
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export const getCommentsByPostId = (postId, userId) => async dispatch => {
     dispatch(getCommentsByPostIdRequest())

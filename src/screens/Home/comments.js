@@ -19,7 +19,9 @@ import {
   faFlag,
   faImage,
   faMessage,
+  faPen,
   faThumbsUp,
+  faTrash,
   faUserPlus,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
@@ -43,7 +45,7 @@ import { Data, SingleData } from './Data/commentsData';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { getCommentsByPostId, TYPES } from '@/actions/PostActions';
+import { deleteComment, getCommentsByPostId, TYPES } from '@/actions/PostActions';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { Loader } from '@/components/Loader';
 import { getCommentsByPostIdData } from '@/selectors/PostSelectors';
@@ -52,12 +54,14 @@ import { useIsFocused } from '@react-navigation/native';
 import moment from 'moment';
 import { useRef } from 'react';
 export default function Comments({ navigation, route }) {
+  const childRef = useRef(null)
   const flatListRef = useRef(null);
   const { DATA } = route.params;
   const USER = useSelector(getUser)
   const COMMENTS = useSelector(getCommentsByPostIdData)
   const dispatch = useDispatch()
   const [openReplyTo, setOpenReplyTo] = useState(false);
+  console.log("USER+_+_+_", USER)
   //Option and Report
   const [open, setOpen] = useState(false);
   const [openToast, setOpenToast] = useState(false);
@@ -71,9 +75,22 @@ export default function Comments({ navigation, route }) {
   ]);
   const [reportOptionValue, setReportOptionValue] = useState('');
   const [reportComment, setReportCommnet] = useState('');
+
+
+  const [commentUserId, setCommentUserId] = useState('');
+  const [comment, setComment] = useState('');
+  const [commentId, setCommentId] = useState('');
+  const [isEdit, setIsEdit] = useState(false);
+  const [commentIndex, setCommentIndex] = useState('');
+
+
+
   const focus = useIsFocused();
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.GET_COMMENTS_BY_POST_ID], state)
+  );
+  const deleteLoading = useSelector(state =>
+    isLoadingSelector([TYPES.DELETE_COMMENT], state)
   );
   useEffect(() => {
     dispatch(getCommentsByPostId(DATA?.id, USER?.id))
@@ -84,6 +101,26 @@ export default function Comments({ navigation, route }) {
     flatListRef.current.scrollToEnd({ animated: true });
   };
 
+  const onDeleteComment = () => {
+
+    dispatch(deleteComment(commentId, USER?.id))
+
+  }
+  console.log("ALL_COMMENTS", COMMENTS)
+  const onEditComment = () => {
+    setIsEdit(true)
+    setOpen(false);
+    childRef.current.childFunction()
+
+  }
+  const updateParentState = () => {
+    setIsEdit(false)
+    setCommentUserId('')
+    setComment('')
+    setCommentId('')
+    setCommentIndex('')
+
+  }
   return (
 
     <SafeAreaView style={styles.container}>
@@ -100,6 +137,9 @@ export default function Comments({ navigation, route }) {
         contentContainerStyle={{ flex: 1 }}
       >
         <HorizontalLine color={theme.light.colors.infoBgLight} paddingTop={15} />
+        {/* <CustomLoader
+          open={deleteLoading}
+        /> */}
         <View style={styles.commentContainer}>
           {isLoading == true ?
             <Loader
@@ -108,7 +148,7 @@ export default function Comments({ navigation, route }) {
             />
             :
             <FlatList
-              data={COMMENTS}
+              data={COMMENTS?.postComments}
               ref={flatListRef}
               keyExtractor={item => item.id}
               onContentSizeChange={scrollToBottom}
@@ -128,7 +168,13 @@ export default function Comments({ navigation, route }) {
                   hasVotedUp={item?.has_upvoted}
                   hasVotedDown={item?.has_downvoted}
                   replyPress={() => setOpenReplyTo(true)}
-                  morePress={() => setOpen(true)}
+                  morePress={() => {
+                    setOpen(true);
+                    setCommentId(item?.id);
+                    setCommentUserId(item?.user?.id);
+                    setComment(item?.commentBody)
+                    setCommentIndex(index)
+                  }}
                 />
               )}
             />
@@ -154,54 +200,89 @@ export default function Comments({ navigation, route }) {
           </View>
         )}
 
-
-
         {
           !isLoading &&
           <CommentInput
+            ref={childRef}
+            commentData={comment}
+            commentId={commentId}
+            isEdit={isEdit}
             postId={DATA?.id}
-            userId={DATA?.userId}
+            userId={USER?.id}
+            updateParentState={updateParentState}
+            commentIndex={commentIndex}
           />
 
         }
 
         {/*  Slide up for follow, edit , review  */}
         {open && (
-          <ModalDown open={open} setOpen={setOpen}>
-            <ModalList
-              title={strings.operations.follow + strings.home.DummyUser}
-              icon={faUserPlus}
-              iconColor={theme.light.colors.primary}
-              iconBg={theme.light.colors.primaryBgLight}
-            />
-            <ModalList
-              title={strings.operations.sendPrivateMessage}
-              icon={faMessage}
-              iconColor={theme.light.colors.success}
-              iconBg={theme.light.colors.successBgLight}
-            />
-            <HorizontalLine
-              color={theme.light.colors.infoBgLight}
-              paddingTop={15}
-              paddingBottom={8}
-            />
-            <ModalList
-              title={strings.home.report}
-              icon={faFlag}
-              iconColor={theme.light.colors.secondary}
-              iconBg={theme.light.colors.infoBgLight}
-              onPress={() => {
-                setOpenReport(true);
-                setOpen(false);
-              }}
-            />
-            <ModalList
-              title={strings.operations.block + strings.home.DummyUser}
-              icon={faXmark}
-              iconColor={theme.light.colors.secondary}
-              iconBg={theme.light.colors.infoBgLight}
-            />
-          </ModalDown>
+          (commentUserId == USER?.id ? (
+            <ModalDown open={open} setOpen={setOpen}>
+              <ModalList
+                title={strings.profile.editPost}
+                icon={faPen}
+                iconBg={theme.light.colors.infoBgLight}
+                iconColor={theme.light.colors.info}
+                onPress={() => {
+                  setIsEdit(true)
+                  onEditComment()
+
+                }}
+              />
+              <HorizontalLine
+                color={theme.light.colors.infoBgLight}
+                paddingTop={15}
+                paddingBottom={8}
+              />
+              <ModalList
+                title={strings.operations.delete}
+                icon={faTrash}
+                iconBg={theme.light.colors.infoBgLight}
+                iconColor={theme.light.colors.secondary}
+                onPress={() => {
+                  setOpen(false),
+                    onDeleteComment()
+                }}
+              />
+            </ModalDown>
+          ) :
+            <ModalDown open={open} setOpen={setOpen}>
+              <ModalList
+                title={strings.operations.follow + strings.home.DummyUser}
+                icon={faUserPlus}
+                iconColor={theme.light.colors.primary}
+                iconBg={theme.light.colors.primaryBgLight}
+              />
+              <ModalList
+                title={strings.operations.sendPrivateMessage}
+                icon={faMessage}
+                iconColor={theme.light.colors.success}
+                iconBg={theme.light.colors.successBgLight}
+              />
+              <HorizontalLine
+                color={theme.light.colors.infoBgLight}
+                paddingTop={15}
+                paddingBottom={8}
+              />
+              <ModalList
+                title={strings.home.report}
+                icon={faFlag}
+                iconColor={theme.light.colors.secondary}
+                iconBg={theme.light.colors.infoBgLight}
+                onPress={() => {
+                  setOpenReport(true);
+                  setOpen(false);
+                }}
+              />
+              <ModalList
+                title={strings.operations.block + strings.home.DummyUser}
+                icon={faXmark}
+                iconColor={theme.light.colors.secondary}
+                iconBg={theme.light.colors.infoBgLight}
+              />
+            </ModalDown>
+          )
         )}
 
         <ReportOnPostModal open={openReport} setOpen={setOpenReport}>

@@ -385,5 +385,10 @@ export const en = {
   },
   deletePost: {
     deletedSuccess: "Delete Successfull"
+  }, deleteCommentSuccsess: {
+    deletedSuccess: "Comment Deleted"
+  },
+  userFollowedSuccsess: {
+    followedSuccess: "Following"
   }
 };

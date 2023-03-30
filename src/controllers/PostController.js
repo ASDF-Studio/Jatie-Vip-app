@@ -309,6 +309,43 @@ export class PostController {
         })
     }
 
+    static async editComment(id, userId, commentBody) {
+        return new Promise((resolve, reject) => {
+            const endpoint = API_BASE_URL + API_END_POINTS.EDIT_COMMENT;
+            var body = JSON.stringify({
+                "id": id,
+                "userId": userId,
+                "commentBody": commentBody
+            });
+            console.log("EDIT_COMMENT_BODY", body)
+            HttpClient.post(endpoint, body)
+                .then((response) => {
+                    console.log("EDIT_COMMENT_Response", JSON.stringify(response))
+                    resolve(response)
+                }).catch((error) => {
+                    console.log("EDIT_COMMENT_Response_ERRR", JSON.stringify(error))
+                    reject(error)
+                });
+        })
+    }
+    static async DeleteComment(id, userId) {
+        return new Promise((resolve, reject) => {
+            const endpoint = API_BASE_URL + API_END_POINTS.DELETE_COMMENT;
+            var body = JSON.stringify({
+                "id": id,
+                "userId": userId
+            });
+            console.log("DELETE_COMMENT_BODY", body)
+            HttpClient.post(endpoint, body)
+                .then((response) => {
+                    console.log("DELETE____COMMENT_Response", JSON.stringify(response))
+                    resolve(response)
+                }).catch((error) => {
+                    console.log("CDELEYE_Response_ERRR", JSON.stringify(error))
+                    reject(error)
+                });
+        })
+    }
     // comments by post id
     static async getCommentsByPostId(postId, userID) {
         return new Promise((resolve, reject) => {
@@ -321,7 +358,7 @@ export class PostController {
 
             HttpClient.post(endpoint, body)
                 .then((response) => {
-                    console.log("ALL_COMMENT_Response", JSON.stringify(response))
+
 
                     resolve(response)
                 }).catch((error) => {

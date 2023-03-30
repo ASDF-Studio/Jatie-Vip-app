@@ -31,8 +31,9 @@ export const CommentCard = ({
   const dispatch = useDispatch()
   const [upVote, setUpVote] = useState(likeCount);
   const [downVote, setDownVote] = useState(disLikeCount);
-  const COMMENTS = useSelector(getCommentsByPostIdData)
-  console.log("COMMENT_ADATTddATATATA_NEWWWWW", JSON.stringify(commentData))
+  const comm = useSelector(getCommentsByPostIdData)
+  const COMMENTS = comm?.postComments
+  // console.log("COMMENT_ADATTddATATATA_NEWWWWW", JSON.stringify(commentData))
   const onLikeComment = () => {
 
     var arr = COMMENTS;

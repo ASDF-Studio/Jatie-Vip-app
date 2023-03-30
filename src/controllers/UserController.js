@@ -13,6 +13,7 @@ export class UserController {
       HttpClient.post(endpoint, data)
         .then((response) => {
 
+
           resolve(response);
         })
         .catch((error) => {
@@ -30,6 +31,7 @@ export class UserController {
       });
       HttpClient.post(endpoint, data)
         .then((response) => {
+          console.log("LOGIN_R_0-0-0-0ESSSSS", JSON.stringify(response))
           resolve(response);
         })
         .catch((error) => {
@@ -109,6 +111,47 @@ export class UserController {
         });
     });
   }
+
+
+  static async followUser(followerId, followId) {
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.VERIFY_OTP;
+      var data = JSON.stringify({
+        "followerId": followerId,
+        "followId": followId
+      });
+      HttpClient.post(endpoint, data)
+        .then((response) => {
+          console.log("followerId-0-0-0ESSSSS", JSON.stringify(response))
+          resolve(response);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
+
+  static async unFollowUser(unFollowerId, followId) {
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.VERIFY_OTP;
+      var data = JSON.stringify({
+        "unfollowerId": unFollowerId,
+        "followId": followId
+
+      });
+      HttpClient.post(endpoint, data)
+        .then((response) => {
+          console.log("unfollowerId-0-0-0ESSSSS", JSON.stringify(response))
+          resolve(response);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
+
+
+
 
   // create post
 
