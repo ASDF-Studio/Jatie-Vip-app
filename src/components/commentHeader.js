@@ -40,7 +40,7 @@ export const CommentHeader = ({
         {time ? (
           <Text style={[styles.timeTxt, { paddingRight: showPin ? 40 : 0 }]}>
             {' '}
-            {time} mins ago
+            {time}
           </Text>
         ) : null}
         {showPin ? (

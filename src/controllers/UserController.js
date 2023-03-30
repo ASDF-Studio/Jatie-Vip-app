@@ -178,11 +178,10 @@ export class UserController {
       const headers = {
         'Content-Type': 'multipart/form-data'
       }
-      console.log("##########    Data", data)
+
       await HttpClient.post(endpoint, data, { headers })
         .then((response) => {
           resolve(response);
-          console.log("Final response", response);
         })
         .catch((error) => {
           reject(error);
@@ -202,11 +201,9 @@ export class UserController {
         "userType": userType,
       });
 
-      console.log("##########    Data", data)
       HttpClient.post(endpoint, data)
         .then((response) => {
           resolve(response);
-          console.log("Final response", response);
         })
         .catch((error) => {
           reject(error);
@@ -224,11 +221,9 @@ export class UserController {
         "likeUserID": userId,
       });
 
-      console.log("##########    Data", data)
       HttpClient.post(endpoint, data)
         .then((response) => {
           resolve(response);
-          console.log("Final response-=-=-=-=-=-=-=-=-=", response);
         })
         .catch((error) => {
           reject(error);
@@ -246,11 +241,9 @@ export class UserController {
         "unlikeUserID": userId,
       });
 
-      console.log("##########    Data", data)
       HttpClient.post(endpoint, data)
         .then((response) => {
           resolve(response);
-          console.log("Final response", response);
         })
         .catch((error) => {
           reject(error);
@@ -288,7 +281,6 @@ export class UserController {
       await HttpClient.post(endpoint, data, { headers })
         .then((response) => {
           resolve(response);
-          console.log("Final response", response);
         })
         .catch((error) => {
           reject(error);
@@ -386,7 +378,6 @@ export class UserController {
       const endpoint = API_BASE_URL + API_END_POINTS.ALL_POST;
       HttpClient.post(endpoint)
         .then((response) => {
-          // console.log("ALL_POST_RESPONSE", JSON.stringify(response))
           resolve(response);
         })
         .catch((error) => {

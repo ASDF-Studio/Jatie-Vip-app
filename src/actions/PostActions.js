@@ -226,16 +226,10 @@ const getCommentsByPostIdRequest = () => ({
     payload: null,
 });
 
-
-
-
-
-
 const voteUpCommentError = error => ({
     type: TYPES.VOTE_UP_COMMENT_ERROR,
     payload: { error },
 });
-
 
 export const voteUpCommentSuccess = comments => ({
     type: TYPES.VOTE_UP_COMMENT_SUCCESS,
@@ -439,7 +433,6 @@ export const getAllPost = (userId) => async dispatch => {
     dispatch(getAllPostRequest());
     try {
         const post = await PostController.getAllPost(userId);
-        console.log("ALL_POST=-=-=-=-", JSON.stringify(post))
         dispatch(getAllPostSuccess(post))
 
     } catch (error) {
@@ -461,23 +454,23 @@ export const getAllPinPost = () => async dispatch => {
 };
 
 export const commentOnPost = (postId, userId, commentBody) => async dispatch => {
-    dispatch(commentOnPostRequest())
-    try {
-        const comment = await PostController.commentOnPost(postId, userId, commentBody)
-        dispatch(commentOnPostSuccess(comment))
-        // console.log("NEWWW_COMMENT", JSON.stringify(comment))
-    } catch (error) {
-        dispatch(commentOnPostError(error))
-    }
+    dispatch(commentOnPostRequest());
+    // try {
+    const comment = await PostController.commentOnPost(postId, userId, commentBody);
+    dispatch(commentOnPostSuccess(comment));
+    // } catch (error) {
+    //     alert(error)
+    //     console.log("NEWdfdfdfdWW_COMMENT_erorr", error)
+    //     dispatch(commentOnPostError(error))
+    // }
 };
 
 export const getCommentsByPostId = (postId, userId) => async dispatch => {
     dispatch(getCommentsByPostIdRequest())
     try {
         const comments = await PostController.getCommentsByPostId(postId, userId)
-        dispatch(getCommentsByPostIdSuccess(comments))
+        dispatch(getCommentsByPostIdSuccess(comments.data))
     } catch (error) {
-        console.log("ERROOROORR", error)
         dispatch(getCommentByPostIdError(error))
     }
 };
@@ -499,8 +492,6 @@ export const voteDownComment = (id, userId) => async dispatch => {
         const comments = await PostController.voteDownComment(id, userId)
         dispatch(voteDownCommentSuccess(comments))
     } catch (error) {
-
-        console.log("ERROOROORR", error)
         dispatch(voteDownCommentError(error))
     }
 };

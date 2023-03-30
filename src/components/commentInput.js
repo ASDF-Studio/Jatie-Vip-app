@@ -14,7 +14,7 @@ import { showMessage } from "react-native-flash-message";
 import { commentOnPost, TYPES } from '@/actions/PostActions';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { Loader } from './Loader';
-export const CommentInput = ({ postId, userId, }) => {
+export const CommentInput = ({ postId, userId }) => {
   const dispatch = useDispatch()
   const [comment, setComment] = useState('');
   const isLoading = useSelector(state =>
@@ -30,6 +30,7 @@ export const CommentInput = ({ postId, userId, }) => {
       setComment('')
       // dispatch(commentOnPostSuccess)
       dispatch(commentOnPost(postId, userId, comment))
+
     }
   }
   return (
@@ -69,6 +70,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderColor: theme.light.colors.infoBgLight,
     width: '100%',
+    // position: "absolute", bottom: 0
   },
   textFiled: {
     backgroundColor: theme.light.colors.white, //inputFiled

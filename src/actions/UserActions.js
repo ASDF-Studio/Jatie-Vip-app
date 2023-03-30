@@ -209,7 +209,6 @@ export const verifyOtp = (number, Otp, isRegistered) => async dispatch => {
     // let selectedValue = "";
     const user = await UserController.verifyOtp(number, Otp);
     if (isRegistered == true) {
-      // console.log("user", user.isAdmin)
       dispatch(verifyOtpSuccess(user))
       if (user?.isAdmin == true) {
         let selectedValue = "Admin";
@@ -251,7 +250,6 @@ export const updateProfile = (dob, fullname, gender, id, primaryEmail, location,
   try {
     const user = await UserController.updateProfile(dob, fullname, gender, id, primaryEmail, location, username, file, mimeType);
     dispatch(updateProfileSuccess(user))
-    // console.log(user);
     if (screen == NAVIGATION.editProfile) {
       showMessage({
         message: strings.editProfile.updatedSuccess,

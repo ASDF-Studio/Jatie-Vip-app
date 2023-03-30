@@ -10,8 +10,9 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { CommentHeader } from './commentHeader';
 import { faCircleDown, faReplyAll } from '@fortawesome/pro-regular-svg-icons';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { voteDownComment, voteUpComment } from '@/actions/PostActions';
+import { useDispatch, useSelector } from 'react-redux';
+import { getCommentsByPostIdSuccess, voteDownComment, voteUpComment } from '@/actions/PostActions';
+import { getCommentsByPostIdData } from '@/selectors/PostSelectors';
 
 export const CommentCard = ({
   name,
@@ -25,21 +26,57 @@ export const CommentCard = ({
   disLikePress,
   replyPress,
   morePress,
-  userId, commentId, commentIndex
+  userId, commentId, commentIndex, commentData
 }) => {
   const dispatch = useDispatch()
   const [upVote, setUpVote] = useState(likeCount);
   const [downVote, setDownVote] = useState(disLikeCount);
-
+  const COMMENTS = useSelector(getCommentsByPostIdData)
+  console.log("COMMENT_ADATTddATATATA_NEWWWWW", JSON.stringify(commentData))
   const onLikeComment = () => {
-    try {
-      dispatch(voteUpComment(commentId, userId))
-    } catch (error) {
 
+    var arr = COMMENTS;
+    var voteUpNumber = parseInt(arr[commentIndex].upVote)
+    var voteDonwNumber = parseInt(arr[commentIndex].downVote)
+    if (!arr[commentIndex].has_upvoted) {
+      arr[commentIndex].has_upvoted = true
+      arr[commentIndex].upVote = voteUpNumber + 1
+      if (arr[commentIndex].has_downvoted) {
+        arr[commentIndex].has_downvoted = false
+        arr[commentIndex].downVote = voteDonwNumber - 1
+        setDownVote(voteDonwNumber - 1)
+      }
+      setUpVote(voteUpNumber + 1)
+    } else {
+      arr[commentIndex].has_upvoted = false
+      arr[commentIndex].upVote = voteUpNumber - 1
+      setUpVote(voteUpNumber - 1)
     }
-    setUpVote(likeCount + 3)
+    dispatch(getCommentsByPostIdSuccess(arr))
+    dispatch(voteUpComment(commentId, userId))
+
+
   }
   const onDisLikeComment = () => {
+    var arr = COMMENTS;
+    var voteUpNumber = parseInt(arr[commentIndex].upVote)
+    var voteDonwNumber = parseInt(arr[commentIndex].downVote)
+    if (!arr[commentIndex].has_downvoted) {
+      arr[commentIndex].has_downvoted = true
+      arr[commentIndex].downVote = voteDonwNumber + 1
+      if (arr[commentIndex].has_upvoted) {
+        arr[commentIndex].has_upvoted = false
+        arr[commentIndex].upVote = voteUpNumber - 1
+        setUpVote(voteUpNumber - 1)
+      }
+      setDownVote(voteDonwNumber + 1)
+
+    } else {
+      arr[commentIndex].has_downvoted = false
+      arr[commentIndex].downVote = voteDonwNumber - 1
+      setDownVote(voteDonwNumber - 1)
+    }
+    dispatch(getCommentsByPostIdSuccess(arr))
     dispatch(voteDownComment(commentId, userId))
   }
   return (
@@ -64,7 +101,9 @@ export const CommentCard = ({
             <TouchableOpacity
 
               onPress={onLikeComment}
-              style={[styles.iconContainer, styles.likeContainer]}
+              style={[styles.iconContainer, styles.likeContainer,
+              COMMENTS[commentIndex].has_upvoted && { backgroundColor: theme.light.colors.infoBgLight }
+              ]}
             >
               <Icon
                 icon={faCircleUp}
@@ -76,7 +115,10 @@ export const CommentCard = ({
             </TouchableOpacity>
             <TouchableOpacity
               onPress={onDisLikeComment}
-              style={[styles.iconContainer, styles.disLikeContainer]}
+              style={
+                [styles.iconContainer, styles.disLikeContainer,
+                COMMENTS[commentIndex].has_downvoted && { backgroundColor: theme.light.colors.infoBgLight }
+                ]}
             >
               <Icon
                 icon={faCircleDown}
@@ -168,7 +210,11 @@ const styles = StyleSheet.create({
     padding: ms(3),
   },
   likeContainer: {
-    paddingLeft: ms(8),
+    borderRadius: 13,
+    padding: ms(3),
+    paddingLeft: ms(10),
+    paddingRight: ms(10),
+    // marginLeft: ms(8),
   },
   likeTxt: {
     fontFamily: FontFamily.Recoleta_regular,
@@ -176,7 +222,7 @@ const styles = StyleSheet.create({
     paddingLeft: ms(3),
   },
   disLikeContainer: {
-    backgroundColor: theme.light.colors.infoBgLight,
+
     borderRadius: 13,
     padding: ms(3),
     paddingLeft: ms(10),

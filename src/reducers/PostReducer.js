@@ -1,8 +1,7 @@
 import { TYPES } from '@/actions/PostActions';
-const INITIAL_STATE = {
-  postComments: []
-}
-export const postReducer = (state = { INITIAL_STATE }, { payload, type }) => {
+
+export const postReducer = (state = {}, { payload, type }) => {
+  console.log("PayLOddsfsdfdsfdsfdsfsewdewAD_)__)_)_)_", JSON.stringify(payload))
   switch (type) {
     case TYPES.VOTE_DOWN_SUCCESS:
       return {
@@ -33,13 +32,14 @@ export const postReducer = (state = { INITIAL_STATE }, { payload, type }) => {
     case TYPES.GET_COMMENTS_BY_POST_ID_SUCCESS:
       return {
         ...state,
-        postComments: payload.comments
+        postComments: payload?.comments
       }
-    // case TYPES.COMMENT_ON_POST_SUCCESS:
-    //   return {
-    //     ...state,
-    //     postComments: state.postComments.data.push(payload)
-    //   }
+    case TYPES.COMMENT_ON_POST_SUCCESS:
+      const updatedComments = [...state.postComments, payload.comment?.data[0]];
+      return {
+        ...state,
+        postComments: updatedComments
+      };
     case TYPES.CLEAR_STORE:
       return {};
     default:

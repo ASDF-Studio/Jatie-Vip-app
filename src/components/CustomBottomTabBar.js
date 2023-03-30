@@ -66,8 +66,8 @@ function CustomBottomTabBar({ state, descriptors, navigation }) {
           options.tabBarLabel !== undefined
             ? options.tabBarLabel
             : options.title !== undefined
-            ? options.title
-            : route.name;
+              ? options.title
+              : route.name;
 
         const isFocused = state.index === index;
 
@@ -117,7 +117,7 @@ function CustomBottomTabBar({ state, descriptors, navigation }) {
               icon={tabBarIcon[route.name]}
               size={20}
               color={isFocused ? colors.activeTabIcon : colors.inactiveTabIcon}
-              // style={{ colo: 'black' }}
+            // style={{ colo: 'black' }}
             />
             <Text
               style={[

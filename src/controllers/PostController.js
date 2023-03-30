@@ -94,11 +94,9 @@ export class PostController {
                 "userType": userType,
             });
 
-            console.log("##########    Data", data)
             HttpClient.post(endpoint, data)
                 .then((response) => {
                     resolve(response);
-                    console.log("Final response", response);
                 })
                 .catch((error) => {
                     reject(error);
@@ -117,11 +115,9 @@ export class PostController {
                 "likeUserID": userId,
             });
 
-            console.log("##########    Data", data)
             HttpClient.post(endpoint, data)
                 .then((response) => {
                     resolve(response);
-                    console.log("Final response", response);
                 })
                 .catch((error) => {
                     reject(error);
@@ -140,11 +136,10 @@ export class PostController {
                 "unlikeUserID": userId,
             });
 
-            console.log("##########    Data", data)
             HttpClient.post(endpoint, data)
                 .then((response) => {
                     resolve(response);
-                    console.log("Final response", response);
+
                 })
                 .catch((error) => {
                     reject(error);
@@ -182,7 +177,7 @@ export class PostController {
             await HttpClient.post(endpoint, data, { headers })
                 .then((response) => {
                     resolve(response);
-                    console.log("Final response", response);
+
                 })
                 .catch((error) => {
                     reject(error);
@@ -281,10 +276,10 @@ export class PostController {
             const body = JSON.stringify({
                 "loggedInUserId": userId
             })
-            console.log("POOSOOSOSOSOS", body)
+
             HttpClient.post(endpoint, body)
                 .then((response) => {
-                    console.log("response__+_+__POSOOSOSOSOSOSSO", response)
+
                     resolve(response);
                 })
                 .catch((error) => {
@@ -302,12 +297,13 @@ export class PostController {
                 "userId": userId,
                 "commentBody": commentBody
             });
-            console.log("COMMENT_BODY", JSON.stringify(body))
+            console.log("COMMENT_BODY", body)
             HttpClient.post(endpoint, body)
                 .then((response) => {
-                    console.log("COMMENT_RESPONSE-=-=-=-=-=0---=0=0=0==0", JSON.stringify(response))
+                    console.log("COMMENT_Response", JSON.stringify(response))
                     resolve(response)
                 }).catch((error) => {
+                    console.log("COMMENT_Response_ERRR", JSON.stringify(error))
                     reject(error)
                 });
         })
@@ -322,13 +318,14 @@ export class PostController {
                 "postId": postId,
                 "loggedInUserId": userID
             });
-            console.log("COMMENT_BODY=--=-=-=-=-=-=-=---", JSON.stringify(body))
+
             HttpClient.post(endpoint, body)
                 .then((response) => {
-                    console.log("COMMENT_RESPONSE=-=-=-=-=-=-=", JSON.stringify(response))
+                    console.log("ALL_COMMENT_Response", JSON.stringify(response))
+
                     resolve(response)
                 }).catch((error) => {
-                    console.log("EROOOPOPIIUIUI", error)
+
                     reject(error)
                 });
         })
@@ -344,10 +341,13 @@ export class PostController {
                 "id": id,
                 "likeUserID": userId,
             });
+            console.log("COMMMEMEMEMEEMEMEM", body)
             HttpClient.post(endpoint, body)
                 .then((response) => {
+                    console.log("RESPONSEEEEEEEE", JSON.stringify(response))
                     resolve(response)
                 }).catch((error) => {
+                    console.log("ERROROROROROR", JSON.stringify(error))
                     reject(error)
                 });
         })
@@ -362,7 +362,6 @@ export class PostController {
                 "id": id,
                 "likeUserID": userId,
             });
-            console.log("BOSYYSYSYS", body)
             HttpClient.post(endpoint, body)
                 .then((response) => {
                     resolve(response)

@@ -34,6 +34,7 @@ import {
   TouchableOpacity,
   TextInput,
   ActivityIndicator,
+  KeyboardAvoidingView,
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -47,15 +48,16 @@ import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { Loader } from '@/components/Loader';
 import { getCommentsByPostIdData } from '@/selectors/PostSelectors';
 import { getUser } from '@/selectors/UserSelectors';
-
+import { useIsFocused } from '@react-navigation/native';
+import moment from 'moment';
+import { useRef } from 'react';
 export default function Comments({ navigation, route }) {
+  const flatListRef = useRef(null);
   const { DATA } = route.params;
   const USER = useSelector(getUser)
   const COMMENTS = useSelector(getCommentsByPostIdData)
-  console.log("MIKEEEEfgfvgdvddEEEEEE-=-LATESSTSs43t3T4STSTS", JSON.stringify(COMMENTS))
   const dispatch = useDispatch()
   const [openReplyTo, setOpenReplyTo] = useState(false);
-  const [commentsList, setCommentsList] = useState(COMMENTS?.data)
   //Option and Report
   const [open, setOpen] = useState(false);
   const [openToast, setOpenToast] = useState(false);
@@ -69,53 +71,61 @@ export default function Comments({ navigation, route }) {
   ]);
   const [reportOptionValue, setReportOptionValue] = useState('');
   const [reportComment, setReportCommnet] = useState('');
-
+  const focus = useIsFocused();
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.GET_COMMENTS_BY_POST_ID], state)
   );
-  console.log("iuiuiu", isLoading)
   useEffect(() => {
     dispatch(getCommentsByPostId(DATA?.id, USER?.id))
 
-  }, [])
-  const onComment = () => {
+  }, [focus])
+  useEffect(() => { scrollToBottom() }, [COMMENTS])
 
-  }
-  console.log("COMMMES)()(S)(S", JSON.stringify(commentsList))
+  const scrollToBottom = () => {
+    flatListRef.current.scrollToEnd({ animated: true });
+  };
   return (
 
     <SafeAreaView style={styles.container}>
-      <KeyboardAwareScrollView>
-        <View style={styles.headerContainer}>
-          <TopBackButton
-            onPress={() => navigation.goBack()}
-            style={styles.TopBackButton}
-          />
-          <Text style={styles.headTxt}> {strings.home.comments} </Text>
-        </View>
+
+      <View style={styles.headerContainer}>
+        <TopBackButton
+          onPress={() => navigation.goBack()}
+          style={styles.TopBackButton}
+        />
+        <Text style={styles.headTxt}> {strings.home.comments} </Text>
+      </View>
+      <KeyboardAwareScrollView
+        keyboardShouldPersistTaps={'always'}
+        contentContainerStyle={{ flex: 1 }}
+      >
         <HorizontalLine color={theme.light.colors.infoBgLight} paddingTop={15} />
         <View style={styles.commentContainer}>
           {isLoading == true ?
             <Loader
               visible={true}
               size={"large"}
-
             />
-            : <FlatList
-              data={commentsList}
+            :
+            <FlatList
+              data={COMMENTS}
+              ref={flatListRef}
               keyExtractor={item => item.id}
               renderItem={({ item, index }) => (
                 <CommentCard
-                  name={"mike"}
+                  name={item?.user?.fullName}
                   userId={USER?.id}
+                  commentData={item}
                   commentIndex={index}
                   commentId={item?.id}
                   userName={item?.user?.userName}
                   imageUrl={item?.user?.profilePic}
-                  time={10}
+                  time={moment(item?.created_at).fromNow()}
                   commentTxt={item?.commentBody}
                   likeCount={item?.upVote}
                   disLikeCount={item?.downVote}
+                  hasVotedUp={item?.has_upvoted}
+                  hasVotedDown={item?.has_downvoted}
                   replyPress={() => setOpenReplyTo(true)}
                   morePress={() => setOpen(true)}
                 />
@@ -142,6 +152,9 @@ export default function Comments({ navigation, route }) {
             </TouchableOpacity>
           </View>
         )}
+
+
+
         {
           !isLoading &&
           <CommentInput
@@ -151,107 +164,105 @@ export default function Comments({ navigation, route }) {
 
         }
 
-      </KeyboardAwareScrollView>
-
-      {/*  Slide up for follow, edit , review  */}
-      {open && (
-        <ModalDown open={open} setOpen={setOpen}>
-          <ModalList
-            title={strings.operations.follow + strings.home.DummyUser}
-            icon={faUserPlus}
-            iconColor={theme.light.colors.primary}
-            iconBg={theme.light.colors.primaryBgLight}
-          />
-          <ModalList
-            title={strings.operations.sendPrivateMessage}
-            icon={faMessage}
-            iconColor={theme.light.colors.success}
-            iconBg={theme.light.colors.successBgLight}
-          />
-          <HorizontalLine
-            color={theme.light.colors.infoBgLight}
-            paddingTop={15}
-            paddingBottom={8}
-          />
-          <ModalList
-            title={strings.home.report}
-            icon={faFlag}
-            iconColor={theme.light.colors.secondary}
-            iconBg={theme.light.colors.infoBgLight}
-            onPress={() => {
-              setOpenReport(true);
-              setOpen(false);
-            }}
-          />
-          <ModalList
-            title={strings.operations.block + strings.home.DummyUser}
-            icon={faXmark}
-            iconColor={theme.light.colors.secondary}
-            iconBg={theme.light.colors.infoBgLight}
-          />
-        </ModalDown>
-      )}
-
-      <ReportOnPostModal open={openReport} setOpen={setOpenReport}>
-        <View style={styles.reportPostContainer}>
-          <TopBackButton
-            onPress={() => setOpenReport(false)}
-            style={styles.reportPostBackButton}
-          />
-          <View style={styles.reportPostTopContainer}>
-            <DropDownPicker
-              placeholder={strings.home.selectReason}
-              open={reportListOpen}
-              value={reportOptionValue}
-              items={reportOption}
-              setOpen={setReportListOpen}
-              setValue={setReportOptionValue}
-              setItems={setReportOption}
-              style={styles.dropDownPicker}
-              textStyle={styles.dropListTxt}
-              dropDownContainerStyle={styles.dropDownContainerStyle}
+        {/*  Slide up for follow, edit , review  */}
+        {open && (
+          <ModalDown open={open} setOpen={setOpen}>
+            <ModalList
+              title={strings.operations.follow + strings.home.DummyUser}
+              icon={faUserPlus}
+              iconColor={theme.light.colors.primary}
+              iconBg={theme.light.colors.primaryBgLight}
             />
-            <TextInput
-              multiline
-              editable
-              onChangeText={val => setReportCommnet(val)}
-              placeholder={strings.operations.addComments}
-              numberOfLines={4}
-              style={styles.txtInput}
+            <ModalList
+              title={strings.operations.sendPrivateMessage}
+              icon={faMessage}
+              iconColor={theme.light.colors.success}
+              iconBg={theme.light.colors.successBgLight}
             />
-          </View>
-          <HorizontalLine
-            color={theme.light.colors.infoBgLight}
-            paddingTop={15}
-          />
-          <View style={styles.reportPostBottomContainer}>
-            <Icon
-              icon={faImage}
-              size={ms(22)}
-              color={theme.light.colors.secondary}
+            <HorizontalLine
+              color={theme.light.colors.infoBgLight}
+              paddingTop={15}
+              paddingBottom={8}
             />
-            <Button
-              title={strings.operations.submit}
-              disabled={reportComment.length ? false : true}
-              opacity={reportComment.length ? 1 : 0.4}
-              style={styles.reportPostButton}
+            <ModalList
+              title={strings.home.report}
+              icon={faFlag}
+              iconColor={theme.light.colors.secondary}
+              iconBg={theme.light.colors.infoBgLight}
               onPress={() => {
-                setOpenToast(true), setOpenReport(false);
+                setOpenReport(true);
+                setOpen(false);
               }}
             />
-          </View>
-        </View>
-      </ReportOnPostModal>
-      {openToast && (
-        <Toast
-          open={openToast}
-          setOpen={setOpenToast}
-          icon={faThumbsUp}
-          message={strings.home.reportMessage}
-          onPressOk={setOpenToast}
-        />
-      )}
+            <ModalList
+              title={strings.operations.block + strings.home.DummyUser}
+              icon={faXmark}
+              iconColor={theme.light.colors.secondary}
+              iconBg={theme.light.colors.infoBgLight}
+            />
+          </ModalDown>
+        )}
 
+        <ReportOnPostModal open={openReport} setOpen={setOpenReport}>
+          <View style={styles.reportPostContainer}>
+            <TopBackButton
+              onPress={() => setOpenReport(false)}
+              style={styles.reportPostBackButton}
+            />
+            <View style={styles.reportPostTopContainer}>
+              <DropDownPicker
+                placeholder={strings.home.selectReason}
+                open={reportListOpen}
+                value={reportOptionValue}
+                items={reportOption}
+                setOpen={setReportListOpen}
+                setValue={setReportOptionValue}
+                setItems={setReportOption}
+                style={styles.dropDownPicker}
+                textStyle={styles.dropListTxt}
+                dropDownContainerStyle={styles.dropDownContainerStyle}
+              />
+              <TextInput
+                multiline
+                editable
+                onChangeText={val => setReportCommnet(val)}
+                placeholder={strings.operations.addComments}
+                numberOfLines={4}
+                style={styles.txtInput}
+              />
+            </View>
+            <HorizontalLine
+              color={theme.light.colors.infoBgLight}
+              paddingTop={15}
+            />
+            <View style={styles.reportPostBottomContainer}>
+              <Icon
+                icon={faImage}
+                size={ms(22)}
+                color={theme.light.colors.secondary}
+              />
+              <Button
+                title={strings.operations.submit}
+                disabled={reportComment.length ? false : true}
+                opacity={reportComment.length ? 1 : 0.4}
+                style={styles.reportPostButton}
+                onPress={() => {
+                  setOpenToast(true), setOpenReport(false);
+                }}
+              />
+            </View>
+          </View>
+        </ReportOnPostModal>
+        {openToast && (
+          <Toast
+            open={openToast}
+            setOpen={setOpenToast}
+            icon={faThumbsUp}
+            message={strings.home.reportMessage}
+            onPressOk={setOpenToast}
+          />
+        )}
+      </KeyboardAwareScrollView>
     </SafeAreaView>
   );
 }

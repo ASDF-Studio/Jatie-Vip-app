@@ -3,6 +3,5 @@ export const getAllPostData = state => {
 };
 
 export const getCommentsByPostIdData = state => {
-    console.log("TESTSTSTTST=-=-=-=-=-=-", state)
     return Object.keys(state.post).length > 0 ? state.post.postComments : null;
 };
