@@ -118,6 +118,12 @@ export const TYPES = {
     VOTE_DOWN_COMMENT_SUCCESS: "VOTE_DOWN_COMMENT_SUCCESS",
     VOTE_DOWN_COMMENT_ERROR: "VOTE_DOWN_COMMENT_ERROR",
 
+    //Report Post
+    REPORT_POST: "REPORT_POST",
+    REPORT_POST_REQUEST: "REPORT_POST_REQUEST",
+    REPORT_POST_SUCCESS: "REPORT_POST_SUCCESS",
+    REPORT_POST_ERROR: "REPORT_POST_ERROR",
+
 };
 export const createPostSuccess = user => ({
     type: TYPES.CREATE_POST_SUCCESS,
@@ -243,9 +249,6 @@ const voteUpCommentRequest = () => ({
 });
 
 
-
-
-
 const voteDownCommentError = error => ({
     type: TYPES.VOTE_DOWN_COMMENT_ERROR,
     payload: { error },
@@ -265,18 +268,6 @@ const voteDownCommentRequest = () => ({
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 //delete Post
 export const deletePostSuccess = user => ({
     type: TYPES.DELETE_POST_SUCCESS,
@@ -291,6 +282,24 @@ const deletePostRequest = () => ({
 
 const deletePostError = error => ({
     type: TYPES.DELETE_POST_ERROR,
+    payload: { error },
+});
+
+
+//delete Post
+export const reportPostSuccess = report => ({
+    type: TYPES.REPORT_POST_SUCCESS,
+    payload: { report },
+});
+
+
+const reportPostRequest = () => ({
+    type: TYPES.REPORT_POST_REQUEST,
+    payload: null,
+});
+
+const reportPostError = error => ({
+    type: TYPES.REPORT_POST_ERROR,
     payload: { error },
 });
 
@@ -495,6 +504,17 @@ export const voteDownComment = (id, userId) => async dispatch => {
         dispatch(voteDownCommentError(error))
     }
 };
+
+export const reportPost = (paramsObj) => async dispatch => {
+    dispatch(reportPostRequest())
+    try {
+        const reportResp = await PostController.reportPostAPI(paramsObj)
+        dispatch(reportPostSuccess(reportResp))
+    } catch (error) {
+        dispatch(reportPostError(error))
+    }
+};
+
 
 // export const updateComment = (postId, userId, commentBody) => async dispatch => {
 //     dispatch(commentOnPostRequest())

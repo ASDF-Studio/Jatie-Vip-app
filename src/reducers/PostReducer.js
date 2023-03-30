@@ -40,6 +40,10 @@ export const postReducer = (state = {}, { payload, type }) => {
         ...state,
         postComments: updatedComments
       };
+
+    case TYPES.REPORT_POST_SUCCESS:
+      return { ...state, reportPost: payload.report }
+
     case TYPES.CLEAR_STORE:
       return {};
     default:

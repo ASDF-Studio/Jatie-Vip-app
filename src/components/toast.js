@@ -50,7 +50,9 @@ export const Toast = ({ open, setOpen, icon, message, onPressOk }) => {
                   margin: ms(10),
                   backgroundColor: theme.light.colors.primaryBgDark,
                 }}
-                onPress={() => onPressOk(false)}
+                onPress={() => {
+                  onPressOk(false)
+                }}
               />
             </View>
           </View>

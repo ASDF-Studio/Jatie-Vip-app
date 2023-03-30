@@ -371,6 +371,39 @@ export class PostController {
         })
     }
 
+    //Report Post
+    static async reportPostAPI(params) {
+        console.log('check report params: ', params)
+        return new Promise((resolve, reject) => {
+            const endpoint = API_BASE_URL + API_END_POINTS.REPORT_POST;
+            let data = new FormData()
+
+            if (params.reportImg !== null) {
+                let filename = params.reportImg.path.split("/").pop();
+                const reportImageData = {
+                    uri: params.reportImg.path,
+                    name: filename,
+                    type: params.reportImg.mime,
+                }
+                data.append('reportImg', reportImageData)
+            }
+            data.append('objectId', params.objectId);
+            data.append('reportedBy', params.reportedBy);
+            data.append('reportTitle', params.reportTitle);
+            data.append('reportBody', params.reportBody);
+            const headers = {
+                'Content-Type': 'multipart/form-data'
+            }
+            HttpClient.post(endpoint, data, { headers })
+                .then((response) => {
+                    resolve(response);
+                })
+                .catch((error) => {
+                    reject(error);
+                });
+        });
+    }
+
 
     static async logout() {
         return new Promise(resolve => {
