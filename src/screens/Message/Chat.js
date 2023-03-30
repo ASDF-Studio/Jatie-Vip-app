@@ -60,6 +60,8 @@ export default function Chat({ navigation, route }) {
   const [messageType, setMessageType] = useState(0);
   const user = useSelector(getUser);
 
+  const [text, setText] = useState('');
+
 
   const deleteImage = id => {
     setImageArray(oldValues => {
@@ -108,8 +110,6 @@ export default function Chat({ navigation, route }) {
     );
   };
 
-
-
   const UploadImages = async () => {
 
     ImageCropPicker.openPicker({
@@ -130,22 +130,9 @@ export default function Chat({ navigation, route }) {
       });
   };
 
-  useEffect(() => {
-
-    // const messagePayload = {
-    //   _id: Math.round(Math.random() * 100000000),
-    //   user: { name: 'Dummy Kumar', username: 'Dummy', avatar: 'https://placeimg.com/140/140/any', _id: 'dummyUser', role: 'free' },
-    //   status: { isOnline: false, isTyping: false, isRead: false },
-    //   message: { type: 0, imageURL: [], text: 'Hello Mantu' },
-    //   createdAt: new Date(),
-    //   sentTo: 'realUser',
-    //   sentBy: 'dummyUser'
-    // }
-    // setMessages(oldValues => [...oldValues, messagePayload])
-  }, [])
 
   useEffect(() => {
-    const chatQuery = firestore().collection(CHATS).doc(`dummyuser-${user?.id}`).collection(MESSAGES).orderBy('createdAt', 'asc')
+    const chatQuery = firestore().collection(CHATS).doc(`dummyuser-${user?.id}`).collection(MESSAGES).orderBy('createdAt', 'desc')
 
     const unsubscribe = chatQuery
       .onSnapshot(querySnapshot => {
@@ -157,7 +144,7 @@ export default function Chat({ navigation, route }) {
           });
         });
         console.log('Messages retrieved!', kmessages);
-        setMessages((oldValues) => [...oldValues, ...kmessages])
+        setMessages([...kmessages]);
       });
 
     return unsubscribe;
@@ -168,7 +155,7 @@ export default function Chat({ navigation, route }) {
 
 
   const onSend = (messages = []) => {
-    const chatMessage = messages[0]?.text;
+    const chatMessage = messages[0].text
     console.log('check message', chatMessage)
     console.log('check images -->', imageArray)
 
@@ -186,23 +173,23 @@ export default function Chat({ navigation, route }) {
     }
 
     const messagePayload = {
-      user: { name: user?.fullName, username: user?.username, _id: user?.id, role: 'free' },
+      user: { name: user?.fullName, username: user?.username, _id: user?.id, role: 'free', avatar: user?.profilePic },
       status: { isOnline: false, isTyping: false, isRead: false },
       message: { type: getMessageType(), imageURL: imageArray, text: chatMessage ?? '' },
-      createdAt: new Date(),
+      createdAt: moment().toISOString(),//new Date(),
       sentTo: 'dummyUser',
       sentBy: user?.id,
-      _id: Math.round(Math.random() * 100000000)
     }
+
+    setMessages(previousMessages => GiftedChat.append(previousMessages, messagePayload))
 
     firestore()
       .collection(CHATS).doc(`dummyuser-${user?.id}`).collection(MESSAGES).add(messagePayload)
       .then(() => {
         console.log('Message added!');
-        setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
         // setImageArray([])
       });
-
+    setText('')
   }
 
 
@@ -265,7 +252,9 @@ export default function Chat({ navigation, route }) {
                 color={theme.light.colors.success}
               />
             </TouchableOpacity>
-            <Send {...props} >
+            <Send {...props}
+            // sendButtonProps={{ onPress: () => onSend(props.text) }}
+            >
               <View
                 style={[styles.boxIcon, styles.sendBoxIcon]}>
                 <FontAwesomeIcon
@@ -326,11 +315,14 @@ export default function Chat({ navigation, route }) {
     )
   }
 
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       {renderChatHeader()}
       <GiftedChat
         messages={messages}
+        // text={text}
+        // onInputTextChanged={(msg) => setText(msg)}
         onSend={messages => onSend(messages)}
         // isTyping
         showUserAvatar
