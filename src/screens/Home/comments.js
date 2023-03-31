@@ -117,9 +117,10 @@ export default function Comments({ navigation, route }) {
   const onDeleteComment = () => {
 
     dispatch(deleteComment(commentId, USER?.id))
+    childRef.current.resetValue()
+    updateParentState()
 
   }
-  console.log("ALL_COMMENTS", COMMENTS)
   const onEditComment = () => {
     setIsEdit(true)
     setOpen(false);
@@ -246,7 +247,7 @@ export default function Comments({ navigation, route }) {
           (commentUserId == USER?.id ? (
             <ModalDown open={open} setOpen={setOpen}>
               <ModalList
-                title={strings.profile.editPost}
+                title={strings.profile.editComment}
                 icon={faPen}
                 iconBg={theme.light.colors.infoBgLight}
                 iconColor={theme.light.colors.info}

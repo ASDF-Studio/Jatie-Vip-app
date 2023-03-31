@@ -513,8 +513,8 @@ export function Home({ navigation }) {
                     userName={item?.user?.username}
                     profilePic={item?.user?.profilePic}
                     time={item?.created_at}
-                  // isOfficial={item.isOffical}
-                  // showPin={true}
+                    // isOfficial={item.isOffical}
+                    showPin={item?.isPinned}
                   />
                   <CardBody text={item.postBody} />
 

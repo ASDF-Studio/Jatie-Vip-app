@@ -99,7 +99,7 @@ export const CardFooter = ({
       <View style={styles.reactionContainer}>
         <TouchableOpacity
           style={[styles.iconContainer, styles.likeIconContainer,
-            // postArray[postIndex]?.has_upvoted && { backgroundColor: theme.light.colors.infoBgLight }
+          postArray[postIndex]?.has_upvoted && { backgroundColor: theme.light.colors.infoBgLight }
           ]}
           onPress={() => upVoteHandel()}
         >
@@ -113,7 +113,7 @@ export const CardFooter = ({
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.iconContainer, styles.disLikeIconContainer,
-            // postArray[postIndex]?.has_downvoted && { backgroundColor: theme.light.colors.infoBgLight }
+          postArray[postIndex]?.has_downvoted && { backgroundColor: theme.light.colors.infoBgLight }
           ]}
           onPress={() => downVoteHandel()}
         >

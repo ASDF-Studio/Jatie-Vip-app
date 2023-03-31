@@ -48,12 +48,17 @@ export const CommentInput = React.forwardRef((props, ref,) => {
     }
   }
   React.useImperativeHandle(ref, () => ({
-    childFunction
+    childFunction,
+    resetValue
   }));
   const childFunction = () => {
     console.log("props=-=-=-=-=-=-=>", JSON.stringify(props));
     setIsEdit(true)
     setComment(props.commentData)
+  }
+  const resetValue = () => {
+    setIsEdit(false)
+    setComment('')
   }
   return (
     <View style={styles.container}>

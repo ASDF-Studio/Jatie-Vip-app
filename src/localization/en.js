@@ -210,7 +210,8 @@ export const en = {
     reportUser: 'Report User',
     genderPlaceHolder: 'Prefer not to say',
     userID: 'User ID',
-    selecteImage: "Please upload image "
+    selecteImage: "Please upload image ",
+    editComment: "Edit Comment"
   },
   Welcome: {
     login: 'Login',
