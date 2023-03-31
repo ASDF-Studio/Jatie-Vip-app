@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, ActivityIndicator, Platform } from 'react-native';
 import { TextField } from '@/components';
 import { theme } from '@/theme';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -63,8 +63,8 @@ export const CommentInput = React.forwardRef((props, ref,) => {
   return (
     <View style={styles.container}>
       <TextField
-
-        multiline={true}
+        // onFocus={props.scrollRef}
+        multiline={Platform.OS == "ios" ? false : true}
         style={styles.textFiled}
         value={comment}
         onChangeText={setComment}
@@ -103,6 +103,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.light.colors.white, //inputFiled
     paddingRight: ms(80),
     padding: ms(50),
+
   },
   iconContainer: {
     backgroundColor: theme.light.colors.primaryBgLight,

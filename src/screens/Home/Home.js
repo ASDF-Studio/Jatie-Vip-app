@@ -623,9 +623,9 @@ export function Home({ navigation }) {
                     postIndex={index}
                     commentPress={() => navigation.navigate(NAVIGATION.comments, { DATA: item })}
                     morePress={() => {
-                      setPostUserName(item?.user?.username)
+                      setPostIndex(index)
                       setIsAdminPost(item?.isAdminPost),
-                        setPostIndex(index)
+                        setPostUserName(item?.user?.username)
                       setOpen(true);
                       setPostUserId(item?.userId);
                       setpostId(item?.id);
@@ -809,33 +809,36 @@ export function Home({ navigation }) {
               paddingTop={15}
               paddingBottom={8}
             />
-            {(userType.user == `${strings.userType.free}` |
-              userType.user == `${strings.userType.vip}`) && (isAdminPost == false) ? (
+            {(userType.user == `${strings.userType.free}`) |
+              (userType.user == `${strings.userType.vip}`) ? (
               <>
+                {
+                  ALLPOST?.data[postIndex].isAdminPost == false &&
+                  <ModalList
+                    title={strings.home.report}
+                    icon={faFlag}
+                    iconColor={theme.light.colors.secondary}
+                    iconBg={theme.light.colors.infoBgLight}
+                    onPress={() => {
+                      setReportOptionValue('')
+                      setOpenReport(true);
+                      setOpen(false);
+                      setreportImage(null)
+                    }}
+                  />
+                }
 
-                <ModalList
-                  title={strings.home.report}
-                  icon={faFlag}
-                  iconColor={theme.light.colors.secondary}
-                  iconBg={theme.light.colors.infoBgLight}
-                  onPress={() => {
-                    setReportOptionValue('')
-                    setOpenReport(true);
-                    setOpen(false);
-                    setreportImage(null)
+                {ALLPOST?.data[postIndex].isAdminPost == false &&
+                  <ModalList
+                    onPress={() => { onBlock() }}
+                    title={strings.operations.block + " @" + postUserName}
+                    // title={(ALLPOST?.data[pos] ? strings.operations.block : strings.operations.unBlock) + " @" + postUserName}
+                    icon={faXmark}
+                    iconColor={theme.light.colors.secondary}
+                    iconBg={theme.light.colors.infoBgLight}
+                  />
+                }
 
-                  }}
-                />
-
-
-                <ModalList
-                  onPress={() => { onBlock() }}
-                  title={strings.operations.block + " @" + postUserName}
-                  // title={(ALLPOST?.data[pos] ? strings.operations.block : strings.operations.unBlock) + " @" + postUserName}
-                  icon={faXmark}
-                  iconColor={theme.light.colors.secondary}
-                  iconBg={theme.light.colors.infoBgLight}
-                />
 
 
               </>
