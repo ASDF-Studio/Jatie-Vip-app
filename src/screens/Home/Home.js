@@ -33,6 +33,7 @@ import {
   TextInput,
   ImageBackground,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import {
   AppImageViewer,
@@ -70,6 +71,7 @@ import { showMessage } from 'react-native-flash-message';
 import { isLoadingSelector, successSelector } from '@/selectors/StatusSelectors';
 import ImagePicker from 'react-native-image-crop-picker';
 import { globalReset } from '@/actions/GlobalActions';
+import SearchPost from './SearchPost';
 
 export function Home({ navigation }) {
   const ALLPOST = useSelector(getAllPostData)
@@ -113,6 +115,10 @@ export function Home({ navigation }) {
   const [postUserFollowed, setPostUserFollowed] = useState(false);
   const [reportImage, setreportImage] = useState(null)
 
+  //Search Post 
+  const [searchEnabled, setSearchEnabled] = useState(false)
+  const [searchText, setsearchText] = useState('')
+
   // for delete
   const [openReplace, setReplace] = useState(false);
 
@@ -121,10 +127,10 @@ export function Home({ navigation }) {
   useEffect(() => {
     // dispatch(getAllPinPost())
     dispatch(getAllPost(user?.id))
-
   }, [focus]);
+
   const isLoading = useSelector(state =>
-    isLoadingSelector([TYPES.GET_ALL_POST], state)
+    isLoadingSelector([TYPES.GET_ALL_POST, TYPES.SEARCH_ALL_POST], state)
   );
 
   const isShowReportToast = useSelector(state =>
@@ -148,17 +154,7 @@ export function Home({ navigation }) {
     }).catch(error => console.log('report image picker error', error));
   };
 
-  // const onUpVote = async (id, postUserID, likeUserID) => {
-  //   //  const data = await UserController.upVote(id, postUserID, likeUserID);
-  //   // getAllPost();
-  //   // getAllPinnedPost();
-  // }
 
-  // const onDownVote = async (id, postUserID, likeUserID) => {
-  //   const data = await UserController.downVote(id, postUserID, likeUserID);
-  //   getAllPost();
-  //   // getAllPinnedPost();
-  // }
   let counter = 1;
   let DATA = {
     postId, postTitle, postBody, postImg
@@ -215,7 +211,7 @@ export function Home({ navigation }) {
           <Icon
             icon={faSearch}
             size={ms(22)}
-            onPress={() => navigation.navigate(NAVIGATION.search)}
+            onPress={() => setSearchEnabled(true)}
             style={styles.searchIcon}
           />
           <Icon
@@ -506,8 +502,9 @@ export function Home({ navigation }) {
                 ) : null} */}
               </View>
             }
-            data={ALLPOST?.data}
+            data={searchEnabled ? ALLPOST?.searchedPosts : ALLPOST?.data}
             keyExtractor={item => item.id}
+            contentContainerStyle={{ flexGrow: 1 }}
             renderItem={({ item, index }) => (
               <View style={styles.cardContainer}>
                 <Card>
@@ -955,6 +952,21 @@ export function Home({ navigation }) {
           onPressOk={() => dispatch(globalReset())}
         />
       )}
+
+      {searchEnabled &&
+        <SearchPost
+          {...{
+            setSearchEnabled,
+            dispatch,
+            navigation,
+            setsearchText,
+            searchText,
+            user,
+            styles
+          }}
+        />
+      }
+
     </SafeAreaView>
   );
 }
@@ -973,6 +985,33 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: vs(8),
   },
+  searchheaderText: { color: theme.light.colors.black },
+  searchContainer: {
+    position: 'absolute',
+    height: ms(140),
+    paddingTop: ms(10),
+    top: Platform.OS === 'android' ? ms(10) : ms(50),
+    backgroundColor: theme.light.colors.white,
+    width: '100%',
+  },
+  TopBackButton: {
+    paddingRight: ms(5),
+    paddingLeft: ms(10),
+  },
+  searchBox: {
+    marginTop: vs(-10),
+    margin: ms(10),
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  searchBoxTextFirld: {
+    paddingRight: ms(45),
+    backgroundColor: theme.light.colors.white,
+    borderWidth: 2
+  },
+  searchButton: {
+    marginLeft: ms(-30)
+  },
   left: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
@@ -985,7 +1024,7 @@ const styles = StyleSheet.create({
     padding: ms(10),
   },
   searchIcon: { marginRight: ms(5) },
-  bellIcon: { marginLeft: ms(10) },
+  bellIcon: { marginRight: ms(10) },
   cardContainer: {
     margin: ms(8),
     borderRadius: 10,

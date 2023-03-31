@@ -9,6 +9,7 @@ export const en = {
     admin: 'Admin',
   },
   home: {
+    searchposts: 'Search for posts...',
     header: 'Home',
     message: 'Welcome',
     variant: 'App variant: ',

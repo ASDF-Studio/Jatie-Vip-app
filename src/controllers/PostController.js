@@ -287,6 +287,26 @@ export class PostController {
                 });
         });
     }
+
+    //Search All post 
+    static async searchAllPost(searchWord, userID) {
+        return new Promise((resolve, reject) => {
+            const endpoint = API_BASE_URL + API_END_POINTS.SEARCH_ALL_POST;
+            const body = {
+                searchWord: searchWord,
+                loggedInUserId: userID
+            }
+
+            HttpClient.post(endpoint, body)
+                .then((response) => {
+                    resolve(response);
+                })
+                .catch((error) => {
+                    reject(error);
+                });
+        });
+    }
+
     //comment on post 
 
     static async commentOnPost(postId, userId, commentBody) {

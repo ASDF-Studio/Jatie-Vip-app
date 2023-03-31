@@ -52,6 +52,13 @@ export const TYPES = {
     GET_ALL_POST_SUCCESS: "GET_ALL_POST_SUCCESS",
     GET_ALL_POST_ERROR: "GET_ALL_POST_ERROR",
 
+    // Search All Post 
+
+    SEARCH_ALL_POST: "SEARCH_ALL_POST",
+    SEARCH_ALL_POST_REQUEST: "SEARCH_ALL_POST_REQUEST",
+    SEARCH_ALL_POST_SUCCESS: "SEARCH_ALL_POST_SUCCESS",
+    SEARCH_ALL_POST_ERROR: "SEARCH_ALL_POST_ERROR",
+
 
     //get all post by admin
 
@@ -173,7 +180,25 @@ const getAllPostError = error => ({
     payload: { error },
 });
 
-//GET ALL POST 
+//SEARCH ALL POST 
+
+export const searchAllPostSuccess = post => ({
+    type: TYPES.SEARCH_ALL_POST_SUCCESS,
+    payload: { post },
+});
+
+
+const searchAllPostRequest = () => ({
+    type: TYPES.SEARCH_ALL_POST_REQUEST,
+    payload: null,
+});
+
+const searchAllPostError = error => ({
+    type: TYPES.SEARCH_ALL_POST_ERROR,
+    payload: { error },
+});
+
+//GET ALL PINNED POST 
 
 const getAllPinPostSuccess = post => ({
     type: TYPES.GET_ALL_PIN_POST_SUCCESS,
@@ -522,6 +547,17 @@ export const getAllPost = (userId) => async dispatch => {
         dispatch(getAllPostError(error))
     }
 
+};
+
+export const searchAllPost = (searchWord, userID) => async dispatch => {
+    dispatch(globalReset())
+    dispatch(searchAllPostRequest());
+    try {
+        const searchAllPostData = await PostController.searchAllPost(searchWord, userID);
+        dispatch(searchAllPostSuccess(searchAllPostData?.data))
+    } catch (error) {
+        dispatch(searchAllPostError(error))
+    }
 };
 
 export const getAllPinPost = () => async dispatch => {

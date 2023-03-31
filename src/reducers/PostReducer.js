@@ -34,6 +34,12 @@ export const postReducer = (state = {}, { payload, type }) => {
         ...payload.post
 
       }
+
+    case TYPES.SEARCH_ALL_POST_SUCCESS:
+      return {
+        ...state,
+        searchedPosts: payload.post
+      }
     case TYPES.GET_COMMENTS_BY_POST_ID_SUCCESS:
       return {
         ...state,
