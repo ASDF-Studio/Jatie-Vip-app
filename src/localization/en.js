@@ -10,6 +10,7 @@ export const en = {
   },
   home: {
     searchposts: 'Search for posts...',
+    enterText: 'Please enter text to search posts',
     header: 'Home',
     message: 'Welcome',
     variant: 'App variant: ',

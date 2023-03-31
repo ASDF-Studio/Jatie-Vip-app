@@ -56,6 +56,10 @@ const SearchPost = ({
           size={ms(20)}
           containerStyle={styles.searchButton}
           onPress={() => {
+            if (searchText === '') {
+              alert(strings.home.enterText)
+              return
+            }
             dispatch(searchAllPost(searchText, user?.id));
           }}
         />
