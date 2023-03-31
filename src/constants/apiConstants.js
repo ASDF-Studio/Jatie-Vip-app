@@ -39,6 +39,9 @@ export const API_END_POINTS = {
     VOTE_UP_COMMENT: "post/comment_upvote",
     VOTE_DOWN_COMMENT: 'post/comment_downvote',
     EDIT_COMMENT: 'post/update_comment',
-    DELETE_COMMENT: 'post/delete_comment'
+    DELETE_COMMENT: 'post/delete_comment',
+
+    // Report Post
+    REPORT_POST: 'post/report'
 
 };

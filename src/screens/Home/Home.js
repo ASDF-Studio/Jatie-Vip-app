@@ -63,11 +63,13 @@ import { UserController } from '@/controllers';
 import { useIsFocused } from "@react-navigation/native";
 import { getUser } from '@/selectors/UserSelectors';
 import { navigationRef } from '@/navigation/RootNavigation';
-import { getAllPost, TYPES, getAllPinPost, deletePost } from '@/actions/PostActions';
+import { getAllPost, TYPES, getAllPinPost, deletePost, reportPost } from '@/actions/PostActions';
 import { CustomLoader } from '@/components';
 import { getAllPostData } from '@/selectors/PostSelectors';
-import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { showMessage } from 'react-native-flash-message';
+import { isLoadingSelector, successSelector } from '@/selectors/StatusSelectors';
+import ImagePicker from 'react-native-image-crop-picker';
+import { globalReset } from '@/actions/GlobalActions';
 
 export function Home({ navigation }) {
   const ALLPOST = useSelector(getAllPostData)
@@ -89,9 +91,9 @@ export function Home({ navigation }) {
   const [reportListOpen, setReportListOpen] = useState(false);
   const [reportOption, setReportOption] = useState([
     { label: 'Explicit Content', value: 'Explicit Content' },
-    { label: 'Bullying or Hurrasment', value: 'Bullying' },
-    { label: 'Sparm', value: 'Sparm' },
-    { label: 'Misleading information or Fake News', value: 'Misleading' },
+    { label: 'Bullying or Harassment', value: 'Bullying or Harassment' },
+    { label: 'Spam', value: 'Spam' },
+    { label: 'Misleading Information or Fake News', value: 'Misleading Information or Fake News' },
   ]);
 
   const [reportOptionValue, setReportOptionValue] = useState('');
@@ -109,6 +111,7 @@ export function Home({ navigation }) {
 
   const [postUserName, setPostUserName] = useState('');
   const [postUserFollowed, setPostUserFollowed] = useState(false);
+  const [reportImage, setreportImage] = useState(null)
 
   // for delete
   const [openReplace, setReplace] = useState(false);
@@ -124,9 +127,27 @@ export function Home({ navigation }) {
     isLoadingSelector([TYPES.GET_ALL_POST], state)
   );
 
+  const isShowReportToast = useSelector(state =>
+    successSelector([TYPES.REPORT_POST], state)
+  )
+
   const onDelete = () => {
     dispatch(deletePost(postId, postUserId, user?.id, userType.user, NAVIGATION.home));
   }
+
+  const SelectFromGallery = () => {
+    ImagePicker.openPicker({
+      width: ms(300),
+      height: ms(400),
+      cropping: true,
+      freeStyleCropEnabled: true,
+      cropperCircleOverlay: true,
+    }).then(image => {
+      console.log('check uploaded image', image);
+      setreportImage(image)
+    }).catch(error => console.log('report image picker error', error));
+  };
+
   // const onUpVote = async (id, postUserID, likeUserID) => {
   //   //  const data = await UserController.upVote(id, postUserID, likeUserID);
   //   // getAllPost();
@@ -584,8 +605,8 @@ export function Home({ navigation }) {
                     </View>
                   ) : null}
                   <CardFooter
-                    likePress={() => onUpVote(item.id, item.userId, user?.id, item)}
-                    disLikePress={() => onDownVote(item.id, item.userId, user?.id, item)}
+                    // likePress={() => onUpVote(item.id, item.userId, user?.id, item)}
+                    // disLikePress={() => onDownVote(item.id, item.userId, user?.id, item)}
                     postID={item.id}
                     postType="Regular"
                     postUserID={item?.userId}
@@ -790,8 +811,11 @@ export function Home({ navigation }) {
                   iconColor={theme.light.colors.secondary}
                   iconBg={theme.light.colors.infoBgLight}
                   onPress={() => {
+                    setReportOptionValue('')
                     setOpenReport(true);
                     setOpen(false);
+                    setreportImage(null)
+
                   }}
                 />
                 <ModalList
@@ -886,30 +910,49 @@ export function Home({ navigation }) {
             paddingTop={15}
           />
           <View style={styles.reportPostBottomContainer}>
-            <Icon
-              icon={faImage}
-              size={ms(22)}
-              color={theme.light.colors.secondary}
-            />
+
+            <TouchableOpacity onPress={() => SelectFromGallery()}>
+              {reportImage ?
+                <Image style={{ height: ms(35), width: ms(35), borderRadius: ms(5) }} source={{ uri: reportImage.path }} />
+                :
+                <View pointerEvents='none'>
+                  <Icon
+                    icon={faImage}
+                    size={ms(22)}
+                    color={theme.light.colors.secondary}
+                  />
+                </View>
+              }
+            </TouchableOpacity>
+
             <Button
               title={strings.operations.submit}
-              disabled={reportComment.length ? false : true}
-              opacity={reportComment.length ? 1 : 0.4}
+              disabled={!reportOptionValue}
+              opacity={reportOptionValue ? 1 : 0.4}
+
               style={styles.reportPostButton}
               onPress={() => {
-                setOpenToast(true), setOpenReport(false);
+
+                const reportData = {
+                  objectId: postId,
+                  reportedBy: user?.id,
+                  reportTitle: reportOptionValue,
+                  reportBody: reportComment,
+                  reportImg: reportImage
+                }
+                dispatch(reportPost(reportData))
+                setOpenReport(false);
               }}
             />
           </View>
         </View>
       </ReportOnPostModal>
-      {openToast && (
+      {isShowReportToast && (
         <Toast
-          open={openToast}
-          setOpen={setOpenToast}
+          open={isShowReportToast}
           icon={faThumbsUp}
           message={strings.home.reportMessage}
-          onPressOk={setOpenToast}
+          onPressOk={() => dispatch(globalReset())}
         />
       )}
     </SafeAreaView>

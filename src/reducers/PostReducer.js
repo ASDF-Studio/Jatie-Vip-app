@@ -59,6 +59,9 @@ export const postReducer = (state = {}, { payload, type }) => {
       // Return a new state object with the updated items array
       return { ...state, postComments: newItems };
 
+    case TYPES.REPORT_POST_SUCCESS:
+      return { ...state, reportPost: payload.report }
+
     case TYPES.CLEAR_STORE:
       return {};
     default:

@@ -37,6 +37,7 @@ import {
   TextInput,
   ActivityIndicator,
   KeyboardAvoidingView,
+  Image,
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -45,14 +46,19 @@ import { Data, SingleData } from './Data/commentsData';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { deleteComment, getCommentsByPostId, TYPES } from '@/actions/PostActions';
-import { isLoadingSelector } from '@/selectors/StatusSelectors';
+import { deleteComment, getCommentsByPostId, reportPost, TYPES } from '@/actions/PostActions';
+import { isLoadingSelector, successSelector } from '@/selectors/StatusSelectors';
 import { Loader } from '@/components/Loader';
 import { getCommentsByPostIdData } from '@/selectors/PostSelectors';
 import { getUser } from '@/selectors/UserSelectors';
 import { useIsFocused } from '@react-navigation/native';
 import moment from 'moment';
 import { useRef } from 'react';
+import ImagePicker from 'react-native-image-crop-picker';
+import { globalReset } from '@/actions/GlobalActions';
+
+
+
 export default function Comments({ navigation, route }) {
   const childRef = useRef(null)
   const flatListRef = useRef(null);
@@ -67,11 +73,12 @@ export default function Comments({ navigation, route }) {
   const [openToast, setOpenToast] = useState(false);
   const [openReport, setOpenReport] = useState(false);
   const [reportListOpen, setReportListOpen] = useState(false);
+  const [reportImage, setreportImage] = useState(null)
   const [reportOption, setReportOption] = useState([
     { label: 'Explicit Content', value: 'Explicit Content' },
-    { label: 'Bullying or Hurrasment', value: 'Bullying' },
-    { label: 'Sparm', value: 'Sparm' },
-    { label: 'Misleading information or Fake News', value: 'Misleading' },
+    { label: 'Bullying or Harassment', value: 'Bullying or Harassment' },
+    { label: 'Spam', value: 'Spam' },
+    { label: 'Misleading Information or Fake News', value: 'Misleading Information or Fake News' },
   ]);
   const [reportOptionValue, setReportOptionValue] = useState('');
   const [reportComment, setReportCommnet] = useState('');
@@ -86,12 +93,18 @@ export default function Comments({ navigation, route }) {
 
 
   const focus = useIsFocused();
+
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.GET_COMMENTS_BY_POST_ID], state)
   );
   const deleteLoading = useSelector(state =>
     isLoadingSelector([TYPES.DELETE_COMMENT], state)
   );
+
+  const isShowReportToast = useSelector(state =>
+    successSelector([TYPES.REPORT_POST], state)
+  )
+
   useEffect(() => {
     dispatch(getCommentsByPostId(DATA?.id, USER?.id))
 
@@ -121,6 +134,19 @@ export default function Comments({ navigation, route }) {
     setCommentIndex('')
 
   }
+  const SelectFromGallery = () => {
+    ImagePicker.openPicker({
+      width: ms(300),
+      height: ms(400),
+      cropping: true,
+      freeStyleCropEnabled: true,
+      cropperCircleOverlay: true,
+    }).then(image => {
+      console.log('check uploaded image', image);
+      setreportImage(image)
+    }).catch(error => console.log('report image picker error', error));
+  };
+
   return (
 
     <SafeAreaView style={styles.container}>
@@ -271,8 +297,10 @@ export default function Comments({ navigation, route }) {
                 iconColor={theme.light.colors.secondary}
                 iconBg={theme.light.colors.infoBgLight}
                 onPress={() => {
+                  setReportOptionValue('')
                   setOpenReport(true);
                   setOpen(false);
+                  setreportImage(null)
                 }}
               />
               <ModalList
@@ -318,30 +346,45 @@ export default function Comments({ navigation, route }) {
               paddingTop={15}
             />
             <View style={styles.reportPostBottomContainer}>
-              <Icon
-                icon={faImage}
-                size={ms(22)}
-                color={theme.light.colors.secondary}
-              />
+              <TouchableOpacity onPress={() => SelectFromGallery()}>
+                {reportImage ?
+                  <Image style={{ height: ms(35), width: ms(35), borderRadius: ms(5) }} source={{ uri: reportImage.path }} />
+                  :
+                  <View pointerEvents='none'>
+                    <Icon
+                      icon={faImage}
+                      size={ms(22)}
+                      color={theme.light.colors.secondary}
+                    />
+                  </View>
+                }
+              </TouchableOpacity>
               <Button
                 title={strings.operations.submit}
-                disabled={reportComment.length ? false : true}
-                opacity={reportComment.length ? 1 : 0.4}
+                disabled={!reportOptionValue}
+                opacity={reportOptionValue ? 1 : 0.4}
                 style={styles.reportPostButton}
                 onPress={() => {
-                  setOpenToast(true), setOpenReport(false);
+                  const reportData = {
+                    objectId: DATA?.id,
+                    reportedBy: USER?.id,
+                    reportTitle: reportOptionValue,
+                    reportBody: reportComment,
+                    reportImg: reportImage
+                  }
+                  dispatch(reportPost(reportData))
+                  setOpenReport(false);
                 }}
               />
             </View>
           </View>
         </ReportOnPostModal>
-        {openToast && (
+        {isShowReportToast && (
           <Toast
-            open={openToast}
-            setOpen={setOpenToast}
+            open={isShowReportToast}
             icon={faThumbsUp}
             message={strings.home.reportMessage}
-            onPressOk={setOpenToast}
+            onPressOk={() => dispatch(globalReset())}
           />
         )}
       </KeyboardAwareScrollView>
@@ -400,7 +443,9 @@ const styles = StyleSheet.create({
   // reportPostContainer
 
   reportPostContainer: {
-    backgroundColor: theme.light.colors.white,
+    borderRadius: 10,
+    borderWidth: 0.5,
+    borderColor: theme.light.colors.primary,
   },
   reportPostBackButton: {
     padding: ms(10),
@@ -445,7 +490,11 @@ const styles = StyleSheet.create({
     fontSize: ms(18, 0.3),
     lineHeight: ms(22),
     textAlignVertical: 'top',
-    backgroundColor: theme.light.colors.inputFiled,
+    backgroundColor: theme.light.colors.textFieldBackgroundColor,
     borderRadius: 10,
+    borderWidth: 0.5,
+    borderColor: theme.light.colors.infoBg,
+    paddingLeft: ms(15),
+    height: 100,
   },
 });
