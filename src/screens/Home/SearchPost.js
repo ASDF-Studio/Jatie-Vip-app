@@ -50,12 +50,11 @@ const SearchPost = ({
           placeholder={strings.home.searchposts}
           onChangeText={(text) => setsearchText(text)}
         />
-
         <Icon
           icon={faSearch}
           color={theme.light.colors.primary}
           size={ms(20)}
-          style={styles.searchButton}
+          containerStyle={styles.searchButton}
           onPress={() => {
             dispatch(searchAllPost(searchText, user?.id));
           }}
