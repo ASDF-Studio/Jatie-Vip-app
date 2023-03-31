@@ -116,7 +116,7 @@ export function Home({ navigation }) {
   const focus = useIsFocused();
 
   useEffect(() => {
-    dispatch(getAllPinPost())
+    // dispatch(getAllPinPost())
     dispatch(getAllPost(user?.id))
 
   }, [focus]);
@@ -237,7 +237,7 @@ export function Home({ navigation }) {
                   // path={SeeSchedulePost}
                   />
                 )}
-                {ALLPOST?.pinedPost.length > 0 ? (
+                {/* {ALLPOST?.pinedPost.length > 0 ? (
                   <FlatList
                     data={ALLPOST.pinedPost}
                     key={props => props.id}
@@ -246,10 +246,10 @@ export function Home({ navigation }) {
                       <View style={styles.cardContainer}>
                         <Card>
                           <CardHeader
-                            fullName={item.admin_post.user.fullName}
-                            userName={item.admin_post.user.username}
-                            profilePic={item.admin_post.user.profilePic}
-                            time={item.admin_post.created_at}
+                            fullName={item?.admin_post?.user?.fullName}
+                            userName={item?.admin_post?.user?.username}
+                            profilePic={item?.admin_post?.user?.profilePic}
+                            time={item?.admin_post?.created_at}
                             isOfficial={false}
                             showPin={true}
                           />
@@ -359,7 +359,7 @@ export function Home({ navigation }) {
                       </View>
                     )}
                   />
-                ) : null}
+                ) : null} */}
 
                 {/* {allPost.Admin_Post ? (
                   <FlatList
