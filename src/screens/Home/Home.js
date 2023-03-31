@@ -813,7 +813,7 @@ export function Home({ navigation }) {
               (userType.user == `${strings.userType.vip}`) ? (
               <>
                 {
-                  ALLPOST?.data[postIndex].isAdminPost == false &&
+                  isAdminPost == false &&
                   <ModalList
                     title={strings.home.report}
                     icon={faFlag}
@@ -828,7 +828,7 @@ export function Home({ navigation }) {
                   />
                 }
 
-                {ALLPOST?.data[postIndex].isAdminPost == false &&
+                {isAdminPost == false &&
                   <ModalList
                     onPress={() => { onBlock() }}
                     title={strings.operations.block + " @" + postUserName}

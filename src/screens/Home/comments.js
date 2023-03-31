@@ -177,7 +177,6 @@ export default function Comments({ navigation, route }) {
       </View>
       <HorizontalLine color={theme.light.colors.infoBgLight} paddingTop={15} />
       <KeyboardAwareScrollView
-
         keyboardShouldPersistTaps={'handled'}
         contentContainerStyle={{ flex: 1 }}
       >
