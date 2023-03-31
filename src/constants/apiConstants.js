@@ -44,6 +44,15 @@ export const API_END_POINTS = {
     EDIT_COMMENT: 'post/update_comment',
     DELETE_COMMENT: 'post/delete_comment',
 
+    // Follow/unfollow
+    FOLLOW_USER: 'user/follow',
+    UN_FOLLOW_USER: 'user/unfollow',
+
+    //Block/unBlock
+
+    BLOCK_USER: "user/block",
+    UN_BLOCK_USER: "user/unblock",
+
     // Report Post
     REPORT_POST: 'post/report'
 

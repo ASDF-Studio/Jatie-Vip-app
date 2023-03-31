@@ -1,4 +1,5 @@
 import { TYPES } from '@/actions/PostActions';
+import { strings } from '@/localization';
 
 export const postReducer = (state = {}, { payload, type }) => {
   switch (type) {
@@ -20,7 +21,6 @@ export const postReducer = (state = {}, { payload, type }) => {
       return {
         ...state,
         ...payload.post
-
       }
     case TYPES.GET_ALL_PIN_POST_SUCCESS:
       return {
@@ -46,7 +46,6 @@ export const postReducer = (state = {}, { payload, type }) => {
         postComments: payload?.comments
       }
     case TYPES.COMMENT_ON_POST_SUCCESS:
-
       const updatedComments = [...state.postComments, payload.comment?.data[0]];
       return {
         ...state,
@@ -60,13 +59,61 @@ export const postReducer = (state = {}, { payload, type }) => {
         postComments: [...myArr]
       };
     case TYPES.DELETE_COMMENT_SUCCESS:
-      // return (console.log("ARARARAY", payload))
       const newItems = state.postComments.filter(item => item.id !== payload.comment?.id);
-      // Return a new state object with the updated items array
       return { ...state, postComments: newItems };
 
     case TYPES.REPORT_POST_SUCCESS:
       return { ...state, reportPost: payload.report }
+
+    case TYPES.FOLLOW_USER_SUCCESS:
+      if (payload.type === strings.home.post) {
+        var myArr = state.data
+        const updatedData = myArr.map(item => {
+          if (item.userId === payload.id) {
+            return { ...item, is_following: true };
+          }
+          return item;
+        });
+        return { ...state, data: [...updatedData] };
+      }
+      else {
+        var myArr = state.postComments
+        const updatedData = myArr.map(item => {
+          if (item.userId === payload.id) {
+
+            return { ...item, is_following: true };
+          }
+          return item;
+        });
+        return { ...state, postComments: [...updatedData] };
+      }
+
+    case TYPES.UN_FOLLOW_USER_SUCCESS:
+      if (payload.type == strings.home.post) {
+        var myArr = state.data
+        const updatedData = myArr.map(item => {
+          if (item.userId === payload.id) {
+            return { ...item, is_following: false };
+          }
+          return item;
+        });
+        return { ...state, data: [...updatedData] };
+      }
+      else {
+        var myArr = state.postComments
+        const updatedData = myArr.map(item => {
+          if (item.userId === payload.id) {
+            return { ...item, is_following: false };
+          }
+          return item;
+        });
+        return { ...state, postComments: [...updatedData] };
+      }
+    // case TYPES.BLOCK_USER_SUCCESS:
+    // return { ...state, reportPost: payload.report }
+
+    // case TYPES.UN_BLOCK_USER_SUCCESS:
+    // return { ...state, reportPost: payload.report }
 
     case TYPES.CLEAR_STORE:
       return {};

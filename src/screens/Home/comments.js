@@ -46,7 +46,7 @@ import { Data, SingleData } from './Data/commentsData';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { deleteComment, getCommentsByPostId, reportPost, TYPES } from '@/actions/PostActions';
+import { deleteComment, followUser, getCommentsByPostId, reportPost, TYPES, unFollowUser } from '@/actions/PostActions';
 import { isLoadingSelector, successSelector } from '@/selectors/StatusSelectors';
 import { Loader } from '@/components/Loader';
 import { getCommentsByPostIdData } from '@/selectors/PostSelectors';
@@ -89,6 +89,7 @@ export default function Comments({ navigation, route }) {
   const [commentId, setCommentId] = useState('');
   const [isEdit, setIsEdit] = useState(false);
   const [commentIndex, setCommentIndex] = useState('');
+  const [commentUserName, setCommentUserName] = useState('');
 
 
 
@@ -147,7 +148,18 @@ export default function Comments({ navigation, route }) {
       setreportImage(image)
     }).catch(error => console.log('report image picker error', error));
   };
+  const onFollow = () => {
+    setOpen(false)
+    if (COMMENTS?.postComments[commentIndex].is_following) {
+      dispatch(unFollowUser(USER?.id, commentUserId, strings.home.comment))
+    }
+    else {
+      dispatch(followUser(USER?.id, commentUserId, strings.home.comment))
+    }
 
+    setCommentUserId(''), setCommentIndex()
+  }
+  console.log("ALLLL__COMMENTS", JSON.stringify(COMMENTS))
   return (
 
     <SafeAreaView style={styles.container}>
@@ -198,9 +210,10 @@ export default function Comments({ navigation, route }) {
                   morePress={() => {
                     setOpen(true);
                     setCommentId(item?.id);
-                    setCommentUserId(item?.user?.id);
+                    setCommentUserId(item?.userId);
                     setComment(item?.commentBody)
                     setCommentIndex(index)
+                    setCommentUserName(item?.user?.username)
                   }}
                 />
               )}
@@ -276,7 +289,8 @@ export default function Comments({ navigation, route }) {
           ) :
             <ModalDown open={open} setOpen={setOpen}>
               <ModalList
-                title={strings.operations.follow + strings.home.DummyUser}
+                onPress={() => { onFollow() }}
+                title={(!COMMENTS?.postComments[commentIndex]?.is_following ? strings.operations.follow : strings.operations.unFollow) + " @" + commentUserName}
                 icon={faUserPlus}
                 iconColor={theme.light.colors.primary}
                 iconBg={theme.light.colors.primaryBgLight}

@@ -59,7 +59,7 @@ export const en = {
     reportPost: 'Report Post',
 
     // createpost
-
+    comment: "Comment",
     postTitle: 'Enter Post Title',
     postBody: 'Enter Post Body',
     upVoteAgain: "This user already upvoted the post",

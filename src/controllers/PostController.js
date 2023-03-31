@@ -461,6 +461,97 @@ export class PostController {
         });
     }
 
+    static async followUser(followerId, followId) {
+        return new Promise((resolve, reject) => {
+            const endpoint = API_BASE_URL + API_END_POINTS.FOLLOW_USER;
+            var data = JSON.stringify({
+                "followerId": followerId,
+                "followId": followId
+            });
+            HttpClient.post(endpoint, data)
+                .then((response) => {
+                    console.log("followerId-0-0-0ESSSSS", JSON.stringify(response))
+                    resolve(response);
+                })
+                .catch((error) => {
+                    reject(error);
+                });
+        });
+    }
+
+    static async unFollowUser(unFollowerId, followId) {
+        return new Promise((resolve, reject) => {
+            const endpoint = API_BASE_URL + API_END_POINTS.UN_FOLLOW_USER;
+            var data = JSON.stringify({
+                "unfollowerId": unFollowerId,
+                "followId": followId
+
+            });
+            HttpClient.post(endpoint, data)
+                .then((response) => {
+                    console.log("unfollowerId-0-0-0ESSSSS", JSON.stringify(response))
+                    resolve(response);
+                })
+                .catch((error) => {
+                    reject(error);
+                });
+        });
+    }
+
+
+
+    static async blockUser(blockByUser, blockedUser) {
+        return new Promise((resolve, reject) => {
+            const endpoint = API_BASE_URL + API_END_POINTS.BLOCK_USER;
+            var data = JSON.stringify({
+                "blockedByUser": blockByUser,
+                "blockedUser": blockedUser
+            });
+            HttpClient.post(endpoint, data)
+                .then((response) => {
+                    console.log("Block-0-0-0ESSSSS", JSON.stringify(response))
+                    resolve(response);
+                })
+                .catch((error) => {
+                    reject(error);
+                });
+        });
+    }
+
+    static async unBlockUser(blockByUser, blockedUser) {
+        return new Promise((resolve, reject) => {
+            const endpoint = API_BASE_URL + API_END_POINTS.UN_BLOCK_USER;
+            var data = JSON.stringify({
+                "blockedByUser": blockByUser,
+                "blockedUser": blockedUser
+            });
+            HttpClient.post(endpoint, data)
+                .then((response) => {
+                    console.log("UN___Block-0-0-0ESSSSS", JSON.stringify(response))
+                    resolve(response);
+                })
+                .catch((error) => {
+                    reject(error);
+                });
+        });
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     static async logout() {
         return new Promise(resolve => {

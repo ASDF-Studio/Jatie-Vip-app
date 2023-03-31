@@ -64,7 +64,7 @@ import { UserController } from '@/controllers';
 import { useIsFocused } from "@react-navigation/native";
 import { getUser } from '@/selectors/UserSelectors';
 import { navigationRef } from '@/navigation/RootNavigation';
-import { getAllPost, TYPES, getAllPinPost, deletePost, reportPost } from '@/actions/PostActions';
+import { getAllPost, TYPES, getAllPinPost, deletePost, reportPost, followUser, blockUser, unFollowUser } from '@/actions/PostActions';
 import { CustomLoader } from '@/components';
 import { getAllPostData } from '@/selectors/PostSelectors';
 import { showMessage } from 'react-native-flash-message';
@@ -107,12 +107,14 @@ export function Home({ navigation }) {
   const [postTitle, setPostTitle] = useState('');
   const [postBody, setPostBody] = useState('');
   const [postImg, setPostImg] = useState([]);
+  const [isAdminPost, setIsAdminPost] = useState(false)
 
 
   // click on more
 
   const [postUserName, setPostUserName] = useState('');
   const [postUserFollowed, setPostUserFollowed] = useState(false);
+  const [postIndex, setPostIndex] = useState(0);
   const [reportImage, setreportImage] = useState(null)
 
   //Search Post 
@@ -159,16 +161,21 @@ export function Home({ navigation }) {
   let DATA = {
     postId, postTitle, postBody, postImg
   }
-  console.log("ALL_POST_HOME__NEWWW", JSON.stringify(ALLPOST))
   const onFollow = () => {
-    setPostUserFollowed(true)
+    // setPostUserFollowed(true)
     setOpen(false)
-    if (postUserFollowed) {
-      showMessage({
-        message: strings.userFollowedSuccsess.followedSuccess,
-        type: "success"
-      })
+    if (ALLPOST?.data[postIndex].is_following) {
+      dispatch(unFollowUser(user?.id, postUserId, strings.home.post))
     }
+    else {
+      dispatch(followUser(user?.id, postUserId, strings.home.post))
+    }
+    setPostUserName(''),
+      setPostUserId(''),
+      setPostIndex()
+  }
+  const onBlock = () => {
+    dispatch(blockUser(user?.id, postUserId, postIndex))
   }
   return (
     <SafeAreaView style={styles.container}>
@@ -254,7 +261,7 @@ export function Home({ navigation }) {
                   // path={SeeSchedulePost}
                   />
                 )}
-                {/* {ALLPOST?.pinedPost.length > 0 ? (
+                {/* {ALLPOST?.pinedPost?.length > 0 ? (
                   <FlatList
                     data={ALLPOST.pinedPost}
                     key={props => props.id}
@@ -263,24 +270,24 @@ export function Home({ navigation }) {
                       <View style={styles.cardContainer}>
                         <Card>
                           <CardHeader
-                            fullName={item?.admin_post?.user?.fullName}
-                            userName={item?.admin_post?.user?.username}
-                            profilePic={item?.admin_post?.user?.profilePic}
-                            time={item?.admin_post?.created_at}
+                            fullName={item?.post?.user?.fullName}
+                            userName={item?.post?.user?.username}
+                            profilePic={item?.post?.user?.profilePic}
+                            time={item?.post?.created_at}
                             isOfficial={false}
                             showPin={true}
                           />
-                          <CardBody text={item.admin_post.postBody} />
-                          {item.admin_post.postImg.length <= 2 ? (
+                          <CardBody text={item.post.postBody} />
+                          {item?.post?.postImg.length <= 2 ? (
                             <View style={styles.imageContainer}>
-                              {item?.admin_post.postImg?.map(data => (
+                              {item?.post?.postImg?.map(data => (
                                 counter = counter + 1,
                                 <TouchableOpacity
                                   key={counter}
                                   style={styles.touchContainer}
                                   onPress={() => {
                                     setShowImageView(true),
-                                      setFeedImages(item.admin_post.postImg)
+                                      setFeedImages(item?.post?.postImg)
                                   }}
                                 >
                                   <Image
@@ -292,10 +299,10 @@ export function Home({ navigation }) {
                                 </TouchableOpacity>
                               ))}
                             </View>
-                          ) : item.admin_post.postImg.length > 2 ? (
+                          ) : item?.post?.postImg?.length > 2 ? (
                             counter = 1,
                             <View style={styles.imageContainer}>
-                              {item?.admin_post.postImg?.map(data =>
+                              {item?.post?.postImg?.map(data =>
                                 counter == 1 ? (
                                   counter = counter + 1,
                                   <TouchableOpacity
@@ -303,7 +310,7 @@ export function Home({ navigation }) {
                                     style={styles.touchContainer}
                                     onPress={() => {
                                       setShowImageView(true),
-                                        setFeedImages(item.admin_post.postImg);
+                                        setFeedImages(item?.post?.postImg);
                                     }}
                                   >
                                     <Image
@@ -321,7 +328,7 @@ export function Home({ navigation }) {
                                     style={styles.touchContainer}
                                     onPress={() => {
                                       setShowImageView(true),
-                                        setFeedImages(item.admin_post.postImg);
+                                        setFeedImages(item?.post?.postImg);
                                     }}
                                   >
                                     <ImageBackground
@@ -334,12 +341,12 @@ export function Home({ navigation }) {
                                       <TouchableOpacity
                                         onPress={() => {
                                           setShowImageView(true),
-                                            setFeedImages(item.admin_post.postImg);
+                                            setFeedImages(item?.post?.postImg);
                                         }}
                                       >
                                         <Text style={styles.extraImage}>
                                           {strings.message.plus}
-                                          {item.admin_post.postImg.length - 1}
+                                          {item?.post.postImg?.length - 1}
                                         </Text>
                                       </TouchableOpacity>
                                     </ImageBackground>
@@ -355,17 +362,18 @@ export function Home({ navigation }) {
 
                             postID={item.id}
                             postType="Regular"
-                            postUserID={item?.admin_post?.userId}
+                            postUserID={item?.post?.userId}
                             userID={user?.id}
-                            likeCount={item?.admin_post?.upVote}
-                            disLikeCount={item?.admin_post?.downVote}
+                            likeCount={item?.post?.upVote}
+                            disLikeCount={item?.post?.downVote}
                             commentCount={item?.comments_aggregate?.aggregate?.count}
                             postData={item}
                             postIndex={index}
                             morePress={() => {
-                              setPostUserName(item?.admin_post.user?.username)
+                              setPostUserName(item?.post.user?.username)
                               setOpen(true);
                               setPostUserId(item.userId);
+                              setIsAdminPost(item?.isAdminPost)
                               setpostId(item.id);
                               setPostTitle(item.postTitle)
                               setPostBody(item.postBody);
@@ -616,6 +624,8 @@ export function Home({ navigation }) {
                     commentPress={() => navigation.navigate(NAVIGATION.comments, { DATA: item })}
                     morePress={() => {
                       setPostUserName(item?.user?.username)
+                      setIsAdminPost(item?.isAdminPost),
+                        setPostIndex(index)
                       setOpen(true);
                       setPostUserId(item?.userId);
                       setpostId(item?.id);
@@ -783,7 +793,7 @@ export function Home({ navigation }) {
           <ModalDown open={open} setOpen={setOpen}>
             <ModalList
               onPress={() => { onFollow() }}
-              title={(!postUserFollowed ? strings.operations.follow : strings.operations.unFollow) + "  " + postUserName}
+              title={(!ALLPOST?.data[postIndex]?.is_following ? strings.operations.follow : strings.operations.unFollow) + " @" + postUserName}
               icon={faUserPlus}
               iconColor={theme.light.colors.primary}
               iconBg={theme.light.colors.primaryBgLight}
@@ -799,9 +809,10 @@ export function Home({ navigation }) {
               paddingTop={15}
               paddingBottom={8}
             />
-            {(userType.user == `${strings.userType.free}`) |
-              (userType.user == `${strings.userType.vip}`) ? (
+            {(userType.user == `${strings.userType.free}` |
+              userType.user == `${strings.userType.vip}`) && (isAdminPost == false) ? (
               <>
+
                 <ModalList
                   title={strings.home.report}
                   icon={faFlag}
@@ -815,12 +826,18 @@ export function Home({ navigation }) {
 
                   }}
                 />
+
+
                 <ModalList
-                  title={strings.operations.block + strings.home.DummyUser}
+                  onPress={() => { onBlock() }}
+                  title={strings.operations.block + " @" + postUserName}
+                  // title={(ALLPOST?.data[pos] ? strings.operations.block : strings.operations.unBlock) + " @" + postUserName}
                   icon={faXmark}
                   iconColor={theme.light.colors.secondary}
                   iconBg={theme.light.colors.infoBgLight}
                 />
+
+
               </>
             ) : userType.user == `${strings.userType.admin}` ? (
               <>

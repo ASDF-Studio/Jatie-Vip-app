@@ -145,6 +145,36 @@ export const TYPES = {
     REPORT_POST_SUCCESS: "REPORT_POST_SUCCESS",
     REPORT_POST_ERROR: "REPORT_POST_ERROR",
 
+    //FOLLOW USER
+
+    FOLLOW_USER: "FOLLOW_USER",
+    FOLLOW_USER_REQUEST: "FOLLOW_USER_REQUEST",
+    FOLLOW_USER_SUCCESS: "FOLLOW_USER_SUCCESS",
+    FOLLOW_USER_ERROR: "FOLLOW_USER_ERROR",
+
+
+    //UNFOLLOW USER
+
+    UN_FOLLOW_USER: "UN_FOLLOW_USER",
+    UN_FOLLOW_USER_REQUEST: "UN_FOLLOW_USER_REQUEST",
+    UN_FOLLOW_USER_SUCCESS: "UN_FOLLOW_USER_SUCCESS",
+    UN_FOLLOW_USER_ERROR: "UN_FOLLOW_USER_ERROR",
+
+    //FOLLOW USER
+
+    BLOCK_USER: "BLOCK_USER",
+    BLOCK_USER_REQUEST: "BLOCK_USER_REQUEST",
+    BLOCK_USER_SUCCESS: "BLOCK_USER_SUCCESS",
+    BLOCK_USER_ERROR: "BLOCK_USER_ERROR",
+
+
+    //UNFOLLOW USER
+
+    UN_BLOCK_USER: "UN_BLOCK_USER",
+    UN_BLOCK_USER_REQUEST: "UN_BLOCK_USER_REQUEST",
+    UN_BLOCK_USER_SUCCESS: "UN_BLOCK_USER_SUCCESS",
+    UN_BLOCK_USER_ERROR: "UN_BLOCK_USER_ERROR",
+
 };
 export const createPostSuccess = user => ({
     type: TYPES.CREATE_POST_SUCCESS,
@@ -407,6 +437,83 @@ const clearStore = () => ({
     payload: null,
 })
 
+export const followUserSuccess = user => ({
+    type: TYPES.FOLLOW_USER_SUCCESS,
+    payload: user,
+});
+
+const followUserRequest = () => ({
+    type: TYPES.FOLLOW_USER_REQUEST,
+    payload: null,
+});
+
+const followUserError = error => ({
+    type: TYPES.FOLLOW_USER_ERROR,
+    payload: { error },
+});
+
+export const unFollowUserSuccess = user => ({
+    type: TYPES.UN_FOLLOW_USER_SUCCESS,
+    payload: user,
+});
+
+
+const unFollowUserRequest = () => ({
+    type: TYPES.UN_FOLLOW_USER_REQUEST,
+    payload: null,
+});
+
+const unFollowUserError = error => ({
+    type: TYPES.UN_FOLLOW_USER_ERROR,
+    payload: { error },
+});
+
+const blockUserRequest = () => ({
+    type: TYPES.BLOCK_USER_REQUEST,
+    payload: null,
+});
+
+const blockUserError = error => ({
+    type: TYPES.BLOCK_USER_ERROR,
+    payload: { error },
+});
+
+export const blockUserSuccess = user => ({
+    type: TYPES.BLOCK_USER_SUCCESS,
+    payload: { user },
+});
+
+
+
+const unBockUserRequest = () => ({
+    type: TYPES.UN_BLOCK_USER_REQUEST,
+    payload: null,
+});
+
+const unBlockUserError = error => ({
+    type: TYPES.UN_BLOCK_USER_ERROR,
+    payload: { error },
+});
+
+export const unBlockUserSuccess = user => ({
+    type: TYPES.UN_BLOCK_USER_SUCCESS,
+    payload: { user },
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // create_post action
 
 export const createPost = (id, postTitle, postBody, file, mimeType, imageArray, screen) => async dispatch => {
@@ -618,6 +725,65 @@ export const deleteComment = (id, userId) => async dispatch => {
     }
 };
 
+export const followUser = (followerId, followId, type) => async dispatch => {
+    dispatch(followUserRequest());
+    try {
+        const user = await PostController.followUser(followerId, followId);
+        var object = {
+            id: followId,
+            type: type
+        }
+        dispatch(followUserSuccess(object));
+        // showMessage({
+        //     message: strings.userFollowedSuccsess.followedSuccess,
+        //     type: "success"
+        // })
+    } catch (error) {
+        dispatch(followUserError(error))
+    }
+};
+
+
+export const unFollowUser = (unFollowerId, followId, type) => async dispatch => {
+    dispatch(unFollowUserRequest());
+    try {
+        const user = await PostController.unFollowUser(unFollowerId, followId);
+        var object = {
+            id: followId,
+            type: type
+        }
+        dispatch(unFollowUserSuccess(object));
+    } catch (error) {
+
+        dispatch(unFollowUserError(error))
+    }
+};
+
+
+export const blockUser = (blockedByUser, blockedUser) => async dispatch => {
+    dispatch(blockUserRequest());
+    try {
+        const user = await PostController.blockUser(blockedByUser, blockedUser);
+        dispatch(blockUserSuccess(user));
+    } catch (error) {
+
+        dispatch(blockUserError(error))
+    }
+};
+
+
+
+
+export const unBlockUser = (blockedByUser, blockedUser) => async dispatch => {
+    dispatch(unBockUserRequest());
+    try {
+        const user = await PostController.unBlockUser(blockedByUser, blockedUser);
+        dispatch(unBlockUserSuccess(user));
+    } catch (error) {
+
+        dispatch(unBlockUserError(error))
+    }
+};
 
 
 
@@ -634,8 +800,8 @@ export const deleteComment = (id, userId) => async dispatch => {
 export const getCommentsByPostId = (postId, userId) => async dispatch => {
     dispatch(getCommentsByPostIdRequest())
     try {
-        const comments = await PostController.getCommentsByPostId(postId, userId)
-        dispatch(getCommentsByPostIdSuccess(comments.data))
+        const user = await PostController.getCommentsByPostId(postId, userId)
+        dispatch(getCommentsByPostIdSuccess(user.data))
     } catch (error) {
         dispatch(getCommentByPostIdError(error))
     }
@@ -644,8 +810,8 @@ export const getCommentsByPostId = (postId, userId) => async dispatch => {
 export const voteUpComment = (id, userId) => async dispatch => {
     dispatch(voteUpCommentRequest())
     try {
-        const comments = await PostController.voteUpComment(id, userId)
-        dispatch(voteUpCommentSuccess(comments))
+        const user = await PostController.voteUpComment(id, userId)
+        dispatch(voteUpCommentSuccess(user))
     } catch (error) {
 
         dispatch(voteUpCommentError(error))
@@ -655,8 +821,8 @@ export const voteUpComment = (id, userId) => async dispatch => {
 export const voteDownComment = (id, userId) => async dispatch => {
     dispatch(voteDownCommentRequest())
     try {
-        const comments = await PostController.voteDownComment(id, userId)
-        dispatch(voteDownCommentSuccess(comments))
+        const user = await PostController.voteDownComment(id, userId)
+        dispatch(voteDownCommentSuccess(user))
     } catch (error) {
         dispatch(voteDownCommentError(error))
     }
