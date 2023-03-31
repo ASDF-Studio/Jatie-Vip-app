@@ -36,6 +36,7 @@
     "react-native-bootsplash": "^4.3.2",
     "react-native-calendars": "^1.1292.0",
     "react-native-config": "^1.4.6",
+    "react-native-controlled-mentions": "^3.0.0-alpha.4",
     "react-native-country-codes-picker": "^2.2.2",
     "react-native-date-picker": "^4.2.9",
     "react-native-dropdown-picker": "^5.4.4",

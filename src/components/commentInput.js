@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, ActivityIndicator, Pressable, Text, Button } from 'react-native';
 import { TextField } from '@/components';
 import { theme } from '@/theme';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-
+import { useMentions, TriggersConfig, generateValueFromMentionStateAndChangedText } from 'react-native-controlled-mentions'
 import { ms, vs } from 'react-native-size-matters';
 import { strings } from '@/localization';
 import { FontFamily } from '@/theme/Fonts';
@@ -15,6 +15,7 @@ import { commentOnPost, editComment, getCommentsByPostId, TYPES } from '@/action
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { Loader } from './Loader';
 import { useEffect } from 'react';
+import { ScrollView } from 'react-native-gesture-handler';
 export const CommentInput = React.forwardRef((props, ref,) => {
   const dispatch = useDispatch()
   const [comment, setComment] = useState('');
@@ -22,11 +23,130 @@ export const CommentInput = React.forwardRef((props, ref,) => {
   const [userId, setUserId] = useState('');
   const [isEdit, setIsEdit] = useState(false);
   const [commentId, setCommentId] = useState('');
-
+  const [textValue, setTextValue] = useState('');
+  const [selection, setSelection] = useState({ start: 0, end: 0 });
 
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.COMMENT_ON_POST], state)
   );
+
+  const suggestions = [
+    {
+      id: '001',
+      name: 'John'
+    },
+    {
+      id: '002',
+      name: 'Alex'
+    },
+    {
+      id: '003',
+      name: 'David'
+    },
+    {
+      id: '004',
+      name: 'Mary'
+    },
+    {
+      id: '005',
+      name: 'Michael'
+    },
+    {
+      id: '006',
+      name: 'Oliver'
+    },
+    {
+      id: '007',
+      name: 'Samantha'
+    },
+    {
+      id: '008',
+      name: 'Emily'
+    },
+    {
+      id: '009',
+      name: 'Jessica'
+    },
+    {
+      id: '010',
+      name: 'Nicole'
+    },
+  ];
+
+  // Create config as static object out of function component
+  // Or memoize it inside FC using `useMemo`
+  const triggersConfig: TriggersConfig<'mention'> = {
+    mention: {
+      // Symbol that will trigger keyword change
+      trigger: '@',
+
+      // Style which mention will be highlighted in the `TextInput`
+      textStyle: { fontWeight: 'bold', color: 'blue' },
+    },
+    // How to parse regex match and get required for data for internal logic
+    getTriggerData: (match) => {
+      const [name, id] = match.split(':');
+
+      return ({
+        original: match,
+        trigger: '##',
+        name,
+        id,
+      });
+    },
+    // How to generate internal mention value from selected suggestion
+    getTriggerValue: (suggestion) => `${suggestion.name}:${suggestion.id}`,
+
+    // How the highlighted mention will appear in TextInput for user
+    getPlainString: (triggerData) => triggerData.name,
+  };
+
+  const newReg = (KinputString) => {
+    const inputString = "Hi {@}[Alex](003) how are you is it working Ok for you?";
+    const nameRegex = /\{[@\w]+\}\[(\w+)\]\((\d+)\)/;
+    const outputString = inputString.replace(nameRegex, "Hi @$1");
+    const idMatch = inputString.match(nameRegex);
+    const id = idMatch ? idMatch[2] : null;
+    return id
+  }
+
+  const { textInputProps, triggers, mentionState } = useMentions({
+    value: comment,
+    onChange: setComment,
+
+    // Add the config here
+    triggersConfig,
+  });
+
+  const Suggestions: FC<SuggestionsProvidedProps> = ({
+    keyword,
+    onSelect
+  }) => {
+    if (keyword == null) {
+      return null;
+    }
+
+    return (
+      <View style={{ height: 200 }}>
+        <ScrollView >
+          {suggestions
+            .filter(one => one.name.toLocaleLowerCase().includes(keyword.toLocaleLowerCase()))
+            .map(one => (
+              <Pressable
+                key={one.id}
+                onPress={() => onSelect(one)}
+                style={{ padding: 12 }}
+              >
+                <Text>{one.name}</Text>
+              </Pressable>
+            ))
+          }
+        </ScrollView>
+      </View>
+
+    );
+  };
+
   const onComment = () => {
     if (comment == "") {
       showMessage({
@@ -62,13 +182,14 @@ export const CommentInput = React.forwardRef((props, ref,) => {
   }
   return (
     <View style={styles.container}>
+      <Suggestions {...triggers.mention} />
       <TextField
-
         multiline={true}
         style={styles.textFiled}
-        value={comment}
-        onChangeText={setComment}
+        // value={comment}
+        // onChange={setComment}
         placeholder={strings.home.typeComment}
+        {...textInputProps}
       />
 
       {isLoading ? <Loader
@@ -87,7 +208,6 @@ export const CommentInput = React.forwardRef((props, ref,) => {
           />
         </TouchableOpacity>
       }
-
     </View>
   );
 })

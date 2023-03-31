@@ -83,15 +83,12 @@ export default function Comments({ navigation, route }) {
   const [reportOptionValue, setReportOptionValue] = useState('');
   const [reportComment, setReportCommnet] = useState('');
 
-
   const [commentUserId, setCommentUserId] = useState('');
   const [comment, setComment] = useState('');
   const [commentId, setCommentId] = useState('');
   const [isEdit, setIsEdit] = useState(false);
   const [commentIndex, setCommentIndex] = useState('');
   const [commentUserName, setCommentUserName] = useState('');
-
-
 
   const focus = useIsFocused();
 
@@ -160,6 +157,15 @@ export default function Comments({ navigation, route }) {
     setCommentUserId(''), setCommentIndex()
   }
   console.log("ALLLL__COMMENTS", JSON.stringify(COMMENTS))
+
+  function convertString(inputString) {
+    const nameRegex = /\{[@\w]+\}\[(\w+)\]\(\d+\)/;
+    const nameMatch = inputString.match(nameRegex);
+    const name = nameMatch ? nameMatch[1] : null;
+    const outputString = name ? `Hi @${name}` : inputString.replace(/\{\{@\}\}\[(\w+)\]\(\d+\)/g, "@$1");
+    return outputString;
+  }
+
   return (
 
     <SafeAreaView style={styles.container}>
