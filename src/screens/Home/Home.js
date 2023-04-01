@@ -132,7 +132,7 @@ export function Home({ navigation }) {
   }, [focus]);
 
   const isLoading = useSelector(state =>
-    isLoadingSelector([TYPES.GET_ALL_POST, TYPES.SEARCH_ALL_POST], state)
+    isLoadingSelector([TYPES.GET_ALL_POST], state)
   );
 
   const isShowReportToast = useSelector(state =>
