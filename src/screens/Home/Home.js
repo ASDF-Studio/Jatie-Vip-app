@@ -511,7 +511,7 @@ export function Home({ navigation }) {
               </View>
             }
             data={searchEnabled ? ALLPOST?.searchedPosts : ALLPOST?.data}
-            keyExtractor={item => item.id}
+            keyExtractor={item => item?.id}
             contentContainerStyle={{ flexGrow: 1 }}
             renderItem={({ item, index }) => (
               <View style={styles.cardContainer}>
@@ -524,7 +524,7 @@ export function Home({ navigation }) {
                     // isOfficial={item.isOffical}
                     showPin={item?.isPinned}
                   />
-                  <CardBody text={item.postBody} />
+                  <CardBody text={item?.postBody} />
 
                   {/* video */}
                   {/* {item.video ? (
@@ -540,7 +540,7 @@ export function Home({ navigation }) {
                           style={styles.touchContainer}
                           onPress={() => {
                             setShowImageView(true),
-                              setFeedImages(item.postImg)
+                              setFeedImages(item?.postImg)
                           }}
                         >
                           <Image
@@ -563,7 +563,7 @@ export function Home({ navigation }) {
                             style={styles.touchContainer}
                             onPress={() => {
                               setShowImageView(true),
-                                setFeedImages(item.postImg);
+                                setFeedImages(item?.postImg);
                               // console.log(feedImages)
                             }}
                           >
@@ -582,7 +582,7 @@ export function Home({ navigation }) {
                             style={styles.touchContainer}
                             onPress={() => {
                               setShowImageView(true),
-                                setFeedImages(item.postImg);
+                                setFeedImages(item?.postImg);
                             }}
                           >
                             <ImageBackground
@@ -595,7 +595,7 @@ export function Home({ navigation }) {
                               <TouchableOpacity
                                 onPress={() => {
                                   setShowImageView(true),
-                                    setFeedImages(item.postImg);
+                                    setFeedImages(item?.postImg);
                                 }}
                               >
                                 <Text style={styles.extraImage}>
@@ -612,7 +612,7 @@ export function Home({ navigation }) {
                   <CardFooter
                     // likePress={() => onUpVote(item.id, item.userId, user?.id, item)}
                     // disLikePress={() => onDownVote(item.id, item.userId, user?.id, item)}
-                    postID={item.id}
+                    postID={item?.id}
                     postType="Regular"
                     postUserID={item?.userId}
                     userID={user?.id}
