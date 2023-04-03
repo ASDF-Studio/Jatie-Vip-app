@@ -54,6 +54,9 @@ export const API_END_POINTS = {
     UN_BLOCK_USER: "user/unblock",
 
     // Report Post
-    REPORT_POST: 'post/report'
+    REPORT_POST: 'post/report',
+
+    // Search user by username
+    SEARCH_USER_BY_USERNAME: 'user/search'
 
 };

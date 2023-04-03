@@ -12,7 +12,6 @@ enableScreens();
 export function App() {
   return (
     <Provider store={store}>
-
       <PersistGate onBeforeLift={hide} persistor={persistor}>
         <RootNavigator />
       </PersistGate>

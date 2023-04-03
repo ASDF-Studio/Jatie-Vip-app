@@ -175,6 +175,14 @@ export const TYPES = {
     UN_BLOCK_USER_SUCCESS: "UN_BLOCK_USER_SUCCESS",
     UN_BLOCK_USER_ERROR: "UN_BLOCK_USER_ERROR",
 
+    // SEARCH USER BY USERNAME
+
+    SEARCH_USER_BY_USERNAME: "SEARCH_USER_BY_USERNAME",
+    SEARCH_USER_BY_USERNAME_REQUEST: "SEARCH_USER_BY_USERNAME_REQUEST",
+    SEARCH_USER_BY_USERNAME_SUCCESS: ' SEARCH_USER_BY_USERNAME_SUCCESS',
+    SEARCH_USER_BY_USERNAME_ERROR: ' SEARCH_USER_BY_USERNAME_ERROR'
+
+
 };
 export const createPostSuccess = user => ({
     type: TYPES.CREATE_POST_SUCCESS,
@@ -305,26 +313,23 @@ const deleteCommentError = error => ({
     payload: { error },
 });
 
+//SEARCH ALL POST 
+
+export const searchUserByUserNameSuccess = users => ({
+    type: TYPES.SEARCH_USER_BY_USERNAME_SUCCESS,
+    payload: { users },
+});
 
 
+const searchUserByUserNameRequest = () => ({
+    type: TYPES.SEARCH_USER_BY_USERNAME_REQUEST,
+    payload: null,
+});
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+const searchUserByUserNameError = error => ({
+    type: TYPES.SEARCH_USER_BY_USERNAME_ERROR,
+    payload: { error },
+});
 
 
 
@@ -771,9 +776,6 @@ export const blockUser = (blockedByUser, blockedUser) => async dispatch => {
     }
 };
 
-
-
-
 export const unBlockUser = (blockedByUser, blockedUser) => async dispatch => {
     dispatch(unBockUserRequest());
     try {
@@ -784,18 +786,6 @@ export const unBlockUser = (blockedByUser, blockedUser) => async dispatch => {
         dispatch(unBlockUserError(error))
     }
 };
-
-
-
-
-
-
-
-
-
-
-
-
 
 export const getCommentsByPostId = (postId, userId) => async dispatch => {
     dispatch(getCommentsByPostIdRequest())
@@ -838,14 +828,13 @@ export const reportPost = (paramsObj) => async dispatch => {
     }
 };
 
-
-// export const updateComment = (postId, userId, commentBody) => async dispatch => {
-//     dispatch(commentOnPostRequest())
-//     try {
-//         const comment = await PostController.commentOnPost(postId, userId, commentBody)
-//         dispatch(commentOnPostSuccess(comment))
-//     } catch (error) {
-
-//     }
-
-// }
+export const searchUserbyUserName = (searchWord) => async dispatch => {
+    dispatch(globalReset())
+    dispatch(searchUserByUserNameRequest());
+    try {
+        const searchedUser = await PostController.searchUserByUserNameAPI(searchWord);
+        dispatch(searchUserByUserNameSuccess(searchedUser?.data))
+    } catch (error) {
+        dispatch(searchUserByUserNameError(error))
+    }
+};

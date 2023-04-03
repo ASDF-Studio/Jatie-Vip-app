@@ -1,77 +1,40 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity, ActivityIndicator, Pressable, Text, Button } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Pressable, Text } from 'react-native';
 import { TextField } from '@/components';
 import { theme } from '@/theme';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { useMentions, TriggersConfig, generateValueFromMentionStateAndChangedText } from 'react-native-controlled-mentions'
+import { useMentions, TriggersConfig } from 'react-native-controlled-mentions'
 import { ms, vs } from 'react-native-size-matters';
 import { strings } from '@/localization';
-import { FontFamily } from '@/theme/Fonts';
 import { faPaperPlaneTop } from '@fortawesome/pro-regular-svg-icons';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { showMessage } from "react-native-flash-message";
-import { commentOnPost, editComment, getCommentsByPostId, TYPES } from '@/actions/PostActions';
+import { commentOnPost, editComment, searchUserbyUserName, TYPES } from '@/actions/PostActions';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { Loader } from './Loader';
 import { useEffect } from 'react';
 import { ScrollView } from 'react-native-gesture-handler';
+import { getAllPostData } from '@/selectors/PostSelectors';
+import { FontFamily } from '@/theme/Fonts';
+
 export const CommentInput = React.forwardRef((props, ref,) => {
   const dispatch = useDispatch()
   const [comment, setComment] = useState('');
-  const [postId, setPostId] = useState('');
-  const [userId, setUserId] = useState('');
   const [isEdit, setIsEdit] = useState(false);
-  const [commentId, setCommentId] = useState('');
-  const [textValue, setTextValue] = useState('');
-  const [selection, setSelection] = useState({ start: 0, end: 0 });
+  const [searchedKeyword, setSearchedKeyword] = useState('')
+
+  const searchUserSelector = useSelector(getAllPostData)
 
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.COMMENT_ON_POST], state)
   );
 
-  const suggestions = [
-    {
-      id: '001',
-      name: 'John'
-    },
-    {
-      id: '002',
-      name: 'Alex'
-    },
-    {
-      id: '003',
-      name: 'David'
-    },
-    {
-      id: '004',
-      name: 'Mary'
-    },
-    {
-      id: '005',
-      name: 'Michael'
-    },
-    {
-      id: '006',
-      name: 'Oliver'
-    },
-    {
-      id: '007',
-      name: 'Samantha'
-    },
-    {
-      id: '008',
-      name: 'Emily'
-    },
-    {
-      id: '009',
-      name: 'Jessica'
-    },
-    {
-      id: '010',
-      name: 'Nicole'
-    },
-  ];
+  useEffect(() => {
+    dispatch(searchUserbyUserName(searchedKeyword))
+
+  }, [searchedKeyword])
+
 
   // Create config as static object out of function component
   // Or memoize it inside FC using `useMemo`
@@ -81,34 +44,10 @@ export const CommentInput = React.forwardRef((props, ref,) => {
       trigger: '@',
 
       // Style which mention will be highlighted in the `TextInput`
-      textStyle: { fontWeight: 'bold', color: 'blue' },
-    },
-    // How to parse regex match and get required for data for internal logic
-    getTriggerData: (match) => {
-      const [name, id] = match.split(':');
+      textStyle: { fontWeight: FontFamily.BrandonGrotesque_medium, color: theme.light.colors.mention, },
 
-      return ({
-        original: match,
-        trigger: '##',
-        name,
-        id,
-      });
     },
-    // How to generate internal mention value from selected suggestion
-    getTriggerValue: (suggestion) => `${suggestion.name}:${suggestion.id}`,
-
-    // How the highlighted mention will appear in TextInput for user
-    getPlainString: (triggerData) => triggerData.name,
   };
-
-  const newReg = (KinputString) => {
-    const inputString = "Hi {@}[Alex](003) how are you is it working Ok for you?";
-    const nameRegex = /\{[@\w]+\}\[(\w+)\]\((\d+)\)/;
-    const outputString = inputString.replace(nameRegex, "Hi @$1");
-    const idMatch = inputString.match(nameRegex);
-    const id = idMatch ? idMatch[2] : null;
-    return id
-  }
 
   const { textInputProps, triggers, mentionState } = useMentions({
     value: comment,
@@ -122,22 +61,30 @@ export const CommentInput = React.forwardRef((props, ref,) => {
     keyword,
     onSelect
   }) => {
+
     if (keyword == null) {
       return null;
     }
 
+    setSearchedKeyword(keyword);
+
     return (
       <View style={{ height: 200 }}>
         <ScrollView >
-          {suggestions
-            .filter(one => one.name.toLocaleLowerCase().includes(keyword.toLocaleLowerCase()))
+          {searchUserSelector?.searchedUsers.filter(one => one.username.toLocaleLowerCase().includes(keyword.toLocaleLowerCase()))
             .map(one => (
               <Pressable
                 key={one.id}
-                onPress={() => onSelect(one)}
+                onPress={() => {
+                  const finalData = {
+                    id: one.id,
+                    name: one.username,
+                  }
+                  onSelect(finalData)
+                }}
                 style={{ padding: 12 }}
               >
-                <Text>{one.name}</Text>
+                <Text>{one.username}</Text>
               </Pressable>
             ))
           }
@@ -186,8 +133,6 @@ export const CommentInput = React.forwardRef((props, ref,) => {
       <TextField
         multiline={true}
         style={styles.textFiled}
-        // value={comment}
-        // onChange={setComment}
         placeholder={strings.home.typeComment}
         {...textInputProps}
       />
@@ -217,10 +162,9 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderColor: theme.light.colors.infoBgLight,
     width: '100%',
-    // position: "absolute", bottom: 0
   },
   textFiled: {
-    backgroundColor: theme.light.colors.white, //inputFiled
+    backgroundColor: theme.light.colors.white,
     paddingRight: ms(80),
     padding: ms(50),
   },
