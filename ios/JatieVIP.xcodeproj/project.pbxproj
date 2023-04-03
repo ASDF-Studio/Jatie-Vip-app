@@ -349,7 +349,7 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1210;
+				LastUpgradeCheck = 1420;
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
@@ -818,6 +818,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 6BE2568F3C6994AE2EC3AC28 /* Pods-JatieVIPCommonPods-JatieVIPTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -845,6 +846,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 288E704BFD9AE4D07C7E24FB /* Pods-JatieVIPCommonPods-JatieVIPTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = JatieVIPTests/Info.plist;
