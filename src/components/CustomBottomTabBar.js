@@ -57,7 +57,7 @@ function CustomBottomTabBar({ state, descriptors, navigation }) {
     <View
       style={{
         flexDirection: 'row',
-        marginBottom: keyboardShow ? -86 : 20,
+        marginBottom: keyboardShow ? -100 : 20,
       }}
     >
       {state.routes.map((route, index) => {

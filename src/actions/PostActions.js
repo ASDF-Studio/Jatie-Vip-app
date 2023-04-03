@@ -181,7 +181,6 @@ export const createPostSuccess = user => ({
     payload: { user },
 });
 
-
 const createPostRequest = () => ({
     type: TYPES.CREATE_POST_REQUEST,
     payload: null,
@@ -199,7 +198,6 @@ export const getAllPostSuccess = post => ({
     payload: { post },
 });
 
-
 const getAllPostRequest = () => ({
     type: TYPES.GET_ALL_POST_REQUEST,
     payload: null,
@@ -216,7 +214,6 @@ export const searchAllPostSuccess = post => ({
     type: TYPES.SEARCH_ALL_POST_SUCCESS,
     payload: { post },
 });
-
 
 const searchAllPostRequest = () => ({
     type: TYPES.SEARCH_ALL_POST_REQUEST,
@@ -246,26 +243,20 @@ const getAllPinPostError = error => ({
     payload: { error },
 });
 
-
 export const commentOnPostSuccess = comment => ({
     type: TYPES.COMMENT_ON_POST_SUCCESS,
     payload: { comment },
 });
-
 
 const commentOnPostRequest = () => ({
     type: TYPES.COMMENT_ON_POST_REQUEST,
     payload: null,
 });
 
-
-
 const commentOnPostError = error => ({
     type: TYPES.COMMENT_ON_POST_ERROR,
     payload: { error },
 });
-
-
 
 // Edit comment
 
@@ -274,13 +265,10 @@ export const editCommentSuccess = comment => ({
     payload: comment,
 });
 
-
 const editCommentRequest = () => ({
     type: TYPES.EDIT_COMMENT_REQUEST,
     payload: null,
 });
-
-
 
 const editCommentError = error => ({
     type: TYPES.EDIT_COMMENT_ERROR,
@@ -294,7 +282,6 @@ export const deleteCommentSuccess = comment => ({
     payload: { comment },
 });
 
-
 const deleteCommentRequest = () => ({
     type: TYPES.DELETE_COMMENT_REQUEST,
     payload: null,
@@ -305,35 +292,11 @@ const deleteCommentError = error => ({
     payload: { error },
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //Comment
 export const updatePostSuccess = post => ({
     type: TYPES.UPDATE_POST_SUCCESS,
     payload: { post },
 });
-
 
 const updatePostRequest = () => ({
     type: TYPES.UPDATE_POST_REQUEST,
@@ -350,12 +313,10 @@ const getCommentByPostIdError = error => ({
     payload: { error },
 });
 
-
 export const getCommentsByPostIdSuccess = comments => ({
     type: TYPES.GET_COMMENTS_BY_POST_ID_SUCCESS,
     payload: { comments },
 });
-
 
 const getCommentsByPostIdRequest = () => ({
     type: TYPES.GET_COMMENTS_BY_POST_ID_REQUEST,
@@ -414,13 +375,11 @@ const deletePostError = error => ({
     payload: { error },
 });
 
-
 //delete Post
 export const reportPostSuccess = report => ({
     type: TYPES.REPORT_POST_SUCCESS,
     payload: { report },
 });
-
 
 const reportPostRequest = () => ({
     type: TYPES.REPORT_POST_REQUEST,
@@ -483,8 +442,6 @@ export const blockUserSuccess = user => ({
     payload: { user },
 });
 
-
-
 const unBockUserRequest = () => ({
     type: TYPES.UN_BLOCK_USER_REQUEST,
     payload: null,
@@ -499,20 +456,6 @@ export const unBlockUserSuccess = user => ({
     type: TYPES.UN_BLOCK_USER_SUCCESS,
     payload: { user },
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // create_post action
 
@@ -643,7 +586,6 @@ export const deletePost = (id, postUserId, userId, userType, screen) => async di
         dispatch(deletePostError(error));
     }
 };
-
 export const getAllPost = (userId) => async dispatch => {
     dispatch(getAllPostRequest());
     try {
@@ -655,7 +597,6 @@ export const getAllPost = (userId) => async dispatch => {
     }
 
 };
-
 export const searchAllPost = (searchWord, userID) => async dispatch => {
     dispatch(globalReset())
     dispatch(searchAllPostRequest());
@@ -666,7 +607,6 @@ export const searchAllPost = (searchWord, userID) => async dispatch => {
         dispatch(searchAllPostError(error))
     }
 };
-
 export const getAllPinPost = () => async dispatch => {
     dispatch(getAllPinPostRequest());
     try {
@@ -679,7 +619,6 @@ export const getAllPinPost = () => async dispatch => {
     }
 
 };
-
 export const commentOnPost = (postId, userId, commentBody) => async dispatch => {
     dispatch(commentOnPostRequest());
     // try {
@@ -691,7 +630,6 @@ export const commentOnPost = (postId, userId, commentBody) => async dispatch => 
     //     dispatch(commentOnPostError(error))
     // }
 };
-
 export const editComment = (id, userId, commentBody, commentIndex) => async dispatch => {
     dispatch(editCommentRequest());
     // try {
@@ -707,7 +645,6 @@ export const editComment = (id, userId, commentBody, commentIndex) => async disp
     //     dispatch(editCommentError(error))
     // }
 };
-
 export const deleteComment = (id, userId) => async dispatch => {
     dispatch(deleteCommentRequest());
     try {
@@ -724,7 +661,6 @@ export const deleteComment = (id, userId) => async dispatch => {
         dispatch(deleteCommentError(error))
     }
 };
-
 export const followUser = (followerId, followId, type) => async dispatch => {
     dispatch(followUserRequest());
     try {
@@ -742,8 +678,6 @@ export const followUser = (followerId, followId, type) => async dispatch => {
         dispatch(followUserError(error))
     }
 };
-
-
 export const unFollowUser = (unFollowerId, followId, type) => async dispatch => {
     dispatch(unFollowUserRequest());
     try {
@@ -758,8 +692,6 @@ export const unFollowUser = (unFollowerId, followId, type) => async dispatch => 
         dispatch(unFollowUserError(error))
     }
 };
-
-
 export const blockUser = (blockedByUser, blockedUser) => async dispatch => {
     dispatch(blockUserRequest());
     try {
@@ -770,10 +702,6 @@ export const blockUser = (blockedByUser, blockedUser) => async dispatch => {
         dispatch(blockUserError(error))
     }
 };
-
-
-
-
 export const unBlockUser = (blockedByUser, blockedUser) => async dispatch => {
     dispatch(unBockUserRequest());
     try {
@@ -784,19 +712,6 @@ export const unBlockUser = (blockedByUser, blockedUser) => async dispatch => {
         dispatch(unBlockUserError(error))
     }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
 export const getCommentsByPostId = (postId, userId) => async dispatch => {
     dispatch(getCommentsByPostIdRequest())
     try {
@@ -838,14 +753,3 @@ export const reportPost = (paramsObj) => async dispatch => {
     }
 };
 
-
-// export const updateComment = (postId, userId, commentBody) => async dispatch => {
-//     dispatch(commentOnPostRequest())
-//     try {
-//         const comment = await PostController.commentOnPost(postId, userId, commentBody)
-//         dispatch(commentOnPostSuccess(comment))
-//     } catch (error) {
-
-//     }
-
-// }

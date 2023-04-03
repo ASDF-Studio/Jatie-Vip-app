@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.light.colors.infoBgLight,
     padding: ms(8),
     borderRadius: 10,
-    marginLeft: ms(30),
+    marginLeft: ms(25),
     marginRight: ms(10),
   },
   reacContainer: {

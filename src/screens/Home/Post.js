@@ -38,7 +38,9 @@ import { navigationRef } from '@/navigation/RootNavigation';
 import { TYPES, createPost } from '@/actions/UserActions';
 import { getUser } from '@/selectors/UserSelectors';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
-
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardManager } from 'react-native-keyboard-manager';
+import { KeyboardAccessoryView } from 'react-native-keyboard-accessory';
 let nextId = 0;
 
 export default function AdminPost({ navigation }) {
@@ -225,21 +227,28 @@ export default function AdminPost({ navigation }) {
       <CustomLoader
         open={isLoading}
       />
-      <ScrollView>
+      <KeyboardAwareScrollView
+        contentContainerStyle={{ flex: 1 }}
+        enableAutomaticScroll
+      >
         <View style={styles.postContainer}>
           <View style={styles.TextBoxDEsc}>
             <TextInput
+
               placeholder={strings.home.whatOnYourMind}
               style={styles.InputTextBoxDEsc}
               value={postBody}
               onChangeText={val => setPostBody(val)}
               editable
               multiline
-              numberOfLines={6}
+            // numberOfLines={6}
             />
+
           </View>
+
         </View>
-      </ScrollView>
+
+      </KeyboardAwareScrollView>
 
       <View>
         {imageArray.length ? (
@@ -347,6 +356,7 @@ export default function AdminPost({ navigation }) {
           </View>
         </View>
       </Modal>
+
     </SafeAreaView>
   );
 }
@@ -367,16 +377,18 @@ export const FileUpload = imageArray => {
                       style={styles.thumbnail}
                       source={{ uri: item.image }}
                     />
-                    <View style={styles.minus}>
+                    <TouchableOpacity style={styles.minus}
+                      onPress={() => {
+                        deleteFile(item.id);
+                      }}
+                    >
                       <Text
                         style={styles.minusTxt}
-                        onPress={() => {
-                          deleteFile(item.id);
-                        }}
+
                       >
                         {strings.giveaway.minus}
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   </View>
                 ) : (
                   <View style={styles.fileSpacing} key={item.id}>
@@ -384,16 +396,18 @@ export const FileUpload = imageArray => {
                       style={styles.thumbnail}
                       source={{ uri: item.image }}
                     />
-                    <View style={styles.minus}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        deleteFile(item.id);
+                      }}
+                      style={styles.minus}>
                       <Text
                         style={styles.minusTxt}
-                        onPress={() => {
-                          deleteFile(item.id);
-                        }}
+
                       >
                         {strings.giveaway.minus}
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                     <View style={styles.videoPlayContainer}>
                       {' '}
                       <ActivityIndicator
@@ -444,7 +458,7 @@ const styles = StyleSheet.create({
   },
   TextBoxDEsc: {
     width: '100%',
-    height: vs(320),
+    // height: vs(320),
     padding: ms(8),
     // borderWidth: 1,
     // borderColor: theme.light.colors.infoBgLight,

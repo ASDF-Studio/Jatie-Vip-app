@@ -57,7 +57,8 @@ import moment from 'moment';
 import { useRef } from 'react';
 import ImagePicker from 'react-native-image-crop-picker';
 import { globalReset } from '@/actions/GlobalActions';
-
+import { KeyboardAccessoryView } from 'react-native-keyboard-accessory';
+import KeyboardManager from 'react-native-keyboard-manager';
 export default function Comments({ navigation, route }) {
   const keyboardScroll = useRef(null);
 
@@ -258,7 +259,6 @@ export default function Comments({ navigation, route }) {
           />
 
         }
-
         {/*  Slide up for follow, edit , review  */}
         {open && (
           (commentUserId == USER?.id ? (
@@ -437,7 +437,7 @@ const styles = StyleSheet.create({
   },
   TopBackButton: {
     padding: ms(5),
-    paddingBottom: ms(10),
+    // paddingBottom: ms(10),
   },
   replyToContainer: {
     flexDirection: 'row',

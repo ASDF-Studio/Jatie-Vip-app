@@ -52,7 +52,6 @@ export const CommentInput = React.forwardRef((props, ref,) => {
     resetValue
   }));
   const childFunction = () => {
-    console.log("props=-=-=-=-=-=-=>", JSON.stringify(props));
     setIsEdit(true)
     setComment(props.commentData)
   }
@@ -97,6 +96,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderColor: theme.light.colors.infoBgLight,
     width: '100%',
+
     // position: "absolute", bottom: 0
   },
   textFiled: {
