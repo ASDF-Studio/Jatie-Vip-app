@@ -9,6 +9,7 @@ import SchedulePost from '@/screens/Home/scheduledPost';
 import Notification from '@/screens/Home/notification';
 import Search from '@/screens/Home/search';
 import UpdatePost from '@/screens/Home/updatePost';
+import { AppNavigator } from './AppNavigator';
 
 const Stack = createNativeStackNavigator();
 
@@ -20,8 +21,7 @@ export function HomeNavigator() {
 
     >
       <Stack.Screen
-
-        name={NAVIGATION.home} component={Home} />
+        name={NAVIGATION.home} component={AppNavigator} />
       <Stack.Screen
         name={NAVIGATION.comments} component={Comments} />
       <Stack.Screen name={NAVIGATION.post} component={Post} />

@@ -7,7 +7,7 @@ import { CustomBottomTabBar } from '@/components/CustomBottomTabBar';
 import { MessageNavigator } from './MessageNavigator';
 import { ExclusiveNavigator } from './ExclusiveNavigator';
 import { GiveawayNavigator } from './GiveawayNavigator';
-import { AddProfilePicture } from '@/screens';
+import { AddProfilePicture, Home } from '@/screens';
 
 const Tab = createBottomTabNavigator();
 
@@ -19,8 +19,8 @@ export function AppNavigator() {
         {...props}
 
       />}>
-      <Tab.Screen name={NAVIGATION.homeNavigator}
-        component={HomeNavigator} />
+      <Tab.Screen name={NAVIGATION.home}
+        component={Home} />
       <Tab.Screen
         name={NAVIGATION.messageNavigator}
         component={MessageNavigator}
