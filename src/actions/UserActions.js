@@ -70,6 +70,13 @@ export const TYPES = {
   DELETE_POST_SUCCESS: "DELETE_POST_SUCCESS",
   DELETE_POST_ERROR: "DELETE_POST_ERROR",
 
+
+  //Get user profile by userID
+  GET_USER_PROFILE_BY_USER_ID: 'GET_USER_PROFILE_BY_USER_ID',
+  GET_USER_PROFILE_BY_USER_ID_REQUEST: "GET_USER_PROFILE_BY_USER_ID_REQUEST",
+  GET_USER_PROFILE_BY_USER_ID_SUCCESS: "GET_USER_PROFILE_BY_USER_ID_SUCCESS",
+  GET_USER_PROFILE_BY_USER_ID_ERROR: "GET_USER_PROFILE_BY_USER_ID_ERROR",
+
 };
 
 const loginRequest = () => ({
@@ -241,6 +248,22 @@ const deletePostError = error => ({
   payload: { error },
 });
 
+export const getUserProfileByUserIdSuccess = user => ({
+  type: TYPES.GET_USER_PROFILE_BY_USER_ID_SUCCESS,
+  payload: { user },
+});
+
+
+const getUserProfileByUserIdRequest = () => ({
+  type: TYPES.GET_USER_PROFILE_BY_USER_ID_REQUEST,
+  payload: null,
+});
+
+const getUserProfileByUserIdError = error => ({
+  type: TYPES.GET_USER_PROFILE_BY_USER_ID_ERROR,
+  payload: { error },
+});
+
 const clearStore = () => ({
   type: TYPES.CLEAR_STORE,
   payload: null,
@@ -358,6 +381,22 @@ export const unFollowUser = (unFollowerId, followId) => async dispatch => {
     dispatch(unFollowUserError(error))
   }
 };
+
+
+export const getUserProfileByUserId = (userId) => async dispatch => {
+  dispatch(globalReset())
+  dispatch(getUserProfileByUserIdRequest());
+  try {
+    const user = await UserController.getUserProfileByUseridAPI(userId);
+    dispatch(getUserProfileByUserIdSuccess(user?.data));
+  } catch (error) {
+
+    dispatch(getUserProfileByUserIdError(error))
+  }
+};
+
+
+
 
 export const logout = () => async dispatch => {
   dispatch(clearStore());

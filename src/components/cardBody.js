@@ -5,6 +5,8 @@ import { FontFamily } from '@/theme/Fonts';
 import { ms } from 'react-native-size-matters';
 import { theme } from '@/theme';
 import ParsedText from 'react-native-parsed-text';
+import { navigationRef } from '@/navigation/RootNavigation';
+import { NAVIGATION } from '@/constants';
 
 export const CardBody = ({ text }) => {
 
@@ -30,11 +32,9 @@ export const CardBody = ({ text }) => {
   const onPressUserName = (text, index) => {
     console.log('check syntax text: ' + text)
     const userId = extractUserId(`${text}`)
-    alert(userId)
-    console.log('check text: ' + userId)
-    console.log('check index:' + index)
-    //TODO:  Navigate to the  user profile on the basis of user id mentioned in the comment section
 
+    //TODO:  Navigate to the  user profile on the basis of user id mentioned in the comment section
+    navigationRef.navigate(NAVIGATION.userProfile, { userId: userId })
   }
 
   return (

@@ -151,6 +151,24 @@ export class UserController {
   }
 
 
+  // get User profile by user id API
+  static async getUserProfileByUseridAPI(userId) {
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.GET_USER_PROFILE_BY_USER_ID;
+      var data = {
+        id: userId
+      }
+      HttpClient.post(endpoint, data)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
+
+
 
 
   // create post
