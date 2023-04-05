@@ -8,6 +8,7 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
+  KeyboardAvoidingView
 } from 'react-native';
 import {
   AppSwitch,
@@ -227,9 +228,9 @@ export default function AdminPost({ navigation }) {
       <CustomLoader
         open={isLoading}
       />
-      <KeyboardAwareScrollView
-        contentContainerStyle={{ flex: 1 }}
-        enableAutomaticScroll
+      <KeyboardAvoidingView
+        behavior={Platform.OS == "ios" ? 'padding' : null}
+        style={{ flex: 1 }}
       >
         <View style={styles.postContainer}>
           <View style={styles.TextBoxDEsc}>
@@ -248,7 +249,7 @@ export default function AdminPost({ navigation }) {
 
         </View>
 
-      </KeyboardAwareScrollView>
+      </KeyboardAvoidingView>
 
       <View>
         {imageArray.length ? (
