@@ -63,7 +63,7 @@ export const CommentInput = React.forwardRef((props, ref,) => {
     <View style={styles.container}>
       <TextField
         // onFocus={props.scrollRef}
-        multiline={Platform.OS == "ios" ? false : true}
+        multiline={Platform.OS == "ios" ? true : true}
         style={styles.textFiled}
         value={comment}
         onChangeText={setComment}

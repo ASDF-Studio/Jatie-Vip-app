@@ -39,6 +39,8 @@ import {
   KeyboardAvoidingView,
   Image,
   Platform,
+  Dimensions,
+  Keyboard
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -61,7 +63,8 @@ import { KeyboardAccessoryView } from 'react-native-keyboard-accessory';
 import KeyboardManager from 'react-native-keyboard-manager';
 export default function Comments({ navigation, route }) {
   const keyboardScroll = useRef(null);
-
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
   const childRef = useRef(null)
   const flatListRef = useRef(null);
   const { DATA } = route.params;
@@ -165,6 +168,32 @@ export default function Comments({ navigation, route }) {
   const handleTextInputFocus = (event) => {
     keyboardScroll.current.props.scrollToFocusedInput(event.target);
   };
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      (event) => {
+        const { height } = Dimensions.get('window');
+        const keyboardHeight = event.endCoordinates.screenY - height;
+        setKeyboardHeight(keyboardHeight);
+        setIsKeyboardOpen(true);
+        scrollToBottom()
+
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardHeight(0);
+        setIsKeyboardOpen(false);
+      }
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
   return (
 
     <SafeAreaView style={styles.container}>
@@ -177,11 +206,14 @@ export default function Comments({ navigation, route }) {
         <Text style={styles.headTxt}> {strings.home.comments} </Text>
       </View>
       <HorizontalLine color={theme.light.colors.infoBgLight} paddingTop={15} />
-      <KeyboardAwareScrollView
+      {/* <KeyboardAwareScrollView
         keyboardShouldPersistTaps={'handled'}
         contentContainerStyle={{ flex: 1 }}
+      > */}
+      <KeyboardAvoidingView
+        behavior={Platform.OS == "ios" ? 'padding' : null}
+        style={{ flex: 1 }}
       >
-
         <View style={styles.commentContainer}>
           {isLoading == true ?
             <Loader
@@ -243,7 +275,6 @@ export default function Comments({ navigation, route }) {
             </TouchableOpacity>
           </View>
         )}
-
         {
           !isLoading &&
           <CommentInput
@@ -257,7 +288,6 @@ export default function Comments({ navigation, route }) {
             commentIndex={commentIndex}
           // scrollRef={handleTextInputFocus}
           />
-
         }
         {/*  Slide up for follow, edit , review  */}
         {open && (
@@ -409,7 +439,8 @@ export default function Comments({ navigation, route }) {
             onPressOk={() => dispatch(globalReset())}
           />
         )}
-      </KeyboardAwareScrollView>
+      </KeyboardAvoidingView>
+      {/* </KeyboardAwareScrollView> */}
     </SafeAreaView>
   );
 }
