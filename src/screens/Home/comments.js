@@ -95,6 +95,10 @@ export default function Comments({ navigation, route }) {
   const [commentIndex, setCommentIndex] = useState('');
   const [commentUserName, setCommentUserName] = useState('');
 
+
+  const [replyUserName, setReplyUserName] = useState('');
+  const [replyUserId, setReplyUserId] = useState('');
+
   const [isAdminComment, setIsAdminComment] = useState('');
   const focus = useIsFocused();
   const isLoading = useSelector(state =>
@@ -245,7 +249,12 @@ export default function Comments({ navigation, route }) {
                   disLikeCount={item?.downVote}
                   hasVotedUp={item?.has_upvoted}
                   hasVotedDown={item?.has_downvoted}
-                  replyPress={() => setOpenReplyTo(true)}
+                  replyPress={() => {
+                    setReplyUserId(item?.user?.username),
+                      setReplyUserName(item?.user?.username),
+                      setOpenReplyTo(true)
+                  }
+                  }
                   morePress={() => {
                     setOpen(true);
                     setCommentId(item?.id);
@@ -265,10 +274,14 @@ export default function Comments({ navigation, route }) {
           <View style={styles.replyToContainer}>
             <View style={styles.replay}>
               <Text style={styles.replyTxt}> {strings.home.replyTo} </Text>
-              <Text style={styles.replayFontWeight}> {SingleData.name}</Text>
+              <Text style={styles.replayFontWeight}> {replyUserName}</Text>
             </View>
             <TouchableOpacity
-              onPress={() => setOpenReplyTo(false)}
+              onPress={() => {
+                setOpenReplyTo(false),
+                  setReplyUserName(''),
+                  setReplyUserId('')
+              }}
               style={styles.closeIconContainer}
             >
               <FontAwesomeIcon

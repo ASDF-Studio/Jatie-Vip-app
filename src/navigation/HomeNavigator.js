@@ -17,11 +17,10 @@ export function HomeNavigator() {
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false, }}
-      initialRouteName={NAVIGATION.home}
-
+      initialRouteName={NAVIGATION.AppNavigator}
     >
       <Stack.Screen
-        name={NAVIGATION.home} component={AppNavigator} />
+        name={NAVIGATION.AppNavigator} component={AppNavigator} />
       <Stack.Screen
         name={NAVIGATION.comments} component={Comments} />
       <Stack.Screen name={NAVIGATION.post} component={Post} />
