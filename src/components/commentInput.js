@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity, Pressable, Text } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Pressable, Text, Platform } from 'react-native';
 import { TextField } from '@/components';
 import { theme } from '@/theme';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -44,7 +44,7 @@ export const CommentInput = React.forwardRef((props, ref,) => {
       trigger: '@',
 
       // Style which mention will be highlighted in the `TextInput`
-      textStyle: { fontWeight: FontFamily.BrandonGrotesque_medium, color: theme.light.colors.mention, },
+      textStyle: { fontFamily: FontFamily.BrandonGrotesque_medium, color: theme.light.colors.mention, },
 
     },
   };
@@ -119,7 +119,6 @@ export const CommentInput = React.forwardRef((props, ref,) => {
     resetValue
   }));
   const childFunction = () => {
-    console.log("props=-=-=-=-=-=-=>", JSON.stringify(props));
     setIsEdit(true)
     setComment(props.commentData)
   }
@@ -131,27 +130,29 @@ export const CommentInput = React.forwardRef((props, ref,) => {
     <View style={styles.container}>
       <Suggestions {...triggers.mention} />
       <TextField
-        multiline={true}
+        // onFocus={props.scrollRef}
+        multiline={Platform.OS == "ios" ? true : true}
         style={styles.textFiled}
         placeholder={strings.home.typeComment}
         {...textInputProps}
       />
 
-      {isLoading ? <Loader
+      {isLoading ? (<Loader
         visible={true}
         size={"small"}
         style={styles.iconContainer}
-      />
+      />)
         :
-        <TouchableOpacity style={styles.iconContainer}
-          onPress={onComment}
-        >
-          <FontAwesomeIcon
-            icon={faPaperPlaneTop}
-            size={18}
-            color={theme.light.colors.primary}
-          />
-        </TouchableOpacity>
+        (comment == "" ? <></> :
+          <TouchableOpacity style={styles.iconContainer}
+            onPress={onComment}
+          >
+            <FontAwesomeIcon
+              icon={faPaperPlaneTop}
+              size={18}
+              color={theme.light.colors.primary}
+            />
+          </TouchableOpacity>)
       }
     </View>
   );
@@ -167,6 +168,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.light.colors.white,
     paddingRight: ms(80),
     padding: ms(50),
+
   },
   iconContainer: {
     backgroundColor: theme.light.colors.primaryBgLight,

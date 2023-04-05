@@ -38,6 +38,9 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Image,
+  Platform,
+  Dimensions,
+  Keyboard
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -56,10 +59,12 @@ import moment from 'moment';
 import { useRef } from 'react';
 import ImagePicker from 'react-native-image-crop-picker';
 import { globalReset } from '@/actions/GlobalActions';
-
-
-
+import { KeyboardAccessoryView } from 'react-native-keyboard-accessory';
+import KeyboardManager from 'react-native-keyboard-manager';
 export default function Comments({ navigation, route }) {
+  const keyboardScroll = useRef(null);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
   const childRef = useRef(null)
   const flatListRef = useRef(null);
   const { DATA } = route.params;
@@ -90,8 +95,8 @@ export default function Comments({ navigation, route }) {
   const [commentIndex, setCommentIndex] = useState('');
   const [commentUserName, setCommentUserName] = useState('');
 
+  const [isAdminComment, setIsAdminComment] = useState('');
   const focus = useIsFocused();
-
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.GET_COMMENTS_BY_POST_ID], state)
   );
@@ -147,15 +152,42 @@ export default function Comments({ navigation, route }) {
   };
   const onFollow = () => {
     setOpen(false)
-    if (COMMENTS?.postComments[commentIndex].is_following) {
+    if (COMMENTS?.postComments[commentIndex]?.is_following) {
       dispatch(unFollowUser(USER?.id, commentUserId, strings.home.comment))
     }
     else {
       dispatch(followUser(USER?.id, commentUserId, strings.home.comment))
     }
-
-    setCommentUserId(''), setCommentIndex()
+    setCommentUserId(''), setCommentIndex(0)
   }
+  const handleTextInputFocus = (event) => {
+    keyboardScroll.current.props.scrollToFocusedInput(event.target);
+  };
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      (event) => {
+        const { height } = Dimensions.get('window');
+        const keyboardHeight = event.endCoordinates.screenY - height;
+        setKeyboardHeight(keyboardHeight);
+        setIsKeyboardOpen(true);
+        scrollToBottom()
+
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardHeight(0);
+        setIsKeyboardOpen(false);
+      }
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
   console.log("ALLLL__COMMENTS", JSON.stringify(COMMENTS))
 
   return (
@@ -169,14 +201,15 @@ export default function Comments({ navigation, route }) {
         />
         <Text style={styles.headTxt}> {strings.home.comments} </Text>
       </View>
-      <KeyboardAwareScrollView
-        keyboardShouldPersistTaps={'always'}
+      <HorizontalLine color={theme.light.colors.infoBgLight} paddingTop={15} />
+      {/* <KeyboardAwareScrollView
+        keyboardShouldPersistTaps={'handled'}
         contentContainerStyle={{ flex: 1 }}
+      > */}
+      <KeyboardAvoidingView
+        behavior={Platform.OS == "ios" ? 'padding' : null}
+        style={{ flex: 1 }}
       >
-        <HorizontalLine color={theme.light.colors.infoBgLight} paddingTop={15} />
-        {/* <CustomLoader
-          open={deleteLoading}
-        /> */}
         <View style={styles.commentContainer}>
           {isLoading == true ?
             <Loader
@@ -212,6 +245,7 @@ export default function Comments({ navigation, route }) {
                     setComment(item?.commentBody)
                     setCommentIndex(index)
                     setCommentUserName(item?.user?.username)
+                    setIsAdminComment(item?.isAdminComment)
                   }}
                 />
               )}
@@ -237,7 +271,6 @@ export default function Comments({ navigation, route }) {
             </TouchableOpacity>
           </View>
         )}
-
         {
           !isLoading &&
           <CommentInput
@@ -249,10 +282,9 @@ export default function Comments({ navigation, route }) {
             userId={USER?.id}
             updateParentState={updateParentState}
             commentIndex={commentIndex}
+          // scrollRef={handleTextInputFocus}
           />
-
         }
-
         {/*  Slide up for follow, edit , review  */}
         {open && (
           (commentUserId == USER?.id ? (
@@ -304,24 +336,27 @@ export default function Comments({ navigation, route }) {
                 paddingTop={15}
                 paddingBottom={8}
               />
-              <ModalList
-                title={strings.home.report}
-                icon={faFlag}
-                iconColor={theme.light.colors.secondary}
-                iconBg={theme.light.colors.infoBgLight}
-                onPress={() => {
-                  setReportOptionValue('')
-                  setOpenReport(true);
-                  setOpen(false);
-                  setreportImage(null)
-                }}
-              />
-              <ModalList
-                title={strings.operations.block + strings.home.DummyUser}
-                icon={faXmark}
-                iconColor={theme.light.colors.secondary}
-                iconBg={theme.light.colors.infoBgLight}
-              />
+              {isAdminComment == false &&
+                <ModalList
+                  title={strings.home.report}
+                  icon={faFlag}
+                  iconColor={theme.light.colors.secondary}
+                  iconBg={theme.light.colors.infoBgLight}
+                  onPress={() => {
+                    setReportOptionValue('')
+                    setOpenReport(true);
+                    setOpen(false);
+                    setreportImage(null)
+                  }}
+                />
+              }
+              {isAdminComment == false &&
+                <ModalList
+                  title={strings.operations.block + " @" + commentUserName}
+                  icon={faXmark}
+                  iconColor={theme.light.colors.secondary}
+                  iconBg={theme.light.colors.infoBgLight}
+                />}
             </ModalDown>
           )
         )}
@@ -400,7 +435,8 @@ export default function Comments({ navigation, route }) {
             onPressOk={() => dispatch(globalReset())}
           />
         )}
-      </KeyboardAwareScrollView>
+      </KeyboardAvoidingView>
+      {/* </KeyboardAwareScrollView> */}
     </SafeAreaView>
   );
 }
@@ -428,7 +464,7 @@ const styles = StyleSheet.create({
   },
   TopBackButton: {
     padding: ms(5),
-    paddingBottom: ms(10),
+    // paddingBottom: ms(10),
   },
   replyToContainer: {
     flexDirection: 'row',

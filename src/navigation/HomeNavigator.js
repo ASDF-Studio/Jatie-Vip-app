@@ -10,17 +10,21 @@ import Notification from '@/screens/Home/notification';
 import Search from '@/screens/Home/search';
 import UpdatePost from '@/screens/Home/updatePost';
 import UserProfile from '@/screens/Profile/userProfile';
+import { AppNavigator } from './AppNavigator';
 
 const Stack = createNativeStackNavigator();
 
 export function HomeNavigator() {
   return (
     <Stack.Navigator
-      screenOptions={{ headerShown: false }}
+      screenOptions={{ headerShown: false, }}
       initialRouteName={NAVIGATION.home}
+
     >
-      <Stack.Screen name={NAVIGATION.home} component={Home} />
-      <Stack.Screen name={NAVIGATION.comments} component={Comments} />
+      <Stack.Screen
+        name={NAVIGATION.home} component={AppNavigator} />
+      <Stack.Screen
+        name={NAVIGATION.comments} component={Comments} />
       <Stack.Screen name={NAVIGATION.post} component={Post} />
       <Stack.Screen name={NAVIGATION.postOptions} component={PostOptions} />
       <Stack.Screen name={NAVIGATION.scheduledPost} component={SchedulePost} />

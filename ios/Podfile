@@ -9,7 +9,7 @@ production = ENV["PRODUCTION"] == "1"
 abstract_target 'JatieVIPCommonPods' do
   config = use_native_modules!
   pod 'react-native-image-crop-tools', :path => '../node_modules/react-native-image-crop-tools'
-  
+  pod 'ReactNativeKeyboardManager', :path => '../node_modules/react-native-keyboard-manager'
   target 'JatieVIPDev' do
   end
 

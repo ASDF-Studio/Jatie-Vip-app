@@ -16,7 +16,7 @@ import { ms } from 'react-native-size-matters';
 import { faCrown, faGift, faMessage } from '@fortawesome/pro-regular-svg-icons';
 
 const tabBarLabel = {
-  [NAVIGATION.homeNavigator]: 'Feed',
+  [NAVIGATION.home]: 'Feed',
   [NAVIGATION.messageNavigator]: 'Message',
   [NAVIGATION.exclusiveNavigator]: 'Exclusive',
   [NAVIGATION.giveawayNavigator]: 'Giveaway',
@@ -24,7 +24,7 @@ const tabBarLabel = {
 };
 
 const tabBarIcon = {
-  [NAVIGATION.homeNavigator]: faNewspaper,
+  [NAVIGATION.home]: faNewspaper,
   [NAVIGATION.messageNavigator]: faMessage,
   [NAVIGATION.exclusiveNavigator]: faCrown,
   [NAVIGATION.giveawayNavigator]: faGift,
@@ -57,7 +57,7 @@ function CustomBottomTabBar({ state, descriptors, navigation }) {
     <View
       style={{
         flexDirection: 'row',
-        marginBottom: keyboardShow ? -86 : 20,
+        marginBottom: keyboardShow ? -100 : 20,
       }}
     >
       {state.routes.map((route, index) => {
