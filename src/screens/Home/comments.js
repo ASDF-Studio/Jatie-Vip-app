@@ -140,6 +140,7 @@ export default function Comments({ navigation, route }) {
     setComment('')
     setCommentId('')
     setCommentIndex('')
+    setOpenReplyTo(false)
 
   }
   const SelectFromGallery = () => {
@@ -202,6 +203,7 @@ export default function Comments({ navigation, route }) {
     return outputString;
   }
 
+
   return (
 
     <SafeAreaView style={styles.container}>
@@ -241,7 +243,7 @@ export default function Comments({ navigation, route }) {
                   commentData={item}
                   commentIndex={index}
                   commentId={item?.id}
-                  userName={item?.user?.userName}
+                  userName={item?.user?.username}
                   imageUrl={item?.user?.profilePic}
                   time={moment(item?.created_at).fromNow()}
                   commentTxt={item?.commentBody}
