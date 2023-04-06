@@ -98,6 +98,7 @@ export default function Comments({ navigation, route }) {
 
   const [replyUserName, setReplyUserName] = useState('');
   const [replyUserId, setReplyUserId] = useState('');
+  const [replyFormatedString, setReplyFormatedString] = useState('');
 
   const [isAdminComment, setIsAdminComment] = useState('');
   const focus = useIsFocused();
@@ -141,7 +142,7 @@ export default function Comments({ navigation, route }) {
     setCommentId('')
     setCommentIndex('')
     setOpenReplyTo(false)
-
+    setReplyFormatedString('')
   }
   const SelectFromGallery = () => {
     ImagePicker.openPicker({
@@ -193,7 +194,15 @@ export default function Comments({ navigation, route }) {
       keyboardDidHideListener.remove();
     };
   }, []);
-
+  const commentReplyFormat = (id, username) => {
+    childRef.current.resetValue()
+    setReplyUserId(id),
+      setReplyUserName(username)
+    var link = `{${'@'}}[${username}](${id})`;
+    setReplyFormatedString(link)
+    childRef.current.childReplyFunction(link)
+    setOpenReplyTo(true)
+  }
   return (
 
     <SafeAreaView style={styles.container}>
@@ -242,9 +251,8 @@ export default function Comments({ navigation, route }) {
                   hasVotedUp={item?.has_upvoted}
                   hasVotedDown={item?.has_downvoted}
                   replyPress={() => {
-                    setReplyUserId(item?.user?.username),
-                      setReplyUserName(item?.user?.username),
-                      setOpenReplyTo(true)
+
+                    commentReplyFormat(item?.user?.id, item?.user?.username)
                   }
                   }
                   morePress={() => {
@@ -273,6 +281,8 @@ export default function Comments({ navigation, route }) {
                 setOpenReplyTo(false),
                   setReplyUserName(''),
                   setReplyUserId('')
+
+                childRef.current.resetValue()
               }}
               style={styles.closeIconContainer}
             >
@@ -290,6 +300,8 @@ export default function Comments({ navigation, route }) {
             ref={childRef}
             commentData={comment}
             commentId={commentId}
+            isReply={openReplyTo}
+            replyTo={replyFormatedString}
             isEdit={isEdit}
             postId={DATA?.id}
             userId={USER?.id}
