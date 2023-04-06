@@ -49,10 +49,10 @@ import { Data, SingleData } from './Data/commentsData';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { deleteComment, followUser, getCommentsByPostId, reportPost, TYPES, unFollowUser } from '@/actions/PostActions';
+import { deleteComment, followUser, getAllPostSuccess, getCommentsByPostId, reportPost, TYPES, unFollowUser } from '@/actions/PostActions';
 import { isLoadingSelector, successSelector } from '@/selectors/StatusSelectors';
 import { Loader } from '@/components/Loader';
-import { getCommentsByPostIdData } from '@/selectors/PostSelectors';
+import { getAllPostData, getCommentsByPostIdData } from '@/selectors/PostSelectors';
 import { getUser } from '@/selectors/UserSelectors';
 import { useIsFocused } from '@react-navigation/native';
 import moment from 'moment';
@@ -67,9 +67,10 @@ export default function Comments({ navigation, route }) {
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
   const childRef = useRef(null)
   const flatListRef = useRef(null);
-  const { DATA } = route.params;
+  const { DATA, POST_INDEX } = route.params;
   const USER = useSelector(getUser)
   const COMMENTS = useSelector(getCommentsByPostIdData)
+  const ALLPOST = useSelector(getAllPostData)
   const dispatch = useDispatch()
   const [openReplyTo, setOpenReplyTo] = useState(false);
   console.log("USER+_+_+_", USER)
@@ -123,11 +124,13 @@ export default function Comments({ navigation, route }) {
   };
 
   const onDeleteComment = () => {
-
     dispatch(deleteComment(commentId, USER?.id))
     childRef.current.resetValue()
     updateParentState()
-
+    var arr = ALLPOST?.data
+    var count = arr[POST_INDEX]?.comments_aggregate?.aggregate?.count
+    arr[POST_INDEX].comments_aggregate.aggregate.count = count - 1;
+    dispatch(getAllPostSuccess(arr))
   }
   const onEditComment = () => {
     setIsEdit(true)
@@ -300,6 +303,7 @@ export default function Comments({ navigation, route }) {
             ref={childRef}
             commentData={comment}
             commentId={commentId}
+            postIndex={POST_INDEX}
             isReply={openReplyTo}
             replyTo={replyFormatedString}
             isEdit={isEdit}

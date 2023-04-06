@@ -14,6 +14,9 @@ import { faNewspaper, faUserCircle } from '@fortawesome/free-regular-svg-icons';
 import { theme } from '@/theme';
 import { ms } from 'react-native-size-matters';
 import { faCrown, faGift, faMessage } from '@fortawesome/pro-regular-svg-icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUser } from '@/selectors/UserSelectors';
+import { getAllPost } from '@/actions/PostActions';
 
 const tabBarLabel = {
   [NAVIGATION.home]: 'Feed',
@@ -33,6 +36,8 @@ const tabBarIcon = {
 
 function CustomBottomTabBar({ state, descriptors, navigation }) {
   const { colors } = useTheme();
+  const dispatch = useDispatch()
+  const user = useSelector(getUser);
   const [keyboardShow, setKeyboardShow] = React.useState();
   React.useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -77,6 +82,9 @@ function CustomBottomTabBar({ state, descriptors, navigation }) {
             target: route.key,
             canPreventDefault: true,
           });
+          if (index == 0) {
+            dispatch(getAllPost(user?.id))
+          }
 
           if (!isFocused && !event.defaultPrevented) {
             // The `merge: true` option makes sure that the params inside the tab screen are preserved

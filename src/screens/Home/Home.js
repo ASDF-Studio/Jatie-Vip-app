@@ -129,7 +129,7 @@ export function Home({ navigation }) {
   useEffect(() => {
     // dispatch(getAllPinPost())
     dispatch(getAllPost(user?.id))
-  }, [focus]);
+  }, []);
 
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.GET_ALL_POST, TYPES.SEARCH_ALL_POST], state)
@@ -621,7 +621,7 @@ export function Home({ navigation }) {
                     commentCount={item?.comments_aggregate?.aggregate?.count}
                     postData={item}
                     postIndex={index}
-                    commentPress={() => navigation.navigate(NAVIGATION.comments, { DATA: item })}
+                    commentPress={() => navigation.navigate(NAVIGATION.comments, { DATA: item, "POST_INDEX": index })}
                     morePress={() => {
                       setPostIndex(index)
                       setIsAdminPost(item?.isAdminPost),

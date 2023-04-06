@@ -10,7 +10,7 @@ import { faPaperPlaneTop } from '@fortawesome/pro-regular-svg-icons';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { showMessage } from "react-native-flash-message";
-import { commentOnPost, editComment, searchUserbyUserName, TYPES } from '@/actions/PostActions';
+import { commentOnPost, editComment, getAllPostSuccess, searchUserbyUserName, TYPES } from '@/actions/PostActions';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { Loader } from './Loader';
 import { useEffect } from 'react';
@@ -20,22 +20,17 @@ import { FontFamily } from '@/theme/Fonts';
 
 export const CommentInput = React.forwardRef((props, ref,) => {
   const dispatch = useDispatch()
+  const ALLPOST = useSelector(getAllPostData)
   const [comment, setComment] = useState('');
   const [isEdit, setIsEdit] = useState(false);
   const [searchedKeyword, setSearchedKeyword] = useState('')
-
   const searchUserSelector = useSelector(getAllPostData)
-
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.COMMENT_ON_POST], state)
   );
-
   useEffect(() => {
     dispatch(searchUserbyUserName(searchedKeyword))
-
   }, [searchedKeyword])
-
-
   // Create config as static object out of function component
   // Or memoize it inside FC using `useMemo`
   const triggersConfig: TriggersConfig<'mention'> = {
@@ -103,10 +98,13 @@ export const CommentInput = React.forwardRef((props, ref,) => {
     } else {
       console.log("ISEDIT__", props.isEdit, "COMMEEEE", props.commentData)
       setComment('')
-
       if (!isEdit) {
+        var arr = ALLPOST?.data
         dispatch(commentOnPost(props.postId, props.userId, comment.trim()))
         props.updateParentState()
+        var count = arr[props.postIndex]?.comments_aggregate?.aggregate?.count
+        arr[props.postIndex].comments_aggregate.aggregate.count = count + 1;
+        dispatch(getAllPostSuccess(arr))
       } else {
         setIsEdit(false)
         dispatch(editComment(props.commentId, props.userId, comment.trim(), props.commentIndex))
@@ -141,7 +139,6 @@ export const CommentInput = React.forwardRef((props, ref,) => {
         placeholder={strings.home.typeComment}
         {...textInputProps}
       />
-
       {isLoading ? (<Loader
         visible={true}
         size={"small"}
