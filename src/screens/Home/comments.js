@@ -193,16 +193,6 @@ export default function Comments({ navigation, route }) {
       keyboardDidHideListener.remove();
     };
   }, []);
-  console.log("ALLLL__COMMENTS", JSON.stringify(COMMENTS))
-
-  function convertString(inputString) {
-    const nameRegex = /\{[@\w]+\}\[(\w+)\]\(\d+\)/;
-    const nameMatch = inputString.match(nameRegex);
-    const name = nameMatch ? nameMatch[1] : null;
-    const outputString = name ? `Hi @${name}` : inputString.replace(/\{\{@\}\}\[(\w+)\]\(\d+\)/g, "@$1");
-    return outputString;
-  }
-
 
   return (
 
