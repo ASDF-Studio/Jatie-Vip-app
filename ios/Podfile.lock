@@ -73,6 +73,7 @@ PODS:
     - FlipperKit/FlipperKitNetworkPlugin
   - fmt (6.2.1)
   - glog (0.3.5)
+  - IQKeyboardManagerSwift (6.5.11)
   - libevent (2.1.12)
   - MMKV (1.2.13):
     - MMKVCore (~> 1.2.13)
@@ -378,6 +379,10 @@ PODS:
     - React-jsi (= 0.69.4)
     - React-logger (= 0.69.4)
     - React-perflogger (= 0.69.4)
+  - ReactNativeKeyboardManager (6.5.11-0):
+    - IQKeyboardManagerSwift (= 6.5.11)
+    - React-Core
+    - React-RCTText
   - ReactNativeLocalization (2.3.1):
     - React-Core
   - RNBootSplash (4.5.2):
@@ -504,6 +509,7 @@ DEPENDENCIES:
   - React-RCTVibration (from `../node_modules/react-native/Libraries/Vibration`)
   - React-runtimeexecutor (from `../node_modules/react-native/ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - ReactNativeKeyboardManager (from `../node_modules/react-native-keyboard-manager`)
   - ReactNativeLocalization (from `../node_modules/react-native-localization`)
   - RNBootSplash (from `../node_modules/react-native-bootsplash`)
   - "RNCMaskedView (from `../node_modules/@react-native-masked-view/masked-view`)"
@@ -529,6 +535,7 @@ SPEC REPOS:
     - Flipper-RSocket
     - FlipperKit
     - fmt
+    - IQKeyboardManagerSwift
     - libevent
     - MMKV
     - MMKVCore
@@ -616,6 +623,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/runtimeexecutor"
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  ReactNativeKeyboardManager:
+    :path: "../node_modules/react-native-keyboard-manager"
   ReactNativeLocalization:
     :path: "../node_modules/react-native-localization"
   RNBootSplash:
@@ -656,6 +665,7 @@ SPEC CHECKSUMS:
   FlipperKit: cbdee19bdd4e7f05472a66ce290f1b729ba3cb86
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 3d02b25ca00c2d456734d0bcff864cbc62f6ae1a
+  IQKeyboardManagerSwift: c7955c0bdbf7b2eb29bb7daaa44e3d90f55a9a85
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   MMKV: aac95d817a100479445633f2b3ed8961b4ac5043
   MMKVCore: ddf41b9d9262f058419f9ba7598719af56c02cd3
@@ -693,6 +703,7 @@ SPEC CHECKSUMS:
   React-RCTVibration: 9adb4a3cbb598d1bbd46a05256f445e4b8c70603
   React-runtimeexecutor: 61ee22a8cdf8b6bb2a7fb7b4ba2cc763e5285196
   ReactCommon: 8f67bd7e0a6afade0f20718f859dc8c2275f2e83
+  ReactNativeKeyboardManager: 3c8d08f209a2574090f7c418ef77af518799d549
   ReactNativeLocalization: 076497d7ca70341c751cd3b3e7c86187332a182d
   RNBootSplash: b721af380c81622b03fd67d800675919ee0d8269
   RNCMaskedView: bc0170f389056201c82a55e242e5d90070e18e5a
@@ -710,6 +721,6 @@ SPEC CHECKSUMS:
   Yoga: ff994563b2fd98c982ca58e8cd9db2cdaf4dda74
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 524a1a08e06b3879fc1ae14cff091fc59dc3fadb
+PODFILE CHECKSUM: 87609a345fd42a3e0c02cdde361f6f8dcd78cddd
 
 COCOAPODS: 1.11.3
