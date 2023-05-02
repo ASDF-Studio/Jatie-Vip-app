@@ -34,8 +34,6 @@ export const TYPES = {
   UPLOAD_PROFILE_SUCCESS: "UPLOAD_PROFILE_SUCCESS",
   UPLOAD_PROFILE_ERROR: "UPLOAD_PROFILE_ERROR",
 
-
-
   //FOLLOW USER
 
   FOLLOW_USER: "FOLLOW_USER",
@@ -76,6 +74,12 @@ export const TYPES = {
   GET_USER_PROFILE_BY_USER_ID_REQUEST: "GET_USER_PROFILE_BY_USER_ID_REQUEST",
   GET_USER_PROFILE_BY_USER_ID_SUCCESS: "GET_USER_PROFILE_BY_USER_ID_SUCCESS",
   GET_USER_PROFILE_BY_USER_ID_ERROR: "GET_USER_PROFILE_BY_USER_ID_ERROR",
+
+  //get all post by logged in user
+  GET_ALL_POST_BY_LOGGED_IN_USER: "GET_ALL_POST_BY_LOGGED_IN_USER",
+  GET_ALL_POST_BY_LOGGED_IN_USER_REQUEST: "GET_ALL_POST_BY_LOGGED_IN_USER_REQUEST",
+  GET_ALL_POST_BY_LOGGED_IN_USER_SUCCESS: "GET_ALL_POST_BY_LOGGED_IN_USER_SUCCESS",
+  GET_ALL_POST_BY_LOGGED_IN_USER_ERROR: "GET_ALL_POST_BY_LOGGED_IN_USER_ERROR",
 
 };
 
@@ -192,10 +196,22 @@ const unFollowUserError = error => ({
 });
 
 
+//GET ALL POST BY LOGGED IN USER
 
+export const getAllPostByLoggedInUserSuccess = post => ({
+  type: TYPES.GET_ALL_POST_BY_LOGGED_IN_USER_SUCCESS,
+  payload: { post },
+});
 
+const getAllPostByLoggedInUserRequest = () => ({
+  type: TYPES.GET_ALL_POST_BY_LOGGED_IN_USER_REQUEST,
+  payload: null,
+});
 
-
+const getAllPostByLoggedInUserError = error => ({
+  type: TYPES.GET_ALL_POST_BY_LOGGED_IN_USER_ERROR,
+  payload: { error },
+});
 
 //create post
 export const createPostSuccess = user => ({
@@ -526,6 +542,10 @@ export const deletePost = (id, postUserId, userId, userType, screen) => async di
         message: strings.deletePost.deletedSuccess,
         type: "success"
       })
+
+      // Reload the posts on profile screen after deleting the posts
+      dispatch(getAllPostsByLoggedInUser(userId))
+
       navigationRef.navigate(NAVIGATION.profile)
     }
   } catch (error) {
@@ -537,6 +557,26 @@ export const deletePost = (id, postUserId, userId, userType, screen) => async di
   }
 };
 
+
+// Get all posts by User
+export const getAllPostsByLoggedInUser = (id) => async (dispatch, getState) => {
+  dispatch(globalReset())
+  dispatch(getAllPostByLoggedInUserRequest());
+
+  const userType = getState().userType
+  let allPosts
+  try {
+    if (userType.user === strings.userType.free) {
+      allPosts = await UserController.postByUserId(id);
+    }
+    if (userType.user === strings.userType.admin) {
+      allPosts = await UserController.getAllPostByAdmin();
+    }
+    dispatch(getAllPostByLoggedInUserSuccess(allPosts?.data))
+  } catch (error) {
+    dispatch(getAllPostByLoggedInUserError(error))
+  }
+};
 
 // just for development 
 const adminUserRequest = (data) => {
@@ -566,7 +606,6 @@ export const ChooseUser = (data) => {
     if (data == 'Free') {
       dispatch(FreeUserRequest(data))
     }
-
     if (data == 'VIP') {
       dispatch(VipUesrRequest(data))
     }
