@@ -54,8 +54,6 @@ export const CardHeader = ({
     }
   };
   const navigateToUserProfile = () => {
-    alert(userId)
-    return false
     navigationRef.navigate(NAVIGATION.userProfile, { userId: userId })
   }
   return (
