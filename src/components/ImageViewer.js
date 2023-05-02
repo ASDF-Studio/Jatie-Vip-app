@@ -63,6 +63,6 @@ const styles = StyleSheet.create({
         position: 'absolute',
         zIndex: 55,
         right: ms(30),
-        top: ms(30)
+        top: ms(50)
     }
 })

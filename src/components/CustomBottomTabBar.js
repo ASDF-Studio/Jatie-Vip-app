@@ -14,9 +14,12 @@ import { faNewspaper, faUserCircle } from '@fortawesome/free-regular-svg-icons';
 import { theme } from '@/theme';
 import { ms } from 'react-native-size-matters';
 import { faCrown, faGift, faMessage } from '@fortawesome/pro-regular-svg-icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUser } from '@/selectors/UserSelectors';
+import { getAllPost } from '@/actions/PostActions';
 
 const tabBarLabel = {
-  [NAVIGATION.homeNavigator]: 'Feed',
+  [NAVIGATION.home]: 'Feed',
   [NAVIGATION.messageNavigator]: 'Message',
   [NAVIGATION.exclusiveNavigator]: 'Exclusive',
   [NAVIGATION.giveawayNavigator]: 'Giveaway',
@@ -24,7 +27,7 @@ const tabBarLabel = {
 };
 
 const tabBarIcon = {
-  [NAVIGATION.homeNavigator]: faNewspaper,
+  [NAVIGATION.home]: faNewspaper,
   [NAVIGATION.messageNavigator]: faMessage,
   [NAVIGATION.exclusiveNavigator]: faCrown,
   [NAVIGATION.giveawayNavigator]: faGift,
@@ -33,6 +36,8 @@ const tabBarIcon = {
 
 function CustomBottomTabBar({ state, descriptors, navigation }) {
   const { colors } = useTheme();
+  const dispatch = useDispatch()
+  const user = useSelector(getUser);
   const [keyboardShow, setKeyboardShow] = React.useState();
   React.useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -57,7 +62,7 @@ function CustomBottomTabBar({ state, descriptors, navigation }) {
     <View
       style={{
         flexDirection: 'row',
-        marginBottom: keyboardShow ? -86 : 20,
+        marginBottom: keyboardShow ? -100 : 20,
       }}
     >
       {state.routes.map((route, index) => {
@@ -66,8 +71,8 @@ function CustomBottomTabBar({ state, descriptors, navigation }) {
           options.tabBarLabel !== undefined
             ? options.tabBarLabel
             : options.title !== undefined
-            ? options.title
-            : route.name;
+              ? options.title
+              : route.name;
 
         const isFocused = state.index === index;
 
@@ -77,6 +82,9 @@ function CustomBottomTabBar({ state, descriptors, navigation }) {
             target: route.key,
             canPreventDefault: true,
           });
+          if (index == 0) {
+            dispatch(getAllPost(user?.id))
+          }
 
           if (!isFocused && !event.defaultPrevented) {
             // The `merge: true` option makes sure that the params inside the tab screen are preserved
@@ -117,7 +125,7 @@ function CustomBottomTabBar({ state, descriptors, navigation }) {
               icon={tabBarIcon[route.name]}
               size={20}
               color={isFocused ? colors.activeTabIcon : colors.inactiveTabIcon}
-              // style={{ colo: 'black' }}
+            // style={{ colo: 'black' }}
             />
             <Text
               style={[

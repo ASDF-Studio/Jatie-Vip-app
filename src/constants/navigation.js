@@ -1,4 +1,6 @@
 export const NAVIGATION = {
+  //App Navigator
+  AppNavigator: "AppNavigator",
   welcome: 'Welcome',
   login: 'Login',
   enterOtp: 'EnterOtp',

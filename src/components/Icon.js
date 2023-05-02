@@ -3,9 +3,9 @@ import { TouchableOpacity } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import PropTypes from 'prop-types';
 
-export function Icon({ icon, size, onPress, color, style }) {
+export function Icon({ icon, size, onPress, color, style, containerStyle }) {
   return (
-    <TouchableOpacity onPress={onPress}>
+    <TouchableOpacity style={containerStyle} onPress={onPress}>
       <FontAwesomeIcon icon={icon} size={size} color={color} style={style} />
     </TouchableOpacity>
   );

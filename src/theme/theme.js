@@ -39,6 +39,7 @@ export const theme = {
       dropDownBorder: '#E9EBEC',
       transparentGrey: 'rgba(43,45,66,0.4)',
       chatBackground: '#FDFBF4',
+      mention: '#9381FF'
     },
   },
   dark: {

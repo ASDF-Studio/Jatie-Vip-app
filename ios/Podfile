@@ -13,7 +13,7 @@ abstract_target 'JatieVIPCommonPods' do
   pod 'FirebaseCore', :modular_headers => true
   pod 'GoogleUtilities', :modular_headers => true
   pod 'react-native-image-crop-tools', :path => '../node_modules/react-native-image-crop-tools'
-  
+  pod 'ReactNativeKeyboardManager', :path => '../node_modules/react-native-keyboard-manager'
   target 'JatieVIPDev' do
   end
 

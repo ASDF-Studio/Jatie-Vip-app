@@ -31,6 +31,7 @@ import {
   Icon,
   ModalDown,
   ModalList,
+  AppImageViewer,
 } from '@/components';
 import { strings } from '@/localization';
 import { HorizontalLine } from '@/components';
@@ -39,34 +40,79 @@ import { NAVIGATION } from '@/constants';
 import { Data, demo } from './ProfileData/userProfileData';
 import { faSearch } from '@fortawesome/pro-regular-svg-icons';
 import { FontFamily } from '@/theme/Fonts';
+import { useDispatch, useSelector } from 'react-redux';
+import { TYPES, getUserProfileByUserId } from '@/actions/UserActions';
+import { useEffect } from 'react';
+import { getUser } from '@/selectors/UserSelectors';
+import { isLoadingSelector } from '@/selectors/StatusSelectors';
+import { Loader } from '@/components/Loader';
+import { UserController } from '@/controllers';
 
-export default function UserProfile({ navigation }) {
+export default function UserProfile({ navigation, route }) {
+  const dispatch = useDispatch()
+  const { userId } = route.params
+  const getUserProfile = useSelector(getUser)
+
   const [openMore, setOpenMore] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
+  const [user, setUser] = useState(null)
+  const [userPosts, setuserPosts] = useState([])
+  const [loader, setLoader] = useState(true)
+
+  const [showImageView, setShowImageView] = useState(false);
+  const [feedImages, setFeedImages] = useState([]);
+  const [postId, setpostId] = useState(null);
+  const [postUserId, setPostUserId] = useState(null);
+  const [postTitle, setPostTitle] = useState('');
+  const [postBody, setPostBody] = useState('');
+  const [postImg, setPostImg] = useState([]);
+  let counter = 1;
+
+
+  useEffect(() => {
+    dispatch(getUserProfileByUserId(userId))
+    getUserPostById(userId)
+  }, [])
+
+  useEffect(() => {
+    setUser(getUserProfile?.getUserByUserId)
+  }, [getUserProfile])
+
+  const getUserPostById = async (id) => {
+    const data = await UserController.postByUserId(id);
+    if (data) {
+      setLoader(false);
+      setuserPosts(data.data);
+    }
+
+  }
 
   return (
     <SafeAreaView style={styles.container}>
+
       <View style={styles.headerContainer}>
         <View style={styles.headerImageContainer}>
           <Image
             style={styles.headerImage}
             source={{
-              uri: demo.headerImage,
+              uri: user?.profilePic || null,
             }}
           />
-          <View style={styles.profileLogoContainer}>
-            <FontAwesomeIcon
-              icon={faCrown}
-              color={theme.light.colors.primaryBgDark}
-              size={20}
-            />
-          </View>
+          {user?.isVIP && user?.isAdmin &&
+            <View style={styles.profileLogoContainer}>
+              <FontAwesomeIcon
+                icon={faCrown}
+                color={theme.light.colors.primaryBgDark}
+                size={20}
+              />
+            </View>}
+
           <View style={styles.profileTitleContainer}>
             <Text style={[TextStyles.header, styles.headerDesign]}>
               {' '}
-              {demo.name}
+              {user?.fullName}
             </Text>
-            <Text style={styles.userNameDesign}> {demo.userName}</Text>
+            <Text style={styles.userNameDesign}> {user?.username}</Text>
           </View>
         </View>
         <View style={styles.iconContiner}>
@@ -86,11 +132,11 @@ export default function UserProfile({ navigation }) {
       </View>
       <HeaderTab
         title1={strings.profile.followers}
-        count1={10}
+        count1={user?.followers.length}
         // onPress1 = {()=>Alert.alert('press 1')}
         title2={strings.profile.following}
-        count2={20}
-        // onPress2 = {()=>Alert.alert('press 2')}
+        count2={user?.following.length}
+      // onPress2 = {()=>Alert.alert('press 2')}
       />
       <HorizontalLine
         color={theme.light.colors.infoBgLight}
@@ -130,32 +176,130 @@ export default function UserProfile({ navigation }) {
       </View>
       <HorizontalLine />
       <FlatList
-        data={Data}
+        data={userPosts || []}
         key={props => props.id}
         renderItem={({ item }) => (
           <View style={styles.cardContainer}>
             <Card>
               <CardHeader
-                fullName={item.fullName}
-                userName={item.userName}
-                profilePic={item.profilePic}
-                time={item.time}
+                fullName={user?.fullName}
+                userName={user?.username}
+                profilePic={user?.profilePic}
+                time={item.created_at}
               />
-              <CardBody text={item.text} />
+              <CardBody text={item?.postBody} />
+
+              {item?.postImg?.length <= 2 ? (
+                <View style={styles.imageContainer}>
+                  {item?.postImg?.map(data => (
+                    counter = counter + 1,
+                    <TouchableOpacity
+                      key={counter}
+                      style={styles.touchContainer}
+                      onPress={() => {
+                        setShowImageView(true),
+                          setFeedImages(item?.postImg)
+                      }}
+                    >
+                      <Image
+                        source={{
+                          uri: data,
+                        }}
+                        style={styles.image}
+                      />
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              ) : item?.postImg?.length > 2 ? (
+                counter = 1,
+                <View style={styles.imageContainer}>
+                  {item?.postImg?.map(data =>
+                    counter == 1 ? (
+                      counter = counter + 1,
+                      <TouchableOpacity
+                        key={counter}
+                        style={styles.touchContainer}
+                        onPress={() => {
+                          setShowImageView(true),
+                            setFeedImages(item?.postImg);
+                          // console.log(feedImages)
+                        }}
+                      >
+                        <Image
+                          source={{
+                            uri: data,
+                          }}
+                          key={counter}
+                          style={styles.image}
+                        />
+                      </TouchableOpacity>
+                    ) : counter == 2 ? (
+                      counter = counter + 1,
+                      <TouchableOpacity
+                        key={counter}
+                        style={styles.touchContainer}
+                        onPress={() => {
+                          setShowImageView(true),
+                            setFeedImages(item?.postImg);
+                        }}
+                      >
+                        <ImageBackground
+                          source={{
+                            uri: data,
+                          }}
+                          key={counter}
+                          style={[styles.image, styles.moreImage]}
+                        >
+                          <TouchableOpacity
+                            onPress={() => {
+                              setShowImageView(true),
+                                setFeedImages(item?.postImg);
+                            }}
+                          >
+                            <Text style={styles.extraImage}>
+                              {strings.message.plus}
+                              {item?.postImg?.length - 1}
+                            </Text>
+                          </TouchableOpacity>
+                        </ImageBackground>
+                      </TouchableOpacity>
+                    ) : null
+                  )}
+                </View>
+              ) : null}
               <CardFooter
-                likeCount={item.like}
-                // likePress = {()=> Alert.alert("like")}
-                disLikeCount={item.disLike}
-                // disLikePress = {()=> Alert.alert("dislike")}
-                commentCount={item.comment}
-                // commentPress = {()=> Alert.alert("Comment")}
-                // sharePress = {()=> Alert.alert("share")}
-                morePress={() => setOpenEdit(true)}
+                postID={item?.id}
+                postUserID={item?.userId}
+                userID={user?.id}
+                likeCount={item?.upVote}
+                disLikeCount={item?.downVote}
+                upVoteUserID={item?.upVoteUserId}
+                downVoteUserID={item?.downVoteUserId}
+                commentCount={item?.comments_aggregate?.aggregate?.count ?? 0}
+                commentPress={() => console.log("Comment")}
+                sharePress={() => console.log("share")}
+                morePress={() => {
+                  setOpenMore(true)
+
+                  setpostId(item?.id);
+                  setPostUserId(item?.userId);
+                  setPostTitle(item?.postTitle);
+                  setPostBody(item?.postBody);
+                  setPostImg(item?.postImg);
+                }}
               />
             </Card>
           </View>
         )}
       />
+
+      {showImageView && (
+        <AppImageViewer
+          visible={showImageView}
+          setVisible={() => setShowImageView(false)}
+          images={feedImages}
+        />
+      )}
       {openMore && (
         <ModalDown open={openMore} setOpen={setOpenMore}>
           <ModalList
@@ -169,7 +313,7 @@ export default function UserProfile({ navigation }) {
             icon={faMessage}
             iconColor={theme.light.colors.success}
             iconBg={theme.light.colors.successBgLight}
-            // onPress = {()=> Alert.alert("working")}
+          // onPress = {()=> Alert.alert("working")}
           />
           <HorizontalLine
             color={theme.light.colors.infoBgLight}
@@ -211,6 +355,8 @@ export default function UserProfile({ navigation }) {
           />
         </ModalDown>
       )}
+      <Loader visible={loader} style={{ backgroundColor: 'white' }} size="large" />
+
     </SafeAreaView>
   );
 }
@@ -312,5 +458,32 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: theme.light.colors.primaryBgLight,
     margin: ms(12),
+  },
+  imageContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginRight: ms(-5),
+  },
+  touchContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginRight: ms(-5),
+  },
+  image: {
+    flex: 1,
+    width: '85%',
+    height: ms(200),
+    marginRight: ms(10),
+  },
+  moreImage: {
+    height: ms(200),
+    backgroundColor: theme.light.colors.hyperlink,
+    opacity: 0.7,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    width: '100%',
   },
 });

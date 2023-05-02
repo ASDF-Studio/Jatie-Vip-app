@@ -28,10 +28,10 @@ export function Button({ style, textStyle, opacity, title, ...rest }) {
       style={
         opacity
           ? [
-              styles.button,
-              { borderColor: colors.border, opacity: opacity },
-              style,
-            ]
+            styles.button,
+            { borderColor: colors.border, opacity: opacity },
+            style,
+          ]
           : [styles.button, { borderColor: colors.border }, style]
       }
       {...rest}

@@ -13,6 +13,7 @@ export class UserController {
       HttpClient.post(endpoint, data)
         .then((response) => {
 
+
           resolve(response);
         })
         .catch((error) => {
@@ -30,6 +31,7 @@ export class UserController {
       });
       HttpClient.post(endpoint, data)
         .then((response) => {
+          console.log("LOGIN_R_0-0-0-0ESSSSS", JSON.stringify(response))
           resolve(response);
         })
         .catch((error) => {
@@ -110,6 +112,65 @@ export class UserController {
     });
   }
 
+
+  static async followUser(followerId, followId) {
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.VERIFY_OTP;
+      var data = JSON.stringify({
+        "followerId": followerId,
+        "followId": followId
+      });
+      HttpClient.post(endpoint, data)
+        .then((response) => {
+          console.log("followerId-0-0-0ESSSSS", JSON.stringify(response))
+          resolve(response);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
+
+  static async unFollowUser(unFollowerId, followId) {
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.VERIFY_OTP;
+      var data = JSON.stringify({
+        "unfollowerId": unFollowerId,
+        "followId": followId
+
+      });
+      HttpClient.post(endpoint, data)
+        .then((response) => {
+          console.log("unfollowerId-0-0-0ESSSSS", JSON.stringify(response))
+          resolve(response);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
+
+
+  // get User profile by user id API
+  static async getUserProfileByUseridAPI(userId) {
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.GET_USER_PROFILE_BY_USER_ID;
+      var data = {
+        id: userId
+      }
+      HttpClient.post(endpoint, data)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
+
+
+
+
   // create post
 
   static async createPost(id, postTitle, postBody, file, mimeType, imageArray) {
@@ -178,11 +239,10 @@ export class UserController {
       const headers = {
         'Content-Type': 'multipart/form-data'
       }
-      console.log("##########    Data", data)
+
       await HttpClient.post(endpoint, data, { headers })
         .then((response) => {
           resolve(response);
-          console.log("Final response", response);
         })
         .catch((error) => {
           reject(error);
@@ -202,11 +262,49 @@ export class UserController {
         "userType": userType,
       });
 
-      console.log("##########    Data", data)
       HttpClient.post(endpoint, data)
         .then((response) => {
           resolve(response);
-          console.log("Final response", response);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
+
+  //up voted
+
+  static async upVote(id, userId) {
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.UPVOTE_POST;
+      var data = JSON.stringify({
+        "id": id,
+        "likeUserID": userId,
+      });
+
+      HttpClient.post(endpoint, data)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
+
+  // down vote
+
+  static async downVote(id, userId) {
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.DOWNVOTE_POST;
+      var data = JSON.stringify({
+        "id": id,
+        "unlikeUserID": userId,
+      });
+
+      HttpClient.post(endpoint, data)
+        .then((response) => {
+          resolve(response);
         })
         .catch((error) => {
           reject(error);
@@ -244,7 +342,6 @@ export class UserController {
       await HttpClient.post(endpoint, data, { headers })
         .then((response) => {
           resolve(response);
-          console.log("Final response", response);
         })
         .catch((error) => {
           reject(error);
@@ -342,7 +439,6 @@ export class UserController {
       const endpoint = API_BASE_URL + API_END_POINTS.ALL_POST;
       HttpClient.post(endpoint)
         .then((response) => {
-
           resolve(response);
         })
         .catch((error) => {

@@ -34,6 +34,24 @@ export const TYPES = {
   UPLOAD_PROFILE_SUCCESS: "UPLOAD_PROFILE_SUCCESS",
   UPLOAD_PROFILE_ERROR: "UPLOAD_PROFILE_ERROR",
 
+
+
+  //FOLLOW USER
+
+  FOLLOW_USER: "FOLLOW_USER",
+  FOLLOW_USER_REQUEST: "FOLLOW_USER_REQUEST",
+  FOLLOW_USER_SUCCESS: "FOLLOW_USER_SUCCESS",
+  FOLLOW_USER_ERROR: "FOLLOW_USER_ERROR",
+
+
+  //UNFOLLOW USER
+
+  UN_FOLLOW_USER: "UN_FOLLOW_USER",
+  UN_FOLLOW_USER_REQUEST: "UN_FOLLOW_USER_REQUEST",
+  UN_FOLLOW_USER_SUCCESS: "UN_FOLLOW_USER_SUCCESS",
+  UN_FOLLOW_USER_ERROR: "UN_FOLLOW_USER_ERROR",
+
+
   //user create post
   CREATE_POST: 'CREATE_POST',
   CREATE_POST_REQUEST: "CREATE_POST_REQUEST",
@@ -51,6 +69,13 @@ export const TYPES = {
   DELETE_POST_REQUEST: "DELETE_POST_REQUEST",
   DELETE_POST_SUCCESS: "DELETE_POST_SUCCESS",
   DELETE_POST_ERROR: "DELETE_POST_ERROR",
+
+
+  //Get user profile by userID
+  GET_USER_PROFILE_BY_USER_ID: 'GET_USER_PROFILE_BY_USER_ID',
+  GET_USER_PROFILE_BY_USER_ID_REQUEST: "GET_USER_PROFILE_BY_USER_ID_REQUEST",
+  GET_USER_PROFILE_BY_USER_ID_SUCCESS: "GET_USER_PROFILE_BY_USER_ID_SUCCESS",
+  GET_USER_PROFILE_BY_USER_ID_ERROR: "GET_USER_PROFILE_BY_USER_ID_ERROR",
 
 };
 
@@ -134,6 +159,44 @@ const uploadProfileSuccess = user => ({
   payload: { user },
 });
 
+export const followUserSuccess = user => ({
+  type: TYPES.FOLLOW_USER_SUCCESS,
+  payload: { user },
+});
+
+
+const followUserRequest = () => ({
+  type: TYPES.FOLLOW_USER_REQUEST,
+  payload: null,
+});
+
+const followUserError = error => ({
+  type: TYPES.FOLLOW_USER_ERROR,
+  payload: { error },
+});
+
+export const unFollowUserSuccess = comment => ({
+  type: TYPES.UN_FOLLOW_USER_SUCCESS,
+  payload: { comment },
+});
+
+
+const unFollowUserRequest = () => ({
+  type: TYPES.UN_FOLLOW_USER_REQUEST,
+  payload: null,
+});
+
+const unFollowUserError = error => ({
+  type: TYPES.UN_FOLLOW_USER_ERROR,
+  payload: { error },
+});
+
+
+
+
+
+
+
 //create post
 export const createPostSuccess = user => ({
   type: TYPES.CREATE_POST_SUCCESS,
@@ -185,6 +248,22 @@ const deletePostError = error => ({
   payload: { error },
 });
 
+export const getUserProfileByUserIdSuccess = user => ({
+  type: TYPES.GET_USER_PROFILE_BY_USER_ID_SUCCESS,
+  payload: { user },
+});
+
+
+const getUserProfileByUserIdRequest = () => ({
+  type: TYPES.GET_USER_PROFILE_BY_USER_ID_REQUEST,
+  payload: null,
+});
+
+const getUserProfileByUserIdError = error => ({
+  type: TYPES.GET_USER_PROFILE_BY_USER_ID_ERROR,
+  payload: { error },
+});
+
 const clearStore = () => ({
   type: TYPES.CLEAR_STORE,
   payload: null,
@@ -209,7 +288,6 @@ export const verifyOtp = (number, Otp, isRegistered) => async dispatch => {
     // let selectedValue = "";
     const user = await UserController.verifyOtp(number, Otp);
     if (isRegistered == true) {
-      // console.log("user", user.isAdmin)
       dispatch(verifyOtpSuccess(user))
       if (user?.isAdmin == true) {
         let selectedValue = "Admin";
@@ -251,7 +329,6 @@ export const updateProfile = (dob, fullname, gender, id, primaryEmail, location,
   try {
     const user = await UserController.updateProfile(dob, fullname, gender, id, primaryEmail, location, username, file, mimeType);
     dispatch(updateProfileSuccess(user))
-    // console.log(user);
     if (screen == NAVIGATION.editProfile) {
       showMessage({
         message: strings.editProfile.updatedSuccess,
@@ -281,6 +358,46 @@ export const uploadProfile = (file, mimeType, USER) => async dispatch => {
     dispatch(uploadProfileError(error));
   }
 };
+
+
+export const followUser = (followerId, followId, postIndex) => async dispatch => {
+  dispatch(followUserRequest());
+  try {
+    const user = await UserController.followUser(followerId, followId);
+    dispatch(followUserSuccess(postIndex));
+  } catch (error) {
+    dispatch(followUserError(error))
+  }
+};
+
+
+export const unFollowUser = (unFollowerId, followId) => async dispatch => {
+  dispatch(unFollowUserRequest());
+  try {
+    const user = await UserController.unFollowUser(unFollowerId, followId);
+    dispatch(unFollowUserSuccess(user));
+  } catch (error) {
+
+    dispatch(unFollowUserError(error))
+  }
+};
+
+
+export const getUserProfileByUserId = (userId) => async dispatch => {
+  dispatch(globalReset())
+  dispatch(getUserProfileByUserIdRequest());
+  try {
+    const user = await UserController.getUserProfileByUseridAPI(userId);
+    dispatch(getUserProfileByUserIdSuccess(user?.data));
+  } catch (error) {
+
+    dispatch(getUserProfileByUserIdError(error))
+  }
+};
+
+
+
+
 export const logout = () => async dispatch => {
   dispatch(clearStore());
   // try {

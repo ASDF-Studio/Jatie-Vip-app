@@ -9,6 +9,8 @@ export const en = {
     admin: 'Admin',
   },
   home: {
+    searchposts: 'Search for posts...',
+    enterText: 'Please enter text to search posts',
     header: 'Home',
     message: 'Welcome',
     variant: 'App variant: ',
@@ -57,9 +59,15 @@ export const en = {
     reportPost: 'Report Post',
 
     // createpost
-
+    comment: "Comment",
     postTitle: 'Enter Post Title',
     postBody: 'Enter Post Body',
+    upVoteAgain: "This user already upvoted the post",
+    downVoteAgain: "This user already downvoted the post",
+
+    //comment Post
+
+    commentvalid: "Please enter comment "
   },
   sortBy: {
     recent: 'Recent',
@@ -202,7 +210,8 @@ export const en = {
     reportUser: 'Report User',
     genderPlaceHolder: 'Prefer not to say',
     userID: 'User ID',
-    selecteImage: "Please upload image "
+    selecteImage: "Please upload image ",
+    editComment: "Edit Comment"
   },
   Welcome: {
     login: 'Login',
@@ -379,5 +388,10 @@ export const en = {
   },
   deletePost: {
     deletedSuccess: "Delete Successfull"
+  }, deleteCommentSuccsess: {
+    deletedSuccess: "Comment Deleted"
+  },
+  userFollowedSuccsess: {
+    followedSuccess: "Following"
   }
 };

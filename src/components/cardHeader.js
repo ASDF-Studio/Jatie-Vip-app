@@ -8,6 +8,8 @@ import { Icon } from './Icon';
 import { faThumbTack } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { strings } from '@/localization';
+import { navigationRef } from '@/navigation/RootNavigation';
+import { NAVIGATION } from '@/constants';
 
 export const CardHeader = ({
   fullName,
@@ -16,6 +18,7 @@ export const CardHeader = ({
   time,
   isOfficial,
   showPin,
+  userId
 }) => {
 
   const getTime = (t2) => {
@@ -50,7 +53,11 @@ export const CardHeader = ({
       }
     }
   };
-
+  const navigateToUserProfile = () => {
+    alert(userId)
+    return false
+    navigationRef.navigate(NAVIGATION.userProfile, { userId: userId })
+  }
   return (
     <View style={styles.postHeader}>
       <View style={{ flexDirection: 'row' }}>
@@ -60,10 +67,12 @@ export const CardHeader = ({
             uri: profilePic || null,
           }}
         />
-        <View style={{ paddingLeft: ms(5) }}>
+        <TouchableOpacity
+          onPress={() => navigateToUserProfile()}
+          style={{ paddingLeft: ms(5) }}>
           <Text style={styles.fullNameTxt}> {fullName} </Text>
           <Text style={styles.userNameTxt}> {userName} </Text>
-        </View>
+        </TouchableOpacity>
         {isOfficial ? (
           <View>
             <Text style={styles.officialTxt}> {strings.home.offical} </Text>

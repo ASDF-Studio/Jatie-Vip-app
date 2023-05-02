@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Icon } from '@/components';
 import { theme, TextStyles } from '@/theme';
@@ -8,41 +8,122 @@ import { ms } from 'react-native-size-matters';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faCircleDown, faComment } from '@fortawesome/free-regular-svg-icons';
 import { faShareNodes } from '@fortawesome/pro-regular-svg-icons';
+import { UserController } from '@/controllers';
+import { strings } from '@/localization';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllPostData } from '@/selectors/PostSelectors';
+import { getAllPostSuccess } from '@/actions/PostActions';
 
 export const CardFooter = ({
+  postID,
+  postUserID,
+  userID,
   likeCount,
   disLikeCount,
   commentCount,
-  likePress,
-  disLikePress,
+  // likePress,
+  // disLikePress,
+  upVoteUserID,
+  downVoteUserID,
   commentPress,
   sharePress,
   morePress,
+  postData,
+  postIndex,
+  postType,
+  hasVotedUp, hasVotedDown
 }) => {
+  const dispatch = useDispatch()
+  const [upVote, setUpVote] = useState(likeCount);
+  const [downVote, setDownVote] = useState(disLikeCount);
+  const ALLPOST = useSelector(getAllPostData)
+  const postArray = ALLPOST?.data
+  const upVoteHandel = () => {
+
+    onUpVote(postID, userID)
+  }
+  const downVoteHandel = () => {
+
+    onDownVote(postID, userID)
+  }
+
+  const onUpVote = async (postID, userID,) => {
+    var arr = []
+    arr = postArray;
+    var upVotenumber = parseInt(arr[postIndex].upVote)
+    var downVoteNumber = parseInt(arr[postIndex].downVote)
+    if (!arr[postIndex].has_upvoted) {
+      setUpVote(upVotenumber + 1)
+      arr[postIndex].has_upvoted = true;
+      arr[postIndex].upVote = upVotenumber + 1;
+      if (arr[postIndex].has_downvoted) {
+        arr[postIndex].has_downvoted = false;
+        arr[postIndex].downVote = downVoteNumber - 1;
+        setDownVote(downVoteNumber - 1)
+      }
+    }
+    else {
+      setUpVote(upVotenumber - 1)
+      arr[postIndex].has_upvoted = false;
+      arr[postIndex].upVote = upVotenumber - 1;
+    }
+    dispatch(getAllPostSuccess(arr))
+    const apiData = await UserController.upVote(postID, userID);
+  }
+  const onDownVote = async (postID, userID) => {
+    var arr = []
+    arr = postArray;
+    var upVotenumber = parseInt(arr[postIndex].upVote)
+    var downVoteNumber = parseInt(arr[postIndex].downVote)
+    if (!arr[postIndex].has_downvoted) {
+      setDownVote(downVoteNumber + 1)
+      arr[postIndex].has_downvoted = true;
+      arr[postIndex].downVote = downVoteNumber + 1;
+      if (arr[postIndex].has_upvoted) {
+        arr[postIndex].has_upvoted = false;
+        arr[postIndex].upVote = upVotenumber - 1;
+        setUpVote(upVotenumber - 1)
+      }
+    }
+    else {
+      setDownVote(downVoteNumber - 1)
+      arr[postIndex].has_downvoted = false;
+      arr[postIndex].downVote = downVoteNumber - 1;
+    }
+
+    dispatch(getAllPostSuccess(arr))
+    const apiData = await UserController.downVote(postID, userID);
+  }
   return (
     <View style={styles.footer}>
       <View style={styles.reactionContainer}>
         <TouchableOpacity
-          style={[styles.iconContainer, styles.likeIconContainer]}
+          style={[styles.iconContainer, styles.likeIconContainer,
+          postArray[postIndex]?.has_upvoted && { backgroundColor: theme.light.colors.infoBgLight }
+          ]}
+          onPress={() => upVoteHandel()}
         >
           <FontAwesomeIcon
+            onPress={() => upVoteHandel()}
             icon={faCircleUp}
             size={ms(13)}
             color={theme.light.colors.success}
-            onPress={likePress}
           />
-          <Text style={styles.likeTxt}>{likeCount} </Text>
+          <Text style={styles.likeTxt}>{upVote} </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.iconContainer, styles.disLikeIconContainer]}
+          style={[styles.iconContainer, styles.disLikeIconContainer,
+          postArray[postIndex]?.has_downvoted && { backgroundColor: theme.light.colors.infoBgLight }
+          ]}
+          onPress={() => downVoteHandel()}
         >
           <FontAwesomeIcon
+            onPress={() => downVoteHandel()}
             icon={faCircleDown}
             size={ms(13)}
             color={theme.light.colors.error}
-            onPress={disLikePress}
           />
-          <Text style={styles.disLikeText}>{disLikeCount} </Text>
+          <Text style={styles.disLikeText}>{downVote} </Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.iconContainer, styles.commentsIconContainer]}
@@ -53,7 +134,7 @@ export const CardFooter = ({
             size={ms(13)}
             color={theme.light.colors.info}
             footerfooter
-            // onPress={commentPress}
+          // onPress={commentPress}
           />
           <Text style={styles.commentsTxt}>{commentCount} </Text>
         </TouchableOpacity>
@@ -99,7 +180,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   likeIconContainer: {
-    backgroundColor: theme.light.colors.infoBgLight,
     borderRadius: 13,
     padding: ms(3),
     paddingLeft: ms(10),
@@ -113,6 +193,10 @@ const styles = StyleSheet.create({
   },
   disLikeIconContainer: {
     paddingLeft: ms(12),
+    borderRadius: 13,
+    padding: ms(3),
+
+    paddingRight: ms(10),
   },
   disLikeText: {
     paddingLeft: ms(5),
