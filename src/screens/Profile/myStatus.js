@@ -201,7 +201,7 @@ export default function MyStatus({ navigation }) {
                   postData={item}
                   postIndex={index}
                   commentPress={() => navigation.navigate(NAVIGATION.comments, { DATA: item, "POST_INDEX": index })}
-                  commentCount={5}
+                  commentCount={item?.comments_aggregate?.aggregate?.count ?? 0}
                   sharePress={() => console.log("share")}
                   morePress={() => {
                     setOpen(true);
