@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   FlatList,
   SafeAreaView,
+  ImageBackground,
 } from 'react-native';
 import {
   faCrown,

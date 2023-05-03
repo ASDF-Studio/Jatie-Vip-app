@@ -13,7 +13,8 @@ import { strings } from '@/localization';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllPostData } from '@/selectors/PostSelectors';
 import { getAllPostSuccess } from '@/actions/PostActions';
-
+import dynamicLinks from '@react-native-firebase/dynamic-links';
+import Share from 'react-native-share';
 export const CardFooter = ({
   postID,
   postUserID,
@@ -94,6 +95,35 @@ export const CardFooter = ({
     dispatch(getAllPostSuccess(arr))
     const apiData = await UserController.downVote(postID, userID);
   }
+  const generateLink = async () => {
+    try {
+      var link = await dynamicLinks().buildShortLink({
+        link: `https://jatievip.page.link/Eit5?postId=${postID}`,
+        domainUriPrefix: 'https://jatievip.page.link',
+
+        ios: {
+          appStoreId: '123456789',
+          bundleId: 'com.jatievip.airly',
+          minimumVersion: '18'
+        },
+      },
+        dynamicLinks.ShortLinkType.DEFAULT
+      )
+      return link
+    } catch (error) {
+      console.log("error raised", error)
+    }
+  }
+
+  const shareUser = async () => {
+    const getLink = await generateLink()
+    console.log("get linkkk kdjfkdlfdf", getLink)
+    const res = await Share.open(({
+      // message: 'Dummy message',
+      url: getLink
+    }))
+
+  }
   return (
     <View style={styles.footer}>
       <View style={styles.reactionContainer}>
@@ -144,7 +174,7 @@ export const CardFooter = ({
           icon={faShareNodes}
           size={ms(13)}
           color={theme.light.colors.info}
-          onPress={sharePress}
+          onPress={() => shareUser()}
           style={styles.ShareNodeIcon}
         />
         <Icon

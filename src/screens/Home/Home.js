@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { strings } from '@/localization';
 import { theme, TextStyles } from '@/theme';
 import { ms, vs } from 'react-native-size-matters';
@@ -34,6 +34,7 @@ import {
   ImageBackground,
   ActivityIndicator,
   Platform,
+  Linking,
 } from 'react-native';
 import {
   AppImageViewer,
@@ -72,10 +73,11 @@ import { isLoadingSelector, successSelector } from '@/selectors/StatusSelectors'
 import ImagePicker from 'react-native-image-crop-picker';
 import { globalReset } from '@/actions/GlobalActions';
 import SearchPost from './SearchPost';
-
+import dynamicLinks from '@react-native-firebase/dynamic-links';
+import Share from 'react-native-share';
 export function Home({ navigation }) {
+  const flatListRef = useRef()
   const ALLPOST = useSelector(getAllPostData)
-  console.log("USERRRRR=-=-=-=-", JSON.stringify(ALLPOST));
   const userType = useSelector(state => state.userType);
   const user = useSelector(getUser);
   const dispatch = useDispatch()
@@ -178,6 +180,25 @@ export function Home({ navigation }) {
   const onBlock = () => {
     dispatch(blockUser(user?.id, postUserId, postIndex))
   }
+
+  useEffect(() => {
+    dynamicLinks().getInitialLink().then((link) => {
+      handleDynamicLink(link)
+
+    })
+    const linkingListener = dynamicLinks().onLink(handleDynamicLink);
+    return () => {
+      linkingListener();
+    }
+  }, [])
+  const handleDynamicLink = (link) => {
+    Linking.addEventListener('url', event => {
+      const { id } = Linking.parse(event.url).queryParams;
+
+      console.log("Post__ID", id);
+    });
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="transparent" />
@@ -187,7 +208,8 @@ export function Home({ navigation }) {
             <Logo />
           </View>
           <View>
-            <Text style={styles.nameTxt}> {strings.home.newFeed}</Text>
+            <Text
+              style={styles.nameTxt}> {strings.home.newFeed}</Text>
             <View style={styles.filterContainer}>
               <TouchableOpacity
                 style={styles.recent}
@@ -252,6 +274,7 @@ export function Home({ navigation }) {
             style={styles.loaderStyle}
           /> :
           <FlatList
+            // ref={flatListRef}
             ListHeaderComponent={
               <View>
                 <ShareFeed onPress={() => navigation.navigate(NAVIGATION.post)} />
@@ -522,7 +545,7 @@ export function Home({ navigation }) {
                     userName={item?.user?.username}
                     profilePic={item?.user?.profilePic}
                     time={item?.created_at}
-                    userId={item?.user?.id}
+                    userId={item?.userId}
                     // isOfficial={item.isOffical}
                     showPin={item?.isPinned}
                   />

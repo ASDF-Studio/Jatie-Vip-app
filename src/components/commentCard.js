@@ -13,6 +13,8 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCommentsByPostIdSuccess, voteDownComment, voteUpComment } from '@/actions/PostActions';
 import { getCommentsByPostIdData } from '@/selectors/PostSelectors';
+import { navigationRef } from '@/navigation/RootNavigation';
+import { NAVIGATION } from '@/constants';
 
 export const CommentCard = ({
   name,
@@ -79,18 +81,27 @@ export const CommentCard = ({
     dispatch(getCommentsByPostIdSuccess(arr))
     dispatch(voteDownComment(commentId, userId))
   }
+  const navigateToUserProfile = () => {
+    navigationRef.navigate(NAVIGATION.userProfile, { userId: userId })
+  }
   return (
 
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
         <View>
           <View style={styles.leftBorder}>
-            <CommentHeader
-              fullName={name}
-              userName={userName}
-              profilePic={imageUrl}
-              time={time}
-            />
+            <TouchableOpacity
+              onPress={() => navigateToUserProfile()}
+              activeOpacity={1}
+            >
+              <CommentHeader
+                fullName={name}
+                userName={userName}
+                profilePic={imageUrl}
+                time={time}
+              />
+            </TouchableOpacity>
+
             <View style={styles.body}>
               <CardBody text={commentTxt} />
             </View>
