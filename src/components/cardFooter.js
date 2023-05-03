@@ -13,6 +13,8 @@ import { strings } from '@/localization';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllPostData } from '@/selectors/PostSelectors';
 import { getAllPostSuccess } from '@/actions/PostActions';
+import { POST_TYPE } from '@/constants/enums';
+import { getUser } from '@/selectors/UserSelectors';
 
 export const CardFooter = ({
   postID,
@@ -37,7 +39,8 @@ export const CardFooter = ({
   const [upVote, setUpVote] = useState(likeCount);
   const [downVote, setDownVote] = useState(disLikeCount);
   const ALLPOST = useSelector(getAllPostData)
-  const postArray = ALLPOST?.data
+  const user = useSelector(getUser);
+  const postArray = postType === POST_TYPE.REGULAR ? ALLPOST?.data : user?.getAllPostsByLoggedInUser
   const upVoteHandel = () => {
 
     onUpVote(postID, userID)

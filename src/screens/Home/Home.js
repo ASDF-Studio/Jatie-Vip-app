@@ -72,6 +72,7 @@ import { isLoadingSelector, successSelector } from '@/selectors/StatusSelectors'
 import ImagePicker from 'react-native-image-crop-picker';
 import { globalReset } from '@/actions/GlobalActions';
 import SearchPost from './SearchPost';
+import { POST_TYPE } from '@/constants/enums';
 
 export function Home({ navigation }) {
   const ALLPOST = useSelector(getAllPostData)
@@ -613,7 +614,7 @@ export function Home({ navigation }) {
                     // likePress={() => onUpVote(item.id, item.userId, user?.id, item)}
                     // disLikePress={() => onDownVote(item.id, item.userId, user?.id, item)}
                     postID={item.id}
-                    postType="Regular"
+                    postType={POST_TYPE.REGULAR}
                     postUserID={item?.userId}
                     userID={user?.id}
                     likeCount={item?.upVote}

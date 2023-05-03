@@ -27,6 +27,7 @@ import { NAVIGATION } from '@/constants';
 import { navigationRef } from '@/navigation/RootNavigation';
 import { TYPES, deletePost, downVote, getAllPostByAdmin, getAllPostsByLoggedInUser, getAllPostsByUser, upVote } from '@/actions/UserActions';
 import { isLoadingSelector, successSelector } from '@/selectors/StatusSelectors';
+import { POST_TYPE } from '@/constants/enums';
 
 export default function MyStatus({ navigation }) {
   const [open, setOpen] = useState(false);
@@ -189,6 +190,7 @@ export default function MyStatus({ navigation }) {
                 <CardFooter
                   // likePress={() => onUpVote(item.id, item.userId, user?.id)}
                   // disLikePress={() => onDownVote(item.id, item.userId, user?.id)}
+                  postType={POST_TYPE.PROFILE}
                   postID={item?.id}
                   postUserID={item?.userId}
                   userID={user?.id}
