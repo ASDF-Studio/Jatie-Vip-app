@@ -2,7 +2,6 @@ import {
   Button,
   CommentCard,
   CommentInput,
-  CustomLoader,
   HorizontalLine,
   Icon,
   ModalDown,
@@ -35,7 +34,6 @@ import {
   FlatList,
   TouchableOpacity,
   TextInput,
-  ActivityIndicator,
   KeyboardAvoidingView,
   Image,
   Platform,
@@ -45,8 +43,6 @@ import {
 import DropDownPicker from 'react-native-dropdown-picker';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ms } from 'react-native-size-matters';
-import { Data, SingleData } from './Data/commentsData';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { deleteComment, followUser, getAllPostSuccess, getCommentsByPostId, reportPost, TYPES, unFollowUser } from '@/actions/PostActions';
@@ -59,8 +55,6 @@ import moment from 'moment';
 import { useRef } from 'react';
 import ImagePicker from 'react-native-image-crop-picker';
 import { globalReset } from '@/actions/GlobalActions';
-import { KeyboardAccessoryView } from 'react-native-keyboard-accessory';
-import KeyboardManager from 'react-native-keyboard-manager';
 export default function Comments({ navigation, route }) {
   const keyboardScroll = useRef(null);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
@@ -207,9 +201,7 @@ export default function Comments({ navigation, route }) {
     setOpenReplyTo(true)
   }
   return (
-
     <SafeAreaView style={styles.container}>
-
       <View style={styles.headerContainer}>
         <TopBackButton
           onPress={() => navigation.goBack()}
@@ -218,10 +210,6 @@ export default function Comments({ navigation, route }) {
         <Text style={styles.headTxt}> {strings.home.comments} </Text>
       </View>
       <HorizontalLine color={theme.light.colors.infoBgLight} paddingTop={15} />
-      {/* <KeyboardAwareScrollView
-        keyboardShouldPersistTaps={'handled'}
-        contentContainerStyle={{ flex: 1 }}
-      > */}
       <KeyboardAvoidingView
         behavior={Platform.OS == "ios" ? 'padding' : null}
         style={{ flex: 1 }}
@@ -254,7 +242,6 @@ export default function Comments({ navigation, route }) {
                   hasVotedUp={item?.has_upvoted}
                   hasVotedDown={item?.has_downvoted}
                   replyPress={() => {
-
                     commentReplyFormat(item?.user?.id, item?.user?.username)
                   }
                   }

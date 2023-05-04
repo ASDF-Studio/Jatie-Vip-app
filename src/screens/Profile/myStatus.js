@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Alert, FlatList, StyleSheet, Image, TouchableOpacity, ImageBackground, Text, SafeAreaView, ActivityIndicator } from 'react-native';
+import { View, FlatList, StyleSheet, Image, TouchableOpacity, ImageBackground, Text, SafeAreaView, ActivityIndicator } from 'react-native';
 import { theme } from '@/theme';
 import { faTrash, faPen } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -13,20 +13,17 @@ import {
   AppImageViewer,
   PopUp,
   Button,
-  CustomLoader,
 } from '@/components';
 import { ms } from 'react-native-size-matters';
 import { strings } from '@/localization';
-import { Data } from './ProfileData/myStatusData';
-import { UserController } from '@/controllers';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
 import { FontFamily } from '@/theme/Fonts';
 import { useIsFocused } from "@react-navigation/native";
 import { NAVIGATION } from '@/constants';
 import { navigationRef } from '@/navigation/RootNavigation';
-import { TYPES, deletePost, downVote, getAllPostByAdmin, getAllPostsByLoggedInUser, getAllPostsByUser, upVote } from '@/actions/UserActions';
-import { isLoadingSelector, successSelector } from '@/selectors/StatusSelectors';
+import { TYPES, deletePost, getAllPostsByLoggedInUser } from '@/actions/UserActions';
+import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { POST_TYPE } from '@/constants/enums';
 
 export default function MyStatus({ navigation }) {
@@ -142,7 +139,6 @@ export default function MyStatus({ navigation }) {
                           onPress={() => {
                             setShowImageView(true),
                               setFeedImages(item?.postImg);
-                            // console.log(feedImages)
                           }}
                         >
                           <Image
@@ -188,16 +184,12 @@ export default function MyStatus({ navigation }) {
                   </View>
                 ) : null}
                 <CardFooter
-                  // likePress={() => onUpVote(item.id, item.userId, user?.id)}
-                  // disLikePress={() => onDownVote(item.id, item.userId, user?.id)}
                   postType={POST_TYPE.PROFILE}
                   postID={item?.id}
                   postUserID={item?.userId}
                   userID={user?.id}
                   likeCount={item?.upVote}
                   disLikeCount={item?.downVote}
-                  // upVoteUserID={item?.upVoteUserId}
-                  // downVoteUserID={item?.downVoteUserId}
                   postData={item}
                   postIndex={index}
                   commentPress={() => navigation.navigate(NAVIGATION.comments, { DATA: item, "POST_INDEX": index })}

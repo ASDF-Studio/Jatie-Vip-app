@@ -97,7 +97,7 @@ export function Profile({ navigation }) {
         {status == `${strings.profile.myStatus}` ? (
           <MyStatus navigation={navigation} />
         ) : (
-          <MyActivity />
+          <MyActivity navigation={navigation} />
         )}
       </View>
     </SafeAreaView>
