@@ -114,7 +114,11 @@ export const postReducer = (state = {}, { payload, type }) => {
 
     // case TYPES.UN_BLOCK_USER_SUCCESS:
     // return { ...state, reportPost: payload.report }
-
+    case TYPES.GET_POST_BY_ID_SUCCESS:
+      return {
+        ...state,
+        singlePost: payload.post
+      }
     case TYPES.SEARCH_USER_BY_USERNAME_SUCCESS:
       return { ...state, searchedUsers: payload.users };
 

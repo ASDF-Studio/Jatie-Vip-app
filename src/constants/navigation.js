@@ -59,6 +59,7 @@ export const NAVIGATION = {
   post: 'Post',
   updatePost: 'UpdatePost',
   postOptions: 'PostOptions',
+  singlePost: "SinglePost",
 
   //Exclusive
   exclusiveThumbnail: 'ExclusiveThumbnail', //onPress thumbnail navigator

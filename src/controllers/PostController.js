@@ -270,13 +270,15 @@ export class PostController {
         });
     }
     //get All post 
-    static async getAllPost(userId) {
+    static async getAllPost(userId, filterBy, isFollowingData) {
         return new Promise((resolve, reject) => {
             const endpoint = API_BASE_URL + API_END_POINTS.ALL_POST;
             const body = JSON.stringify({
-                "loggedInUserId": userId
+                "loggedInUserId": userId,
+                "followingOnly": isFollowingData,
+                "postsFilter": filterBy.toLowerCase()
             })
-
+            console.log("BODY=-=-=-=-", body);
             HttpClient.post(endpoint, body)
                 .then((response) => {
 
@@ -376,6 +378,26 @@ export class PostController {
                 "loggedInUserId": userID
             });
 
+            HttpClient.post(endpoint, body)
+                .then((response) => {
+
+
+                    resolve(response)
+                }).catch((error) => {
+
+                    reject(error)
+                });
+        })
+    }
+
+    //Get Post by Id
+    static async getPostById(postId, userID) {
+        return new Promise((resolve, reject) => {
+            const endpoint = API_BASE_URL + API_END_POINTS.POST_BY_ID;
+            var body = JSON.stringify({
+                "id": postId,
+
+            });
             HttpClient.post(endpoint, body)
                 .then((response) => {
 

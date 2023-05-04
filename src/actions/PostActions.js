@@ -110,7 +110,12 @@ export const TYPES = {
     GET_COMMENTS_BY_POST_ID_SUCCESS: "GET_COMMENTS_BY_POST_ID_SUCCESS",
     GET_COMMENTS_BY_POST_ID_ERROR: "GET_COMMENTS_BY_POST_ID_ERROR",
 
+    //Post by Id
 
+    GET_POST_BY_ID: "GET_POST_BY_ID",
+    GET_POST_BY_ID_REQUEST: "GET_POST_BY_ID_REQUEST",
+    GET_POST_BY_ID_SUCCESS: "GET_POST_BY_ID_SUCCESS",
+    GET_POST_BY_ID_ERROR: "GET_POST_BY_ID_ERROR",
     //Comments votUp
 
     VOTE_UP_COMMENT: "VOTE_UP_COMMENT",
@@ -348,6 +353,22 @@ export const getCommentsByPostIdSuccess = comments => ({
 
 const getCommentsByPostIdRequest = () => ({
     type: TYPES.GET_COMMENTS_BY_POST_ID_REQUEST,
+    payload: null,
+});
+
+
+const getPostByIdError = error => ({
+    type: TYPES.GET_POST_BY_ID_ERROR,
+    payload: { error },
+});
+
+export const getPostByIdSuccess = post => ({
+    type: TYPES.GET_POST_BY_ID_SUCCESS,
+    payload: { post },
+});
+
+const getPostByIdRequest = () => ({
+    type: TYPES.GET_POST_BY_ID_REQUEST,
     payload: null,
 });
 
@@ -614,10 +635,10 @@ export const deletePost = (id, postUserId, userId, userType, screen) => async di
         dispatch(deletePostError(error));
     }
 };
-export const getAllPost = (userId) => async dispatch => {
+export const getAllPost = (userId, filterBy, isFollowingData) => async dispatch => {
     dispatch(getAllPostRequest());
     try {
-        const post = await PostController.getAllPost(userId);
+        const post = await PostController.getAllPost(userId, filterBy, isFollowingData);
         dispatch(getAllPostSuccess(post))
 
     } catch (error) {
@@ -747,6 +768,17 @@ export const getCommentsByPostId = (postId, userId) => async dispatch => {
         dispatch(getCommentsByPostIdSuccess(user.data))
     } catch (error) {
         dispatch(getCommentByPostIdError(error))
+    }
+};
+
+export const getPostById = (postId, userId) => async dispatch => {
+    dispatch(getPostByIdRequest())
+    try {
+        const user = await PostController.getPostById(postId, userId)
+        console.log("POST__BY=-=-=-=-=", JSON.stringify(user));
+        dispatch(getPostByIdSuccess(user.data))
+    } catch (error) {
+        dispatch(getPostByIdError(error))
     }
 };
 

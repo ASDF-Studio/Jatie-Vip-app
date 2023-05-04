@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "788742196224-ukgmotdlmrk97g1f1ki84dfrs47i927v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.airlystudio.jatievip",
+            "certificate_hash": "aac69c3ff157071e12b174d6ee0b6043f2ba1391"
+          }
+        },
+        {
           "client_id": "788742196224-dlr001b93h79a9a52or3mu58l8l3jchn.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,6 +37,13 @@
             {
               "client_id": "788742196224-dlr001b93h79a9a52or3mu58l8l3jchn.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "788742196224-9t1nfi08767qtt6v0uanpsi8cno8m7pb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.jatievip.airly"
+              }
             }
           ]
         }

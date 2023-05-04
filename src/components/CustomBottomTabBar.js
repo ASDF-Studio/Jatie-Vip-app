@@ -17,6 +17,7 @@ import { faCrown, faGift, faMessage } from '@fortawesome/pro-regular-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
 import { getAllPost } from '@/actions/PostActions';
+import { strings } from '@/localization';
 
 const tabBarLabel = {
   [NAVIGATION.home]: 'Feed',
@@ -83,7 +84,7 @@ function CustomBottomTabBar({ state, descriptors, navigation }) {
             canPreventDefault: true,
           });
           if (index == 0) {
-            dispatch(getAllPost(user?.id))
+            dispatch(getAllPost(user?.id, strings.sortBy.recent, false))
           }
 
           if (!isFocused && !event.defaultPrevented) {
