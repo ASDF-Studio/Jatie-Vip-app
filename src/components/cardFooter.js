@@ -16,6 +16,9 @@ import { getAllPostSuccess } from '@/actions/PostActions';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import Share from 'react-native-share';
 import { cleanSingle } from 'react-native-image-crop-picker';
+import { POST_TYPE } from '@/constants/enums';
+import { getUser } from '@/selectors/UserSelectors';
+
 export const CardFooter = ({
   postID,
   postUserID,
@@ -39,7 +42,8 @@ export const CardFooter = ({
   const [upVote, setUpVote] = useState(likeCount);
   const [downVote, setDownVote] = useState(disLikeCount);
   const ALLPOST = useSelector(getAllPostData)
-  const postArray = ALLPOST?.data
+  const user = useSelector(getUser);
+  const postArray = postType === POST_TYPE.REGULAR ? ALLPOST?.data : user?.getAllPostsByLoggedInUser
   const upVoteHandel = () => {
 
     onUpVote(postID, userID)

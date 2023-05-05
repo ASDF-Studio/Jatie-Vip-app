@@ -12,7 +12,7 @@ import { FontFamily } from '@/theme/Fonts';
 import { strings } from '@/localization';
 import { Data } from './ProfileData/myActivityData';
 
-export default function MyActivity() {
+export default function MyActivity({ navigation }) {
   return (
     <View style={styles.pageContainer}>
       <FlatList

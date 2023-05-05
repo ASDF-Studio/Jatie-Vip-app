@@ -76,6 +76,8 @@ import SearchPost from './SearchPost';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import queryString from 'query-string';
 import Share from 'react-native-share';
+import { POST_TYPE } from '@/constants/enums';
+
 export function Home({ navigation }) {
   const flatListRef = useRef()
   const ALLPOST = useSelector(getAllPostData)
@@ -406,7 +408,7 @@ export function Home({ navigation }) {
                     // likePress={() => onUpVote(item.id, item.userId, user?.id, item)}
                     // disLikePress={() => onDownVote(item.id, item.userId, user?.id, item)}
                     postID={item.id}
-                    postType="Regular"
+                    postType={POST_TYPE.REGULAR}
                     postUserID={item?.userId}
                     userID={user?.id}
                     likeCount={item?.upVote}

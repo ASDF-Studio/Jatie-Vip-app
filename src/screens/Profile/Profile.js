@@ -95,9 +95,9 @@ export function Profile({ navigation }) {
       <ShareFeed onPress={() => navigation.navigate(NAVIGATION.post)} />
       <View style={styles.feedContainer}>
         {status == `${strings.profile.myStatus}` ? (
-          <MyStatus />
+          <MyStatus navigation={navigation} />
         ) : (
-          <MyActivity />
+          <MyActivity navigation={navigation} />
         )}
       </View>
     </SafeAreaView>

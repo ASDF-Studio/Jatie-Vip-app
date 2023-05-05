@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Alert, FlatList, StyleSheet, Image, TouchableOpacity, ImageBackground, Text, SafeAreaView, ActivityIndicator } from 'react-native';
+import { View, FlatList, StyleSheet, Image, TouchableOpacity, ImageBackground, Text, SafeAreaView, ActivityIndicator } from 'react-native';
 import { theme } from '@/theme';
 import { faTrash, faPen } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -13,27 +13,24 @@ import {
   AppImageViewer,
   PopUp,
   Button,
-  CustomLoader,
 } from '@/components';
 import { ms } from 'react-native-size-matters';
 import { strings } from '@/localization';
-import { Data } from './ProfileData/myStatusData';
-import { UserController } from '@/controllers';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
 import { FontFamily } from '@/theme/Fonts';
 import { useIsFocused } from "@react-navigation/native";
 import { NAVIGATION } from '@/constants';
 import { navigationRef } from '@/navigation/RootNavigation';
-import { TYPES, deletePost, downVote, upVote } from '@/actions/UserActions';
+import { TYPES, deletePost, getAllPostsByLoggedInUser } from '@/actions/UserActions';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
+import { POST_TYPE } from '@/constants/enums';
 
-export default function MyStatus(navigation) {
+export default function MyStatus({ navigation }) {
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch()
   const user = useSelector(getUser);
   const [showImageView, setShowImageView] = useState(false);
-  const [userId, setUser] = useState("ce656365-b90f-4b5f-aab6-b436051171f5");
   const [postId, setpostId] = useState(null);
   const [postUserId, setPostUserId] = useState(null);
   const [postTitle, setPostTitle] = useState('');
@@ -41,84 +38,25 @@ export default function MyStatus(navigation) {
   const [postImg, setPostImg] = useState([]);
   const [feedImages, setFeedImages] = useState([]);
 
-  const [userPost, setUserPost] = useState([]);
   const userType = useSelector(state => state.userType);
+
   const [openReplace, setReplace] = useState(false);
-  const [loader, setLoader] = useState(true);
-  // useEffect(() => {
-  //   getUserPostById(user?.id);
-  // }, []);
+
 
   const focus = useIsFocused();
 
   useEffect(() => {
-    if (focus == true) {
-      if (userType.user === strings.userType.free) {
-        getUserPostById(user?.id);
-      }
-      if (userType.user === strings.userType.admin) {
-        getAllPostByAdmin();
-      }
+    if (focus) {
+      dispatch(getAllPostsByLoggedInUser(user?.id))
     }
   }, [focus]);
 
   const isLoading = useSelector(state =>
-    isLoadingSelector([TYPES.DELETE_POST], state)
+    isLoadingSelector([TYPES.DELETE_POST, TYPES.GET_ALL_POST_BY_LOGGED_IN_USER], state)
   );
 
-  const getAllPostByAdmin = async () => {
-    const data = await UserController.getAllPostByAdmin();
-    if (data) {
-      setLoader(false);
-      setUserPost(data.data);
-    }
-
-  }
-
-  const getUserPostById = async (id) => {
-    const data = await UserController.postByUserId(id);
-    if (data) {
-      setLoader(false);
-      setUserPost(data.data);
-    }
-
-  }
   const onDelete = () => {
     dispatch(deletePost(postId, postUserId, user?.id, userType.user, NAVIGATION.profile));
-    if (userType.user === strings.userType.free) {
-      console.log("Reload called")
-      getUserPostById(user?.id);
-    }
-    if (userType.user === strings.userType.admin) {
-      getAllPostByAdmin();
-    }
-    // console.log(postId, postUserId, user?.id, userType.user);
-    console.log("ondelete");
-  }
-
-  const onUpVote = async (id, postUserID, likeUserID) => {
-    const data = await UserController.upVote(id, postUserID, likeUserID);
-    // console.log(data);
-    // if (userType.user === strings.userType.free) {
-    //   console.log("Reload called")
-    //   getUserPostById(user?.id);
-    // }
-    // if (userType.user === strings.userType.admin) {
-    //   getAllPostByAdmin();
-    // }
-    // dispatch(upVote(id, postUserID, likeUserID));
-  }
-
-  const onDownVote = async (id, postUserID, likeUserID) => {
-    const data = await UserController.downVote(id, postUserID, likeUserID);
-    // if (userType.user === strings.userType.free) {
-    //   console.log("Reload called")
-    //   getUserPostById(user?.id);
-    // }
-    // if (userType.user === strings.userType.admin) {
-    //   getAllPostByAdmin();
-    // }
-    // dispatch(downVote(id, postUserID, likeUserID));
   }
 
   let counter = 1;
@@ -127,16 +65,17 @@ export default function MyStatus(navigation) {
   }
   return (
     <SafeAreaView>
-      {loader ?
+      {isLoading ?
         <ActivityIndicator
           size={'large'}
           color={theme.light.colors.activeTabIcon}
           style={{ alignSelf: "center", marginTop: 50 }}
-          animating={loader}
+          animating={isLoading}
         /> : <FlatList
-          data={userPost}
+          data={user.getAllPostsByLoggedInUser ?? []}
+          extraData={user.getAllPostsByLoggedInUser}
           key={props => props.id}
-          renderItem={({ item }) => (
+          renderItem={({ item, index }) => (
             <View style={styles.cardContainer}>
               <Card>
                 <CardHeader
@@ -200,7 +139,6 @@ export default function MyStatus(navigation) {
                           onPress={() => {
                             setShowImageView(true),
                               setFeedImages(item?.postImg);
-                            // console.log(feedImages)
                           }}
                         >
                           <Image
@@ -246,17 +184,16 @@ export default function MyStatus(navigation) {
                   </View>
                 ) : null}
                 <CardFooter
-                  // likePress={() => onUpVote(item.id, item.userId, user?.id)}
-                  // disLikePress={() => onDownVote(item.id, item.userId, user?.id)}
+                  postType={POST_TYPE.PROFILE}
                   postID={item?.id}
                   postUserID={item?.userId}
                   userID={user?.id}
                   likeCount={item?.upVote}
                   disLikeCount={item?.downVote}
-                  upVoteUserID={item?.upVoteUserId}
-                  downVoteUserID={item?.downVoteUserId}
-                  commentPress={() => console.log("Comment")}
-                  commentCount={5}
+                  postData={item}
+                  postIndex={index}
+                  commentPress={() => navigation.navigate(NAVIGATION.comments, { DATA: item, "POST_INDEX": index })}
+                  commentCount={item?.comments_aggregate?.aggregate?.count ?? 0}
                   sharePress={() => console.log("share")}
                   morePress={() => {
                     setOpen(true);
