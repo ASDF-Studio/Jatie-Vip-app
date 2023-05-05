@@ -74,6 +74,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import { globalReset } from '@/actions/GlobalActions';
 import SearchPost from './SearchPost';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
+import queryString from 'query-string';
 import Share from 'react-native-share';
 export function Home({ navigation }) {
   const flatListRef = useRef()
@@ -134,6 +135,29 @@ export function Home({ navigation }) {
     // dispatch(getAllPinPost())
     dispatch(getAllPost(user?.id, sortBy, false))
   }, []);
+  useEffect(() => {
+    dynamicLinks().getInitialLink().then((link) => {
+      handleDynamicLink(link)
+
+    })
+    const linkingListener = dynamicLinks().onLink(handleDynamicLink);
+    return () => {
+      linkingListener();
+    }
+  }, [])
+  const handleDynamicLink = (link) => {
+
+    if (!!link?.url) {
+      const params = queryString.parse(link.url.split('?')[1]);
+      const postId = params.postId;
+      const postIndex = params.postIndex;
+      setTimeout(() => {
+        if (postId && postIndex !== undefined) {
+          navigationRef.navigate(NAVIGATION.singlePost, { postId: postId, postIndex: postIndex })
+        }
+      }, 500);
+    }
+  }
 
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.GET_ALL_POST, TYPES.SEARCH_ALL_POST], state)
@@ -182,33 +206,12 @@ export function Home({ navigation }) {
     dispatch(blockUser(user?.id, postUserId, postIndex))
   }
 
-  useEffect(() => {
-    dynamicLinks().getInitialLink().then((link) => {
-      handleDynamicLink(link)
 
-    })
-    const linkingListener = dynamicLinks().onLink(handleDynamicLink);
-    return () => {
-      linkingListener();
-    }
-  }, [])
-  const handleDynamicLink = (link) => {
-    Linking.addEventListener('url', event => {
-      const { id } = Linking.parse(event.url).queryParams;
-
-      console.log("Post__ID", id);
-    });
-  }
   const handleSwitch = (value) => {
     dispatch(getAllPost(user?.id, sortBy, value))
     setFollowingSwtich(value)
   }
-  console.log(sortBy.toLowerCase());
-  const onSinglePost = () => {
-    // const postId = '5efc76cb-6749-4b46-a60e-0870ef4b8c95'
-    // dispatch(getPostById(postId))
-    navigationRef.navigate(NAVIGATION.singlePost)
-  }
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="transparent" />

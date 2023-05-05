@@ -15,6 +15,7 @@ import { getAllPostData } from '@/selectors/PostSelectors';
 import { getAllPostSuccess } from '@/actions/PostActions';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import Share from 'react-native-share';
+import { cleanSingle } from 'react-native-image-crop-picker';
 export const CardFooter = ({
   postID,
   postUserID,
@@ -32,7 +33,7 @@ export const CardFooter = ({
   postData,
   postIndex,
   postType,
-  hasVotedUp, hasVotedDown
+  hasVotedUp, hasVotedDown, showMore
 }) => {
   const dispatch = useDispatch()
   const [upVote, setUpVote] = useState(likeCount);
@@ -98,9 +99,12 @@ export const CardFooter = ({
   const generateLink = async () => {
     try {
       var link = await dynamicLinks().buildShortLink({
-        link: `https://jatievip.page.link/Eit5?postId=${postID}`,
+        link: `https://jatievip.page.link/Eit5?postId=${postID}&postIndex=${postIndex}`,
         domainUriPrefix: 'https://jatievip.page.link',
-
+        android: {
+          packageName: 'com.airlystudio.jatievip',
+          minimumVersion: '18'
+        },
         ios: {
           appStoreId: '123456789',
           bundleId: 'com.jatievip.airly',
@@ -109,6 +113,7 @@ export const CardFooter = ({
       },
         dynamicLinks.ShortLinkType.DEFAULT
       )
+      console.log("LINKL=-=-=", link);
       return link
     } catch (error) {
       console.log("error raised", error)
@@ -177,13 +182,16 @@ export const CardFooter = ({
           onPress={() => shareUser()}
           style={styles.ShareNodeIcon}
         />
-        <Icon
-          icon={faEllipsis}
-          size={ms(13)}
-          color={theme.light.colors.black}
-          onPress={morePress}
-          style={styles.EllipsisIcon}
-        />
+        {showMore == undefined &&
+          <Icon
+            icon={faEllipsis}
+            size={ms(13)}
+            color={theme.light.colors.black}
+            onPress={morePress}
+            style={styles.EllipsisIcon}
+          />
+        }
+
       </View>
     </View>
   );

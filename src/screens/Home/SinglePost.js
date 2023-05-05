@@ -11,7 +11,7 @@ import {
 import PropTypes from 'prop-types';
 import { theme } from '@/theme';
 import { ms, vs } from 'react-native-size-matters';
-import { Card, CardBody, CardFooter, CardHeader, HorizontalLine, TopBackButton } from '@/components';
+import { Card, CardBody, CardFooter, CardHeader, HorizontalLine, ModalDown, ModalList, TopBackButton } from '@/components';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NAVIGATION } from '@/constants';
 import { FontFamily } from '@/theme/Fonts';
@@ -19,27 +19,51 @@ import { navigationRef } from '@/navigation/RootNavigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFocusEffect } from '@react-navigation/native';
 import { getPostById, TYPES } from '@/actions/PostActions';
-import { getPostByIdData } from '@/selectors/PostSelectors';
+import { getAllPostData, getPostByIdData } from '@/selectors/PostSelectors';
 import { CustomLoader } from '@/components';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
+import { getUser } from '@/selectors/UserSelectors';
+import { strings } from '@/localization';
+import { faFlag, faPen, faTrash, faXmark } from '@fortawesome/free-solid-svg-icons';
 
 
-export default function SinglePost({ navigation }) {
-    // const [animating, setAnimating] = useState(true)
+export default function SinglePost({ navigation, route }) {
+    const { postId, postIndex } = route.params || {}
     const dispatch = useDispatch()
+    const ALLPOST = useSelector(getAllPostData)
+    const user = useSelector(getUser);
     const postData = useSelector(getPostByIdData)
+    console.log("POST__DATAA", postData);
+
+    const [postUserName, setPostUserName] = useState('');
+    const [open, setOpen] = useState(false);
+    const [reportOptionValue, setReportOptionValue] = useState('');
+    const [reportComment, setReportCommnet] = useState('');
+    const [allPinnedPost, setAllPinnedPost] = useState([]);
+    const [allPost, setAllPost] = useState(ALLPOST?.data ? ALLPOST.data : []);
+    const [postUserId, setPostUserId] = useState(null);
+    const [postTitle, setPostTitle] = useState('');
+    const [postBody, setPostBody] = useState('');
+    const [postImg, setPostImg] = useState([]);
+    const [isAdminPost, setIsAdminPost] = useState(false)
+    const [openReplace, setReplace] = useState(false);
     var item = postData
-    console.log("AllPost=-=-=-Newwww", JSON.stringify(postData));
+
+    const [likeCount, setLikeCount] = useState(item?.upVote)
+    const [downCount, setDownCount] = useState(item?.downVote)
+    const [commentCount, setCommentCount] = useState(item?.comments_aggregate?.aggregate?.count)
+
+    // console.log("AllPost=-=-=-Newwww", JSON.stringify(item));
     const isLoading = useSelector(state =>
-        isLoadingSelector([TYPES.GET_POST_BY_POST_ID], state)
+        isLoadingSelector([TYPES.GET_POST_BY_ID], state)
     );
     useEffect(() => {
-        const postId = '5efc76cb-6749-4b46-a60e-0870ef4b8c95'
-        dispatch(getPostById(postId))
-
+        dispatch(getPostById(postId, user?.id))
+        setLikeCount(item?.upVote)
+        setDownCount(item?.downVote)
+        setCommentCount(item?.comments_aggregate?.aggregate?.count)
 
     }, [])
-    console.log("PSOTTT=-=-", isLoading);
     let counter = 1;
     // const item = {
     //     "id": "5efc76cb-6749-4b46-a60e-0870ef4b8c95",
@@ -93,19 +117,23 @@ export default function SinglePost({ navigation }) {
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.header}>
-                <View style={styles.left}>
-                    <TopBackButton
-                        onPress={() => navigationRef.goBack()}
-                        style={styles.TopBackButton}
-                    />
-
-                </View>
-
-            </View>
             <CustomLoader
                 open={isLoading}
             />
+            {!isLoading &&
+                <View style={styles.header}>
+                    <View style={styles.left}>
+                        <TopBackButton
+                            onPress={() => navigationRef.goBack()}
+                            style={styles.TopBackButton}
+                        />
+
+
+                    </View>
+
+                </View>
+            }
+
             {/* <HorizontalLine /> */}
             {!isLoading &&
                 <View style={styles.cardContainer}>
@@ -206,27 +234,138 @@ export default function SinglePost({ navigation }) {
                             postID={item?.id}
                             postType="Regular"
                             postUserID={item?.userId}
-                            // userID={user?.id}
-                            likeCount={item?.upVote}
-                            disLikeCount={item?.downVote}
-                            commentCount={item?.comments_aggregate?.aggregate?.count}
+                            userID={user?.id}
+                            showMore={false}
+                            likeCount={likeCount}
+                            disLikeCount={downCount}
+                            commentCount={commentCount}
                             postData={item}
-                            postIndex={1}
-                        // commentPress={() => navigation.navigate(NAVIGATION.comments, { DATA: item, "POST_INDEX": index })}
+                            postIndex={postIndex}
+                            commentPress={() => navigation.navigate(NAVIGATION.comments, { DATA: item, "POST_INDEX": postIndex })}
                         // morePress={() => {
-                        //   setPostIndex(index)
-                        //   setIsAdminPost(item?.isAdminPost),
-                        //   setPostUserName(item?.user?.username)
-                        //   setOpen(true);
-                        //   setPostUserId(item?.userId);
-                        //   setpostId(item?.id);
-                        //   setPostTitle(item?.postTitle)
-                        //   setPostBody(item?.postBody);
-                        //   setPostImg(item?.postImg);
+                        //     //   setPostIndex(index)
+                        //     setIsAdminPost(item?.isAdminPost),
+                        //         setPostUserName(item?.user?.username)
+                        //     setOpen(true);
+                        //     setPostUserId(item?.userId);
+                        //     //   setpostId(item?.id);
+                        //     setPostTitle(item?.postTitle)
+                        //     setPostBody(item?.postBody);
+                        //     setPostImg(item?.postImg);
                         // }}
                         />
 
                     </Card>
+
+
+                    {open && (
+                        (postUserId == user?.id ? (
+                            <ModalDown open={open} setOpen={setOpen}>
+                                <ModalList
+                                    title={strings.profile.editPost}
+                                    icon={faPen}
+                                    iconBg={theme.light.colors.infoBgLight}
+                                    iconColor={theme.light.colors.info}
+                                // onPress={() => {
+                                //     navigationRef.navigate(NAVIGATION.updatePost, {
+                                //         prevData: { DATA },
+                                //     }), setOpen(false);
+                                // }}
+                                />
+                                <HorizontalLine
+                                    color={theme.light.colors.infoBgLight}
+                                    paddingTop={15}
+                                    paddingBottom={8}
+                                />
+                                <ModalList
+                                    title={strings.operations.delete}
+                                    icon={faTrash}
+                                    iconBg={theme.light.colors.infoBgLight}
+                                    iconColor={theme.light.colors.secondary}
+                                    onPress={() => { setReplace(true), setOpen(false) }}
+                                />
+                            </ModalDown>
+                        ) :
+                            <ModalDown open={open} setOpen={setOpen}>
+                                <ModalList
+                                    //   onPress={() => { onFollow() }}
+                                    title={(!ALLPOST?.data[postIndex]?.is_following ? strings.operations.follow : strings.operations.unFollow) + " @" + postUserName}
+                                    icon={faUserPlus}
+                                    iconColor={theme.light.colors.primary}
+                                    iconBg={theme.light.colors.primaryBgLight}
+                                />
+                                <ModalList
+                                    title={strings.operations.sendPrivateMessage}
+                                    icon={faMessage}
+                                    iconColor={theme.light.colors.success}
+                                    iconBg={theme.light.colors.successBgLight}
+                                />
+                                <HorizontalLine
+                                    color={theme.light.colors.infoBgLight}
+                                    paddingTop={15}
+                                    paddingBottom={8}
+                                />
+                                {(userType.user == `${strings.userType.free}`) |
+                                    (userType.user == `${strings.userType.vip}`) ? (
+                                    <>
+                                        {
+                                            isAdminPost == false &&
+                                            <ModalList
+                                                title={strings.home.report}
+                                                icon={faFlag}
+                                                iconColor={theme.light.colors.secondary}
+                                                iconBg={theme.light.colors.infoBgLight}
+                                                onPress={() => {
+                                                    setReportOptionValue('')
+                                                    setOpenReport(true);
+                                                    setOpen(false);
+                                                    setreportImage(null)
+                                                }}
+                                            />
+                                        }
+
+                                        {isAdminPost == false &&
+                                            <ModalList
+                                                onPress={() => { onBlock() }}
+                                                title={strings.operations.block + " @" + postUserName}
+                                                // title={(ALLPOST?.data[pos] ? strings.operations.block : strings.operations.unBlock) + " @" + postUserName}
+                                                icon={faXmark}
+                                                iconColor={theme.light.colors.secondary}
+                                                iconBg={theme.light.colors.infoBgLight}
+                                            />
+                                        }
+
+
+
+                                    </>
+                                ) : userType.user == `${strings.userType.admin}` ? (
+                                    <>
+                                        <ModalList
+                                            title={strings.home.deletePost}
+                                            icon={faTrash}
+                                            iconColor={theme.light.colors.secondary}
+                                            iconBg={theme.light.colors.infoBgLight}
+                                            onPress={() => { setReplace(true), setOpen(false) }}
+                                        />
+                                        <ModalList
+                                            title={strings.operations.block + strings.home.DummyUser}
+                                            icon={faXmark}
+                                            iconColor={theme.light.colors.secondary}
+                                            iconBg={theme.light.colors.infoBgLight}
+                                        />
+                                        <ModalList
+                                            title={strings.operations.ban + strings.home.DummyUser}
+                                            icon={faFlag}
+                                            iconColor={theme.light.colors.secondary}
+                                            iconBg={theme.light.colors.infoBgLight}
+                                        />
+                                    </>
+                                ) :
+                                    null
+                                }
+                            </ModalDown>
+                        )
+                    )}
 
                 </View>
             }
@@ -235,17 +374,18 @@ export default function SinglePost({ navigation }) {
 
     );
 }
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: theme.light.colors.white,
+        backgroundColor: theme.light.colors.primaryBgLight,
+        justifyContent: "center"
     },
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         padding: ms(10),
         margin: ms(5),
+        flex: 0.1,
     },
     headerText: { color: theme.light.colors.black },
     TopBackButton: {
@@ -303,6 +443,7 @@ const styles = StyleSheet.create({
     cardContainer: {
         margin: ms(8),
         borderRadius: 10,
+        flex: 0.9
     },
     nameTxt: [
         {

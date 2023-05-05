@@ -16,9 +16,9 @@ import { SITE_KEY, CAPTCHA_BASE_URL } from '@/constants';
 import Recaptcha from 'react-native-recaptcha-that-works';
 import { CountryPicker } from "react-native-country-codes-picker";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-export function Login() {
+export function Login({ route }) {
   const recaptcha = useRef();
-
+  const { postId, postIndex } = route.params || {}
   const dispatch = useDispatch();
   const [mobileNumber, setMobileNumber] = useState('');
   const [captchaToken, setCaptchaToken] = useState("");

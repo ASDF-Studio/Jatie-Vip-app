@@ -33,6 +33,7 @@ import {
   ModalDown,
   ModalList,
   AppImageViewer,
+  TopBackButton,
 } from '@/components';
 import { strings } from '@/localization';
 import { HorizontalLine } from '@/components';
@@ -48,6 +49,7 @@ import { getUser } from '@/selectors/UserSelectors';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { Loader } from '@/components/Loader';
 import { UserController } from '@/controllers';
+import { navigationRef } from '@/navigation/RootNavigation';
 
 export default function UserProfile({ navigation, route }) {
   const dispatch = useDispatch()
@@ -90,9 +92,20 @@ export default function UserProfile({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <View style={styles.left}>
+          <TopBackButton
+            onPress={() => navigationRef.goBack()}
+            style={styles.TopBackButton}
+          />
 
+        </View>
+
+      </View>
       <View style={styles.headerContainer}>
+
         <View style={styles.headerImageContainer}>
+
           <Image
             style={styles.headerImage}
             source={{
@@ -388,6 +401,25 @@ const styles = StyleSheet.create({
   },
   icon: {
     margin: ms(10),
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: ms(10),
+    margin: ms(5),
+  },
+  headerText: { color: theme.light.colors.black },
+  TopBackButton: {
+    paddingRight: ms(5),
+    paddingLeft: ms(10),
+  },
+  left: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  right: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   profileLogoContainer: {
     height: ms(30),

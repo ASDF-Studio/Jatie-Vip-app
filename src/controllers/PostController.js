@@ -396,7 +396,7 @@ export class PostController {
             const endpoint = API_BASE_URL + API_END_POINTS.POST_BY_ID;
             var body = JSON.stringify({
                 "id": postId,
-
+                "loggedInUserId": userID
             });
             HttpClient.post(endpoint, body)
                 .then((response) => {
