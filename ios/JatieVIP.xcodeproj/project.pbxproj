@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* JatieVIPTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* JatieVIPTests.m */; };
 		0B35362729487F55009B1CC4 /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0B35362629487F55009B1CC4 /* BootSplash.storyboard */; };
+		0B5A6E032A0B9D0A00D07FE7 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 0B5A6E022A0B9D0A00D07FE7 /* main.jsbundle */; };
 		0BE752F82948A131003E42AA /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		0BE752F92948A131003E42AA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		0BE752FD2948A131003E42AA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
@@ -62,6 +63,7 @@
 		00E356F21AD99517003FC87E /* JatieVIPTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JatieVIPTests.m; sourceTree = "<group>"; };
 		011C439D6282101347412719 /* Pods-JatieVIPCommonPods-JatieVIPStaging.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JatieVIPCommonPods-JatieVIPStaging.release.xcconfig"; path = "Target Support Files/Pods-JatieVIPCommonPods-JatieVIPStaging/Pods-JatieVIPCommonPods-JatieVIPStaging.release.xcconfig"; sourceTree = "<group>"; };
 		0B35362629487F55009B1CC4 /* BootSplash.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = BootSplash.storyboard; sourceTree = "<group>"; };
+		0B5A6E022A0B9D0A00D07FE7 /* main.jsbundle */ = {isa = PBXFileReference; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		0BE753052948A131003E42AA /* JatieVIPDev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JatieVIPDev.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0BE753062948A131003E42AA /* JatieVIP dev-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "JatieVIP dev-Info.plist"; path = "/Users/itech/Desktop/Live_Projects/reactnativetemplateapp/ios/JatieVIP dev-Info.plist"; sourceTree = "<absolute>"; };
 		0BE753182948A689003E42AA /* JatieVIPStaging.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JatieVIPStaging.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -195,6 +197,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				0B5A6E022A0B9D0A00D07FE7 /* main.jsbundle */,
 				13B07FAE1A68108700A75B9A /* JatieVIP */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* JatieVIPTests */,
@@ -420,6 +423,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0B5A6E032A0B9D0A00D07FE7 /* main.jsbundle in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				0B35362729487F55009B1CC4 /* BootSplash.storyboard in Resources */,
 				2D2F0FAA81544AD48C4BA82E /* Recoleta-Black.ttf in Resources */,
@@ -1001,7 +1005,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.jatievip.airly;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jatievip.air;
 				PRODUCT_NAME = JatieVIP;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1034,7 +1038,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.jatievip.airly;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jatievip.air;
 				PRODUCT_NAME = JatieVIP;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
