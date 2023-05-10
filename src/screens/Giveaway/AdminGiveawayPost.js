@@ -27,15 +27,25 @@ import Modal from 'react-native-modal';
 import { close } from '@/assets';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import { Data, File } from './giveawayData/adminGiveawayPostData';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { getUser } from '@/selectors/UserSelectors';
+import { giveAwayPost } from '@/actions/PostActions';
+import { roundToNearestPixel } from 'react-native/Libraries/Utilities/PixelRatio';
+import { navigate } from '@/navigation/RootNavigation';
 
 let nextId = 0;
 
 export default function AdminExclusivePost({ navigation }) {
+  const user = useSelector(getUser);
+  const dispatch = useDispatch()
   const [imageArray, setImageArray] = useState([]);
   const [isModalVisible, setModalVisible] = useState(false);
   const [isImage, setIsImage] = useState();
   const [postTxt, setPostTxt] = useState('');
-
+  const [postImg, setPostImg] = useState([]);
+  const [mimeType, setmimeType] = useState([]);
+  const [postTitle, setPostTitle] = useState('');
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
@@ -50,42 +60,51 @@ export default function AdminExclusivePost({ navigation }) {
     {
       isImage == strings.exclusive.image
         ? ImageCropPicker.openPicker({
-            width: 300,
-            height: 400,
-            mediaType: strings.exclusive.image,
-            multiple: true,
-          })
-            .then(images => {
-              images.forEach(item => {
-                imageArray.push({
-                  id: nextId++,
-                  image: item.path,
-                  video: null,
-                });
-                setModalVisible(!isModalVisible);
-              });
-            })
-            .catch(e => {
-              console.log('Error: ' + e);
-            })
-        : ImageCropPicker.openPicker({
-            width: 300,
-            height: 400,
-            mediaType: strings.exclusive.video,
-            multiple: true,
-            loadingLabelText: 'loading',
-          })
-            .then(video => {
+          width: ms(300),
+          height: ms(400),
+          mediaType: strings.exclusive.image,
+          multiple: true,
+          compressImageQuality: 0.5
+        })
+          .then(images => {
+            images.forEach(item => {
               imageArray.push({
                 id: nextId++,
-                image: null,
-                video: video.path,
+                image: item.path,
+                imageMime: item.mime,
+                video: null,
               });
-              setModalVisible(!isModalVisible);
-            })
-            .catch(e => {
-              console.log('Error: ' + e);
+              postImg.push(item.path);
+              mimeType.push(item.mime);
+              setModalVisible(!isModalVisible)
+                ;
             });
+          })
+          .catch(e => {
+            console.log('Error: ' + e);
+          })
+        : ImageCropPicker.openPicker({
+          width: 300,
+          height: 400,
+          mediaType: strings.exclusive.video,
+          multiple: true,
+          compressImageQuality: 0.5,
+          loadingLabelText: 'loading',
+        })
+          .then(video => {
+            imageArray.push({
+              id: nextId++,
+              image: null,
+              video: video.path,
+              videoMime: video.mime,
+            });
+            setPostImg(video.path);
+            setmimeType(video.mime);
+            setModalVisible(!isModalVisible);
+          })
+          .catch(e => {
+            console.log('Error: ' + e);
+          });
     }
   };
 
@@ -93,40 +112,62 @@ export default function AdminExclusivePost({ navigation }) {
     {
       isImage == strings.exclusive.image
         ? ImageCropPicker.openCamera({
-            width: 300,
-            height: 400,
-            cropping: false,
-          })
-            .then(image => {
-              imageArray.push({
-                id: nextId++,
-                image: image.path,
-                video: null,
-              });
-              setModalVisible(!isModalVisible);
-            })
-            .catch(e => {
-              console.log('Error: ' + e);
-            })
-        : ImageCropPicker.openCamera({
-            width: 300,
-            height: 400,
-            cropping: false,
-            mediaType: strings.exclusive.video,
-          })
-            .then(image => {
-              imageArray.push({
-                id: nextId++,
-                image: null,
-                video: image.path,
-              });
-              setModalVisible(!isModalVisible);
-            })
-            .catch(e => {
-              console.log('Error: ' + e);
+          width: 300,
+          height: 400,
+          cropping: false,
+          compressImageQuality: 0.5,
+        })
+          .then(image => {
+            imageArray.push({
+              id: nextId++,
+              image: image.path,
+              imageMime: image.mime,
+              video: null,
             });
+            setPostImg(image.path);
+            setmimeType(image.mime);
+            setModalVisible(!isModalVisible);
+          })
+          .catch(e => {
+            console.log('Error: ' + e);
+          })
+        : ImageCropPicker.openCamera({
+          width: 300,
+          height: 400,
+          cropping: false,
+          mediaType: strings.exclusive.video,
+          compressImageQuality: 0.5,
+        })
+          .then(image => {
+            imageArray.push({
+              id: nextId++,
+              image: null,
+              video: image.path,
+              videoMime: image.mime,
+            });
+            setPostImg(image.path);
+            setmimeType(image.mime);
+            setModalVisible(!isModalVisible);
+          })
+          .catch(e => {
+            console.log('Error: ' + e);
+          });
     }
   };
+
+  const validation = () => {
+
+    const params = {
+      userId: user?.id,
+      postTitle: postTitle,
+      postBody: postTxt,
+      imageArray: imageArray,
+
+    }
+
+    navigation.navigate(NAVIGATION.adminGiveawayOption, { prevData: params })
+  }
+
   return (
     <SafeAreaView style={styles.contianer}>
       <View style={styles.header}>
@@ -145,27 +186,21 @@ export default function AdminExclusivePost({ navigation }) {
           </View>
           <View style={styles.TextBox}>
             <TextInput
+              value={postTitle}
               style={styles.InputTextBox}
               multiline={true}
               placeholder={strings.exclusive.titleHere}
-              onChangeText={val => setPostTxt(val)}
-            >
-              <Text style={[TextStyles.text, styles.postInputDesign]}>
-                {Data.title}
-              </Text>
-            </TextInput>
+              onChangeText={setPostTitle}
+            />
           </View>
           <View style={styles.TextBoxDEsc}>
             <TextInput
+              value={setPostTxt}
               style={styles.InputTextBoxDEsc}
               multiline={true}
               placeholder={strings.exclusive.whatOnYourMind}
-              onChangeText={val => setPostTxt(val)}
-            >
-              <Text style={[TextStyles.text, styles.postInputDesign]}>
-                {Data.desc}
-              </Text>
-            </TextInput>
+              onChangeText={setPostTxt}
+            />
           </View>
         </View>
       </ScrollView>
@@ -193,9 +228,9 @@ export default function AdminExclusivePost({ navigation }) {
 
         <Button
           title={strings.exclusive.next}
-          disabled={postTxt.length ? false : true}
-          opacity={postTxt.length ? 1 : 0.4}
-          onPress={() => navigation.navigate(NAVIGATION.adminGiveawayOption)}
+          disabled={postTxt ? false : true}
+          opacity={postTxt ? 1 : 0.4}
+          onPress={validation}
           style={styles.giveAwayButtom}
         />
         {/* </TouchableOpacity> */}
@@ -222,7 +257,7 @@ export default function AdminExclusivePost({ navigation }) {
           </View>
         </View>
       </Modal>
-    </SafeAreaView>
+    </SafeAreaView >
   );
 }
 

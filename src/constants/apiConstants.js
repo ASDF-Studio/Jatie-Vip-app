@@ -60,6 +60,9 @@ export const API_END_POINTS = {
     SEARCH_USER_BY_USERNAME: 'user/search',
 
     //Get user profile by user id
-    GET_USER_PROFILE_BY_USER_ID: 'user/user_by_userId'
+    GET_USER_PROFILE_BY_USER_ID: 'user/user_by_userId',
 
+
+    // GiveAway Post 
+    GIVE_AWAY_POST_ENDPOINT: 'giveaway/create',
 };

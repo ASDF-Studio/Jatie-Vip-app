@@ -98,8 +98,8 @@ export default function PostDetails({ navigation }) {
             </Card>
           </View>
         </ScrollView>
-      </View>
-    </SafeAreaView>
+      </View >
+    </SafeAreaView >
   );
 }
 

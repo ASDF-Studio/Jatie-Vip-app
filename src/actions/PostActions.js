@@ -1,8 +1,9 @@
 import { NAVIGATION } from '@/constants';
 import { UserController } from '@/controllers';
+import { GiveAwayController } from '@/controllers/GiveAwayController';
 import { PostController } from '@/controllers/PostController';
 import { strings } from '@/localization';
-import { navigationRef } from '@/navigation/RootNavigation';
+import { navigate, navigationRef } from '@/navigation/RootNavigation';
 import { StackActions } from '@react-navigation/native';
 import { showMessage } from 'react-native-flash-message';
 import { globalReset } from './GlobalActions';
@@ -185,10 +186,21 @@ export const TYPES = {
     SEARCH_USER_BY_USERNAME: "SEARCH_USER_BY_USERNAME",
     SEARCH_USER_BY_USERNAME_REQUEST: "SEARCH_USER_BY_USERNAME_REQUEST",
     SEARCH_USER_BY_USERNAME_SUCCESS: ' SEARCH_USER_BY_USERNAME_SUCCESS',
-    SEARCH_USER_BY_USERNAME_ERROR: ' SEARCH_USER_BY_USERNAME_ERROR'
+    SEARCH_USER_BY_USERNAME_ERROR: ' SEARCH_USER_BY_USERNAME_ERROR',
+
+
+    //  CREATE GIVEAWAY POST
+
+
+
+    GIVE_AWAY_POST: "GIVE_AWAY_POST",
+    GIVE_AWAY_POST_REQUEST: "GIVE_AWAY_POST_REQUEST",
+    GIVE_AWAY_POST_SUCCESS: "GIVE_AWAY_POST_SUCCESS",
+    GIVE_AWAY_POST_ERROR: "GIVE_AWAY_POST_ERROR",
 
 
 };
+
 export const createPostSuccess = user => ({
     type: TYPES.CREATE_POST_SUCCESS,
     payload: { user },
@@ -506,6 +518,23 @@ export const unBlockUserSuccess = user => ({
     payload: { user },
 });
 
+
+//  Give_away Post
+export const giveAwayPostSuccess = user => ({
+    type: TYPES.GIVE_AWAY_POST_SUCCESS,
+    payload: { user },
+});
+
+const giveAwayPostRequest = () => ({
+    type: TYPES.GIVE_AWAY_POST_REQUEST,
+    payload: null,
+});
+
+const giveAwayPostError = error => ({
+    type: TYPES.GIVE_AWAY_POST_ERROR,
+    payload: { error },
+});
+
 // create_post action
 
 export const createPost = (id, postTitle, postBody, file, mimeType, imageArray, screen) => async dispatch => {
@@ -821,5 +850,23 @@ export const searchUserbyUserName = (searchWord) => async dispatch => {
         dispatch(searchUserByUserNameSuccess(searchedUser?.data))
     } catch (error) {
         dispatch(searchUserByUserNameError(error))
+    }
+};
+
+export const giveAwayPost = (params) => async dispatch => {
+
+    dispatch(globalReset())
+    dispatch(giveAwayPostRequest());
+    try {
+        const user = await GiveAwayController.createGiveAwayPost(params);
+        dispatch(giveAwayPostSuccess(user))
+        navigate(NAVIGATION.giveaway)
+
+    } catch (error) {
+        showMessage({
+            message: error?.message,
+            type: "danger"
+        })
+        dispatch(giveAwayPostError(error));
     }
 };
