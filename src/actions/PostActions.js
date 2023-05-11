@@ -737,7 +737,6 @@ export const unFollowUser = (unFollowerId, followId, type) => async dispatch => 
         }
         dispatch(unFollowUserSuccess(object));
     } catch (error) {
-
         dispatch(unFollowUserError(error))
     }
 };
