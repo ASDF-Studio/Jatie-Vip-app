@@ -8,7 +8,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import { Button, Card, CardBody, Icon, TopBackButton } from '@/components';
+import { Button, Card, CardBody, CustomLoader, Icon, TopBackButton } from '@/components';
 import { TextStyles, theme } from '@/theme';
 import { FontFamily } from '@/theme/Fonts';
 import { ms, vs } from 'react-native-size-matters';
@@ -16,15 +16,54 @@ import { strings } from '@/localization';
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { item } from './giveawayData/postDetailsData';
+import { getAllActiveGiveaway, joinGiveAway, TYPES, WithDrawAway, withDrawGiveAwaySuccess } from '@/actions/PostActions';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUser } from '@/selectors/UserSelectors';
+import { isLoadingSelector } from '@/selectors/StatusSelectors';
 
-export default function PostDetails({ navigation }) {
-  const [active, setActive] = useState(true);
+export default function PostDetails({ navigation, route }) {
+  const dispatch = useDispatch()
+  const [active, setActive] = useState(false);
+
+
+  const joinGiveAwayLoading = useSelector(state =>
+    isLoadingSelector([TYPES.JOIN_GIVEAWAY], state)
+  );
+  const withdrawGiveAwayLoading = useSelector(state =>
+    isLoadingSelector([TYPES.WITHDRAW_GIVEAWAY], state)
+  );
+
+  const data = route.params.key
+
+
+  const giveAwayId = data.id
+
+  const user = useSelector(getUser)
+
+
+  const joinGiveAwayhandlePress = () => {
+    const data = {
+      giveawayId: giveAwayId,
+      participantId: user?.id
+    }
+    dispatch(joinGiveAway(data))
+  }
+
+  const WithdrawGiveAwayhandlePress = () => {
+    const data = {
+      giveawayId: giveAwayId,
+      participantId: user?.id
+    }
+    dispatch(WithDrawAway(data))
+  }
+
   return (
     <SafeAreaView style={styles.contianer}>
+      <CustomLoader open={active ? withdrawGiveAwayLoading : joinGiveAwayLoading} />
       <View style={styles.header}>
         <TopBackButton onPress={() => navigation.goBack()} />
         <Text style={[styles.headerText, TextStyles.header]}>
-          {strings.giveaway.title}
+          {data.postTitle}
         </Text>
       </View>
       <View style={styles.postContainer}>
@@ -32,32 +71,44 @@ export default function PostDetails({ navigation }) {
           <View style={styles.feedContainer}>
             <Card>
               <View>
-                <Text style={styles.title}>{strings.giveaway.title} </Text>
+                <Text style={styles.title}> {data.postTitle} </Text>
               </View>
               <View>
                 <Text style={styles.timeLable}>
                   {strings.giveaway.expires}
-                  <Text style={styles.EndTimeTxt}> {item.EndsIn}</Text>
+                  <Text style={styles.EndTimeTxt}> {data.postExpires}</Text>
                 </Text>
               </View>
-              <CardBody text={item.Desc} />
+              <CardBody text={data.postBody} />
               {link(item.link)}
-              <CardBody text={item.MoreDesc} />
+              {/* <CardBody text={item.MoreDesc} /> */}
               <View style={styles.thumbnailContainer}>
-                <Image
-                  style={styles.thumbnailImage}
-                  source={{
-                    uri: item.photo,
-                  }}
-                />
 
+                {/* map function for images */}
+                {
+                  data.postImg.map((url) => {
+                    return (
+
+                      <Image
+                        style={styles.thumbnailImage}
+                        source={{
+                          uri: url
+                        }}
+                      />
+
+                    )
+                  })
+                }
                 <View>
                   <View style={styles.PostButtonContainer}>
-                    <TouchableOpacity onPress={setActive == false}>
-                      <Button
+                    <TouchableOpacity
+
+
+                    >
+                      <Button onPress={() => { joinGiveAwayhandlePress(), setActive(false) }}
                         title={strings.giveaway.joinThisGiveaway}
-                        style={styles.joinBtn}
-                      />
+                        style={styles.joinBtn} />
+
                     </TouchableOpacity>
                   </View>
                   <View style={styles.termsAndConsition}>
@@ -68,8 +119,8 @@ export default function PostDetails({ navigation }) {
                   </View>
                 </View>
                 <View style={styles.PostButtonContainer}>
-                  <TouchableOpacity>
-                    <Button
+                  <TouchableOpacity  >
+                    <Button onPress={() => { WithdrawGiveAwayhandlePress(), setActive(true) }}
                       title={strings.giveaway.withdrawFromThisGiveaway}
                       style={styles.withdrawBtn}
                       textStyle={{
@@ -80,7 +131,7 @@ export default function PostDetails({ navigation }) {
                 </View>
                 <View>
                   <View style={styles.PostButtonContainer}>
-                    <TouchableOpacity>
+                    <TouchableOpacity >
                       <Button
                         title={strings.giveaway.joinThisGiveaway}
                         style={styles.outOfUS}

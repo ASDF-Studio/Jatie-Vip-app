@@ -65,4 +65,21 @@ export const API_END_POINTS = {
 
     // GiveAway Post 
     GIVE_AWAY_POST_ENDPOINT: 'giveaway/create',
+
+
+    // Active giveaway get
+    GET_ACTIVE_GIVEAWAY: 'giveaway/all_giveaway_active',
+
+    //past giveaway get 
+    GET_PAST_GIVEAWAY: 'giveaway/all_giveaway_past',
+
+
+    //join giveaway 
+
+    JOIN_GIVEAWAY: 'giveaway/join',
+
+
+    //With Draw End Point
+
+    WITH_DRAW: 'giveaway/withdraw',
 };

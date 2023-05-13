@@ -54,6 +54,10 @@ import { navigationRef } from '@/navigation/RootNavigation';
 export default function UserProfile({ navigation, route }) {
   const dispatch = useDispatch()
   const { userId } = route.params
+  console.log('otherpersoId', userId)
+  const userr = useSelector(getUser)
+  console.log('MyId', userr.id)
+
   const getUserProfile = useSelector(getUser)
 
   const [openMore, setOpenMore] = useState(false);
@@ -307,71 +311,78 @@ export default function UserProfile({ navigation, route }) {
         )}
       />
 
-      {showImageView && (
-        <AppImageViewer
-          visible={showImageView}
-          setVisible={() => setShowImageView(false)}
-          images={feedImages}
-        />
-      )}
-      {openMore && (
-        <ModalDown open={openMore} setOpen={setOpenMore}>
-          <ModalList
-            title={strings.operations.follow}
-            icon={faUserPlus}
-            iconColor={theme.light.colors.primary}
-            iconBg={theme.light.colors.primaryBgLight}
+      {
+        showImageView && (
+          <AppImageViewer
+            visible={showImageView}
+            setVisible={() => setShowImageView(false)}
+            images={feedImages}
           />
-          <ModalList
-            title={strings.operations.sendPrivateMessage}
-            icon={faMessage}
-            iconColor={theme.light.colors.success}
-            iconBg={theme.light.colors.successBgLight}
-          // onPress = {()=> Alert.alert("working")}
-          />
-          <HorizontalLine
-            color={theme.light.colors.infoBgLight}
-            paddingTop={15}
-            paddingBottom={8}
-          />
-          <ModalList
-            title={strings.operations.report}
-            icon={faFlag}
-            iconColor={theme.light.colors.secondary}
-            iconBg={theme.light.colors.infoBgLight}
-          />
-          <ModalList
-            title={strings.operations.block}
-            icon={faXmark}
-            iconColor={theme.light.colors.secondary}
-            iconBg={theme.light.colors.infoBgLight}
-          />
-        </ModalDown>
-      )}
-      {openEdit && (
-        <ModalDown open={openEdit} setOpen={setOpenEdit}>
-          <ModalList
-            title={strings.operations.edit}
-            icon={faPen}
-            iconBg={theme.light.colors.infoBgLight}
-            iconColor={theme.light.colors.info}
-          />
-          <HorizontalLine
-            color={theme.light.colors.infoBgLight}
-            paddingTop={15}
-            paddingBottom={8}
-          />
-          <ModalList
-            title={strings.operations.remove}
-            icon={faTrash}
-            iconBg={theme.light.colors.infoBgLight}
-            iconColor={theme.light.colors.secondary}
-          />
-        </ModalDown>
-      )}
+        )
+      }
+      {
+        openMore && (
+          <ModalDown open={openMore} setOpen={setOpenMore}>
+            <ModalList
+
+              title={strings.operations.follow}
+              icon={faUserPlus}
+              iconColor={theme.light.colors.primary}
+              iconBg={theme.light.colors.primaryBgLight}
+            />
+            <ModalList
+              title={strings.operations.sendPrivateMessage}
+              icon={faMessage}
+              iconColor={theme.light.colors.success}
+              iconBg={theme.light.colors.successBgLight}
+            // onPress = {()=> Alert.alert("working")}
+            />
+            <HorizontalLine
+              color={theme.light.colors.infoBgLight}
+              paddingTop={15}
+              paddingBottom={8}
+            />
+            <ModalList
+              title={strings.operations.report}
+              icon={faFlag}
+              iconColor={theme.light.colors.secondary}
+              iconBg={theme.light.colors.infoBgLight}
+            />
+            <ModalList
+              title={strings.operations.block}
+              icon={faXmark}
+              iconColor={theme.light.colors.secondary}
+              iconBg={theme.light.colors.infoBgLight}
+            />
+          </ModalDown>
+        )
+      }
+      {
+        openEdit && (
+          <ModalDown open={openEdit} setOpen={setOpenEdit}>
+            <ModalList
+              title={strings.operations.edit}
+              icon={faPen}
+              iconBg={theme.light.colors.infoBgLight}
+              iconColor={theme.light.colors.info}
+            />
+            <HorizontalLine
+              color={theme.light.colors.infoBgLight}
+              paddingTop={15}
+              paddingBottom={8}
+            />
+            <ModalList
+              title={strings.operations.remove}
+              icon={faTrash}
+              iconBg={theme.light.colors.infoBgLight}
+              iconColor={theme.light.colors.secondary}
+            />
+          </ModalDown>
+        )
+      }
       <Loader visible={loader} style={{ backgroundColor: 'white' }} size="large" />
 
-    </SafeAreaView>
+    </SafeAreaView >
   );
 }
 

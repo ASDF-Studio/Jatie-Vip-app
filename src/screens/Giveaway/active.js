@@ -7,9 +7,10 @@ import {
   Image,
   Text,
   Platform,
+  ImageBackground,
 } from 'react-native';
 import { theme } from '@/theme';
-import { Card, CardBody } from '@/components';
+import { AppImageViewer, Card, CardBody } from '@/components';
 import { ms, vs } from 'react-native-size-matters';
 import { FontFamily } from '@/theme/Fonts';
 import { strings } from '@/localization';
@@ -18,81 +19,236 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
 import { Data } from './giveawayData/activeData';
+import { geAllActiveGiveAwayData } from '@/selectors/PostSelectors';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllActiveGiveaway } from '@/actions/PostActions';
+import { getUser } from '@/selectors/UserSelectors';
+import { useEffect } from 'react';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function Active({ navigation, userType }) {
+  const user = useSelector(getUser);
   const [open, setOpen] = useState(false);
+  const [showImageView, setShowImageView] = useState(false);
+  const [feedImages, setFeedImages] = useState([]);
+  const dispatch = useDispatch()
+  let counter = 1;
+  const getActiveGiveWayData = useSelector(geAllActiveGiveAwayData)
+
+
+  const focus = useIsFocused()
+
+  useEffect(() => {
+    getactiveData()
+
+  }, [focus])
+
+  const getactiveData = () => {
+    const data = {
+      userId: user?.id,
+    }
+
+
+
+    dispatch(getAllActiveGiveaway(data))
+  }
+
   return (
-    <SafeAreaView
-      style={{
-        marginTop: Platform.OS === 'ios' ? -48 : 0,
-        marginBottom: Platform.OS === 'ios' ? -70 : 0,
-      }}
-    >
-      <FlatList
-        data={Data}
-        key={props => props.id}
-        renderItem={({ item }) => (
-          <View style={styles.FlatListContainer}>
-            <Card>
-              <View>
-                <Text style={styles.title}>{strings.giveaway.title} </Text>
-              </View>
-              <View>
-                <Text style={styles.officialTxt}>
-                  {strings.giveaway.EndsIn}
-                  <Text style={styles.EndTimeTxt}> {item.EndsIn}</Text>
-                </Text>
-              </View>
-              <CardBody text={item.Desc} />
+    <>
+      {/*  image view modal */}
+      {showImageView && (
+        <AppImageViewer
+          visible={showImageView}
+          setVisible={() => setShowImageView(false)}
+          images={feedImages}
+        />
+      )}
+      <SafeAreaView
+        style={{
+          marginTop: Platform.OS === 'ios' ? -48 : 0,
+          marginBottom: Platform.OS === 'ios' ? -70 : 0,
+        }}
+      >
 
-              {/* VIP only */}
 
-              {userType.user == `${strings.userType.free}` &&
-              item.status == `${strings.userType.free}` ? (
-                <View style={styles.thumbnailContainer}>
-                  <Image
-                    blurRadius={15}
-                    style={styles.thumbnailImage}
-                    source={{
-                      uri: item.photo,
-                    }}
-                  />
-                  <View style={styles.vipOnlyContainer}>
-                    <FontAwesomeIcon
-                      icon={faLock}
-                      size={ms(10)}
-                      style={styles.lock}
+        <FlatList
+          data={getActiveGiveWayData?.data ?? []}
+          key={props => props.id}
+          renderItem={({ item, index }) => (
+            <View style={styles.FlatListContainer}>
+              <Card>
+                <View>
+                  <Text style={styles.title}>{item.postTitle}</Text>
+                </View>
+                <View>
+                  <Text style={styles.officialTxt}>
+                    {strings.giveaway.EndsIn}
+                    <Text style={styles.EndTimeTxt}> {item.postExpires}</Text>
+                  </Text>
+                </View>
+                <CardBody text={item.postBody} />
+
+                {/* VIP only */}
+
+                {userType.user == `${strings.userType.free}` &&
+                  item.status == `${strings.userType.free}` ? (
+                  <View style={styles.thumbnailContainer}>
+                    <Image
+                      blurRadius={15}
+                      style={styles.thumbnailImage}
+                      source={{
+                        uri: item.photo,
+                      }}
                     />
-                    <Text style={styles.vipOnlyText}>
-                      {strings.giveaway.vipOnly}
-                    </Text>
+                    <View style={styles.vipOnlyContainer}>
+                      <FontAwesomeIcon
+                        icon={faLock}
+                        size={ms(10)}
+                        style={styles.lock}
+                      />
+                      <Text style={styles.vipOnlyText}>
+                        {strings.giveaway.vipOnly}
+                      </Text>
+                    </View>
                   </View>
-                </View>
-              ) : (
-                <View style={styles.thumbnailContainer}>
-                  <Image
-                    style={styles.thumbnailImage}
-                    source={{
-                      uri: item.photo,
-                    }}
-                  />
-                  <TouchableOpacity
-                    onPress={() =>
-                      navigation.navigate(NAVIGATION.giveawayPostDetails)
-                    }
-                    style={styles.btn}
-                  >
-                    <Text style={[styles.btnTxt, styles.btnTxtColor]}>
-                      {strings.giveaway.learnMore}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              )}
-            </Card>
-          </View>
-        )}
-      />
-    </SafeAreaView>
+                ) : (
+
+
+
+                  <View style={styles.thumbnailContainer}>
+                    {/* {item?.postImg?.map(url => (
+                      <>
+                        <Image
+                          style={styles.thumbnailImage}
+                          source={{
+                            uri: url
+                          }}
+                        />
+                        <TouchableOpacity
+                          onPress={() =>
+                            navigation.navigate(NAVIGATION.giveawayPostDetails)
+                          }
+                          style={styles.btn}
+                        >
+                          <Text style={[styles.btnTxt, styles.btnTxtColor]}>
+                            {strings.giveaway.learnMore}
+                          </Text>
+                        </TouchableOpacity>
+                      </>
+                    ))} */}
+                    <>
+                      {item?.postImg?.length <= 2 ? (
+                        <View style={styles.imageContainer}>
+                          {item?.postImg?.map(data => (
+                            counter = counter + 1,
+                            <TouchableOpacity
+                              // key={counter}
+                              style={styles.touchContainer}
+                              onPress={() => {
+                                setShowImageView(true),
+                                  setFeedImages(item.postImg)
+                              }}
+                            >
+                              <Image
+                                source={{
+                                  uri: data,
+                                }}
+                                style={styles.image}
+                              />
+                            </TouchableOpacity>
+                          ))}
+                        </View>
+                      ) : item?.postImg?.length > 2 ? (
+                        counter = 1,
+                        <View style={styles.imageContainer}>
+                          {item?.postImg?.map(data =>
+                            counter == 1 ? (
+                              counter = counter + 1,
+                              <TouchableOpacity
+                                key={counter}
+                                style={styles.touchContainer}
+                                onPress={() => {
+                                  setShowImageView(true),
+                                    setFeedImages(item.postImg);
+                                  // console.log(feedImages)
+                                }}
+                              >
+                                <Image
+                                  source={{
+                                    uri: data,
+                                  }}
+                                  key={counter}
+                                  style={styles.image}
+                                />
+                              </TouchableOpacity>
+                            ) : counter == 2 ? (
+                              counter = counter + 1,
+                              <TouchableOpacity
+                                key={counter}
+                                style={styles.touchContainer}
+                                onPress={() => {
+                                  setShowImageView(true),
+                                    setFeedImages(item.postImg);
+                                }}
+                              >
+                                <ImageBackground
+                                  source={{
+                                    uri: data,
+                                  }}
+                                  key={counter}
+                                  style={[styles.image, styles.moreImage]}
+                                >
+                                  <TouchableOpacity
+                                    onPress={() => {
+                                      setShowImageView(true),
+                                        setFeedImages(item.postImg);
+                                    }}
+                                  >
+                                    <Text style={styles.extraImage}>
+                                      {strings.message.plus}
+                                      {item?.postImg?.length - 1}
+                                    </Text>
+                                  </TouchableOpacity>
+                                </ImageBackground>
+                              </TouchableOpacity>
+                            ) : null
+                          )}
+                        </View>
+                      ) : null}
+                    </>
+
+
+                    <TouchableOpacity
+                      onPress={() =>
+                        navigation.navigate(NAVIGATION.giveawayPostDetails, {
+                          key: {
+                            id: item.id,
+                            postTitle: item.postTitle,
+                            postBody: item.postBody,
+                            postExpires: item.postExpires,
+                            postImg: item.postImg
+                          }
+
+                        })
+                      }
+                      style={[item?.postImg?.length <= 0 ? [styles.btn, { top: '0%', position: 'relative', marginBottom: 20 }] : styles.btn]}
+                    >
+                      <Text style={[styles.btnTxt, styles.btnTxtColor]}>
+                        {strings.giveaway.learnMore}
+                      </Text>
+                    </TouchableOpacity>
+
+
+
+                  </View>
+
+                )}
+              </Card>
+            </View>
+          )}
+        />
+      </SafeAreaView>
+    </>
   );
 }
 
@@ -126,6 +282,7 @@ export const styles = StyleSheet.create({
     padding: ms(80),
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
+    //  marginBottom: 10
   },
   EndTimeTxt: {
     color: theme.light.colors.black,
@@ -173,4 +330,26 @@ export const styles = StyleSheet.create({
   lock: {
     color: theme.light.colors.background,
   },
+  imageContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    // paddingRight: ms(40),
+    justifyContent: 'space-between',
+    marginRight: ms(-5),
+
+  },
+  touchContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    // paddingRight: ms(40),
+    justifyContent: 'space-between',
+    marginRight: ms(-5),
+  },
+  image: {
+    flex: 1,
+    width: '85%',
+    height: ms(200),
+    marginRight: ms(10),
+  },
+
 });
