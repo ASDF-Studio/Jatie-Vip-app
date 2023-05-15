@@ -278,7 +278,6 @@ export class PostController {
                 "followingOnly": isFollowingData,
                 "postsFilter": filterBy.toLowerCase()
             })
-            console.log("BODY=-=-=-=-", body);
             HttpClient.post(endpoint, body)
                 .then((response) => {
 

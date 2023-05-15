@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { strings } from '@/localization';
 import { theme, TextStyles } from '@/theme';
 import { ms, vs } from 'react-native-size-matters';
@@ -34,12 +34,10 @@ import {
   ImageBackground,
   ActivityIndicator,
   Platform,
-  Linking,
 } from 'react-native';
 import {
   AppImageViewer,
   AppSwitch,
-  AppVideoPlayer,
   Button,
   Card,
   CardBody,
@@ -59,27 +57,20 @@ import {
   VerticalLine,
 } from '@/components';
 import { Logo } from '@/assets';
-import { Data } from './Data/HomeData';
 import { faBell, faSearch } from '@fortawesome/pro-regular-svg-icons';
-import { UserController } from '@/controllers';
-import { useIsFocused } from "@react-navigation/native";
 import { getUser } from '@/selectors/UserSelectors';
 import { navigationRef } from '@/navigation/RootNavigation';
-import { getAllPost, TYPES, getAllPinPost, deletePost, reportPost, followUser, blockUser, unFollowUser, getPostById } from '@/actions/PostActions';
-import { CustomLoader } from '@/components';
-import { getAllPostData, getPostByIdData } from '@/selectors/PostSelectors';
-import { showMessage } from 'react-native-flash-message';
+import { getAllPost, TYPES, deletePost, reportPost, followUser, blockUser, unFollowUser } from '@/actions/PostActions';
+import { getAllPostData } from '@/selectors/PostSelectors';
 import { isLoadingSelector, successSelector } from '@/selectors/StatusSelectors';
 import ImagePicker from 'react-native-image-crop-picker';
 import { globalReset } from '@/actions/GlobalActions';
 import SearchPost from './SearchPost';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import queryString from 'query-string';
-import Share from 'react-native-share';
 import { POST_TYPE } from '@/constants/enums';
 
 export function Home({ navigation }) {
-  const flatListRef = useRef()
   const ALLPOST = useSelector(getAllPostData)
 
   const userType = useSelector(state => state.userType);
@@ -89,15 +80,12 @@ export function Home({ navigation }) {
   const dispatch = useDispatch()
   const [vipArea, setVipArea] = useState(strings.home.vipArea);
   const [open, setOpen] = useState(false);
-  const [openToast, setOpenToast] = useState(false);
   const [openReport, setOpenReport] = useState(false);
   const [recentFilterOpen, setRecentFilterOpen] = useState(false);
   const [sortBy, setSortBy] = useState(strings.sortBy.recent);
   const [follwingSwitch, setFollowingSwtich] = useState(false);
   const [showImageView, setShowImageView] = useState(false);
   const [feedImages, setFeedImages] = useState([]);
-
-  const [isLoadingData, setIsLoadingData] = useState(false);
 
   const [reportListOpen, setReportListOpen] = useState(false);
   const [reportOption, setReportOption] = useState([
@@ -109,8 +97,6 @@ export function Home({ navigation }) {
 
   const [reportOptionValue, setReportOptionValue] = useState('');
   const [reportComment, setReportCommnet] = useState('');
-  const [allPinnedPost, setAllPinnedPost] = useState([]);
-  const [allPost, setAllPost] = useState(ALLPOST?.data ? ALLPOST.data : []);
   const [postUserId, setPostUserId] = useState(null);
   const [postId, setpostId] = useState(null);
   const [postTitle, setPostTitle] = useState('');
@@ -118,9 +104,15 @@ export function Home({ navigation }) {
   const [postImg, setPostImg] = useState([]);
   const [isAdminPost, setIsAdminPost] = useState(false)
 
+  const FILTER_DATA = [
+    { title: strings.home.recent, value: strings.sortBy.recent },
+    { title: strings.home.popularToday, value: strings.sortBy.today },
+    { title: strings.home.popularThisWeek, value: strings.sortBy.week },
+    { title: strings.home.popularThisMonth, value: strings.sortBy.month },
+
+  ]
 
   // click on more
-
   const [postUserName, setPostUserName] = useState('');
   const [postUserFollowed, setPostUserFollowed] = useState(false);
   const [postIndex, setPostIndex] = useState(0);
@@ -133,12 +125,12 @@ export function Home({ navigation }) {
   // for delete
   const [openReplace, setReplace] = useState(false);
 
-  const focus = useIsFocused();
 
   useEffect(() => {
-    // dispatch(getAllPinPost())
-    dispatch(getAllPost(user?.id, sortBy, false))
-  }, []);
+    dispatch(getAllPost(user?.id, sortBy, follwingSwitch))
+  }, [sortBy, follwingSwitch]);
+
+
   useEffect(() => {
     dynamicLinks().getInitialLink().then((link) => {
       handleDynamicLink(link)
@@ -149,8 +141,9 @@ export function Home({ navigation }) {
       linkingListener();
     }
   }, [])
-  const handleDynamicLink = (link) => {
 
+
+  const handleDynamicLink = (link) => {
     if (!!link?.url) {
       const params = queryString.parse(link.url.split('?')[1]);
       const postId = params.postId;
@@ -210,12 +203,6 @@ export function Home({ navigation }) {
     dispatch(blockUser(user?.id, postUserId, postIndex))
   }
 
-
-  const handleSwitch = (value) => {
-    dispatch(getAllPost(user?.id, sortBy, value))
-    setFollowingSwtich(value)
-  }
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="transparent" />
@@ -247,7 +234,7 @@ export function Home({ navigation }) {
                 </Text>
                 <AppSwitch
                   value={follwingSwitch}
-                  onChange={(value) => handleSwitch(value)}
+                  onChange={() => setFollowingSwtich(!follwingSwitch)}
                 />
               </View>
             </View>
@@ -457,71 +444,28 @@ export function Home({ navigation }) {
                     {strings.home.sortByFeed}{' '}
                   </Text>
                 </View>
-                <TouchableOpacity
-                  style={styles.recentList}
-                  onPress={() =>
-                    setSortBy(strings.sortBy.recent) &
-                    setRecentFilterOpen(false)
-                  }
-                >
-                  {sortBy == `${strings.sortBy.recent}` ? (
-                    CheckIcon
-                  ) : (
-                    <Text> {'   '}</Text>
-                  )}
-                  <Text style={styles.recentListTxt}>
-                    {' '}
-                    {strings.home.recent}{' '}
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.recentList}
-                  onPress={() =>
-                    setSortBy(strings.sortBy.today) & setRecentFilterOpen(false)
-                  }
-                >
-                  {sortBy == `${strings.sortBy.today}` ? (
-                    CheckIcon
-                  ) : (
-                    <Text> {'   '}</Text>
-                  )}
-                  <Text style={styles.recentListTxt}>
-                    {' '}
-                    {strings.home.popularToday}{' '}
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.recentList}
-                  onPress={() =>
-                    setSortBy(strings.sortBy.week) & setRecentFilterOpen(false)
-                  }
-                >
-                  {sortBy == `${strings.sortBy.week}` ? (
-                    CheckIcon
-                  ) : (
-                    <Text> {'   '}</Text>
-                  )}
-                  <Text style={styles.recentListTxt}>
-                    {' '}
-                    {strings.home.popularThisWeek}{' '}
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.recentList}
-                  onPress={() =>
-                    setSortBy(strings.sortBy.month) & setRecentFilterOpen(false)
-                  }
-                >
-                  {sortBy == `${strings.sortBy.month}` ? (
-                    CheckIcon
-                  ) : (
-                    <Text> {'   '}</Text>
-                  )}
-                  <Text style={styles.recentListTxt}>
-                    {' '}
-                    {strings.home.popularThisMonth}{' '}
-                  </Text>
-                </TouchableOpacity>
+                {FILTER_DATA.map((item, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={styles.recentList}
+                    onPress={() => {
+                      setSortBy(item.value)
+                      setRecentFilterOpen(false)
+                    }
+                    }
+                  >
+                    {sortBy == item.value ? (
+                      CheckIcon
+                    ) : (
+                      <Text> {'   '}</Text>
+                    )}
+                    <Text style={styles.recentListTxt}>
+                      {' '}
+                      {item.title}{' '}
+                    </Text>
+                  </TouchableOpacity>
+
+                ))}
               </View>
             </View>
           </TouchableWithoutFeedback>

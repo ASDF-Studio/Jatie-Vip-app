@@ -35,6 +35,10 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>FirebaseDynamicLinksCustomDomains</key>
+	<array>
+		<string>https://jatievip.page.link/Eit5</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -84,10 +88,6 @@
 	<array>
 		<string>armv7</string>
 	</array>
-  <key>FirebaseDynamicLinksCustomDomains</key>
-   <array>
-     <string>https://jatievip.page.link/Eit5</string>
-   </array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

@@ -43,13 +43,14 @@ import { Data, demo } from './ProfileData/userProfileData';
 import { faSearch } from '@fortawesome/pro-regular-svg-icons';
 import { FontFamily } from '@/theme/Fonts';
 import { useDispatch, useSelector } from 'react-redux';
-import { TYPES, getUserProfileByUserId } from '@/actions/UserActions';
+import { getUserProfileByUserId } from '@/actions/UserActions';
 import { useEffect } from 'react';
 import { getUser } from '@/selectors/UserSelectors';
-import { isLoadingSelector } from '@/selectors/StatusSelectors';
+import { isLoadingSelector, successSelector } from '@/selectors/StatusSelectors';
 import { Loader } from '@/components/Loader';
 import { UserController } from '@/controllers';
 import { navigationRef } from '@/navigation/RootNavigation';
+import { TYPES, followUser, unFollowUser } from '@/actions/PostActions';
 
 export default function UserProfile({ navigation, route }) {
   const dispatch = useDispatch()
@@ -59,6 +60,7 @@ export default function UserProfile({ navigation, route }) {
   console.log('MyId', userr.id)
 
   const getUserProfile = useSelector(getUser)
+
 
   const [openMore, setOpenMore] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
@@ -76,10 +78,17 @@ export default function UserProfile({ navigation, route }) {
   let counter = 1;
 
 
+  const isFollowSuccess = useSelector(state =>
+    isLoadingSelector([TYPES.FOLLOW_USER], state)
+  );
+  const isunFollowSuccess = useSelector(state =>
+    isLoadingSelector([TYPES.UN_FOLLOW_USER], state)
+  );
+
   useEffect(() => {
     dispatch(getUserProfileByUserId(userId))
     getUserPostById(userId)
-  }, [])
+  }, [isFollowSuccess, isunFollowSuccess])
 
   useEffect(() => {
     setUser(getUserProfile?.getUserByUserId)
@@ -92,6 +101,30 @@ export default function UserProfile({ navigation, route }) {
       setuserPosts(data.data);
     }
 
+  }
+
+  const onFollow = () => {
+    const loggedInUserID = getUserProfile?.id
+    if (user) {
+      const isLoggedInUserAFollower = user.followers.includes(loggedInUserID)
+
+      if (isLoggedInUserAFollower) {
+        // Hit unfollow API
+        dispatch(unFollowUser(loggedInUserID, user?.id))
+      } else {
+        // Hit follow API
+        dispatch(followUser(loggedInUserID, user?.id))
+      }
+
+    }
+  }
+
+  const renderFollowTitle = () => {
+    const loggedInUserID = getUserProfile?.id
+    if (user) {
+      const isLoggedInUserAFollower = user.followers.includes(loggedInUserID)
+      return isLoggedInUserAFollower ? strings.profile.unfollow : strings.profile.follow
+    }
   }
 
   return (
@@ -174,12 +207,12 @@ export default function UserProfile({ navigation, route }) {
               {strings.profile.message}{' '}
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.IconBox}>
+          <TouchableOpacity onPress={onFollow} style={styles.IconBox}>
             <FontAwesomeIcon
               icon={faUserPlus}
               color={theme.light.colors.primary}
             />
-            <Text style={[styles.labelColor]}> {strings.profile.follow} </Text>
+            <Text style={[styles.labelColor]}> {renderFollowTitle()} </Text>
           </TouchableOpacity>
         </View>
         <TouchableOpacity
