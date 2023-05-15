@@ -421,6 +421,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderColor: theme.light.colors.infoBgLight,
     backgroundColor: theme.light.colors.inputFiled,
+
+
   },
   postInputDesign: {
     fontFamily: FontFamily.BrandonGrotesque_regular,

@@ -27,14 +27,22 @@ import Modal from 'react-native-modal';
 import { close } from '@/assets';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import { Data, File } from './exclusiveData/adminExclusivePostData';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUser } from '@/selectors/UserSelectors';
 
 let nextId = 0;
 
 export default function AdminExclusivePost({ navigation }) {
+  const user = useSelector(getUser);
+  const dispatch = useDispatch()
   const [imageArray, setImageArray] = useState([]);
   const [isModalVisible, setModalVisible] = useState(false);
   const [isImage, setIsImage] = useState();
   const [postTxt, setPostTxt] = useState('');
+  const [postImg, setPostImg] = useState([]);
+  const [mimeType, setmimeType] = useState([]);
+  const [postTitle, setPostTitle] = useState('');
+  const [postDesc, setPostDesc] = useState('');
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -50,42 +58,42 @@ export default function AdminExclusivePost({ navigation }) {
     {
       isImage == strings.exclusive.image
         ? ImageCropPicker.openPicker({
-            width: 300,
-            height: 400,
-            mediaType: strings.exclusive.image,
-            multiple: true,
-          })
-            .then(images => {
-              images.forEach(item => {
-                imageArray.push({
-                  id: nextId++,
-                  image: item.path,
-                  video: null,
-                });
-                setModalVisible(!isModalVisible);
-              });
-            })
-            .catch(e => {
-              console.log('Error: ' + e);
-            })
-        : ImageCropPicker.openPicker({
-            width: 300,
-            height: 400,
-            mediaType: strings.exclusive.video,
-            multiple: true,
-            loadingLabelText: 'loading',
-          })
-            .then(video => {
+          width: 300,
+          height: 400,
+          mediaType: strings.exclusive.image,
+          multiple: true,
+        })
+          .then(images => {
+            images.forEach(item => {
               imageArray.push({
                 id: nextId++,
-                image: null,
-                video: video.path,
+                image: item.path,
+                video: null,
               });
               setModalVisible(!isModalVisible);
-            })
-            .catch(e => {
-              console.log('Error: ' + e);
             });
+          })
+          .catch(e => {
+            console.log('Error: ' + e);
+          })
+        : ImageCropPicker.openPicker({
+          width: 300,
+          height: 400,
+          mediaType: strings.exclusive.video,
+          multiple: true,
+          loadingLabelText: 'loading',
+        })
+          .then(video => {
+            imageArray.push({
+              id: nextId++,
+              image: null,
+              video: video.path,
+            });
+            setModalVisible(!isModalVisible);
+          })
+          .catch(e => {
+            console.log('Error: ' + e);
+          });
     }
   };
 
@@ -93,40 +101,53 @@ export default function AdminExclusivePost({ navigation }) {
     {
       isImage == strings.exclusive.image
         ? ImageCropPicker.openCamera({
-            width: 300,
-            height: 400,
-            cropping: false,
-          })
-            .then(image => {
-              imageArray.push({
-                id: nextId++,
-                image: image.path,
-                video: null,
-              });
-              setModalVisible(!isModalVisible);
-            })
-            .catch(e => {
-              console.log('Error: ' + e);
-            })
-        : ImageCropPicker.openCamera({
-            width: 300,
-            height: 400,
-            cropping: false,
-            mediaType: strings.exclusive.video,
-          })
-            .then(image => {
-              imageArray.push({
-                id: nextId++,
-                image: null,
-                video: image.path,
-              });
-              setModalVisible(!isModalVisible);
-            })
-            .catch(e => {
-              console.log('Error: ' + e);
+          width: 300,
+          height: 400,
+          cropping: false,
+        })
+          .then(image => {
+            imageArray.push({
+              id: nextId++,
+              image: image.path,
+              video: null,
             });
+            setModalVisible(!isModalVisible);
+          })
+          .catch(e => {
+            console.log('Error: ' + e);
+          })
+        : ImageCropPicker.openCamera({
+          width: 300,
+          height: 400,
+          cropping: false,
+          mediaType: strings.exclusive.video,
+        })
+          .then(image => {
+            imageArray.push({
+              id: nextId++,
+              image: null,
+              video: image.path,
+            });
+            setModalVisible(!isModalVisible);
+          })
+          .catch(e => {
+            console.log('Error: ' + e);
+          });
     }
   };
+
+  const validation = () => {
+
+    const params = {
+      userId: user?.id,
+      postTitle: postTitle,
+      postBody: postDesc,
+      imageArray: imageArray,
+
+    }
+
+    navigation.navigate(NAVIGATION.adminPostOption, { prevData: params })
+  }
   return (
     <SafeAreaView style={styles.contianer}>
       <View style={styles.header}>
@@ -145,25 +166,27 @@ export default function AdminExclusivePost({ navigation }) {
           </View>
           <View style={styles.TextBox}>
             <TextInput
+              // value={postTitle}
               style={styles.InputTextBox}
               multiline={true}
               placeholder={strings.exclusive.titleHere}
-              onChangeText={val => setPostTxt(val)}
+              onChangeText={val => setPostTitle(val)}
             >
               <Text style={[TextStyles.text, styles.titleTextBox]}>
-                {Data.title}
+                {postTitle}
               </Text>
             </TextInput>
           </View>
           <View style={styles.TextBoxDEsc}>
             <TextInput
+              // value={postDesc}
               style={styles.InputTextBoxDEsc}
               multiline={true}
               placeholder={strings.exclusive.whatOnYourMind}
-              onChangeText={val => setPostTxt(val)}
+              onChangeText={val => setPostDesc(val)}
             >
               <Text style={[TextStyles.text, styles.TextBoxDEscDesign]}>
-                {Data.desc}
+                {postDesc}
               </Text>
             </TextInput>
           </View>
@@ -193,10 +216,10 @@ export default function AdminExclusivePost({ navigation }) {
 
         <Button
           title={strings.exclusive.next}
-          disabled={postTxt.length ? false : true}
-          opacity={postTxt.length ? 1 : 0.4}
+          disabled={postDesc.length ? false : true}
+          opacity={postDesc.length ? 1 : 0.4}
           style={styles.exclusivePostButton}
-          onPress={() => navigation.navigate(NAVIGATION.adminPostOption)}
+          onPress={validation}
         />
       </View>
 

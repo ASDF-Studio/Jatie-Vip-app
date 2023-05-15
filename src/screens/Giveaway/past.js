@@ -52,14 +52,14 @@ export default function Past({ navigation }) {
     <SafeAreaView>
       <FlatList
         data={getdataOfPast?.data || []}
-        key={props => props.id}
+        key={props => props?.id}
         renderItem={({ item }) => (
           <View style={styles.cardContainer}>
             <Card>
               <View>
-                <Text style={styles.title}>{item.postTitle} </Text>
+                <Text style={styles.title}>{item?.postTitle} </Text>
               </View>
-              <CardBody text={item.postBody} />
+              <CardBody text={item?.postBody} />
 
 
               {/* {item.winner.map(item => {

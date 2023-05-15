@@ -76,7 +76,7 @@ export function Home({ navigation }) {
   const userType = useSelector(state => state.userType);
   const user = useSelector(getUser);
 
-
+  console.log("COLLELLEL", JSON.stringify(ALLPOST?.data));
   const dispatch = useDispatch()
   const [vipArea, setVipArea] = useState(strings.home.vipArea);
   const [open, setOpen] = useState(false);

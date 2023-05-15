@@ -142,7 +142,8 @@ export default function PostDetails({ navigation, route }) {
                     </TouchableOpacity>
                   </View>
                   <View style={styles.termsAndConsition}>
-                    {termsAndCondition(strings.giveaway.onlyUS)}
+                    {/* for US users only */}
+                    {/* {termsAndCondition(strings.giveaway.onlyUS)} */}
                   </View>
                 </View>
               </View>

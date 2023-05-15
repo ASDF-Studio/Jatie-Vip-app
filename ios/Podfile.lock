@@ -1162,26 +1162,26 @@ PODS:
     - React-RCTText
   - ReactNativeLocalization (2.3.1):
     - React-Core
-  - RNBootSplash (4.6.0):
+  - RNBootSplash (4.7.1):
     - React-Core
   - RNCMaskedView (0.2.9):
     - React-Core
   - RNDateTimePicker (6.7.5):
     - React-Core
-  - RNFBApp (17.4.3):
+  - RNFBApp (17.5.0):
     - Firebase/CoreOnly (= 10.7.0)
     - React-Core
-  - RNFBDynamicLinks (17.4.3):
+  - RNFBDynamicLinks (17.5.0):
     - Firebase/DynamicLinks (= 10.7.0)
     - GoogleUtilities/AppDelegateSwizzler
     - React-Core
     - RNFBApp
-  - RNFBFirestore (17.4.3):
+  - RNFBFirestore (17.5.0):
     - Firebase/Firestore (= 10.7.0)
     - nanopb (< 2.30910.0, >= 2.30908.0)
     - React-Core
     - RNFBApp
-  - RNGestureHandler (2.9.0):
+  - RNGestureHandler (2.10.0):
     - React-Core
   - RNImageCropPicker (0.39.0):
     - React-Core
@@ -1222,16 +1222,16 @@ PODS:
   - RNScreens (3.20.0):
     - React-Core
     - React-RCTImage
-  - RNSentry (5.4.0):
+  - RNSentry (5.4.2):
     - React-Core
-    - Sentry/HybridSDK (= 8.5.0)
+    - Sentry/HybridSDK (= 8.6.0)
   - RNShare (8.2.2):
     - React-Core
   - RNSVG (13.9.0):
     - React-Core
-  - Sentry/HybridSDK (8.5.0):
-    - SentryPrivate (= 8.5.0)
-  - SentryPrivate (8.5.0)
+  - Sentry/HybridSDK (8.6.0):
+    - SentryPrivate (= 8.6.0)
+  - SentryPrivate (8.6.0)
   - SocketRocket (0.6.0)
   - TOCropViewController (2.5.3)
   - Yoga (1.14.0)
@@ -1547,21 +1547,21 @@ SPEC CHECKSUMS:
   ReactCommon: 8f67bd7e0a6afade0f20718f859dc8c2275f2e83
   ReactNativeKeyboardManager: 30ef68551383d86d3ae044afc3d29f12629ec60b
   ReactNativeLocalization: 076497d7ca70341c751cd3b3e7c86187332a182d
-  RNBootSplash: 91e0c16bfc96703cb5b0562785b9a8cbfeb298fe
+  RNBootSplash: 3f3f7f82efe2addbfe7ddeda20877ff4d579cd81
   RNCMaskedView: 949696f25ec596bfc697fc88e6f95cf0c79669b6
   RNDateTimePicker: 65e1d202799460b286ff5e741d8baf54695e8abd
-  RNFBApp: e8a35f0ef545dfa1be1f09411ea2078f870a9089
-  RNFBDynamicLinks: e2ff7ec9273edc97d90dc39ce5c51ee885f030b0
-  RNFBFirestore: 7ea903241b28f46edcb04b4cc35054e58ee2fa29
-  RNGestureHandler: 071d7a9ad81e8b83fe7663b303d132406a7d8f39
+  RNFBApp: 0d8bf86673bbad0524d1ceac3944d71ccf48a0e4
+  RNFBDynamicLinks: 8cdcc0425d0b636ff079b4220785eb1132c24228
+  RNFBFirestore: f16efbd47cd136fe84cb93dc87ad4155807db221
+  RNGestureHandler: e145476da655f3dbc48ef2f0a08cf7a34338c02b
   RNImageCropPicker: 14fe1c29298fb4018f3186f455c475ab107da332
   RNReanimated: c6f8f70e96dd6ca21b65aef9b3e4efe4965db905
   RNScreens: 218801c16a2782546d30bd2026bb625c0302d70f
-  RNSentry: 3c8dff994d317f98fc073a9ba85d2d8da3868353
+  RNSentry: 22c627982da1d2726f038a7393ff7000233e9a69
   RNShare: d82e10f6b7677f4b0048c23709bd04098d5aee6c
   RNSVG: 53c661b76829783cdaf9b7a57258f3d3b4c28315
-  Sentry: 3be3f42e40e5a552935552e115744d5810a216d9
-  SentryPrivate: 8c9463280e282527f938d1a5d1d60f8e10ff279b
+  Sentry: d80553ff85ea72def75b792aaa5a71c158e51595
+  SentryPrivate: ef1c5b3dfe44ec0c70e2eb343a5be2689164c021
   SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
   TOCropViewController: 20a14b6a7a098308bf369e7c8d700dc983a974e6
   Yoga: ff994563b2fd98c982ca58e8cd9db2cdaf4dda74

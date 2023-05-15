@@ -70,6 +70,7 @@ export default function AdminPostOption({ navigation, route }) {
               {/* Date picker  */}
               <View>
                 <TextField
+
                   style={styles.rightTextFild}
                   editable={false}
                   value={moment(postDate).format('MM-D-YYYY')}

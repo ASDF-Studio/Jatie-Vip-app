@@ -40,6 +40,7 @@ import { navigationRef } from '@/navigation/RootNavigation';
 // import { useIsFocused } from '@react-navigation/native';
 import { UserController } from '@/controllers';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
+import { getAllPost } from '@/actions/PostActions';
 
 let nextId = 100;
 let preNextId = 100;
@@ -273,6 +274,7 @@ export default function UpdatePost({ route, navigation }) {
           // console.log("DATA", DATA)
         )
       }
+      dispatch(getAllPost(user?.id, strings.sortBy.recent, false))
       {
         userType.user == strings.userType.admin && (
           navigationRef.navigate(NAVIGATION.postOptions, {

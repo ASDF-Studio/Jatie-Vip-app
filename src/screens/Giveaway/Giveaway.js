@@ -41,15 +41,6 @@ export function Giveaway({ navigation }) {
 
 
 
-
-  // useEffect(() => {
-
-  //   console.log('use effect call')
-
-  //   { status == strings?.giveaway?.active ? getactiveData() : getPastData() }
-
-  // }, [focus])
-
   const getactiveData = () => {
     const data = {
       userId: user?.id,
@@ -76,14 +67,6 @@ export function Giveaway({ navigation }) {
       <View style={styles.headerContainer}>
         <View style={styles.headerImageContainer}>
           <Logo />
-
-          <TouchableOpacity onPress={getactiveData}>
-            <Text>Active data</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={getPastData}>
-            <Text>Past data</Text>
-          </TouchableOpacity>
           <View>
             <Text style={[TextStyles.header, styles.headerDesign]}>
               {strings.giveaway.header}
@@ -121,23 +104,20 @@ export function Giveaway({ navigation }) {
         setStatus={setStatus}
 
       />
-      {/* <ActivePastNavigator
-        key1={strings?.giveaway?.past}
-
-        key2={strings?.giveaway?.active}
-        onpressPast={getPastData}
-        onPressActive={getactiveData}
-        status={status}
-        setStatus={setStatus}
-      /> */}
 
       <HorizontalLine />
 
 
       <View style={styles.feedContainer}>
-        {status == `${strings.giveaway.active}`
-          ? Active({ navigation, userType, user })
-          : Past({ navigation, userType, user })}
+        {status == strings.giveaway.active
+          ? <Active
+            navigation={navigation}
+            userType={userType}
+            user={user}
+          />
+          : <Past navigation={navigation}
+            userType={userType}
+            user={user} />}
       </View>
 
 

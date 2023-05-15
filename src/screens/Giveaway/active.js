@@ -47,9 +47,6 @@ export default function Active({ navigation, userType }) {
     const data = {
       userId: user?.id,
     }
-
-
-
     dispatch(getAllActiveGiveaway(data))
   }
 
