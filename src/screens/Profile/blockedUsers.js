@@ -23,9 +23,23 @@ import { strings } from '@/localization';
 import { ms } from 'react-native-size-matters';
 import { FontFamily } from '@/theme/Fonts';
 import { Data } from './ProfileData/blockedUsersData';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUser } from '@/selectors/UserSelectors';
+import { blockUsersList } from '@/actions/UserActions';
 
 export default function BlockedUsers({ navigation }) {
   const [open, setOpen] = useState(false);
+  const dispatch = useDispatch()
+
+  //Selector Usage
+  const user = useSelector(getUser)
+  const blockListData = user.blockListKey
+
+
+  useEffect(() => {
+    dispatch(blockUsersList(user?.id))
+  }, []);
   return (
     <SafeAreaView style={styles.container}>
       <TopBackButton
@@ -39,11 +53,11 @@ export default function BlockedUsers({ navigation }) {
       <HorizontalLine
         color={theme.light.colors.primaryBg}
         paddingTop={15}
-        // paddingBottom={8}
+      // paddingBottom={8}
       />
       <View>
         <FlatList
-          data={Data}
+          data={blockListData.data}
           key={props => props.id}
           initialNumToRender={10}
           contentContainerStyle={styles.contentContainerStyle}
@@ -56,12 +70,12 @@ export default function BlockedUsers({ navigation }) {
                   onPress={() => navigation.navigate(NAVIGATION.userProfile)}
                 >
                   <Image
-                    source={{ uri: item.image }}
+                    source={{ uri: item.userByBlockeduser.profilePic }}
                     style={styles.profileImage}
                   />
                   <View style={styles.nameContainer}>
-                    <Text style={styles.nameTxt}> {item.name}</Text>
-                    <Text style={styles.userNameTxt}> {item.userName} </Text>
+                    <Text style={styles.nameTxt}> {item.userByBlockeduser.fullName}</Text>
+                    <Text style={styles.userNameTxt}> {item.userByBlockeduser.username} </Text>
                   </View>
                 </TouchableOpacity>
                 <Icon
@@ -82,7 +96,7 @@ export default function BlockedUsers({ navigation }) {
             icon={faCheck}
             iconColor={theme.light.colors.secondary}
             iconBg={theme.light.colors.infoBgLight}
-            // onPress = {()=> Alert.alert("blocked")}
+          // onPress = {()=> Alert.alert("blocked")}
           />
         </ModalDown>
       )}

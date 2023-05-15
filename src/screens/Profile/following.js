@@ -23,9 +23,19 @@ import { strings } from '@/localization';
 import { ms } from 'react-native-size-matters';
 import { FontFamily } from '@/theme/Fonts';
 import { Data } from './ProfileData/followingData';
+import { followers } from '@/actions/UserActions';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUser } from '@/selectors/UserSelectors';
+import { useEffect } from 'react';
 
 export default function Following({ navigation }) {
+  const dispatch = useDispatch()
+
   const [open, setOpen] = useState(false);
+  const user = useSelector(getUser)
+  useEffect(() => {
+    dispatch(followers(user?.id))
+  }, []);
   return (
     <SafeAreaView style={styles.container}>
       <TopBackButton
@@ -81,14 +91,14 @@ export default function Following({ navigation }) {
           icon={faUserMinus}
           iconColor={theme.light.colors.primary}
           iconBg={theme.light.colors.primaryBgLight}
-          // onPress = {()=> Alert.alert("follow")}
+        // onPress = {()=> Alert.alert("follow")}
         />
         <ModalList
           title={strings.profile.sendPrivateMessage}
           icon={faMessage}
           iconColor={theme.light.colors.success}
           iconBg={theme.light.colors.successBgLight}
-          // onPress = {()=> Alert.alert("message")}
+        // onPress = {()=> Alert.alert("message")}
         />
         <HorizontalLine
           color={theme.light.colors.infoBgLight}
@@ -100,14 +110,14 @@ export default function Following({ navigation }) {
           icon={faFlag}
           iconColor={theme.light.colors.secondary}
           iconBg={theme.light.colors.infoBgLight}
-          // onPress = {()=> Alert.alert("report")}
+        // onPress = {()=> Alert.alert("report")}
         />
         <ModalList
           title={strings.profile.block + strings.home.DummyUser}
           icon={faXmark}
           iconColor={theme.light.colors.secondary}
           iconBg={theme.light.colors.infoBgLight}
-          // onPress = {()=> Alert.alert("blocked")}
+        // onPress = {()=> Alert.alert("blocked")}
         />
       </ModalDown>
     </SafeAreaView>

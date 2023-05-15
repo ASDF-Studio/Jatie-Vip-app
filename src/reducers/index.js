@@ -11,4 +11,5 @@ export const rootReducer = combineReducers({
   user: userReducer,
   post: postReducer,
   userType: StatusReducer,
+
 });

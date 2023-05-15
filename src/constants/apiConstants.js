@@ -60,6 +60,11 @@ export const API_END_POINTS = {
     SEARCH_USER_BY_USERNAME: 'user/search',
 
     //Get user profile by user id
-    GET_USER_PROFILE_BY_USER_ID: 'user/user_by_userId'
+    GET_USER_PROFILE_BY_USER_ID: 'user/user_by_userId',
 
+    //Followers endPoint
+    FOLLOWERS: 'user/get_follower_list',
+
+    //BLOCK_LIST_ENDPOINT
+    BLOCK_LIST: 'user/blocklist_by_userId'
 };

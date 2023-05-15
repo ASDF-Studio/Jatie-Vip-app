@@ -23,9 +23,27 @@ import { strings } from '@/localization';
 import { ms } from 'react-native-size-matters';
 import { FontFamily } from '@/theme/Fonts';
 import { Data } from './ProfileData/followersData';
+import { getAllPost } from '@/actions/PostActions';
+import { useDispatch, useSelector } from 'react-redux';
+import { followers_FollowingData, getUser } from '@/selectors/UserSelectors';
+import { followers } from '@/actions/UserActions';
+import { useEffect } from 'react';
 
 export default function Followers({ navigation }) {
+  const dispatch = useDispatch()
+
   const [open, setOpen] = useState(false);
+
+  //Selector Usage
+  const user = useSelector(getUser)
+  const followerDataa = useSelector(getUser)
+
+  console.log('selector data', JSON.stringify(user?.followersDatainReducer))
+
+  useEffect(() => {
+    dispatch(followers(user?.id))
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <TopBackButton
@@ -39,7 +57,7 @@ export default function Followers({ navigation }) {
       <HorizontalLine color={theme.light.colors.primaryBg} paddingTop={8} />
       <View>
         <FlatList
-          data={Data}
+          //  data={followerData?.data?.follower_List}
           key={props => props.id}
           initialNumToRender={10}
           contentContainerStyle={styles.contentContainerStyle}
@@ -56,7 +74,7 @@ export default function Followers({ navigation }) {
                     style={styles.profileImage}
                   />
                   <View style={styles.nameContainer}>
-                    <Text style={styles.nameTxt}> {item.name} </Text>
+                    <Text style={styles.nameTxt}> {item.user.fullName} </Text>
                     <Text> {item.userName} </Text>
                   </View>
                 </TouchableOpacity>
@@ -83,7 +101,7 @@ export default function Followers({ navigation }) {
           icon={faMessage}
           iconColor={theme.light.colors.success}
           iconBg={theme.light.colors.successBgLight}
-          // onPress = {()=> Alert.alert("message")}
+        // onPress = {()=> Alert.alert("message")}
         />
         <HorizontalLine
           color={theme.light.colors.infoBgLight}
@@ -95,14 +113,14 @@ export default function Followers({ navigation }) {
           icon={faFlag}
           iconColor={theme.light.colors.secondary}
           iconBg={theme.light.colors.infoBgLight}
-          // onPress = {()=> Alert.alert("report")}
+        // onPress = {()=> Alert.alert("report")}
         />
         <ModalList
           title={strings.operations.block + strings.home.DummyUser}
           icon={faXmark}
           iconColor={theme.light.colors.secondary}
           iconBg={theme.light.colors.infoBgLight}
-          // onPress = {()=> Alert.alert("blocked")}
+        // onPress = {()=> Alert.alert("blocked")}
         />
       </ModalDown>
     </SafeAreaView>

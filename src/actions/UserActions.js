@@ -81,6 +81,17 @@ export const TYPES = {
   GET_ALL_POST_BY_LOGGED_IN_USER_SUCCESS: "GET_ALL_POST_BY_LOGGED_IN_USER_SUCCESS",
   GET_ALL_POST_BY_LOGGED_IN_USER_ERROR: "GET_ALL_POST_BY_LOGGED_IN_USER_ERROR",
 
+  //Followers
+  FOLLOWERS: "FOLLOWERS",
+  FOLLOWERS_REQUEST: "FOLLOWERS_REQUEST",
+  FOLLOWERS_SUCCESS: "FOLLOWERS_SUCCESS",
+  FOLLOWERS_ERROR: "FOLLOWERS_ERROR",
+
+  //BLOCK_USERS
+  BLOCK_LIST: "BLOCK_LIST",
+  BLOCK_LIST_REQUEST: "BLOCK_LIST_REQUEST",
+  BLOCK_LIST_SUCCESSS: "BLOCK_LIST_SUCCESSS",
+  BLOCK_LIST_ERROR: "BLOCK_LIST_ERROR",
 };
 
 const loginRequest = () => ({
@@ -173,6 +184,7 @@ const followUserRequest = () => ({
   type: TYPES.FOLLOW_USER_REQUEST,
   payload: null,
 });
+
 
 const followUserError = error => ({
   type: TYPES.FOLLOW_USER_ERROR,
@@ -280,10 +292,46 @@ const getUserProfileByUserIdError = error => ({
   payload: { error },
 });
 
+
+//FollowersListDAta
+export const followersSuccess = user => ({
+  type: TYPES.FOLLOWERS_SUCCESS,
+  payload: { user },
+});
+
+const followersRequest = () => ({
+  type: TYPES.FOLLOWERS_REQUEST,
+  payload: null,
+});
+
+const followersError = error => ({
+  type: TYPES.FOLLOWERS_ERROR,
+  payload: { error },
+});
+
+
+//Clear store
 const clearStore = () => ({
   type: TYPES.CLEAR_STORE,
   payload: null,
 });
+
+//BloclListData
+export const blocklistSuccess = user => ({
+  type: TYPES.BLOCK_LIST_SUCCESSS,
+  payload: { user },
+});
+
+const blockListRequest = () => ({
+  type: TYPES.BLOCK_LIST_REQUEST,
+  payload: null,
+});
+
+const blockListError = error => ({
+  type: TYPES.BLOCK_LIST_ERROR,
+  payload: { error },
+});
+
 
 export const login = (number) => async dispatch => {
   dispatch(globalReset())
@@ -611,3 +659,31 @@ export const ChooseUser = (data) => {
     }
   }
 }
+
+
+//followers 
+export const followers = (userId) => async dispatch => {
+  dispatch(followersRequest());
+  try {
+    const user = await UserController.followersList(userId);
+    dispatch(followersSuccess(user))
+
+  } catch (error) {
+    dispatch(followersError(error))
+  }
+
+};
+
+//Blocked Users
+
+export const blockUsersList = (userId) => async dispatch => {
+  dispatch(blockListRequest());
+  try {
+    const user = await UserController.BlockListRequest(userId);
+    dispatch(blocklistSuccess(user))
+
+  } catch (error) {
+    dispatch(blockListError(error))
+  }
+
+};

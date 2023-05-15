@@ -447,6 +447,44 @@ export class UserController {
     });
   }
 
+  static async followersList(userId) {
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.FOLLOWERS;
+      var data = JSON.stringify({
+        "id": userId
+      });
+      HttpClient.post(endpoint, data)
+        .then((response) => {
+
+          resolve(response);
+          console.log('response of followers list', JSON.stringify(response))
+        })
+        .catch((error) => {
+          console.log('error in folloowers list', error)
+          reject(new Error(error.message));
+        });
+    });
+  }
+
+  static async BlockListRequest(userId) {
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.BLOCK_LIST;
+      var data = JSON.stringify({
+        "id": userId
+      });
+      HttpClient.post(endpoint, data)
+        .then((response) => {
+
+          resolve(response);
+          console.log('response of block list', JSON.stringify(response))
+        })
+        .catch((error) => {
+          console.log('error in block list', error)
+          reject(new Error(error.message));
+        });
+    });
+  }
+
   static async logout() {
     return new Promise(resolve => {
       setTimeout(resolve, 500);

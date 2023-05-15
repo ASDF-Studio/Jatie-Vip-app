@@ -14,6 +14,10 @@ export const userReducer = (state = {}, { payload, type }) => {
       return { ...state, getUserByUserId: payload.user };
     case TYPES.GET_ALL_POST_BY_LOGGED_IN_USER_SUCCESS:
       return { ...state, getAllPostsByLoggedInUser: payload.post };
+    case TYPES.FOLLOWERS_SUCCESS:
+      return { ...state, followersDatainReducer: payload.user };
+    case TYPES.BLOCK_LIST_SUCCESSS:
+      return { ...state, blockListKey: payload.user };
     case TYPES.CLEAR_STORE:
       return {};
     default:
