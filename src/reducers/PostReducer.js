@@ -122,6 +122,18 @@ export const postReducer = (state = {}, { payload, type }) => {
     case TYPES.SEARCH_USER_BY_USERNAME_SUCCESS:
       return { ...state, searchedUsers: payload.users };
 
+    case TYPES.GET_ACTIVE_GIVEAWAY_SUCCESS:
+
+      return {
+        ...state,
+        ...payload.user
+
+      }
+    case TYPES.GET_PAST_GIVEAWAY_SUCCESS:
+      return {
+        ...state,
+        ...payload.user
+      }
     case TYPES.CLEAR_STORE:
       return {};
     default:

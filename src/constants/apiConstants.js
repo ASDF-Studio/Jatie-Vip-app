@@ -60,6 +60,26 @@ export const API_END_POINTS = {
     SEARCH_USER_BY_USERNAME: 'user/search',
 
     //Get user profile by user id
-    GET_USER_PROFILE_BY_USER_ID: 'user/user_by_userId'
+    GET_USER_PROFILE_BY_USER_ID: 'user/user_by_userId',
 
+
+    // GiveAway Post 
+    GIVE_AWAY_POST_ENDPOINT: 'giveaway/create',
+
+
+    // Active giveaway get
+    GET_ACTIVE_GIVEAWAY: 'giveaway/all_giveaway_active',
+
+    //past giveaway get 
+    GET_PAST_GIVEAWAY: 'giveaway/all_giveaway_past',
+
+
+    //join giveaway 
+
+    JOIN_GIVEAWAY: 'giveaway/join',
+
+
+    //With Draw End Point
+
+    WITH_DRAW: 'giveaway/withdraw',
 };
