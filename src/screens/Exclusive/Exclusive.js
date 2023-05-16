@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Image,
   Text,
@@ -11,8 +11,10 @@ import {
 import { styles } from '@/screens/Exclusive/Exclusive.styles';
 import { TextStyles, theme } from '@/theme';
 import {
+  AppImageViewer,
   Card,
   CardHeader,
+  CustomLoader,
   HorizontalLine,
   Icon,
   ModalDown,
@@ -32,24 +34,50 @@ import { faBell } from '@fortawesome/free-regular-svg-icons';
 import { NAVIGATION } from '@/constants';
 import { Logo } from '@/assets';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ms, vs } from 'react-native-size-matters';
 import { strings } from '@/localization';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Data } from './exclusiveData/exclusiveData';
 import { faSearch } from '@fortawesome/pro-regular-svg-icons';
+import { useIsFocused } from '@react-navigation/native';
+import { getAllExclusivePost, TYPES } from '@/actions/PostActions';
+import { getUser } from '@/selectors/UserSelectors';
+import { isLoadingSelector } from '@/selectors/StatusSelectors';
+import { getAllExclusiveData } from '@/selectors/PostSelectors';
 
 export function Exclusive({ navigation }) {
+  const dispatch = useDispatch()
+  const focus = useIsFocused()
+  const user = useSelector(getUser);
+  const exclusiveData = useSelector(getAllExclusiveData);
+
+  const isLoading = useSelector(state =>
+    isLoadingSelector([TYPES.GET_ALL_EXCLUSIVE_POST], state)
+  );
   const [open, setOpen] = useState(false);
   const userType = useSelector(state => state.userType);
+  const [showImageView, setShowImageView] = useState(false);
+  const [feedImages, setFeedImages] = useState([]);
   const [recentFilterOpen, setRecentFilterOpen] = useState(false);
   const [sortBy, setSortBy] = useState(strings.sortBy.recent);
-
+  const [postData, setPostData] = useState({});
+  let counter = 1;
   const CheckIcon = (
     <FontAwesomeIcon icon={faCheck} color={theme.light.colors.primary} />
   );
-
+  useEffect(() => {
+    const data = {
+      userId: user?.id,
+    }
+    dispatch(getAllExclusivePost(data))
+  }, [])
+  const onEditPost = () => {
+    setOpen(false)
+    // navigation.navigate(NAVIGATION.exclusiveThumbnail)
+    navigation.navigate(NAVIGATION.updateExclusivepost, { "DATA": postData })
+  }
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
@@ -75,7 +103,7 @@ export function Exclusive({ navigation }) {
             </TouchableOpacity>
           </View>
         </View>
-
+        <CustomLoader open={isLoading} />
         <View style={styles.iconContiner}>
           <Icon
             icon={faSearch}
@@ -183,17 +211,20 @@ export function Exclusive({ navigation }) {
 
       <View style={styles.feedContainer}>
         <FlatList
-          data={Data}
+          data={exclusiveData?.data || []}
+          // data={Data}
           key={props => props.id}
           renderItem={({ item }) => (
-            <View style={styles.cardContainer}>
+            <TouchableOpacity
+              onPress={() => { navigation.navigate(NAVIGATION.exclusiveThumbnail, { "DATA": item }) }}
+              style={styles.cardContainer}>
               <Card>
                 <View style={styles.editContainer}>
                   <View style={styles.CardHeaderContainer}>
                     <CardHeader
-                      fullName={item.fullName}
-                      userName={item.userName}
-                      profilePic={item.profilePic}
+                      fullName={item?.user?.fullName}
+                      userName={item?.user?.username}
+                      profilePic={item?.user?.profilePic}
                       isOfficial={true}
                     />
                   </View>
@@ -206,7 +237,7 @@ export function Exclusive({ navigation }) {
                       <Icon
                         icon={faEllipsis}
                         size={ms(15)}
-                        onPress={() => setOpen(true)}
+                        onPress={() => { setOpen(true), setPostData(item) }}
                         style={[styles.icon, styles.ellipsisIconColor]}
                       />
                     )}
@@ -214,17 +245,19 @@ export function Exclusive({ navigation }) {
                 </View>
                 {/* <CardBody text={item.text}/> */}
                 <View style={styles.fullNameTxtContainer}>
-                  <Text style={styles.fullNameTxt}>{item.text}</Text>
+                  <Text style={styles.fullNameTxt}>{item.postBody}</Text>
                 </View>
-                <View style={styles.thumbnailContainer}>
-                  <TouchableOpacity
+                {item?.postImg?.length > 0 &&
+                  <View style={styles.thumbnailContainer}>
+                    {/* Vip only */}
+                    {/* <TouchableOpacity
                     onPress={() =>
                       navigation.navigate(NAVIGATION.exclusiveThumbnail)
                     }
                   >
-                    {/* VIP only */}
+                
                     {userType.user == `${strings.userType.free}` &&
-                    item.status == `${strings.userType.free}` ? (
+                      item.status == `${strings.userType.free}` ? (
                       <View>
                         <Image
                           blurRadius={15}
@@ -266,15 +299,105 @@ export function Exclusive({ navigation }) {
                         </View>
                       </View>
                     )}
-                  </TouchableOpacity>
-                </View>
+                  </TouchableOpacity> */}
+                    <>
+                      {item?.postImg?.length <= 2 ? (
+                        <View style={styles.imageContainer}>
+                          {item?.postImg?.map(data => (
+                            counter = counter + 1,
+                            <TouchableOpacity
+                              key={counter}
+                              style={styles.touchContainer}
+                              onPress={() => {
+                                // setShowImageView(true),
+                                //   setFeedImages(item.postImg)
+                                navigation.navigate(NAVIGATION.exclusiveThumbnail, { "DATA": item })
+                              }}
+                            >
+                              <Image
+                                source={{
+                                  uri: data,
+                                }}
+                                style={styles.image}
+                              />
+                            </TouchableOpacity>
+                          ))}
+                        </View>
+                      ) : item?.postImg?.length > 2 ? (
+                        counter = 1,
+                        <View style={styles.imageContainer}>
+                          {item?.postImg?.map(data =>
+                            counter == 1 ? (
+                              counter = counter + 1,
+                              <TouchableOpacity
+                                key={counter}
+                                style={styles.touchContainer}
+                                onPress={() => {
+                                  navigation.navigate(NAVIGATION.exclusiveThumbnail, { "DATA": item })
+
+                                  // setShowImageView(true),
+                                  //   setFeedImages(item.postImg);
+                                  // console.log(feedImages)
+                                }}
+                              >
+                                <Image
+                                  source={{
+                                    uri: data,
+                                  }}
+                                  key={counter}
+                                  style={styles.image}
+                                />
+                              </TouchableOpacity>
+                            ) : counter == 2 ? (
+                              counter = counter + 1,
+                              <TouchableOpacity
+                                key={counter}
+                                style={styles.touchContainer}
+                                onPress={() => {
+                                  navigation.navigate(NAVIGATION.exclusiveThumbnail, { "DATA": item })
+
+                                  // setShowImageView(true),
+                                  //   setFeedImages(item.postImg);
+                                }}
+                              >
+                                <ImageBackground
+                                  source={{
+                                    uri: data,
+                                  }}
+                                  key={counter}
+                                  style={[styles.image, styles.moreImage]}
+                                >
+                                  <TouchableOpacity
+                                    onPress={() => {
+                                      navigation.navigate(NAVIGATION.exclusiveThumbnail, { "DATA": item })
+
+                                      // setShowImageView(true),
+                                      //   setFeedImages(item.postImg);
+                                    }}
+                                  >
+                                    <Text style={styles.extraImage}>
+                                      {strings.message.plus}
+                                      {item?.postImg?.length - 1}
+                                    </Text>
+                                  </TouchableOpacity>
+                                </ImageBackground>
+                              </TouchableOpacity>
+                            ) : null
+                          )}
+                        </View>
+                      ) : null}
+                    </>
+                  </View>
+                }
+
               </Card>
-            </View>
+            </TouchableOpacity>
           )}
         />
         {/* Admin */}
         <ModalDown open={open} setOpen={setOpen}>
           <ModalList
+            onPress={() => { onEditPost() }}
             title={strings.operations.edit}
             icon={faPen}
             iconBg={theme.light.colors.infoBgLight}
@@ -290,7 +413,13 @@ export function Exclusive({ navigation }) {
       </View>
 
       {/* Admin Button */}
-
+      {showImageView && (
+        <AppImageViewer
+          visible={showImageView}
+          setVisible={() => setShowImageView(false)}
+          images={feedImages}
+        />
+      )}
       {userType.user == `${strings.userType.admin}` && (
         <TouchableOpacity
           onPress={() => navigation.navigate(NAVIGATION.adminExclusivePost)}

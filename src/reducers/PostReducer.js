@@ -134,6 +134,16 @@ export const postReducer = (state = {}, { payload, type }) => {
         ...state,
         ...payload.user
       }
+    case TYPES.GET_ALL_EXCLUSIVE_POST_SUCCESS:
+      return {
+        ...state,
+        exclusivePost: payload.post
+      }
+    case TYPES.GET_ALL_EXCLUSIVE_POST_BY_ID_SUCCESS:
+      return {
+        ...state,
+        exclusiveSinglePost: payload.post.data
+      }
     case TYPES.CLEAR_STORE:
       return {};
     default:

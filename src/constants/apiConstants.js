@@ -82,4 +82,13 @@ export const API_END_POINTS = {
     //With Draw End Point
 
     WITH_DRAW: 'giveaway/withdraw',
+
+    // exclusive post
+
+    CREATE_EXCLUSIVE_POST: 'exclusive/create',
+    GET_EXCLUSIVE_POST: 'exclusive/all_exclusive',
+    GET_EXCLUSIVE_POST_BY_ID: 'exclusive/single_exclusive',
+    DELETE_EXCLUSIVE_POST: 'exclusive/delete',
+    UPDATE_EXCLUSIVE_POST: 'exclusive/update',
+
 };

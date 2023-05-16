@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   StyleSheet,
   View,
@@ -7,15 +7,36 @@ import {
   Linking,
   ScrollView,
 } from 'react-native';
-import { AppVideoPlayer, Icon, TopBackButton } from '@/components';
+import { AppVideoPlayer, CustomLoader, Icon, TopBackButton } from '@/components';
 import { TextStyles, theme } from '@/theme';
 import { FontFamily } from '@/theme/Fonts';
 import { ms, vs } from 'react-native-size-matters';
 import { strings } from '@/localization';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Data, Info } from './exclusiveData/thumbnailData';
+import { useDispatch, useSelector } from 'react-redux';
+import { getExclusivePostById, TYPES } from '@/actions/PostActions';
+import { getUser } from '@/selectors/UserSelectors';
+import { getSingleExclusiveData } from '@/selectors/PostSelectors';
+import { isLoadingSelector } from '@/selectors/StatusSelectors';
 
-export default function Thubmnail({ navigation }) {
+export default function Thubmnail({ navigation, route }) {
+  const { DATA } = route.params
+  const dispatch = useDispatch()
+  const user = useSelector(getUser)
+  const exclusiveData = useSelector(getSingleExclusiveData)
+  console.log("SINGLE__DATA", exclusiveData);
+  useEffect(() => {
+    const data = {
+      postId: DATA?.id,
+      userId: user?.id
+    }
+    dispatch(getExclusivePostById(data))
+
+  }, [])
+  const isLoading = useSelector(state =>
+    isLoadingSelector([TYPES.GET_ALL_EXCLUSIVE_POST_BY_ID], state)
+  );
   return (
     <SafeAreaView style={styles.contianer}>
       <View style={styles.header}>
@@ -24,13 +45,16 @@ export default function Thubmnail({ navigation }) {
           {strings.exclusive.header}
         </Text>
       </View>
+      {/* <CustomLoader
+        open={isLoading}
+      /> */}
       <ScrollView>
         <View style={styles.postContainer}>
           <View style={styles.title}>
-            <Text style={[TextStyles.text, styles.titleText]}>{Data.text}</Text>
+            <Text style={[TextStyles.text, styles.titleText]}>{exclusiveData?.postTitle}</Text>
           </View>
 
-          {Data.video.map(item => {
+          {/* {Data.video.map(item => {
             if (item == null) {
               return;
             } else {
@@ -42,9 +66,9 @@ export default function Thubmnail({ navigation }) {
                 </View>
               );
             }
-          })}
+          })} */}
 
-          {Data.photo.map(item => {
+          {exclusiveData?.postImg.map(item => {
             if (item == null) {
               return;
             } else {
@@ -52,7 +76,7 @@ export default function Thubmnail({ navigation }) {
                 <View style={styles.photoContainer} key={item.pID}>
                   <Image
                     style={styles.photo}
-                    source={{ uri: item.photoLink }}
+                    source={{ uri: item }}
                   />
                 </View>
               );
@@ -61,7 +85,7 @@ export default function Thubmnail({ navigation }) {
 
           <View style={styles.description}>
             <Text style={[TextStyles.text, styles.descriptionText]}>
-              {Data.description}
+              {exclusiveData?.postBody}
             </Text>
           </View>
 

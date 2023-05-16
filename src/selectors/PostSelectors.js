@@ -17,3 +17,10 @@ export const geAllActiveGiveAwayData = state => {
 export const geAllPastGiveAwayData = state => {
     return Object.keys(state.post).length > 0 ? state.post : null;
 };
+
+export const getAllExclusiveData = state => {
+    return Object.keys(state.post).length > 0 ? state.post?.exclusivePost : null;
+};
+export const getSingleExclusiveData = state => {
+    return Object.keys(state.post).length > 0 ? state.post?.exclusiveSinglePost : null;
+};

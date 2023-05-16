@@ -1,4 +1,5 @@
-import { AppSwitch, Button, TextField, TopBackButton } from '@/components';
+import { createExclusivePost, getAllExclusivePost, TYPES } from '@/actions/PostActions';
+import { AppSwitch, Button, CustomLoader, TextField, TopBackButton } from '@/components';
 import { strings } from '@/localization';
 import { TextStyles, theme } from '@/theme';
 import { FontFamily } from '@/theme/Fonts';
@@ -17,8 +18,15 @@ import {
 } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import { ms } from 'react-native-size-matters';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { isLoadingSelector } from '@/selectors/StatusSelectors';
+import { getUser } from '@/selectors/UserSelectors';
 export default function AdminPostOption({ navigation, route }) {
+  const isLoading = useSelector(state =>
+    isLoadingSelector([TYPES.CREATE_EXCLUSIVE_POST], state)
+  );
+  const dispatch = useDispatch()
+  const user = useSelector(getUser);
   const [schedulePost, setSchedulePost] = useState(false);
   const [vipOnly, setVipOnly] = useState(false);
   const [pinPost, setPinPost] = useState(false);
@@ -35,13 +43,31 @@ export default function AdminPostOption({ navigation, route }) {
 
   // const [expiringDate, setExpiringDate] = useState(new Date());
   // const [openExpiringDatePicker, setOpenExpiringDatePicker] = useState(false);
+  const data = {
+    postExpires: moment(endDate).format(),
+    isVIPonly: vipOnly,
+    isUSAonly: pinPost,
+    schedulePost: schedulePost,
+    scheduleDate: postDate
+  }
 
-  const onPostExclusive = () => {
+  const onExclusivePost = () => {
     const data = {
-      startDate: moment(postDate).format(),
+      postExpires: moment(endDate).format(),
       isVIPonly: vipOnly,
-      isUSAonly: pinPost
+      isUSAonly: pinPost,
+      schedulePost: schedulePost,
+      scheduleDate: postDate,
+      userId: user?.id,
+      postTitle: finalData?.postTitle,
+      postBody: finalData?.postBody,
+      imageArray: finalData?.imageArray,
     }
+    dispatch(createExclusivePost(data))
+    const dataa = {
+      userId: user?.id,
+    }
+    dispatch(getAllExclusivePost(dataa))
   }
   return (
     <SafeAreaView style={styles.container}>
@@ -53,6 +79,7 @@ export default function AdminPostOption({ navigation, route }) {
           />
           <Text style={styles.headerTxt}>{strings.home.postOptions} </Text>
         </View>
+        <CustomLoader open={isLoading} />
         <View style={styles.optionContainer}>
           <View style={styles.list}>
             <View style={styles.left}>
@@ -132,6 +159,7 @@ export default function AdminPostOption({ navigation, route }) {
 
           <View style={styles.PostButtonContainer}>
             <Button
+              onPress={() => { onExclusivePost() }}
               style={styles.PostButton}
               title={strings.exclusive.postButton}
             />

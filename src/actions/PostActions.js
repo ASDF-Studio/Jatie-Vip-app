@@ -1,5 +1,6 @@
 import { NAVIGATION } from '@/constants';
 import { UserController } from '@/controllers';
+import { ExclusivePostController } from '@/controllers/ExclusivePostController';
 import { GiveAwayController } from '@/controllers/GiveAwayController';
 import { PostController } from '@/controllers/PostController';
 import { strings } from '@/localization';
@@ -226,6 +227,36 @@ export const TYPES = {
     WITHDRAW_GIVEAWAY_REQUEST: "WITHDRAW_GIVEAWAY_REQUEST",
     WITHDRAW_GIVEAWAY_SUCCESS: "WITHDRAW_GIVEAWAY_SUCCESS",
     WITHDRAW_GIVEAWAY_ERROR: "WITHDRAW_GIVEAWAY_ERROR",
+
+    //EXCLUSIVE POST 
+
+    CREATE_EXCLUSIVE_POST: "CREATE_EXCLUSIVE_POST",
+    CREATE_EXCLUSIVE_POST_REQUEST: "CREATE_EXCLUSIVE_POST_REQUEST",
+    CREATE_EXCLUSIVE_POST_SUCCESS: "CREATE_EXCLUSIVE_POST_SUCCESS",
+    CREATE_EXCLUSIVE_POST_ERROR: "CREATE_EXCLUSIVE_POST_ERROR",
+
+    GET_ALL_EXCLUSIVE_POST: "GET_ALL_EXCLUSIVE_POST",
+    GET_ALL_EXCLUSIVE_POST_REQUEST: "GET_ALL_EXCLUSIVE_POST_REQUEST",
+    GET_ALL_EXCLUSIVE_POST_SUCCESS: "GET_ALL_EXCLUSIVE_POST_SUCCESS",
+    GET_ALL_EXCLUSIVE_POST_ERROR: "GET_ALL_EXCLUSIVE_POST_ERROR",
+
+    GET_ALL_EXCLUSIVE_POST_BY_ID: "GET_ALL_EXCLUSIVE_POST_BY_ID",
+    GET_ALL_EXCLUSIVE_POST_BY_ID_REQUEST: "GET_ALL_EXCLUSIVE_POST_BY_ID_REQUEST",
+    GET_ALL_EXCLUSIVE_POST_BY_ID_SUCCESS: "GET_ALL_EXCLUSIVE_POST_BY_ID_SUCCESS",
+    GET_ALL_EXCLUSIVE_POST_BY_ID_ERROR: "GET_ALL_EXCLUSIVE_POST_BY_ID_ERROR",
+
+    UPDATE_EXCLUSIVE_POST: "UPDATE_EXCLUSIVE_POST",
+    UPDATE_EXCLUSIVE_POST_REQUEST: "UPDATE_EXCLUSIVE_POST_REQUEST",
+    UPDATE_EXCLUSIVE_POST_SUCCESS: "UPDATE_EXCLUSIVE_POST_SUCCESS",
+    UPDATE_EXCLUSIVE_POST_ERROR: "UPDATE_EXCLUSIVE_POST_ERROR",
+
+    DELETE_EXCLUSIVE_POST: "DELETE_EXCLUSIVE_POST",
+    DELETE_EXCLUSIVE_POST_REQUEST: "DELETE_EXCLUSIVE_POST_REQUEST",
+    DELETE_EXCLUSIVE_POST_SUCCESS: "DELETE_EXCLUSIVE_POST_SUCCESS",
+    DELETE_EXCLUSIVE_POST_ERROR: "DELETE_EXCLUSIVE_POST_ERROR",
+
+
+
 };
 
 
@@ -631,6 +662,90 @@ const withGiveAwayError = error => ({
     payload: { error },
 });
 
+export const createExclusivePostSuccess = post => ({
+    type: TYPES.CREATE_EXCLUSIVE_POST_SUCCESS,
+    payload: { post },
+});
+
+const createExclusivePostRequest = () => ({
+    type: TYPES.CREATE_EXCLUSIVE_POST_REQUEST,
+    payload: null,
+});
+
+const createExclusivePostError = error => ({
+    type: TYPES.CREATE_EXCLUSIVE_POST_ERROR,
+    payload: { error },
+});
+//
+export const getAllExclusivePostSuccess = post => ({
+    type: TYPES.GET_ALL_EXCLUSIVE_POST_SUCCESS,
+    payload: { post },
+});
+
+const getAllExclusivePostRequest = () => ({
+    type: TYPES.GET_ALL_EXCLUSIVE_POST_REQUEST,
+    payload: null,
+});
+
+const getAllExclusivePostError = error => ({
+    type: TYPES.GET_ALL_EXCLUSIVE_POST_ERROR,
+    payload: { error },
+});
+//
+export const deleteExclusivePostSuccess = post => ({
+    type: TYPES.DELETE_EXCLUSIVE_POST_SUCCESS,
+    payload: { post },
+});
+
+const deleteExclusivePostRequest = () => ({
+    type: TYPES.DELETE_EXCLUSIVE_POST_REQUEST,
+    payload: null,
+});
+
+const deleteExclusivePostError = error => ({
+    type: TYPES.DELETE_EXCLUSIVE_POST_ERROR,
+    payload: { error },
+});
+//
+export const updateExclusivePostSuccess = post => ({
+    type: TYPES.UPDATE_EXCLUSIVE_POST_SUCCESS,
+    payload: { post },
+});
+
+const updateExclusivePostRequest = () => ({
+    type: TYPES.UPDATE_EXCLUSIVE_POST_REQUEST,
+    payload: null,
+});
+
+const updateExclusivePostError = error => ({
+    type: TYPES.UPDATE_EXCLUSIVE_POST_ERROR,
+    payload: { error },
+});
+
+//
+export const getExclusivePostByIdSuccess = post => ({
+    type: TYPES.GET_ALL_EXCLUSIVE_POST_BY_ID_SUCCESS,
+    payload: { post },
+});
+
+const getExclusivePostByIdRequest = () => ({
+    type: TYPES.GET_ALL_EXCLUSIVE_POST_BY_ID_REQUEST,
+    payload: null,
+});
+
+const getExclusivePostByIdError = error => ({
+    type: TYPES.GET_ALL_EXCLUSIVE_POST_BY_ID_ERROR,
+    payload: { error },
+});
+
+
+
+
+
+
+
+
+
 // create_post action
 
 export const createPost = (id, postTitle, postBody, file, mimeType, imageArray, screen) => async dispatch => {
@@ -1013,4 +1128,73 @@ export const WithDrawAway = (data) => async dispatch => {
     } catch (error) {
         dispatch(withDrawGiveAwaySuccess(error))
     }
+};
+export const createExclusivePost = (data) => async dispatch => {
+
+    dispatch(createExclusivePostRequest());
+    try {
+        const post = await ExclusivePostController.createExclusivePost(data);
+        dispatch(createExclusivePostSuccess(post))
+        navigationRef.navigate(NAVIGATION.exclusive)
+    } catch (error) {
+        dispatch(createExclusivePostError(error))
+    }
+
+};
+
+export const getAllExclusivePost = (data) => async dispatch => {
+
+    dispatch(getAllExclusivePostRequest());
+    try {
+        const post = await ExclusivePostController.getAllExclusivePost(data);
+        dispatch(getAllExclusivePostSuccess(post))
+
+    } catch (error) {
+        dispatch(getAllExclusivePostError(error))
+    }
+
+};
+
+
+export const getExclusivePostById = (data) => async dispatch => {
+
+    dispatch(getExclusivePostByIdRequest());
+    try {
+        const post = await ExclusivePostController.getExclusivePostById(data);
+        dispatch(getExclusivePostByIdSuccess(post))
+
+    } catch (error) {
+        dispatch(getExclusivePostByIdError(error))
+    }
+
+};
+export const deleteExclusivePost = (data) => async dispatch => {
+
+    dispatch(deleteExclusivePostRequest());
+    try {
+        const post = await ExclusivePostController.getAllExclusivePost(data);
+        dispatch(deleteExclusivePostSuccess(post))
+
+    } catch (error) {
+        dispatch(deleteExclusivePostError(error))
+    }
+
+};
+
+export const updateExclusivePost = (data) => async dispatch => {
+
+    dispatch(updateExclusivePostRequest());
+    try {
+        const post = await ExclusivePostController.updateExclusivePost(data);
+        dispatch(updateExclusivePostSuccess(post))
+        const dataa = {
+            userId: data?.userId,
+        }
+        dispatch(getAllExclusivePost(dataa))
+        navigationRef.navigate(NAVIGATION.exclusive)
+
+    } catch (error) {
+        dispatch(updateExclusivePostError(error))
+    }
+
 };
