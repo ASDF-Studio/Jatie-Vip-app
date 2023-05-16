@@ -56,17 +56,17 @@ export class ExclusivePostController {
         return new Promise((resolve, reject) => {
             const endpoint = API_BASE_URL + API_END_POINTS.GET_EXCLUSIVE_POST;
             const body = JSON.stringify({
-                "loggedInUserId": "ce656365-b90f-4b5f-aab6-b436051171f5",
+                "loggedInUserId": data.userId,
 
             })
-            console.log("BODY=-=-=-=-EXclusive", body);
+            // console.log("BODY=-=-=-=-EXclusive", body);
             HttpClient.post(endpoint, body)
                 .then((response) => {
 
                     resolve(response)
 
 
-                    console.log('response of active exclusive', response)
+                    // console.log('response of active exclusive', response)
                 })
                 .catch((error) => {
                     reject(new Error(error.message));
