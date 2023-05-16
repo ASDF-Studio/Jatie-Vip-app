@@ -1,14 +1,14 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NAVIGATION } from '@/constants';
-import { Message } from '@/screens';
+
 import Chat from '@/screens/Message/Chat';
 import SearchUser from '@/screens/Message/SearchUser';
 import BirthDayToday from '@/screens/Message/BirthDayToday';
 import AdminGroupChat from '@/screens/Message/AdminGroupChat';
 import Notification from '@/screens/Message/notification';
 import Search from '@/screens/Message/search';
-
+import Message from '@/screens/Message/Message';
 const Stack = createNativeStackNavigator();
 
 export function MessageNavigator() {

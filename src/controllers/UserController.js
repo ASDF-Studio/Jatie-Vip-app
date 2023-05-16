@@ -457,7 +457,7 @@ export class UserController {
         .then((response) => {
 
           resolve(response);
-          console.log('response of followers list', JSON.stringify(response))
+
         })
         .catch((error) => {
           console.log('error in folloowers list', error)
@@ -476,10 +476,31 @@ export class UserController {
         .then((response) => {
 
           resolve(response);
-          console.log('response of block list', JSON.stringify(response))
+
         })
         .catch((error) => {
           console.log('error in block list', error)
+          reject(new Error(error.message));
+        });
+    });
+  }
+
+  static async searchUserRequest(searchuservalue) {
+
+    return new Promise((resolve, reject) => {
+
+      const endpoint = API_BASE_URL + API_END_POINTS.SEARCH_USER;
+      var data = JSON.stringify({
+        "searchWord": searchuservalue
+      });
+      HttpClient.post(endpoint, data)
+        .then((response) => {
+
+          resolve(response);
+
+        })
+        .catch((error) => {
+          console.log('error in search user', error)
           reject(new Error(error.message));
         });
     });

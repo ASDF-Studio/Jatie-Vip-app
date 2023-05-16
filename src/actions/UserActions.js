@@ -92,6 +92,12 @@ export const TYPES = {
   BLOCK_LIST_REQUEST: "BLOCK_LIST_REQUEST",
   BLOCK_LIST_SUCCESSS: "BLOCK_LIST_SUCCESSS",
   BLOCK_LIST_ERROR: "BLOCK_LIST_ERROR",
+
+  //SEARCH_USER
+  SEARCH_USER: "SEARCH_USER",
+  SEARCH_USER_SUCCESS: "SEARCH_USER_SUCCESS",
+  SEARCH_USER_REQUEST: "SEARCH_USER_REQUEST",
+  SEARCH_USER_ERROR: "SEARCH_USER_ERROR"
 };
 
 const loginRequest = () => ({
@@ -207,6 +213,22 @@ const unFollowUserError = error => ({
   payload: { error },
 });
 
+//Search User
+
+export const searchUserSuccess = user => ({
+  type: TYPES.SEARCH_USER_SUCCESS,
+  payload: { user },
+});
+
+const searchUserRequest = () => ({
+  type: TYPES.SEARCH_USER_REQUEST,
+  payload: null,
+});
+
+const searchUserError = error => ({
+  type: TYPES.SEARCH_USER_ERROR,
+  payload: { error },
+});
 
 //GET ALL POST BY LOGGED IN USER
 
@@ -684,6 +706,19 @@ export const blockUsersList = (userId) => async dispatch => {
 
   } catch (error) {
     dispatch(blockListError(error))
+  }
+
+};
+
+//Search User Action 
+export const searchUser = (searchuservalue) => async dispatch => {
+  dispatch(searchUserRequest());
+  try {
+    const user = await UserController.searchUserRequest(searchuservalue);
+    dispatch(searchUserSuccess(user))
+
+  } catch (error) {
+    dispatch(searchUserError(error))
   }
 
 };

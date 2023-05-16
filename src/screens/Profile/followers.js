@@ -28,6 +28,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { followers_FollowingData, getUser } from '@/selectors/UserSelectors';
 import { followers } from '@/actions/UserActions';
 import { useEffect } from 'react';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function Followers({ navigation }) {
   const dispatch = useDispatch()
@@ -36,13 +37,12 @@ export default function Followers({ navigation }) {
 
   //Selector Usage
   const user = useSelector(getUser)
-  const followerDataa = useSelector(getUser)
+  const followerDataa = user.followersDatainReducer
 
-  console.log('selector data', JSON.stringify(user?.followersDatainReducer))
-
+  const focus = useIsFocused()
   useEffect(() => {
     dispatch(followers(user?.id))
-  }, []);
+  }, [focus]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -52,12 +52,12 @@ export default function Followers({ navigation }) {
       />
       <View style={styles.listHeader}>
         <Text style={styles.headerTxt}>{strings.profile.myFollowers}</Text>
-        <Badge count={23} size={ms(16)} />
+        <Badge count={followerDataa?.data?.numOfFollowers} size={ms(16)} />
       </View>
       <HorizontalLine color={theme.light.colors.primaryBg} paddingTop={8} />
       <View>
         <FlatList
-          //  data={followerData?.data?.follower_List}
+          data={followerDataa?.data.follower_List}
           key={props => props.id}
           initialNumToRender={10}
           contentContainerStyle={styles.contentContainerStyle}
@@ -70,12 +70,12 @@ export default function Followers({ navigation }) {
                   onPress={() => navigation.navigate(NAVIGATION.userProfile)}
                 >
                   <Image
-                    source={{ uri: item.image }}
+                    source={{ uri: item.user.profilePic }}
                     style={styles.profileImage}
                   />
                   <View style={styles.nameContainer}>
                     <Text style={styles.nameTxt}> {item.user.fullName} </Text>
-                    <Text> {item.userName} </Text>
+                    <Text> {item.user.username} </Text>
                   </View>
                 </TouchableOpacity>
                 <Icon

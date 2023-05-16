@@ -182,7 +182,7 @@ export function Home({ navigation }) {
 
   let counter = 1;
   let DATA = {
-    postId, postTitle, postBody, postImg
+    postId, postTitle, postBody, postImg, sortBy, follwingSwitch
   }
   const onFollow = () => {
     // setPostUserFollowed(true)

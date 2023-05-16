@@ -66,5 +66,9 @@ export const API_END_POINTS = {
     FOLLOWERS: 'user/get_follower_list',
 
     //BLOCK_LIST_ENDPOINT
-    BLOCK_LIST: 'user/blocklist_by_userId'
+    BLOCK_LIST: 'user/blocklist_by_userId',
+
+
+    //SEARCH_USER_ENDPOINT
+    SEARCH_USER: 'user/search'
 };

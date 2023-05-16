@@ -18,6 +18,8 @@ export const userReducer = (state = {}, { payload, type }) => {
       return { ...state, followersDatainReducer: payload.user };
     case TYPES.BLOCK_LIST_SUCCESSS:
       return { ...state, blockListKey: payload.user };
+    case TYPES.SEARCH_USER_SUCCESS:
+      return { ...state, searchUserKey: payload.user };
     case TYPES.CLEAR_STORE:
       return {};
     default:

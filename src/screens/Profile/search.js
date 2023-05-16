@@ -12,19 +12,42 @@ import {
 } from 'react-native';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
-import { HorizontalLine, Icon, TextField, TopBackButton } from '@/components';
-import { ms, vs } from 'react-native-size-matters';
+import { CustomLoader, HorizontalLine, Icon, TextField, TopBackButton } from '@/components';
+import { moderateScale, ms, vs } from 'react-native-size-matters';
 import { NAVIGATION } from '@/constants/navigation';
 import { strings } from '@/localization';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { Data } from '@/screens/CommonData/searchData';
 import { faSearch } from '@fortawesome/pro-regular-svg-icons';
+import { TYPES, searchUser } from '@/actions/UserActions';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUser } from '@/selectors/UserSelectors';
+import { isLoadingSelector } from '@/selectors/StatusSelectors';
 
 export default function Search({ navigation }) {
+  //Use State hooks
   const [searchListOpen, setSearchListOpen] = useState(false);
+  const [searchuservalue, setsearchuservalue] = useState('')
+  const [loading, setLoading] = useState(false)
 
+  const dispatch = useDispatch()
+  const user = useSelector(getUser)
+  const searchUserData = user.searchUserKey
+
+
+  const isLoading = useSelector(state =>
+    isLoadingSelector([TYPES.SEARCH_USER], state)
+  );
+
+  const SearchHandlePress = () => {
+    // setLoading(true)
+    { searchuservalue.length >= 1 ? dispatch(searchUser(searchuservalue)) : null }
+
+    // setLoading(false)
+  }
   return (
     <SafeAreaView style={styles.container}>
+      <CustomLoader open={loading} />
       <View style={styles.header}>
         <View style={styles.left}>
           <TopBackButton
@@ -37,7 +60,7 @@ export default function Search({ navigation }) {
           </Text>
         </View>
         <View style={styles.right}>
-          <Icon
+          <Icon onPress={() => { SearchHandlePress() }}
             icon={faSearch}
             color={theme.light.colors.primary}
             size={ms(20)}
@@ -53,7 +76,14 @@ export default function Search({ navigation }) {
         </View>
       </View>
       <View style={styles.searchBox}>
-        <TextField
+        <TextField value={searchuservalue}
+          onChangeText={(value) => {
+            setsearchuservalue(value),
+              setTimeout(() => {
+                searchuservalue.length >= 0 ? dispatch(searchUser(searchuservalue)) : null
+              }, 2000);
+          }
+          }
           style={styles.searchBoxTextFirld}
           placeholder={strings.exclusive.searchUser}
           onFocus={() => setSearchListOpen(true)}
@@ -79,33 +109,44 @@ export default function Search({ navigation }) {
       )}
       {searchListOpen && (
         <View style={styles.searchList}>
-          <Text style={styles.searchTxt}> {strings.profile.searchResult}</Text>
+          {/* <Text style={styles.searchTxt}> {strings.profile.searchResult}</Text> */}
           <View>
-            <FlatList
-              data={Data}
+            <FlatList ListEmptyComponent={() => {
+              return (
+                <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+                  <Text style={{ fontSize: moderateScale(15) }}>No User Found</Text>
+                </View>
+              )
+            }}
+              data={searchUserData?.data}
               key={props => props.id}
               initialNumToRender={10}
               contentContainerStyle={styles.contentContainerStyle}
               renderItem={({ item }) => {
                 return (
-                  <View style={styles.listContainer}>
-                    <TouchableOpacity
-                      style={styles.list}
+                  <>
+
+                    <View style={styles.listContainer}>
+
+                      <TouchableOpacity
+                        style={styles.list}
                       // onPress = {()=> navigation.navigate(NAVIGATION.userProfile)}
-                    >
-                      <Image
-                        source={{ uri: item.image }}
-                        style={styles.profileImage}
-                      />
-                      <View style={styles.nameContainer}>
-                        <Text style={styles.nameTxt}> {item.name} </Text>
-                        <Text style={styles.userNameTxt}>
-                          {' '}
-                          {item.userName}{' '}
-                        </Text>
-                      </View>
-                    </TouchableOpacity>
-                  </View>
+                      >
+                        <Image
+                          source={{ uri: item?.profilePic == '' ? null : item?.profilePic }}
+                          style={styles.profileImage}
+                        />
+
+                        <View style={styles.nameContainer}>
+                          <Text style={styles.nameTxt}> {item.fullName} </Text>
+                          <Text style={styles.userNameTxt}>
+                            {' '}
+                            {item.username}{' '}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                  </>
                 );
               }}
             />

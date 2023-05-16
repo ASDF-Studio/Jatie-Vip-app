@@ -7,6 +7,7 @@ import {
   Image,
   TouchableOpacity,
   SafeAreaView,
+  Alert,
 } from 'react-native';
 import { faEllipsis, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { TextStyles, theme } from '@/theme';
@@ -27,19 +28,34 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
 import { blockUsersList } from '@/actions/UserActions';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function BlockedUsers({ navigation }) {
   const [open, setOpen] = useState(false);
+  const [blockUserId, setblockUserId] = useState('')
+  const [blockUsername, setblockUserName] = useState('')
   const dispatch = useDispatch()
+  const focus = useIsFocused()
 
   //Selector Usage
   const user = useSelector(getUser)
   const blockListData = user.blockListKey
 
 
+
   useEffect(() => {
     dispatch(blockUsersList(user?.id))
-  }, []);
+  }, [focus]);
+
+
+
+  const handleUnblockPress = () => {
+    const data = {
+      userID: user.id,
+      blockedUser: blockUserId,
+    }
+    console.log('data ', data)
+  }
   return (
     <SafeAreaView style={styles.container}>
       <TopBackButton
@@ -48,7 +64,7 @@ export default function BlockedUsers({ navigation }) {
       />
       <View style={styles.listHeader}>
         <Text style={styles.headerTxt}>{strings.profile.blockedUsers}</Text>
-        <Badge count={23} size={ms(13)} />
+        <Badge count={blockListData?.data?.length} size={ms(13)} />
       </View>
       <HorizontalLine
         color={theme.light.colors.primaryBg}
@@ -57,7 +73,7 @@ export default function BlockedUsers({ navigation }) {
       />
       <View>
         <FlatList
-          data={blockListData.data}
+          data={blockListData?.data}
           key={props => props.id}
           initialNumToRender={10}
           contentContainerStyle={styles.contentContainerStyle}
@@ -67,7 +83,7 @@ export default function BlockedUsers({ navigation }) {
               <View style={styles.listContainer}>
                 <TouchableOpacity
                   style={styles.list}
-                  onPress={() => navigation.navigate(NAVIGATION.userProfile)}
+                // onPress={() => navigation.navigate(NAVIGATION.userProfile)}
                 >
                   <Image
                     source={{ uri: item.userByBlockeduser.profilePic }}
@@ -82,7 +98,7 @@ export default function BlockedUsers({ navigation }) {
                   icon={faEllipsis}
                   size={ms(15)}
                   color={theme.light.colors.secondary}
-                  onPress={() => setOpen(true)}
+                  onPress={() => { setOpen(true), setblockUserId(item.blockedUser), setblockUserName(item.userByBlockeduser.username) }}
                 />
               </View>
             );
@@ -92,11 +108,11 @@ export default function BlockedUsers({ navigation }) {
       {open && (
         <ModalDown open={open} setOpen={setOpen}>
           <ModalList
-            title={strings.profile.unblock + strings.home.DummyUser}
+            title={strings.profile.unblock + ' ' + blockUsername}
             icon={faCheck}
             iconColor={theme.light.colors.secondary}
             iconBg={theme.light.colors.infoBgLight}
-          // onPress = {()=> Alert.alert("blocked")}
+            onPress={handleUnblockPress}
           />
         </ModalDown>
       )}

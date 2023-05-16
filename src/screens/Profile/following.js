@@ -27,15 +27,19 @@ import { followers } from '@/actions/UserActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
 import { useEffect } from 'react';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function Following({ navigation }) {
   const dispatch = useDispatch()
 
   const [open, setOpen] = useState(false);
   const user = useSelector(getUser)
+  const followerDataa = user.followersDatainReducer
+
+  const focus = useIsFocused()
   useEffect(() => {
     dispatch(followers(user?.id))
-  }, []);
+  }, [focus]);
   return (
     <SafeAreaView style={styles.container}>
       <TopBackButton
@@ -44,7 +48,7 @@ export default function Following({ navigation }) {
       />
       <View style={styles.listHeader}>
         <Text style={styles.headerTxt}>{strings.profile.myFollowing}</Text>
-        <Badge count={23} size={ms(16)} />
+        <Badge count={followerDataa?.data?.numOfFollowing} size={ms(16)} />
       </View>
       <HorizontalLine
         color={theme.light.colors.primaryBg}
@@ -53,7 +57,7 @@ export default function Following({ navigation }) {
       />
       <View>
         <FlatList
-          data={Data}
+          data={followerDataa?.data.following_List}
           key={props => props.id}
           initialNumToRender={10}
           contentContainerStyle={styles.contentContainerStyle}
@@ -66,12 +70,12 @@ export default function Following({ navigation }) {
                   onPress={() => navigation.navigate(NAVIGATION.userProfile)}
                 >
                   <Image
-                    source={{ uri: item.image }}
+                    source={{ uri: item.user.profilePic }}
                     style={styles.profileImage}
                   />
                   <View style={styles.nameContainer}>
-                    <Text style={styles.nameTxt}> {item.name}</Text>
-                    <Text style={styles.userNameTxt}> {item.userName} </Text>
+                    <Text style={styles.nameTxt}> {item.user.fullName}</Text>
+                    <Text style={styles.userNameTxt}>{item.user.username} </Text>
                   </View>
                 </TouchableOpacity>
                 <Icon

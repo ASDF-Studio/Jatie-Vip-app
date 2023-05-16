@@ -33,6 +33,8 @@ export function Profile({ navigation }) {
   const userType = useSelector(state => state.userType);
   const [status, setStatus] = useState(strings.profile.myStatus);
 
+  //  / console.log('user details ', user)
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="transparent" />
@@ -100,7 +102,7 @@ export function Profile({ navigation }) {
           <MyActivity navigation={navigation} />
         )}
       </View>
-    </SafeAreaView>
+    </SafeAreaView >
   );
 }
 

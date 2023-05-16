@@ -23,11 +23,13 @@ const styles = StyleSheet.create({
   },
 });
 
-export function TextField({ style, ...rest }) {
+export function TextField({ style, value, onChangeText, ...rest }) {
   const { colors } = useTheme();
 
   return (
-    <TextInput
+    <TextInput value={value}
+
+      onChangeText={onChangeText}
       style={[
         { color: colors.text },
         TextStyles.text,
