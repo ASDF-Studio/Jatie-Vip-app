@@ -200,6 +200,8 @@ export function Home({ navigation }) {
   }
   const onBlock = () => {
     dispatch(blockUser(user?.id, postUserId, postIndex))
+    setOpen(false)
+    dispatch(getAllPost(user?.id, sortBy, follwingSwitch))
   }
 
   return (

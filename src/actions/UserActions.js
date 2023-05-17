@@ -97,7 +97,14 @@ export const TYPES = {
   SEARCH_USER: "SEARCH_USER",
   SEARCH_USER_SUCCESS: "SEARCH_USER_SUCCESS",
   SEARCH_USER_REQUEST: "SEARCH_USER_REQUEST",
-  SEARCH_USER_ERROR: "SEARCH_USER_ERROR"
+  SEARCH_USER_ERROR: "SEARCH_USER_ERROR",
+
+  //UNBLOCK_USER_BY_ID
+  UNBLOCK_USER_BY_ID: "UNBLOCK_USER_BY_ID",
+  UNBLOCK_USER_BY_ID_REQUEST: "UNBLOCK_USER_BY_ID_REQUEST",
+  UNBLOCK_USER_BY_ID_SUCCESS: "UNBLOCK_USER_BY_ID_SUCCESS",
+  UNBLOCK_USER_BY_ID_ERROR: "UNBLOCK_USER_BY_ID_ERROR"
+
 };
 
 const loginRequest = () => ({
@@ -351,6 +358,21 @@ const blockListRequest = () => ({
 
 const blockListError = error => ({
   type: TYPES.BLOCK_LIST_ERROR,
+  payload: { error },
+});
+
+export const unblockUserByIdSuccess = user => ({
+  type: TYPES.UNBLOCK_USER_BY_ID_SUCCESS,
+  payload: { user },
+});
+
+const unblockUserByIdRequest = () => ({
+  type: TYPES.UNBLOCK_USER_BY_ID_REQUEST,
+  payload: null,
+});
+
+const unblockUserByIdError = error => ({
+  type: TYPES.UNBLOCK_USER_BY_ID_ERROR,
   payload: { error },
 });
 
@@ -722,3 +744,16 @@ export const searchUser = (searchuservalue) => async dispatch => {
   }
 
 };
+
+//Unblock User By id 
+// export const unblockUserById = (data) => async dispatch => {
+//   dispatch(unblockUserByIdRequest());
+//   try {
+//     const user = await UserController.searchUserRequest(data);
+//     dispatch(unblockUserByIdSuccess(user))
+
+//   } catch (error) {
+//     dispatch(unblockUserByIdError(error))
+//   }
+
+// };

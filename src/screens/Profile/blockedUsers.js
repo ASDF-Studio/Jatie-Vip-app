@@ -18,6 +18,7 @@ import {
   ModalDown,
   ModalList,
   HorizontalLine,
+  CustomLoader,
 } from '@/components';
 import { NAVIGATION } from '@/constants';
 import { strings } from '@/localization';
@@ -27,8 +28,10 @@ import { Data } from './ProfileData/blockedUsersData';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
-import { blockUsersList } from '@/actions/UserActions';
+import { TYPES, blockUsersList } from '@/actions/UserActions';
 import { useIsFocused } from '@react-navigation/native';
+import { isLoadingSelector } from '@/selectors/StatusSelectors';
+import { unBlockUser } from '@/actions/PostActions';
 
 export default function BlockedUsers({ navigation }) {
   const [open, setOpen] = useState(false);
@@ -41,23 +44,26 @@ export default function BlockedUsers({ navigation }) {
   const user = useSelector(getUser)
   const blockListData = user.blockListKey
 
-
+  const isLoading = useSelector(state =>
+    isLoadingSelector([TYPES.BLOCK_LIST], state)
+  );
 
   useEffect(() => {
     dispatch(blockUsersList(user?.id))
   }, [focus]);
 
 
-
+  //handle unblock user By Id
   const handleUnblockPress = () => {
-    const data = {
-      userID: user.id,
-      blockedUser: blockUserId,
-    }
-    console.log('data ', data)
+    dispatch(unBlockUser(user.id, blockUserId))
+    setOpen(false)
+    dispatch(blockUsersList(user?.id))
   }
+
+
   return (
     <SafeAreaView style={styles.container}>
+      <CustomLoader open={isLoading} />
       <TopBackButton
         onPress={() => navigation.goBack()}
         style={styles.TopBackButton}

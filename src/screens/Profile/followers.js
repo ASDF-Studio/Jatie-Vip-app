@@ -32,7 +32,6 @@ import { useIsFocused } from '@react-navigation/native';
 
 export default function Followers({ navigation }) {
   const dispatch = useDispatch()
-
   const [open, setOpen] = useState(false);
 
   //Selector Usage

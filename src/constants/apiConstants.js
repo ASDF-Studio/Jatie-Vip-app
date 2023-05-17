@@ -61,8 +61,7 @@ export const API_END_POINTS = {
 
     //Get user profile by user id
     GET_USER_PROFILE_BY_USER_ID: 'user/user_by_userId',
-<<<<<<< HEAD
-=======
+
 
 
     // GiveAway Post 
@@ -92,7 +91,7 @@ export const API_END_POINTS = {
     GET_EXCLUSIVE_POST_BY_ID: 'exclusive/single_exclusive',
     DELETE_EXCLUSIVE_POST: 'exclusive/delete',
     UPDATE_EXCLUSIVE_POST: 'exclusive/update',
->>>>>>> 66dae7d7b2e57cd34a817e2d84f473f5c7e0b80e
+
 
     //Followers endPoint
     FOLLOWERS: 'user/get_follower_list',

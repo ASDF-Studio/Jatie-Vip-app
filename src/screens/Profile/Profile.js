@@ -30,10 +30,11 @@ import { getUser } from '@/selectors/UserSelectors';
 
 export function Profile({ navigation }) {
   const user = useSelector(getUser)
+  const followerDataa = user.followersDatainReducer
+
   const userType = useSelector(state => state.userType);
   const [status, setStatus] = useState(strings.profile.myStatus);
 
-  //  / console.log('user details ', user)
 
   return (
     <SafeAreaView style={styles.container}>
@@ -79,10 +80,10 @@ export function Profile({ navigation }) {
       </View>
       <HeaderTab
         title1={strings.profile.followers}
-        count1={20}
+        count1={followerDataa?.data?.numOfFollowers}
         onPress1={() => navigation.navigate(NAVIGATION.followers)}
         title2={strings.profile.following}
-        count2={100}
+        count2={followerDataa?.data?.numOfFollowing}
         onPress2={() => navigation.navigate(NAVIGATION.following)}
       />
       <StatusNavigatorBar
