@@ -469,6 +469,8 @@ export const uploadProfile = (file, mimeType, USER) => async dispatch => {
 
 
 export const followUser = (followerId, followId, postIndex) => async dispatch => {
+
+  console.log('action data', followerId, followId, postIndex)
   dispatch(followUserRequest());
   try {
     const user = await UserController.followUser(followerId, followId);

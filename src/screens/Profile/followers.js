@@ -16,7 +16,7 @@ import {
   faUserPlus,
 } from '@fortawesome/free-solid-svg-icons';
 import { TextStyles, theme } from '@/theme';
-import { TopBackButton, Icon, Badge, HorizontalLine } from '@/components';
+import { TopBackButton, Icon, Badge, HorizontalLine, CustomLoader } from '@/components';
 import { ModalDown, ModalList } from '@/components';
 import { NAVIGATION } from '@/constants';
 import { strings } from '@/localization';
@@ -26,25 +26,49 @@ import { Data } from './ProfileData/followersData';
 import { getAllPost } from '@/actions/PostActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { followers_FollowingData, getUser } from '@/selectors/UserSelectors';
-import { followers } from '@/actions/UserActions';
+import { TYPES, followers } from '@/actions/UserActions';
 import { useEffect } from 'react';
 import { useIsFocused } from '@react-navigation/native';
-
+import { followUser } from '@/actions/PostActions';
+import { isLoadingSelector } from '@/selectors/StatusSelectors';
 export default function Followers({ navigation }) {
   const dispatch = useDispatch()
   const [open, setOpen] = useState(false);
+  const [followId, setfollowId] = useState('')
 
   //Selector Usage
   const user = useSelector(getUser)
   const followerDataa = user.followersDatainReducer
 
+
   const focus = useIsFocused()
+
+
   useEffect(() => {
     dispatch(followers(user?.id))
   }, [focus]);
 
+
+  const isLoading = useSelector(state =>
+    isLoadingSelector([TYPES.FOLLOWERS], state)
+  );
+
+  //follow handle press
+  const followHandlePress = () => {
+    dispatch(followUser(user?.id, followId))
+    setOpen(false)
+
+    setTimeout(() => {
+      dispatch(followers(user?.id))
+    }, 1000);
+
+  }
+
+
+
   return (
     <SafeAreaView style={styles.container}>
+      <CustomLoader open={isLoading} />
       <TopBackButton
         onPress={() => navigation.goBack()}
         style={styles.TopBackButton}
@@ -81,7 +105,7 @@ export default function Followers({ navigation }) {
                   icon={faEllipsis}
                   size={ms(15)}
                   color={theme.light.colors.secondary}
-                  onPress={() => setOpen(true)}
+                  onPress={() => { setfollowId(item.user.id), setOpen(true) }}
                 />
               </View>
             );
@@ -89,7 +113,7 @@ export default function Followers({ navigation }) {
         />
       </View>
       <ModalDown open={open} setOpen={setOpen}>
-        <ModalList
+        <ModalList onPress={followHandlePress}
           title={strings.operations.follow + strings.home.DummyUser}
           icon={faUserPlus}
           iconColor={theme.light.colors.primary}

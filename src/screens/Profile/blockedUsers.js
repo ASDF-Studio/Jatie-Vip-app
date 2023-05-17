@@ -57,7 +57,11 @@ export default function BlockedUsers({ navigation }) {
   const handleUnblockPress = () => {
     dispatch(unBlockUser(user.id, blockUserId))
     setOpen(false)
-    dispatch(blockUsersList(user?.id))
+    setTimeout(() => {
+      dispatch(blockUsersList(user?.id))
+    }, 200);
+
+
   }
 
 

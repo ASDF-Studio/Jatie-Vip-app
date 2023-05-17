@@ -458,6 +458,7 @@ export class UserController {
 
           resolve(response);
 
+
         })
         .catch((error) => {
           console.log('error in folloowers list', error)

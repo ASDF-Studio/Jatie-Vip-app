@@ -483,6 +483,7 @@ export class PostController {
     }
 
     static async followUser(followerId, followId) {
+
         return new Promise((resolve, reject) => {
             const endpoint = API_BASE_URL + API_END_POINTS.FOLLOW_USER;
             var data = JSON.stringify({

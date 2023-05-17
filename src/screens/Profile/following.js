@@ -16,7 +16,7 @@ import {
   faUserMinus,
 } from '@fortawesome/free-solid-svg-icons';
 import { TextStyles, theme } from '@/theme';
-import { TopBackButton, Icon, Badge, HorizontalLine } from '@/components';
+import { TopBackButton, Icon, Badge, HorizontalLine, CustomLoader } from '@/components';
 import { ModalDown, ModalList } from '@/components';
 import { NAVIGATION } from '@/constants';
 import { strings } from '@/localization';
@@ -28,6 +28,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
 import { useEffect } from 'react';
 import { useIsFocused } from '@react-navigation/native';
+import { unFollowUser } from '@/actions/PostActions';
+import { isLoadingSelector } from '@/selectors/StatusSelectors';
+import { TYPES } from '@/actions/UserActions';
 
 export default function Following({ navigation }) {
   const dispatch = useDispatch()
@@ -35,13 +38,28 @@ export default function Following({ navigation }) {
   const [open, setOpen] = useState(false);
   const user = useSelector(getUser)
   const followerDataa = user.followersDatainReducer
-
+  const [UnfollowId, setUnfollowId] = useState('')
   const focus = useIsFocused()
   useEffect(() => {
     dispatch(followers(user?.id))
   }, [focus]);
+
+  const isLoading = useSelector(state =>
+    isLoadingSelector([TYPES.FOLLOWERS], state)
+  );
+
+  const unFollowHandlePress = () => {
+    dispatch(unFollowUser(user?.id, UnfollowId))
+    setOpen(false)
+    setTimeout(() => {
+      dispatch(followers(user?.id))
+    }, 1000);
+
+    //console.log('dispatch data of unfollowers', user?.id, UnfollowId)
+  }
   return (
     <SafeAreaView style={styles.container}>
+      <CustomLoader open={isLoading} />
       <TopBackButton
         onPress={() => navigation.goBack()}
         style={styles.TopBackButton}
@@ -70,19 +88,19 @@ export default function Following({ navigation }) {
                   onPress={() => navigation.navigate(NAVIGATION.userProfile)}
                 >
                   <Image
-                    source={{ uri: item.user.profilePic }}
+                    source={{ uri: item.userByFollowinguserid?.profilePic }}
                     style={styles.profileImage}
                   />
                   <View style={styles.nameContainer}>
-                    <Text style={styles.nameTxt}> {item.user.fullName}</Text>
-                    <Text style={styles.userNameTxt}>{item.user.username} </Text>
+                    <Text style={styles.nameTxt}> {item.userByFollowinguserid?.fullName}</Text>
+                    <Text style={styles.userNameTxt}>{item.userByFollowinguserid?.username} </Text>
                   </View>
                 </TouchableOpacity>
                 <Icon
                   icon={faEllipsis}
                   size={ms(15)}
                   color={theme.light.colors.secondary}
-                  onPress={() => setOpen(true)}
+                  onPress={() => { setUnfollowId(item.userByFollowinguserid.id), setOpen(true) }}
                 />
               </View>
             );
@@ -95,7 +113,7 @@ export default function Following({ navigation }) {
           icon={faUserMinus}
           iconColor={theme.light.colors.primary}
           iconBg={theme.light.colors.primaryBgLight}
-        // onPress = {()=> Alert.alert("follow")}
+          onPress={unFollowHandlePress}
         />
         <ModalList
           title={strings.profile.sendPrivateMessage}
