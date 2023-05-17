@@ -60,14 +60,14 @@ export class GiveAwayController {
                 "loggedInUserId": data.userId,
 
             })
-            console.log("BODY=-=-=-=-", body);
+            // console.log("BODY=-=-=-=-", body);
             HttpClient.post(endpoint, body)
                 .then((response) => {
 
                     resolve(response)
 
 
-                    console.log('response of active giveaway', response)
+                    // console.log('response of active giveaway', response)
                 })
                 .catch((error) => {
                     reject(new Error(error.message));

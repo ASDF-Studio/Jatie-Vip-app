@@ -692,9 +692,9 @@ const getAllExclusivePostError = error => ({
     payload: { error },
 });
 //
-export const deleteExclusivePostSuccess = post => ({
+export const deleteExclusivePostSuccess = id => ({
     type: TYPES.DELETE_EXCLUSIVE_POST_SUCCESS,
-    payload: { post },
+    payload: { id },
 });
 
 const deleteExclusivePostRequest = () => ({
@@ -1135,6 +1135,10 @@ export const createExclusivePost = (data) => async dispatch => {
     try {
         const post = await ExclusivePostController.createExclusivePost(data);
         dispatch(createExclusivePostSuccess(post))
+        const dataa = {
+            userId: data?.userId,
+        }
+        // dispatch(getAllExclusivePost(dataa))
         navigationRef.navigate(NAVIGATION.exclusive)
     } catch (error) {
         dispatch(createExclusivePostError(error))
@@ -1147,6 +1151,7 @@ export const getAllExclusivePost = (data) => async dispatch => {
     dispatch(getAllExclusivePostRequest());
     try {
         const post = await ExclusivePostController.getAllExclusivePost(data);
+
         dispatch(getAllExclusivePostSuccess(post))
 
     } catch (error) {
@@ -1172,8 +1177,13 @@ export const deleteExclusivePost = (data) => async dispatch => {
 
     dispatch(deleteExclusivePostRequest());
     try {
-        const post = await ExclusivePostController.getAllExclusivePost(data);
-        dispatch(deleteExclusivePostSuccess(post))
+
+        const post = await ExclusivePostController.deleteExclusivePostById(data)
+        dispatch(deleteExclusivePostSuccess(post?.data[0]?.id))
+        const dataa = {
+            userId: data?.userId,
+        }
+        dispatch(getAllExclusivePost(dataa))
 
     } catch (error) {
         dispatch(deleteExclusivePostError(error))
@@ -1190,7 +1200,7 @@ export const updateExclusivePost = (data) => async dispatch => {
         const dataa = {
             userId: data?.userId,
         }
-        dispatch(getAllExclusivePost(dataa))
+        // dispatch(getAllExclusivePost(dataa))
         navigationRef.navigate(NAVIGATION.exclusive)
 
     } catch (error) {

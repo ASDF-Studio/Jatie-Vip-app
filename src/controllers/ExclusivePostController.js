@@ -37,15 +37,20 @@ export class ExclusivePostController {
                 'Content-Type': 'multipart/form-data'
             }
             console.log("END_POIMNT===", endpoint);
-            await HttpClient.post(endpoint, data, { headers })
-                .then((response) => {
-                    resolve(response)
-                    console.log('excl;uiveee post response', JSON.stringify(response))
-                })
-                .catch((error) => {
-                    reject(error)
-                    console.log('errror', error)
-                });
+            try {
+                await HttpClient.post(endpoint, data, { headers })
+                    .then((response) => {
+                        resolve(response)
+                        console.log('excl;uiveee post response', JSON.stringify(response))
+                    })
+                    .catch((error) => {
+                        reject(error)
+                        console.log('errror', error)
+                    });
+            } catch (error) {
+                console.log("Error-catsc", error);
+            }
+
         });
 
 
@@ -101,18 +106,18 @@ export class ExclusivePostController {
     static async deleteExclusivePostById(data) {
 
         return new Promise((resolve, reject) => {
-            console.log('check data', data)
             const endpoint = API_BASE_URL + API_END_POINTS.DELETE_EXCLUSIVE_POST;
             const body = JSON.stringify({
-                "loggedInUserId": data.userId,
+                "userId": data.userId,
                 "id": data.postId
 
             })
+            console.log("FORM__DATA", body);
             HttpClient.post(endpoint, body)
                 .then((response) => {
 
                     resolve(response)
-                    console.log('response of past exclusive', JSON.stringify(response))
+                    console.log('response of past exclusive delete', JSON.stringify(response))
                 })
                 .catch((error) => {
                     reject(new Error(error.message));
@@ -144,7 +149,6 @@ export class ExclusivePostController {
             data.append('userId', params.userId);
             data.append('postTitle', params.postTitle);
             data.append('postBody', params.postBody);
-            data.append('postExpires', params.postExpires);
             data.append('isVIPonly', params.isVIPonly);
             data.append('isScheduled', params.schedulePost);
             data.append('scheduleDetails', params.scheduleDate);

@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Modal,
   TouchableWithoutFeedback,
+  ImageBackground,
 } from 'react-native';
 import { styles } from '@/screens/Exclusive/Exclusive.styles';
 import { TextStyles, theme } from '@/theme';
@@ -42,7 +43,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Data } from './exclusiveData/exclusiveData';
 import { faSearch } from '@fortawesome/pro-regular-svg-icons';
 import { useIsFocused } from '@react-navigation/native';
-import { getAllExclusivePost, TYPES } from '@/actions/PostActions';
+import { deleteExclusivePost, getAllExclusivePost, TYPES } from '@/actions/PostActions';
 import { getUser } from '@/selectors/UserSelectors';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { getAllExclusiveData } from '@/selectors/PostSelectors';
@@ -63,6 +64,7 @@ export function Exclusive({ navigation }) {
   const [recentFilterOpen, setRecentFilterOpen] = useState(false);
   const [sortBy, setSortBy] = useState(strings.sortBy.recent);
   const [postData, setPostData] = useState({});
+  const [postIndex, setPostIndex] = useState(0);
   let counter = 1;
   const CheckIcon = (
     <FontAwesomeIcon icon={faCheck} color={theme.light.colors.primary} />
@@ -72,11 +74,25 @@ export function Exclusive({ navigation }) {
       userId: user?.id,
     }
     dispatch(getAllExclusivePost(data))
-  }, [])
+  }, [focus])
   const onEditPost = () => {
     setOpen(false)
     // navigation.navigate(NAVIGATION.exclusiveThumbnail)
     navigation.navigate(NAVIGATION.updateExclusivepost, { "DATA": postData })
+  }
+  const onRemovePost = () => {
+    setOpen(false)
+    const data = {
+      userId: user?.id,
+      postId: postData?.id
+    }
+
+    dispatch(deleteExclusivePost(data))
+
+    // var arr = exclusiveData?.data
+    // var count = arr[postIndex]?.comments_aggregate?.aggregate?.count
+    // arr[POST_INDEX].comments_aggregate.aggregate.count = count - 1;
+    // dispatch(getAllPostSuccess(arr))
   }
   return (
     <SafeAreaView style={styles.container}>
@@ -103,7 +119,7 @@ export function Exclusive({ navigation }) {
             </TouchableOpacity>
           </View>
         </View>
-        <CustomLoader open={isLoading} />
+        {/* <CustomLoader open={isLoading} /> */}
         <View style={styles.iconContiner}>
           <Icon
             icon={faSearch}
@@ -404,6 +420,8 @@ export function Exclusive({ navigation }) {
             iconColor={theme.light.colors.info}
           />
           <ModalList
+            onPress={() => { onRemovePost() }}
+
             title={strings.operations.remove}
             icon={faTrash}
             iconBg={theme.light.colors.infoBgLight}

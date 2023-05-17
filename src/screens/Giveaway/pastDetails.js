@@ -36,11 +36,12 @@ import { NAVIGATION } from '@/constants';
 import { item } from './giveawayData/pastDetailsData';
 import { TYPES } from '@/actions/PostActions';
 
-export default function PastDetails({ navigation }) {
+export default function PastDetails({ navigation, route }) {
+  const { DATA } = route.params
   const userType = useSelector(state => state.userType);
   const [open, setOpen] = useState(false);
 
-
+  console.log("DATA=-=-=-=-=", DATA);
   return (
     <SafeAreaView style={styles.contianer}>
       <View style={styles.header}>
@@ -48,7 +49,7 @@ export default function PastDetails({ navigation }) {
         <TopBackButton onPress={() => navigation.goBack()} />
         <View style={styles.adminoOption}>
           <Text style={[styles.headerText, TextStyles.header]}>
-            {strings.giveaway.title}
+            {DATA?.postTitle}
           </Text>
           {/* Admin */}
 
@@ -67,16 +68,19 @@ export default function PastDetails({ navigation }) {
           <View style={styles.feedContainer}>
             <Card>
               <View>
-                <Text style={styles.title}>{strings.giveaway.title} </Text>
+                <Text style={styles.title}>{DATA?.postTitle} </Text>
               </View>
-              <CardBody text={item.Desc} />
-              {link(item.link)}
-              <CardBody text={item.MoreDesc} />
-              <View>
-                <Text style={styles.winners}>{strings.giveaway.winners} </Text>
-              </View>
+              <CardBody text={DATA?.postBody} />
+              {/* {link(item.link)}
+              <CardBody text={item.MoreDesc} /> */}
+              {DATA?.winner_lists.length > 0 &&
+                <View>
+                  <Text style={styles.winners}>{strings.giveaway.winners} </Text>
+                </View>
+              }
+
               {/* winners */}
-              {item.winner.map(item => {
+              {DATA.winner_lists.map(item => {
                 if (item == null) {
                   return;
                 } else {
@@ -84,7 +88,7 @@ export default function PastDetails({ navigation }) {
                     <View style={styles.listContainer} key={item.id}>
                       <View style={styles.leftContainer}>
                         <Image
-                          source={{ uri: item.image }}
+                          source={{ uri: postImg.image }}
                           style={styles.profileImage}
                         />
                         <View style={styles.nameContainer}>
@@ -107,28 +111,45 @@ export default function PastDetails({ navigation }) {
               {/* Admin */}
               {userType.user == `${strings.userType.admin}` && (
                 <View style={styles.PostButtonContainer}>
-                  <TouchableOpacity>
-                    <Button
-                      onPress={() =>
-                        navigation.navigate(NAVIGATION.seeAllParticipants)
-                      }
-                      title={strings.giveaway.seeAllParticipants}
-                      style={styles.withdrawBtn}
-                      textStyle={{
-                        color: theme.light.colors.primary,
-                      }}
-                    />
-                  </TouchableOpacity>
+                  {DATA?.giveaway_participants.length > 0 &&
+                    <TouchableOpacity>
+                      <Button
+                        onPress={() =>
+                          navigation.navigate(NAVIGATION.seeAllParticipants)
+                        }
+                        title={strings.giveaway.seeAllParticipants}
+                        style={styles.withdrawBtn}
+                        textStyle={{
+                          color: theme.light.colors.primary,
+                        }}
+                      />
+                    </TouchableOpacity>
+                  }
+
                 </View>
               )}
 
               <View style={styles.thumbnailContainer}>
-                <Image
+                {
+                  DATA.postImg.map((url) => {
+                    return (
+
+                      <Image
+                        style={styles.thumbnailImage}
+                        source={{
+                          uri: url
+                        }}
+                      />
+
+                    )
+                  })
+                }
+                {/* <Image
                   style={styles.thumbnailImage}
                   source={{
                     uri: item.photo,
                   }}
-                />
+                /> */}
               </View>
             </Card>
           </View>

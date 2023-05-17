@@ -117,7 +117,7 @@ export default function Past({ navigation }) {
 
                 <TouchableOpacity
                   onPress={() =>
-                    navigation.navigate(NAVIGATION.giveawayPastDetails)
+                    navigation.navigate(NAVIGATION.giveawayPastDetails, { "DATA": item })
                   }
                   style={item.postImg.length <= 0 ? [styles.btn, { top: '0%', position: 'relative', marginBottom: 20 }] : styles.btn}
                 >
