@@ -76,4 +76,7 @@ export const NAVIGATION = {
   adminGiveawayOption: 'AdminGiveawayOption', //onPress Admin giveaway options
   notification: 'Notification',
   search: 'Search',
+  //Exclusive
+  updateExclusivepost: "UpdateExclusivePost",
+  updateExclusiveOption: "UpdateExculsiveOption"
 };

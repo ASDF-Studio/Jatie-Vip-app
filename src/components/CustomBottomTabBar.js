@@ -16,7 +16,7 @@ import { ms } from 'react-native-size-matters';
 import { faCrown, faGift, faMessage } from '@fortawesome/pro-regular-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
-import { getAllPost } from '@/actions/PostActions';
+import { getAllExclusivePost, getAllPost } from '@/actions/PostActions';
 import { strings } from '@/localization';
 
 const tabBarLabel = {
@@ -85,6 +85,12 @@ function CustomBottomTabBar({ state, descriptors, navigation }) {
           });
           if (index == 0) {
             dispatch(getAllPost(user?.id, strings.sortBy.recent, false))
+          }
+          else if (index == 2) {
+            const data = {
+              userId: user?.id,
+            }
+            dispatch(getAllExclusivePost(data))
           }
 
           if (!isFocused && !event.defaultPrevented) {

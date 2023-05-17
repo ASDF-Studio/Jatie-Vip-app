@@ -30,7 +30,7 @@ export const styles = StyleSheet.create({
   icon: {
     margin: ms(10),
   },
-  cardContainer: { margin: ms(12) },
+  cardContainer: { margin: ms(12), },
   recentContiner: {
     padding: ms(4),
     flexDirection: 'row',
@@ -188,4 +188,26 @@ export const styles = StyleSheet.create({
     fontFamily: FontFamily.Recoleta_semibold,
     color: theme.light.colors.black,
   },
+  imageContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    // paddingRight: ms(40),
+    justifyContent: 'space-between',
+    marginRight: ms(-5),
+
+  },
+  touchContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    // paddingRight: ms(40),
+    justifyContent: 'space-between',
+    marginRight: ms(-5),
+  },
+  image: {
+    flex: 1,
+    width: '85%',
+    height: ms(200),
+    marginRight: ms(10),
+  },
+
 });

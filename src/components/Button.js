@@ -18,13 +18,14 @@ const customStyles = colors =>
     },
   });
 
-export function Button({ style, textStyle, opacity, title, ...rest }) {
+export function Button({ style, textStyle, opacity, title, onPress, ...rest }) {
   const { colors } = useTheme();
 
   const styles = useMemo(() => customStyles(colors), [colors]);
 
   return (
     <TouchableOpacity
+      onPress={onPress}
       style={
         opacity
           ? [

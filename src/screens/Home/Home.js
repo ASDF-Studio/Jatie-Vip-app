@@ -75,6 +75,7 @@ export function Home({ navigation }) {
 
   const userType = useSelector(state => state.userType);
   const user = useSelector(getUser);
+
   const dispatch = useDispatch()
   const [vipArea, setVipArea] = useState(strings.home.vipArea);
   const [open, setOpen] = useState(false);
@@ -257,6 +258,8 @@ export function Home({ navigation }) {
       <StatusNavigatorBar
         title1={strings.home.newFeed}
         title2={strings.home.vipArea}
+
+
         key1={strings.home.vipArea}
         key2={strings.home.newFeed}
         status={vipArea}
@@ -868,6 +871,7 @@ const styles = StyleSheet.create({
     // paddingRight: ms(40),
     justifyContent: 'space-between',
     marginRight: ms(-5),
+
   },
   extraImage: {
     color: theme.light.colors.white,

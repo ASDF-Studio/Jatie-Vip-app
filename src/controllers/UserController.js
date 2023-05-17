@@ -173,7 +173,7 @@ export class UserController {
 
   // create post
 
-  static async createPost(id, postTitle, postBody, file, mimeType, imageArray) {
+  static async createPost(id, postTitle, postBody, postTxt, postImg, mimeType, imageArray) {
     return new Promise(async (resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.CREATE_POST;
       let data = new FormData()

@@ -1,9 +1,11 @@
-import { AppSwitch, Button, TextField, TopBackButton } from '@/components';
+import { createExclusivePost, getAllExclusivePost, TYPES } from '@/actions/PostActions';
+import { AppSwitch, Button, CustomLoader, TextField, TopBackButton } from '@/components';
 import { strings } from '@/localization';
 import { TextStyles, theme } from '@/theme';
 import { FontFamily } from '@/theme/Fonts';
 import { faCalendar } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import moment from 'moment';
 import React from 'react';
 import { useState } from 'react';
 import {
@@ -16,8 +18,15 @@ import {
 } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import { ms } from 'react-native-size-matters';
-
-export default function AdminPostOption({ navigation }) {
+import { useDispatch, useSelector } from 'react-redux';
+import { isLoadingSelector } from '@/selectors/StatusSelectors';
+import { getUser } from '@/selectors/UserSelectors';
+export default function AdminPostOption({ navigation, route }) {
+  const isLoading = useSelector(state =>
+    isLoadingSelector([TYPES.CREATE_EXCLUSIVE_POST], state)
+  );
+  const dispatch = useDispatch()
+  const user = useSelector(getUser);
   const [schedulePost, setSchedulePost] = useState(false);
   const [vipOnly, setVipOnly] = useState(false);
   const [pinPost, setPinPost] = useState(false);
@@ -25,12 +34,41 @@ export default function AdminPostOption({ navigation }) {
   const [postDate, setPostDate] = useState(new Date());
   const [openPostDatePicker, setOpenPostDatePicker] = useState(false);
 
+  const [endDate, SetEndDate] = useState(new Date())
+  const [openEndDatePicker, setopenEndDatePicker] = useState(false)
+  const finalData = route.params.prevData
+
   // const [publishingDate, setPublishingDate] = useState(new Date());
   // const [openPublishingDatePicker, setOpenPublishingDatePicker] = useState(false);
 
   // const [expiringDate, setExpiringDate] = useState(new Date());
   // const [openExpiringDatePicker, setOpenExpiringDatePicker] = useState(false);
+  const data = {
+    postExpires: moment(endDate).format(),
+    isVIPonly: vipOnly,
+    isUSAonly: pinPost,
+    schedulePost: schedulePost,
+    scheduleDate: postDate
+  }
 
+  const onExclusivePost = () => {
+    const data = {
+      postExpires: moment(endDate).format(),
+      isVIPonly: vipOnly,
+      isUSAonly: pinPost,
+      schedulePost: schedulePost,
+      scheduleDate: postDate,
+      userId: user?.id,
+      postTitle: finalData?.postTitle,
+      postBody: finalData?.postBody,
+      imageArray: finalData?.imageArray,
+    }
+    dispatch(createExclusivePost(data))
+    const dataa = {
+      userId: user?.id,
+    }
+    dispatch(getAllExclusivePost(dataa))
+  }
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
@@ -41,6 +79,7 @@ export default function AdminPostOption({ navigation }) {
           />
           <Text style={styles.headerTxt}>{strings.home.postOptions} </Text>
         </View>
+        <CustomLoader open={isLoading} />
         <View style={styles.optionContainer}>
           <View style={styles.list}>
             <View style={styles.left}>
@@ -60,7 +99,7 @@ export default function AdminPostOption({ navigation }) {
                 <TextField
                   style={styles.rightTextField}
                   editable={false}
-                  // value = {Moment(postDate).format('DD-MM-YYYY')}
+                  value={moment(postDate).format('DD-MM-YYYY')}
                   placeholder={strings.home.selectTimeAndDate}
                 />
                 <TouchableOpacity
@@ -74,6 +113,7 @@ export default function AdminPostOption({ navigation }) {
                   />
                 </TouchableOpacity>
                 <DatePicker
+                  minimumDate={postDate}
                   modal
                   mode="date"
                   open={openPostDatePicker}
@@ -85,6 +125,7 @@ export default function AdminPostOption({ navigation }) {
                   }}
                   onCancel={() => {
                     setOpenPostDatePicker(false);
+
                   }}
                 />
               </View>
@@ -118,6 +159,7 @@ export default function AdminPostOption({ navigation }) {
 
           <View style={styles.PostButtonContainer}>
             <Button
+              onPress={() => { onExclusivePost() }}
               style={styles.PostButton}
               title={strings.exclusive.postButton}
             />

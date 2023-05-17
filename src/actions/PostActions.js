@@ -1,8 +1,10 @@
 import { NAVIGATION } from '@/constants';
 import { UserController } from '@/controllers';
+import { ExclusivePostController } from '@/controllers/ExclusivePostController';
+import { GiveAwayController } from '@/controllers/GiveAwayController';
 import { PostController } from '@/controllers/PostController';
 import { strings } from '@/localization';
-import { navigationRef } from '@/navigation/RootNavigation';
+import { navigate, navigationRef } from '@/navigation/RootNavigation';
 import { StackActions } from '@react-navigation/native';
 import { showMessage } from 'react-native-flash-message';
 import { globalReset } from './GlobalActions';
@@ -185,10 +187,81 @@ export const TYPES = {
     SEARCH_USER_BY_USERNAME: "SEARCH_USER_BY_USERNAME",
     SEARCH_USER_BY_USERNAME_REQUEST: "SEARCH_USER_BY_USERNAME_REQUEST",
     SEARCH_USER_BY_USERNAME_SUCCESS: ' SEARCH_USER_BY_USERNAME_SUCCESS',
-    SEARCH_USER_BY_USERNAME_ERROR: ' SEARCH_USER_BY_USERNAME_ERROR'
+    SEARCH_USER_BY_USERNAME_ERROR: ' SEARCH_USER_BY_USERNAME_ERROR',
+
+
+    //  CREATE GIVEAWAY POST
+
+
+
+    GIVE_AWAY_POST: "GIVE_AWAY_POST",
+    GIVE_AWAY_POST_REQUEST: "GIVE_AWAY_POST_REQUEST",
+    GIVE_AWAY_POST_SUCCESS: "GIVE_AWAY_POST_SUCCESS",
+    GIVE_AWAY_POST_ERROR: "GIVE_AWAY_POST_ERROR",
+
+    // GET ACTIVE GIVEAWAY
+
+    GET_ACTIVE_GIVEAWAY: "GET_ACTIVE_GIVEAWAY",
+    GET_ACTIVE_GIVEAWAY_REQUEST: "GET_ACTIVE_GIVEAWAY_REQUEST",
+    GET_ACTIVE_GIVEAWAY_SUCCESS: "GET_ACTIVE_GIVEAWAY_SUCCESS",
+    GET_ACTIVE_GIVEAWAY_ERROR: "GET_ACTIVE_GIVEAWAY_ERROR",
+
+
+    //GET PAST GIVEAWAY
+
+    GET_PAST_GIVEAWAY: "GET_PAST_GIVEAWAY",
+    GET_PAST_GIVEAWAY_REQUEST: "GET_PAST_GIVEAWAY_REQUEST",
+    GET_PAST_GIVEAWAY_SUCCESS: "GET_PAST_GIVEAWAY_SUCCESS",
+    GET_PAST_GIVEAWAY_ERROR: "GET_PAST_GIVEAWAY_ERROR",
+
+
+    //GET PAST GIVEAWAY
+
+    JOIN_GIVEAWAY: "JOIN_GIVEAWAY",
+    JOIN_GIVEAWAY_REQUEST: "JOIN_GIVEAWAY_REQUEST",
+    JOIN_GIVEAWAY_SUCCESS: "JOIN_GIVEAWAY_SUCCESS",
+    JOIN_GIVEAWAY_ERROR: " JOIN_GIVEAWAY_ERROR",
+
+
+    WITHDRAW_GIVEAWAY: "WITHDRAW_GIVEAWAY",
+    WITHDRAW_GIVEAWAY_REQUEST: "WITHDRAW_GIVEAWAY_REQUEST",
+    WITHDRAW_GIVEAWAY_SUCCESS: "WITHDRAW_GIVEAWAY_SUCCESS",
+    WITHDRAW_GIVEAWAY_ERROR: "WITHDRAW_GIVEAWAY_ERROR",
+
+    //EXCLUSIVE POST 
+
+    CREATE_EXCLUSIVE_POST: "CREATE_EXCLUSIVE_POST",
+    CREATE_EXCLUSIVE_POST_REQUEST: "CREATE_EXCLUSIVE_POST_REQUEST",
+    CREATE_EXCLUSIVE_POST_SUCCESS: "CREATE_EXCLUSIVE_POST_SUCCESS",
+    CREATE_EXCLUSIVE_POST_ERROR: "CREATE_EXCLUSIVE_POST_ERROR",
+
+    GET_ALL_EXCLUSIVE_POST: "GET_ALL_EXCLUSIVE_POST",
+    GET_ALL_EXCLUSIVE_POST_REQUEST: "GET_ALL_EXCLUSIVE_POST_REQUEST",
+    GET_ALL_EXCLUSIVE_POST_SUCCESS: "GET_ALL_EXCLUSIVE_POST_SUCCESS",
+    GET_ALL_EXCLUSIVE_POST_ERROR: "GET_ALL_EXCLUSIVE_POST_ERROR",
+
+    GET_ALL_EXCLUSIVE_POST_BY_ID: "GET_ALL_EXCLUSIVE_POST_BY_ID",
+    GET_ALL_EXCLUSIVE_POST_BY_ID_REQUEST: "GET_ALL_EXCLUSIVE_POST_BY_ID_REQUEST",
+    GET_ALL_EXCLUSIVE_POST_BY_ID_SUCCESS: "GET_ALL_EXCLUSIVE_POST_BY_ID_SUCCESS",
+    GET_ALL_EXCLUSIVE_POST_BY_ID_ERROR: "GET_ALL_EXCLUSIVE_POST_BY_ID_ERROR",
+
+    UPDATE_EXCLUSIVE_POST: "UPDATE_EXCLUSIVE_POST",
+    UPDATE_EXCLUSIVE_POST_REQUEST: "UPDATE_EXCLUSIVE_POST_REQUEST",
+    UPDATE_EXCLUSIVE_POST_SUCCESS: "UPDATE_EXCLUSIVE_POST_SUCCESS",
+    UPDATE_EXCLUSIVE_POST_ERROR: "UPDATE_EXCLUSIVE_POST_ERROR",
+
+    DELETE_EXCLUSIVE_POST: "DELETE_EXCLUSIVE_POST",
+    DELETE_EXCLUSIVE_POST_REQUEST: "DELETE_EXCLUSIVE_POST_REQUEST",
+    DELETE_EXCLUSIVE_POST_SUCCESS: "DELETE_EXCLUSIVE_POST_SUCCESS",
+    DELETE_EXCLUSIVE_POST_ERROR: "DELETE_EXCLUSIVE_POST_ERROR",
+
 
 
 };
+
+
+
+
 export const createPostSuccess = user => ({
     type: TYPES.CREATE_POST_SUCCESS,
     payload: { user },
@@ -506,6 +579,173 @@ export const unBlockUserSuccess = user => ({
     payload: { user },
 });
 
+
+//  Give_away Post
+export const giveAwayPostSuccess = user => ({
+    type: TYPES.GIVE_AWAY_POST_SUCCESS,
+    payload: { user },
+});
+
+const giveAwayPostRequest = () => ({
+    type: TYPES.GIVE_AWAY_POST_REQUEST,
+    payload: null,
+});
+
+const giveAwayPostError = error => ({
+    type: TYPES.GIVE_AWAY_POST_ERROR,
+    payload: { error },
+});
+
+// Get_Active_GiveAWay
+export const getActiveGiveAwaySuccess = user => ({
+    type: TYPES.GET_ACTIVE_GIVEAWAY_SUCCESS,
+    payload: { user },
+});
+
+const getActiveGiveAwayRequest = () => ({
+    type: TYPES.GET_ACTIVE_GIVEAWAY_REQUEST,
+    payload: null,
+});
+
+const getActiveGiveAwayError = error => ({
+    type: TYPES.GET_ACTIVE_GIVEAWAY_ERROR,
+    payload: { error },
+});
+
+
+//GET_PAST_GIVEAWAY
+export const getPastGiveAwaySuccess = user => ({
+    type: TYPES.GET_PAST_GIVEAWAY_SUCCESS,
+    payload: { user },
+});
+
+const getPastGiveAwayRequest = () => ({
+    type: TYPES.GET_PAST_GIVEAWAY_REQUEST,
+    payload: null,
+});
+
+const getPastGiveAwayError = error => ({
+    type: TYPES.GET_PAST_GIVEAWAY_ERROR,
+    payload: { error },
+});
+
+
+//Join Giveaway
+export const joinGiveAwaySuccess = user => ({
+    type: TYPES.JOIN_GIVEAWAY_SUCCESS,
+    payload: { user },
+});
+
+const joinGiveAwayRequest = () => ({
+    type: TYPES.JOIN_GIVEAWAY_REQUEST,
+    payload: null,
+});
+
+const joinGiveAwayError = error => ({
+    type: TYPES.JOIN_GIVEAWAY_ERROR,
+    payload: { error },
+});
+
+//Withdraw Giveaway
+export const withDrawGiveAwaySuccess = user => ({
+    type: TYPES.WITHDRAW_GIVEAWAY_SUCCESS,
+    payload: { user },
+});
+
+const withDrawGiveAwayRequest = () => ({
+    type: TYPES.WITHDRAW_GIVEAWAY_REQUEST,
+    payload: null,
+});
+
+const withGiveAwayError = error => ({
+    type: TYPES.WITHDRAW_GIVEAWAY_ERROR,
+    payload: { error },
+});
+
+export const createExclusivePostSuccess = post => ({
+    type: TYPES.CREATE_EXCLUSIVE_POST_SUCCESS,
+    payload: { post },
+});
+
+const createExclusivePostRequest = () => ({
+    type: TYPES.CREATE_EXCLUSIVE_POST_REQUEST,
+    payload: null,
+});
+
+const createExclusivePostError = error => ({
+    type: TYPES.CREATE_EXCLUSIVE_POST_ERROR,
+    payload: { error },
+});
+//
+export const getAllExclusivePostSuccess = post => ({
+    type: TYPES.GET_ALL_EXCLUSIVE_POST_SUCCESS,
+    payload: { post },
+});
+
+const getAllExclusivePostRequest = () => ({
+    type: TYPES.GET_ALL_EXCLUSIVE_POST_REQUEST,
+    payload: null,
+});
+
+const getAllExclusivePostError = error => ({
+    type: TYPES.GET_ALL_EXCLUSIVE_POST_ERROR,
+    payload: { error },
+});
+//
+export const deleteExclusivePostSuccess = post => ({
+    type: TYPES.DELETE_EXCLUSIVE_POST_SUCCESS,
+    payload: { post },
+});
+
+const deleteExclusivePostRequest = () => ({
+    type: TYPES.DELETE_EXCLUSIVE_POST_REQUEST,
+    payload: null,
+});
+
+const deleteExclusivePostError = error => ({
+    type: TYPES.DELETE_EXCLUSIVE_POST_ERROR,
+    payload: { error },
+});
+//
+export const updateExclusivePostSuccess = post => ({
+    type: TYPES.UPDATE_EXCLUSIVE_POST_SUCCESS,
+    payload: { post },
+});
+
+const updateExclusivePostRequest = () => ({
+    type: TYPES.UPDATE_EXCLUSIVE_POST_REQUEST,
+    payload: null,
+});
+
+const updateExclusivePostError = error => ({
+    type: TYPES.UPDATE_EXCLUSIVE_POST_ERROR,
+    payload: { error },
+});
+
+//
+export const getExclusivePostByIdSuccess = post => ({
+    type: TYPES.GET_ALL_EXCLUSIVE_POST_BY_ID_SUCCESS,
+    payload: { post },
+});
+
+const getExclusivePostByIdRequest = () => ({
+    type: TYPES.GET_ALL_EXCLUSIVE_POST_BY_ID_REQUEST,
+    payload: null,
+});
+
+const getExclusivePostByIdError = error => ({
+    type: TYPES.GET_ALL_EXCLUSIVE_POST_BY_ID_ERROR,
+    payload: { error },
+});
+
+
+
+
+
+
+
+
+
 // create_post action
 
 export const createPost = (id, postTitle, postBody, file, mimeType, imageArray, screen) => async dispatch => {
@@ -711,6 +951,7 @@ export const deleteComment = (id, userId) => async dispatch => {
     }
 };
 export const followUser = (followerId, followId, type) => async dispatch => {
+    console.log('******88888', followerId)
     dispatch(followUserRequest());
     try {
         const user = await PostController.followUser(followerId, followId);
@@ -821,4 +1062,139 @@ export const searchUserbyUserName = (searchWord) => async dispatch => {
     } catch (error) {
         dispatch(searchUserByUserNameError(error))
     }
+};
+
+export const giveAwayPost = (params) => async dispatch => {
+
+    dispatch(globalReset())
+    dispatch(giveAwayPostRequest());
+    try {
+        const user = await GiveAwayController.createGiveAwayPost(params);
+        dispatch(giveAwayPostSuccess(user))
+        navigate(NAVIGATION.giveaway)
+
+    } catch (error) {
+        showMessage({
+            message: error?.message,
+            type: "danger"
+        })
+        dispatch(giveAwayPostError(error));
+    }
+};
+
+//GET All Active GiveAway
+export const getAllActiveGiveaway = (data) => async dispatch => {
+
+    dispatch(getActiveGiveAwayRequest());
+    try {
+        const post = await GiveAwayController.getAllActiveGivePost(data);
+        dispatch(getActiveGiveAwaySuccess(post))
+
+    } catch (error) {
+        dispatch(getActiveGiveAwayError(error))
+    }
+};
+
+export const getAllPastGiveaway = (data) => async dispatch => {
+
+    dispatch(getPastGiveAwayRequest());
+    try {
+        const post = await GiveAwayController.getAllPastGiveAwayPost(data);
+        dispatch(getPastGiveAwaySuccess(post))
+
+    } catch (error) {
+        dispatch(getPastGiveAwayError(error))
+    }
+};
+export const joinGiveAway = (data) => async dispatch => {
+
+    dispatch(joinGiveAwayRequest());
+    try {
+        const post = await GiveAwayController.joinGiveawaydata(data);
+        dispatch(joinGiveAwaySuccess(post))
+
+    } catch (error) {
+        dispatch(joinGiveAwayError(error))
+    }
+};
+
+export const WithDrawAway = (data) => async dispatch => {
+
+    dispatch(withDrawGiveAwayRequest());
+    try {
+        const post = await GiveAwayController.withDrawGiveawaydata(data);
+        dispatch(withDrawGiveAwaySuccess(post))
+
+    } catch (error) {
+        dispatch(withDrawGiveAwaySuccess(error))
+    }
+};
+export const createExclusivePost = (data) => async dispatch => {
+
+    dispatch(createExclusivePostRequest());
+    try {
+        const post = await ExclusivePostController.createExclusivePost(data);
+        dispatch(createExclusivePostSuccess(post))
+        navigationRef.navigate(NAVIGATION.exclusive)
+    } catch (error) {
+        dispatch(createExclusivePostError(error))
+    }
+
+};
+
+export const getAllExclusivePost = (data) => async dispatch => {
+
+    dispatch(getAllExclusivePostRequest());
+    try {
+        const post = await ExclusivePostController.getAllExclusivePost(data);
+        dispatch(getAllExclusivePostSuccess(post))
+
+    } catch (error) {
+        dispatch(getAllExclusivePostError(error))
+    }
+
+};
+
+
+export const getExclusivePostById = (data) => async dispatch => {
+
+    dispatch(getExclusivePostByIdRequest());
+    try {
+        const post = await ExclusivePostController.getExclusivePostById(data);
+        dispatch(getExclusivePostByIdSuccess(post))
+
+    } catch (error) {
+        dispatch(getExclusivePostByIdError(error))
+    }
+
+};
+export const deleteExclusivePost = (data) => async dispatch => {
+
+    dispatch(deleteExclusivePostRequest());
+    try {
+        const post = await ExclusivePostController.getAllExclusivePost(data);
+        dispatch(deleteExclusivePostSuccess(post))
+
+    } catch (error) {
+        dispatch(deleteExclusivePostError(error))
+    }
+
+};
+
+export const updateExclusivePost = (data) => async dispatch => {
+
+    dispatch(updateExclusivePostRequest());
+    try {
+        const post = await ExclusivePostController.updateExclusivePost(data);
+        dispatch(updateExclusivePostSuccess(post))
+        const dataa = {
+            userId: data?.userId,
+        }
+        dispatch(getAllExclusivePost(dataa))
+        navigationRef.navigate(NAVIGATION.exclusive)
+
+    } catch (error) {
+        dispatch(updateExclusivePostError(error))
+    }
+
 };

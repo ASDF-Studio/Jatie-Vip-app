@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   StyleSheet,
   View,
@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import { Button, HorizontalLine, Icon, TopBackButton } from '@/components';
+import { Button, CustomLoader, HorizontalLine, Icon, TopBackButton } from '@/components';
 import {
   faCircle,
   faImage,
@@ -32,18 +32,32 @@ import { getUser } from '@/selectors/UserSelectors';
 
 let nextId = 0;
 
-export default function AdminExclusivePost({ navigation }) {
+export default function UpdateExclusivePost({ navigation, route }) {
+  const { DATA } = route.params
+  console.log("DATA=-=-=-", DATA);
   const user = useSelector(getUser);
   const dispatch = useDispatch()
   const [imageArray, setImageArray] = useState([]);
   const [isModalVisible, setModalVisible] = useState(false);
+  const [imageArrayDisplay, setImageArrayDisplay] = useState([]);
   const [isImage, setIsImage] = useState();
   const [postTxt, setPostTxt] = useState('');
   const [postImg, setPostImg] = useState([]);
   const [mimeType, setmimeType] = useState([]);
   const [postTitle, setPostTitle] = useState('');
   const [postDesc, setPostDesc] = useState('');
+  const [animating, setAnimating] = useState();
 
+  let nextId = 100;
+  let preNextId = 100;
+  let next = 10;
+  let preNext = 10;
+  useEffect(() => {
+    setPostTitle(DATA?.postTitle)
+    setPostDesc(DATA?.postBody)
+
+    // setImageArray(DATA?.postImg)
+  }, [])
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
@@ -143,11 +157,16 @@ export default function AdminExclusivePost({ navigation }) {
       postTitle: postTitle,
       postBody: postDesc,
       imageArray: imageArray,
+      postId: DATA?.id,
+      vipOnly: DATA?.isVIPonly,
+      pinnedPost: DATA?.isPinned,
+      schedulePost: DATA?.isPinned
 
     }
 
-    navigation.navigate(NAVIGATION.adminPostOption, { prevData: params })
+    navigation.navigate(NAVIGATION.updateExclusiveOption, { prevData: params })
   }
+
   return (
     <SafeAreaView style={styles.contianer}>
       <View style={styles.header}>
@@ -157,6 +176,7 @@ export default function AdminExclusivePost({ navigation }) {
         </Text>
       </View>
       <HorizontalLine />
+
       <ScrollView>
         <View style={styles.postContainer}>
           <View style={styles.title}>
@@ -249,6 +269,7 @@ export default function AdminExclusivePost({ navigation }) {
 }
 
 export const FileUpload = imageArray => {
+
   return (
     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
       {imageArray ? (
@@ -294,7 +315,7 @@ export const FileUpload = imageArray => {
                     <View style={styles.videoPlayContainer}>
                       {' '}
                       <ActivityIndicator
-                        animating={animating}
+                        animating={false}
                         color={theme.light.colors.primary}
                         size="large"
                         style={styles.activityIndicator}

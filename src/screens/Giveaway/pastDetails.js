@@ -13,6 +13,7 @@ import {
   Button,
   Card,
   CardBody,
+  CustomLoader,
   HorizontalLine,
   Icon,
   ModalDown,
@@ -33,13 +34,17 @@ import { useSelector } from 'react-redux';
 import { useState } from 'react';
 import { NAVIGATION } from '@/constants';
 import { item } from './giveawayData/pastDetailsData';
+import { TYPES } from '@/actions/PostActions';
 
 export default function PastDetails({ navigation }) {
   const userType = useSelector(state => state.userType);
   const [open, setOpen] = useState(false);
+
+
   return (
     <SafeAreaView style={styles.contianer}>
       <View style={styles.header}>
+
         <TopBackButton onPress={() => navigation.goBack()} />
         <View style={styles.adminoOption}>
           <Text style={[styles.headerText, TextStyles.header]}>

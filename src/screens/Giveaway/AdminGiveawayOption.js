@@ -1,8 +1,9 @@
-import { AppSwitch, Button, TextField, TopBackButton } from '@/components';
+import { giveAwayPost, TYPES } from '@/actions/PostActions';
+import { AppSwitch, Button, CustomLoader, TextField, TopBackButton } from '@/components';
 import { strings } from '@/localization';
 import { TextStyles, theme } from '@/theme';
 import { FontFamily } from '@/theme/Fonts';
-import { faCalendar } from '@fortawesome/free-solid-svg-icons';
+import { faCalendar, faYinYang } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import React from 'react';
 import { useState } from 'react';
@@ -16,14 +17,32 @@ import {
 } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import { ms } from 'react-native-size-matters';
+import { useDispatch, useSelector } from 'react-redux';
+import moment from 'moment';
+import { isLoadingSelector } from '@/selectors/StatusSelectors';
+export default function AdminPostOption({ navigation, route }) {
+  const isLoading = useSelector(state =>
+    isLoadingSelector([TYPES.GIVE_AWAY_POST], state)
+  );
 
-export default function AdminPostOption({ navigation }) {
+  const dispatch = useDispatch()
   const [schedulePost, setSchedulePost] = useState(false);
   const [vipOnly, setVipOnly] = useState(false);
   const [pinPost, setPinPost] = useState(false);
 
   const [postDate, setPostDate] = useState(new Date());
+  const [endDate, SetEndDate] = useState(new Date())
+  const [openEndDatePicker, setopenEndDatePicker] = useState(false)
   const [openPostDatePicker, setOpenPostDatePicker] = useState(false);
+  const finalData = route.params.prevData
+
+  const data = {
+    postExpires: moment(endDate).format(),
+    startDate: moment(postDate).format(),
+    endDate: moment(endDate).format(),
+    isVIPonly: vipOnly,
+    isUSAonly: pinPost
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -33,6 +52,7 @@ export default function AdminPostOption({ navigation }) {
             onPress={() => navigation.goBack()}
             style={styles.TopBackButton}
           />
+          <CustomLoader open={isLoading} />
           <Text style={styles.headerTxt}>{strings.home.postOptions} </Text>
         </View>
         <View style={styles.optionContainer}>
@@ -50,9 +70,10 @@ export default function AdminPostOption({ navigation }) {
               {/* Date picker  */}
               <View>
                 <TextField
+
                   style={styles.rightTextFild}
                   editable={false}
-                  // value = {Moment(postDate).format('DD-MM-YYYY')}
+                  value={moment(postDate).format('MM-D-YYYY')}
                   placeholder={strings.home.selectTimeAndDate}
                 />
                 <TouchableOpacity
@@ -66,6 +87,7 @@ export default function AdminPostOption({ navigation }) {
                   />
                 </TouchableOpacity>
                 <DatePicker
+                  minimumDate={new Date()}
                   modal
                   mode="date"
                   open={openPostDatePicker}
@@ -74,6 +96,7 @@ export default function AdminPostOption({ navigation }) {
                   onConfirm={date => {
                     setOpenPostDatePicker(false);
                     setPostDate(date);
+
                   }}
                   onCancel={() => {
                     setOpenPostDatePicker(false);
@@ -101,12 +124,12 @@ export default function AdminPostOption({ navigation }) {
                 <TextField
                   style={styles.rightTextFild}
                   editable={false}
-                  // value = {Moment(postDate).format('DD-MM-YYYY')}
+                  value={moment(endDate).format('MM-D-YYYY')}
                   placeholder={strings.home.selectTimeAndDate}
                 />
                 <TouchableOpacity
                   style={styles.datePickerIcon}
-                  onPress={() => setOpenPostDatePicker(true)}
+                  onPress={() => setopenEndDatePicker(true)}
                 >
                   <FontAwesomeIcon
                     icon={faCalendar}
@@ -115,17 +138,17 @@ export default function AdminPostOption({ navigation }) {
                   />
                 </TouchableOpacity>
                 <DatePicker
+                  minimumDate={postDate}
                   modal
                   mode="date"
-                  open={openPostDatePicker}
-                  // locale = "fr"
-                  date={postDate}
+                  open={openEndDatePicker}
+                  date={endDate}
                   onConfirm={date => {
-                    setOpenPostDatePicker(false);
-                    setPostDate(date);
+                    setopenEndDatePicker(false);
+                    SetEndDate(date);
                   }}
                   onCancel={() => {
-                    setOpenPostDatePicker(false);
+                    setopenEndDatePicker(false);
                   }}
                 />
               </View>
@@ -158,6 +181,7 @@ export default function AdminPostOption({ navigation }) {
 
           <View style={styles.PostButtonContainer}>
             <Button
+              onPress={() => dispatch(giveAwayPost({ ...finalData, ...data }))}
               style={styles.PostButton}
               title={strings.exclusive.postButton}
             />

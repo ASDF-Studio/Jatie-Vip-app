@@ -277,6 +277,7 @@ export default function UpdatePost({ route, navigation }) {
           // console.log("DATA", DATA)
         )
       }
+      dispatch(getAllPost(user?.id, strings.sortBy.recent, false))
       {
         userType.user == strings.userType.admin && (
           navigationRef.navigate(NAVIGATION.postOptions, {

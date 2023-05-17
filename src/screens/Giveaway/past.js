@@ -15,35 +15,54 @@ import { FontFamily } from '@/theme/Fonts';
 import { strings } from '@/localization';
 import { NAVIGATION } from '@/constants';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Data } from './giveawayData/pastData';
+
+import { useDispatch, useSelector } from 'react-redux';
+import { geAllPastGiveAwayData } from '@/selectors/PostSelectors';
+import { useEffect } from 'react';
+import { getAllPastGiveaway } from '@/actions/PostActions';
+import { getUser } from '@/selectors/UserSelectors';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function Past({ navigation }) {
-  const [open, setOpen] = useState(false);
+
+  const getdataOfPast = useSelector(geAllPastGiveAwayData)
+  console.log('selector data', getdataOfPast)
+
+  const user = useSelector(getUser);
+  const focus = useIsFocused()
+
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    getPastData()
+
+  }, [focus])
+
+
+  const getPastData = () => {
+    const data = {
+      userId: user?.id,
+    }
+
+
+    dispatch(getAllPastGiveaway(data))
+  }
+
   return (
     <SafeAreaView>
       <FlatList
-        data={Data}
-        key={props => props.id}
+        data={getdataOfPast?.data || []}
+        key={props => props?.id}
         renderItem={({ item }) => (
           <View style={styles.cardContainer}>
             <Card>
               <View>
-                <Text style={styles.title}>{strings.giveaway.title} </Text>
+                <Text style={styles.title}>{item?.postTitle} </Text>
               </View>
-              <CardBody text={item.Desc} />
+              <CardBody text={item?.postBody} />
 
-              {/* winners */}
-              {item.winner.length == 1 ? (
-                <View>
-                  <Text style={styles.winners}>{strings.giveaway.winner} </Text>
-                </View>
-              ) : (
-                <View>
-                  <Text style={styles.winners}>{strings.giveaway.winners}</Text>
-                </View>
-              )}
 
-              {item.winner.map(item => {
+              {/* {item.winner.map(item => {
                 if (item == null) {
                   return;
                 } else {
@@ -70,32 +89,54 @@ export default function Past({ navigation }) {
                     </View>
                   );
                 }
-              })}
+              })} */}
               {/* endWinners */}
 
               <View style={styles.thumbnailContainer}>
-                <Image
-                  style={styles.thumbnailImage}
-                  source={{
-                    uri: item.photo,
-                  }}
-                />
+                {
+                  item?.postImg?.map(url =>
+                  (
+                    <>
+                      <Image
+                        style={styles.thumbnailImage}
+                        source={{
+                          uri: url,
+                        }}
+                      />
+
+
+
+
+
+                    </>
+                  )
+
+                  )}
+
+
+
                 <TouchableOpacity
                   onPress={() =>
                     navigation.navigate(NAVIGATION.giveawayPastDetails)
                   }
-                  style={styles.btn}
+                  style={item.postImg.length <= 0 ? [styles.btn, { top: '0%', position: 'relative', marginBottom: 20 }] : styles.btn}
                 >
                   <Text style={[styles.btnTxt, styles.btnTxtColor]}>
                     {strings.giveaway.learnMore}
                   </Text>
                 </TouchableOpacity>
+
+
+
+
               </View>
             </Card>
           </View>
         )}
       />
+
     </SafeAreaView>
+
   );
 }
 
