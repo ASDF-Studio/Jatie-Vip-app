@@ -147,6 +147,14 @@ export const postReducer = (state = {}, { payload, type }) => {
       }
 
 
+
+
+    case TYPES.GET_SINGLE_GIVEAWAY_BY_ID_SUCCESS:
+      return {
+        ...state,
+        giveAwaySinglePost: payload.post
+      }
+
     // case TYPES.DELETE_EXCLUSIVE_POST_SUCCESS:
     //   const newPost = state.exclusivePost.filter(item => item.id !== payload.id);
     //   console.log("NewPost", newPost);

@@ -24,3 +24,6 @@ export const getAllExclusiveData = state => {
 export const getSingleExclusiveData = state => {
     return Object.keys(state.post).length > 0 ? state.post?.exclusiveSinglePost : null;
 };
+export const getSingleGiveAwayData = state => {
+    return Object.keys(state.post).length > 0 ? state.post?.giveAwaySinglePost : null;
+};

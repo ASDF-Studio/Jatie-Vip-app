@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   StyleSheet,
   View,
@@ -30,18 +30,30 @@ import { TextStyles, theme } from '@/theme';
 import { FontFamily } from '@/theme/Fonts';
 import { ms, vs } from 'react-native-size-matters';
 import { strings } from '@/localization';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 import { NAVIGATION } from '@/constants';
 import { item } from './giveawayData/pastDetailsData';
-import { TYPES } from '@/actions/PostActions';
+import { getSingleGiveAwayById, TYPES } from '@/actions/PostActions';
+import { getUser } from '@/selectors/UserSelectors';
+import { getSingleGiveAwayData } from '@/selectors/PostSelectors';
 
 export default function PastDetails({ navigation, route }) {
+  const dispatch = useDispatch()
   const { DATA } = route.params
   const userType = useSelector(state => state.userType);
+  const user = useSelector(getUser)
+  const giveawayData = useSelector(getSingleGiveAwayData)
   const [open, setOpen] = useState(false);
 
-  console.log("DATA=-=-=-=-=", DATA);
+  console.log("DATA=-=-=-=-=SINGLE+AGIOEEBEBBE", giveawayData);
+  useEffect(() => {
+    const data = {
+      userId: user?.id,
+      giveawayId: DATA?.id
+    }
+    dispatch(getSingleGiveAwayById(data))
+  }, [])
   return (
     <SafeAreaView style={styles.contianer}>
       <View style={styles.header}>
@@ -68,32 +80,37 @@ export default function PastDetails({ navigation, route }) {
           <View style={styles.feedContainer}>
             <Card>
               <View>
-                <Text style={styles.title}>{DATA?.postTitle} </Text>
+                <Text style={styles.title}>{giveawayData?.all_giveaway?.postTitle} </Text>
               </View>
-              <CardBody text={DATA?.postBody} />
+              <CardBody text={giveawayData?.all_giveaway?.postBody} />
               {/* {link(item.link)}
               <CardBody text={item.MoreDesc} /> */}
-              {DATA?.winner_lists.length > 0 &&
+              {DATA?.winners?.length > 0 &&
                 <View>
                   <Text style={styles.winners}>{strings.giveaway.winners} </Text>
                 </View>
               }
 
               {/* winners */}
-              {DATA.winner_lists.map(item => {
+              {giveawayData?.winners?.map(item => {
                 if (item == null) {
                   return;
                 } else {
                   return (
                     <View style={styles.listContainer} key={item.id}>
                       <View style={styles.leftContainer}>
+
                         {/* <Image
                           source={{ uri: postImg?.image }}
+
+                        <Image
+                          source={{ uri: item?.profilePic }}
+
                           style={styles.profileImage}
                         /> */}
                         <View style={styles.nameContainer}>
-                          <Text style={styles.nameTxt}> {item.name} </Text>
-                          <Text> {item.userName} </Text>
+                          <Text style={styles.nameTxt}> {item?.fullName} </Text>
+                          <Text> {item?.username} </Text>
                         </View>
                       </View>
                       <View>
@@ -115,7 +132,7 @@ export default function PastDetails({ navigation, route }) {
                     <TouchableOpacity>
                       <Button
                         onPress={() =>
-                          navigation.navigate(NAVIGATION.seeAllParticipants)
+                          navigation.navigate(NAVIGATION.seeAllParticipants, { "DATA": giveawayData?.all_giveaway.giveaway_participants })
                         }
                         title={strings.giveaway.seeAllParticipants}
                         style={styles.withdrawBtn}
@@ -131,7 +148,7 @@ export default function PastDetails({ navigation, route }) {
 
               <View style={styles.thumbnailContainer}>
                 {
-                  DATA.postImg.map((url) => {
+                  giveawayData?.all_giveaway?.postImg.map((url) => {
                     return (
 
                       <Image

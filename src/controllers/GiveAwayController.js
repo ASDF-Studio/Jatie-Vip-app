@@ -34,6 +34,7 @@ export class GiveAwayController {
             data.append('endDate', params.endDate);
             data.append('isVIPonly', params.isVIPonly);
             data.append('isUSAonly', params.isUSAonly);
+            // data.append('isUSAonly', params.winnerCount);
             const headers = {
                 'Content-Type': 'multipart/form-data'
             }
@@ -60,7 +61,7 @@ export class GiveAwayController {
                 "loggedInUserId": data.userId,
 
             })
-            // console.log("BODY=-=-=-=-", body);
+            console.log("BODY=-=-=-=-", body);
             HttpClient.post(endpoint, body)
                 .then((response) => {
 
@@ -149,6 +150,34 @@ export class GiveAwayController {
 
                     resolve(response)
                     console.log('response of withDraw giveaway', JSON.stringify(response))
+
+                    showMessage({
+                        message: 'Participant withdrawn from the giveaway',
+                        type: 'success'
+                    })
+                })
+                .catch((error) => {
+                    reject(new Error(error.message));
+                    console.log("error of join giveaway", error)
+                });
+        });
+    }
+
+    static async getSingleGiveAwayById(data) {
+
+        return new Promise((resolve, reject) => {
+
+            const endpoint = API_BASE_URL + API_END_POINTS.GET_SINGLE_GIVEAWAY_BY_ID;
+            const body = JSON.stringify({
+                "giveawayId": data?.giveawayId,
+                "loggedInUserId": data?.userId
+            })
+            console.log("SINGLE____", body);
+            HttpClient.post(endpoint, body)
+                .then((response) => {
+
+                    resolve(response)
+                    console.log('response of withDraw Singelllelelelegiveaway', JSON.stringify(response))
 
                     showMessage({
                         message: 'Participant withdrawn from the giveaway',

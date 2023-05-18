@@ -91,7 +91,7 @@ export default function Search({ navigation }) {
                   <View style={styles.listContainer}>
                     <TouchableOpacity
                       style={styles.list}
-                      // onPress = {()=> navigation.navigate(NAVIGATION.userProfile)}
+                    // onPress = {()=> navigation.navigate(NAVIGATION.userProfile)}
                     >
                       <Image
                         source={{ uri: item.image }}

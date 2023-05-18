@@ -34,6 +34,7 @@ export default function AdminPostOption({ navigation, route }) {
   const [endDate, SetEndDate] = useState(new Date())
   const [openEndDatePicker, setopenEndDatePicker] = useState(false)
   const [openPostDatePicker, setOpenPostDatePicker] = useState(false);
+  const [winnerCount, setWinnerCount] = useState(0)
   const finalData = route.params.prevData
 
   const data = {
@@ -41,7 +42,22 @@ export default function AdminPostOption({ navigation, route }) {
     startDate: moment(postDate).format(),
     endDate: moment(endDate).format(),
     isVIPonly: vipOnly,
-    isUSAonly: pinPost
+    isUSAonly: pinPost,
+    winnerCount: winnerCount
+  }
+  const onCount = (type) => {
+    var count = winnerCount
+    if (type == "Minus") {
+      if (count > 0) {
+        count = count - 1
+        setWinnerCount(count)
+      }
+
+    }
+    else {
+      count = count + 1
+      setWinnerCount(count)
+    }
   }
 
   return (
@@ -53,7 +69,7 @@ export default function AdminPostOption({ navigation, route }) {
             style={styles.TopBackButton}
           />
           <CustomLoader open={isLoading} />
-          <Text style={styles.headerTxt}>{strings.home.postOptions} </Text>
+          <Text style={styles.headerTxt}>{strings.giveaway.giveAwayOption} </Text>
         </View>
         <View style={styles.optionContainer}>
           <View style={styles.list}>
@@ -154,6 +170,32 @@ export default function AdminPostOption({ navigation, route }) {
               </View>
             </View>
           </View>
+
+          <View style={styles.list}>
+            <View style={styles.left}>
+              <Text style={styles.listTxt}>{strings.giveaway.numberOfWinners} </Text>
+
+
+            </View>
+            <View style={styles.right}>
+              <View style={styles.plusMinusView}>
+                <TouchableOpacity
+                  onPress={() => onCount("Minus")}
+                >
+                  <Text style={styles.minus}>{"-"} </Text>
+                </TouchableOpacity>
+                <View style={styles.counterView}>
+                  <Text style={styles.counterText}>{winnerCount} </Text>
+                </View>
+                <TouchableOpacity
+                  onPress={() => onCount("Plus")}
+                >
+                  <Text style={styles.minus}>{"+"} </Text>
+
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
           <View style={styles.list}>
             <View style={styles.left}>
               <Text style={styles.listTxt}>
@@ -237,11 +279,30 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.Recoleta_medium,
     color: theme.light.colors.black,
   },
+  minus: {
+    fontSize: ms(30, 0.3),
+    fontFamily: FontFamily.Recoleta_medium,
+    color: theme.light.colors.info,
+  },
+  counterText: {
+    fontSize: ms(18),
+    fontFamily: FontFamily.BrandonGrotesque_light,
+    color: theme.light.colors.black,
+    textAlign: "center"
+  },
+  counterView: {
+    borderWidth: 0.3, borderRadius: 8, borderColor: theme.light.colors.inactiveTabLabel,
+    alignItems: "center", justifyContent: "center",
+    height: ms(35), width: ms(60), marginHorizontal: 10
+  },
   postSwitch: {
     marginLeft: ms(2),
   },
   vipSwitch: {
     marginLeft: ms(4),
+  },
+  plusMinusView: {
+    flexDirection: "row", alignItems: "center", justifyContent: "center",
   },
   pinSwitch: {
     marginLeft: ms(5),
