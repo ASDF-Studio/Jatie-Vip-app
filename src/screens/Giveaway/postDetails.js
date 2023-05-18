@@ -34,7 +34,7 @@ export default function PostDetails({ navigation, route }) {
   );
 
   const data = route.params.key
-
+  console.log("DATTATATAFBVJKB V H    ", data);
 
   const giveAwayId = data.id
 

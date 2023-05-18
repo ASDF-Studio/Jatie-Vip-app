@@ -29,10 +29,12 @@ export const en = {
     shareToFeed: 'Share to Feed',
     whatOnYourMind: "What's on your mind?",
     shareToVipOnly: 'Share to VIPs Only',
+
     post: 'Post',
     update: 'Update',
     next: 'Next',
     postOptions: 'Post Options',
+
     schedulePost: 'Schedule Post',
     seeSchedulePost: 'See Schedule posts',
     forVIPsOnly: 'For VIPs Only',
@@ -284,6 +286,7 @@ export const en = {
     learnMore: 'Learn More',
     title: 'Summer 2023 Giveaway',
     vipOnly: 'VIP Only',
+    giveAwayOption: "Giveaway Option",
 
     //onPress learn more
     expires: 'Expires in',

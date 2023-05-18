@@ -214,6 +214,11 @@ export const TYPES = {
     GET_PAST_GIVEAWAY_SUCCESS: "GET_PAST_GIVEAWAY_SUCCESS",
     GET_PAST_GIVEAWAY_ERROR: "GET_PAST_GIVEAWAY_ERROR",
 
+    GET_SINGLE_GIVEAWAY_BY_ID: "GET_PAST_GIVEAWAY_BY_ID",
+    GET_SINGLE_GIVEAWAY_BY_ID_REQUEST: " GET_SINGLE_GIVEAWAY_BY_ID_REQUEST",
+    GET_SINGLE_GIVEAWAY_BY_ID_SUCCESS: " GET_SINGLE_GIVEAWAY_BY_ID_SUCCESS",
+    GET_SINGLE_GIVEAWAY_BY_ID_ERROR: " GET_SINGLE_GIVEAWAY_BY_ID_ERROR",
+
 
     //GET PAST GIVEAWAY
 
@@ -395,6 +400,36 @@ const searchUserByUserNameError = error => ({
     type: TYPES.SEARCH_USER_BY_USERNAME_ERROR,
     payload: { error },
 });
+
+
+
+
+export const getSingleGiveawayByIdSuccess = post => ({
+    type: TYPES.GET_SINGLE_GIVEAWAY_BY_ID_SUCCESS,
+    payload: { post },
+});
+
+
+const getSingleGiveawayByIdRequest = () => ({
+    type: TYPES.GET_SINGLE_GIVEAWAY_BY_ID_REQUEST,
+    payload: null,
+});
+
+const getSingleGiveawayByIdError = error => ({
+    type: TYPES.GET_SINGLE_GIVEAWAY_BY_ID_ERROR,
+    payload: { error },
+});
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1106,6 +1141,24 @@ export const getAllPastGiveaway = (data) => async dispatch => {
         dispatch(getPastGiveAwayError(error))
     }
 };
+
+export const getSingleGiveAwayById = (data) => async dispatch => {
+
+    dispatch(getSingleGiveawayByIdRequest());
+    try {
+        const post = await GiveAwayController.getSingleGiveAwayById(data);
+        dispatch(getSingleGiveawayByIdSuccess(post?.data))
+
+    } catch (error) {
+        dispatch(getSingleGiveawayByIdError(error))
+    }
+};
+
+
+
+
+
+
 export const joinGiveAway = (data) => async dispatch => {
 
     dispatch(joinGiveAwayRequest());

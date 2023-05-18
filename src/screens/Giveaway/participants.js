@@ -26,8 +26,10 @@ import { FontFamily } from '@/theme/Fonts';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Data } from './giveawayData/participantsData';
 
-export default function Participants({ navigation }) {
+export default function Participants({ navigation, route }) {
+  const { DATA } = route.params
   const [open, setOpen] = useState(false);
+
   return (
     <SafeAreaView style={styles.container}>
       <TopBackButton
@@ -38,12 +40,12 @@ export default function Participants({ navigation }) {
         <Text style={[TextStyles.header, styles.HeaderDesign]}>
           {strings.giveaway.participants}
         </Text>
-        <Badge count={strings.giveaway.twentyThree} size={ms(16)} />
+        <Badge count={DATA.length} size={ms(16)} />
       </View>
       <View style={styles.flatListContainer} />
       <View>
         <FlatList
-          data={Data}
+          data={DATA}
           key={props => props.id}
           initialNumToRender={10}
           contentContainerStyle={styles.contentContainerStyle}
@@ -55,12 +57,12 @@ export default function Participants({ navigation }) {
                   onPress={() => navigation.navigate(NAVIGATION.userProfile)}
                 >
                   <Image
-                    source={{ uri: item.image }}
+                    source={{ uri: item?.user?.profilePic }}
                     style={styles.profileImage}
                   />
                   <View style={styles.nameContainer}>
-                    <Text style={styles.nameTxt}> {item.name} </Text>
-                    <Text> {item.userName} </Text>
+                    <Text style={styles.nameTxt}> {item?.user?.fullName} </Text>
+                    <Text> {"@" + item?.user?.username} </Text>
                   </View>
                 </TouchableOpacity>
                 <Icon

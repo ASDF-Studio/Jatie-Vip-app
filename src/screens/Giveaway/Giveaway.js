@@ -27,7 +27,7 @@ export function Giveaway({ navigation }) {
 
   const id = user.id
   const isLoading = useSelector(state =>
-    isLoadingSelector([TYPES.GET_ACTIVE_GIVEAWAY], state)
+    isLoadingSelector([TYPES.GET_ACTIVE_GIVEAWAY, TYPES.GET_PAST_GIVEAWAY], state)
   );
 
 
@@ -39,26 +39,6 @@ export function Giveaway({ navigation }) {
   const userType = useSelector(state => state?.userType);
   const [status, setStatus] = useState(strings?.giveaway?.active);
 
-
-
-  const getactiveData = () => {
-    const data = {
-      userId: user?.id,
-    }
-
-
-
-    dispatch(getAllActiveGiveaway(data))
-  }
-
-  const getPastData = () => {
-    const data = {
-      userId: user?.id,
-    }
-
-
-    dispatch(getAllPastGiveaway(data))
-  }
 
 
   return (

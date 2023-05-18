@@ -72,6 +72,7 @@ export const API_END_POINTS = {
 
     //past giveaway get 
     GET_PAST_GIVEAWAY: 'giveaway/all_giveaway_past',
+    GET_SINGLE_GIVEAWAY_BY_ID: 'giveaway/single_giveaway',
 
 
     //join giveaway 

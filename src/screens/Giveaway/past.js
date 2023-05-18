@@ -26,7 +26,7 @@ import { useIsFocused } from '@react-navigation/native';
 export default function Past({ navigation }) {
 
   const getdataOfPast = useSelector(geAllPastGiveAwayData)
-  console.log('selector data', getdataOfPast)
+  // console.log('selector data', getdataOfPast)
 
   const user = useSelector(getUser);
   const focus = useIsFocused()
@@ -36,7 +36,7 @@ export default function Past({ navigation }) {
   useEffect(() => {
     getPastData()
 
-  }, [focus])
+  }, [])
 
 
   const getPastData = () => {
