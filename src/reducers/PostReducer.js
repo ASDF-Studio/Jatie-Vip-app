@@ -2,6 +2,7 @@ import { TYPES } from '@/actions/PostActions';
 import { strings } from '@/localization';
 
 export const postReducer = (state = {}, { payload, type }) => {
+  console.log("TYPOPOPOPOPPO", type);
   switch (type) {
     case TYPES.VOTE_DOWN_SUCCESS:
       return {
@@ -144,6 +145,15 @@ export const postReducer = (state = {}, { payload, type }) => {
         ...state,
         exclusiveSinglePost: payload.post.data
       }
+
+    // case TYPES.DELETE_EXCLUSIVE_POST_SUCCESS:
+    //   const newPost = state.exclusivePost.filter(item => item.id !== payload.id);
+    //   console.log("NewPost", newPost);
+    //   return {
+    //     ...state,
+    //     exclusivePost: newPost
+    //   }
+
     case TYPES.CLEAR_STORE:
       return {};
     default:

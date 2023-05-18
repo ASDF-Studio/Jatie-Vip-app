@@ -209,5 +209,14 @@ export const styles = StyleSheet.create({
     height: ms(200),
     marginRight: ms(10),
   },
+  moreImage: {
+    height: ms(200),
+    backgroundColor: theme.light.colors.hyperlink,
+    opacity: 0.7,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    width: '100%',
+  },
 
 });

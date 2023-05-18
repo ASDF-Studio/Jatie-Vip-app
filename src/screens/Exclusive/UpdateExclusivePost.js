@@ -8,6 +8,7 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import { Button, CustomLoader, HorizontalLine, Icon, TopBackButton } from '@/components';
 import {
@@ -47,7 +48,8 @@ export default function UpdateExclusivePost({ navigation, route }) {
   const [postTitle, setPostTitle] = useState('');
   const [postDesc, setPostDesc] = useState('');
   const [animating, setAnimating] = useState();
-
+  const [preImageArray, setPreImageArray] = useState([]);
+  const [prePostImg, setPrePostImg] = useState([]);
   let nextId = 100;
   let preNextId = 100;
   let next = 10;
@@ -55,6 +57,23 @@ export default function UpdateExclusivePost({ navigation, route }) {
   useEffect(() => {
     setPostTitle(DATA?.postTitle)
     setPostDesc(DATA?.postBody)
+    {
+      DATA?.postImg.map(item => (
+        preImageArray.push({
+          id: next--,
+          image: item,
+          imageMime: null,
+          video: null,
+        }),
+        imageArray.push({
+          id: preNext--,
+          image: item,
+          imageMime: null,
+          video: null,
+        })
+      ))
+      setPrePostImg(DATA.postImg)
+    }
 
     // setImageArray(DATA?.postImg)
   }, [])
@@ -69,6 +88,7 @@ export default function UpdateExclusivePost({ navigation, route }) {
   };
 
   const OpenGallery = () => {
+    // if (imageArray < 3) {
     {
       isImage == strings.exclusive.image
         ? ImageCropPicker.openPicker({
@@ -109,9 +129,16 @@ export default function UpdateExclusivePost({ navigation, route }) {
             console.log('Error: ' + e);
           });
     }
+    // }
+    // else {
+    //   setModalVisible(!isModalVisible);
+    //   Alert.alert("You can select max 3 images")
+    // }
+
   };
 
   const OpenCamera = () => {
+    // if (imageArray < 3) {
     {
       isImage == strings.exclusive.image
         ? ImageCropPicker.openCamera({
@@ -148,6 +175,10 @@ export default function UpdateExclusivePost({ navigation, route }) {
             console.log('Error: ' + e);
           });
     }
+    // } else {
+    //   setModalVisible(!isModalVisible);
+    //   Alert.alert("You can select max 3 images")
+    // }
   };
 
   const validation = () => {
@@ -160,10 +191,9 @@ export default function UpdateExclusivePost({ navigation, route }) {
       postId: DATA?.id,
       vipOnly: DATA?.isVIPonly,
       pinnedPost: DATA?.isPinned,
-      schedulePost: DATA?.isPinned
+      schedulePost: DATA?.isScheduled
 
     }
-
     navigation.navigate(NAVIGATION.updateExclusiveOption, { prevData: params })
   }
 

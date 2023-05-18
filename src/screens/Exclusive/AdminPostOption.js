@@ -53,11 +53,11 @@ export default function AdminPostOption({ navigation, route }) {
 
   const onExclusivePost = () => {
     const data = {
-      postExpires: moment(endDate).format(),
+      postExpires: moment(postDate).format(),
       isVIPonly: vipOnly,
       isUSAonly: pinPost,
       schedulePost: schedulePost,
-      scheduleDate: postDate,
+      scheduleDate: moment(postDate).format(),
       userId: user?.id,
       postTitle: finalData?.postTitle,
       postBody: finalData?.postBody,
@@ -67,7 +67,7 @@ export default function AdminPostOption({ navigation, route }) {
     const dataa = {
       userId: user?.id,
     }
-    dispatch(getAllExclusivePost(dataa))
+    // dispatch(getAllExclusivePost(dataa))
   }
   return (
     <SafeAreaView style={styles.container}>

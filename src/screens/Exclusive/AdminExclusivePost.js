@@ -62,8 +62,10 @@ export default function AdminExclusivePost({ navigation }) {
           height: 400,
           mediaType: strings.exclusive.image,
           multiple: true,
+          maxFiles: 3
         })
           .then(images => {
+
             images.forEach(item => {
               imageArray.push({
                 id: nextId++,
@@ -120,6 +122,7 @@ export default function AdminExclusivePost({ navigation }) {
           width: 300,
           height: 400,
           cropping: false,
+
           mediaType: strings.exclusive.video,
         })
           .then(image => {
