@@ -87,10 +87,10 @@ export default function PastDetails({ navigation, route }) {
                   return (
                     <View style={styles.listContainer} key={item.id}>
                       <View style={styles.leftContainer}>
-                        <Image
-                          source={{ uri: postImg.image }}
+                        {/* <Image
+                          source={{ uri: postImg?.image }}
                           style={styles.profileImage}
-                        />
+                        /> */}
                         <View style={styles.nameContainer}>
                           <Text style={styles.nameTxt}> {item.name} </Text>
                           <Text> {item.userName} </Text>

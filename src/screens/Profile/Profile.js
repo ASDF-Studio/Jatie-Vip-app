@@ -27,6 +27,9 @@ import { FontFamily } from '@/theme/Fonts';
 import { Data } from './ProfileData/profileData';
 import { faSearch } from '@fortawesome/pro-regular-svg-icons';
 import { getUser } from '@/selectors/UserSelectors';
+import { useEffect } from 'react';
+import { followers } from '@/actions/UserActions';
+import { useIsFocused } from '@react-navigation/native';
 
 export function Profile({ navigation }) {
   const user = useSelector(getUser)
@@ -34,7 +37,13 @@ export function Profile({ navigation }) {
 
   const userType = useSelector(state => state.userType);
   const [status, setStatus] = useState(strings.profile.myStatus);
+  const dispatch = useDispatch()
 
+  const focus = useIsFocused()
+
+  useEffect(() => {
+    dispatch(followers(user?.id))
+  }, [focus]);
 
   return (
     <SafeAreaView style={styles.container}>

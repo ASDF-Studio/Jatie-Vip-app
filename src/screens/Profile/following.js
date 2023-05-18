@@ -38,6 +38,8 @@ export default function Following({ navigation }) {
   const [open, setOpen] = useState(false);
   const user = useSelector(getUser)
   const followerDataa = user.followersDatainReducer
+
+
   const [UnfollowId, setUnfollowId] = useState('')
   const focus = useIsFocused()
   useEffect(() => {
@@ -55,7 +57,7 @@ export default function Following({ navigation }) {
       dispatch(followers(user?.id))
     }, 1000);
 
-    //console.log('dispatch data of unfollowers', user?.id, UnfollowId)
+
   }
   return (
     <SafeAreaView style={styles.container}>
@@ -88,7 +90,7 @@ export default function Following({ navigation }) {
                   onPress={() => navigation.navigate(NAVIGATION.userProfile)}
                 >
                   <Image
-                    source={{ uri: item.userByFollowinguserid?.profilePic }}
+                    source={{ uri: item.userByFollowinguserid?.profilePic == '' ? null : item.userByFollowinguserid?.profilePic }}
                     style={styles.profileImage}
                   />
                   <View style={styles.nameContainer}>

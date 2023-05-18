@@ -20,6 +20,7 @@ export const userReducer = (state = {}, { payload, type }) => {
       return { ...state, blockListKey: payload.user };
     case TYPES.SEARCH_USER_SUCCESS:
       return { ...state, searchUserKey: payload.user };
+
     case TYPES.CLEAR_STORE:
       return {};
     default:

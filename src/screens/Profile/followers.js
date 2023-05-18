@@ -23,7 +23,7 @@ import { strings } from '@/localization';
 import { ms } from 'react-native-size-matters';
 import { FontFamily } from '@/theme/Fonts';
 import { Data } from './ProfileData/followersData';
-import { getAllPost } from '@/actions/PostActions';
+import { blockUser, getAllPost, unFollowUser } from '@/actions/PostActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { followers_FollowingData, getUser } from '@/selectors/UserSelectors';
 import { TYPES, followers } from '@/actions/UserActions';
@@ -31,18 +31,20 @@ import { useEffect } from 'react';
 import { useIsFocused } from '@react-navigation/native';
 import { followUser } from '@/actions/PostActions';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
+import { getAllPostData } from '@/selectors/PostSelectors';
 export default function Followers({ navigation }) {
   const dispatch = useDispatch()
+  const focus = useIsFocused()
+
   const [open, setOpen] = useState(false);
   const [followId, setfollowId] = useState('')
+  const [followUnfollowId, SetfollowUnfollowId] = useState('')
 
   //Selector Usage
   const user = useSelector(getUser)
+
+  const post = useSelector(getAllPostData)
   const followerDataa = user.followersDatainReducer
-
-
-  const focus = useIsFocused()
-
 
   useEffect(() => {
     dispatch(followers(user?.id))
@@ -64,8 +66,21 @@ export default function Followers({ navigation }) {
 
   }
 
+  const UnfollowHandlePress = () => {
+    dispatch(unFollowUser(user?.id, followId))
+    setOpen(false)
 
+    setTimeout(() => {
+      dispatch(followers(user?.id))
+    }, 1000);
 
+  }
+
+  const onBlock = () => {
+    dispatch(blockUser(user?.id, followId))
+    setOpen(false)
+
+  }
   return (
     <SafeAreaView style={styles.container}>
       <CustomLoader open={isLoading} />
@@ -80,7 +95,7 @@ export default function Followers({ navigation }) {
       <HorizontalLine color={theme.light.colors.primaryBg} paddingTop={8} />
       <View>
         <FlatList
-          data={followerDataa?.data.follower_List}
+          data={followerDataa?.data?.follower_List}
           key={props => props.id}
           initialNumToRender={10}
           contentContainerStyle={styles.contentContainerStyle}
@@ -90,10 +105,10 @@ export default function Followers({ navigation }) {
               <View style={styles.listContainer}>
                 <TouchableOpacity
                   style={styles.list}
-                  onPress={() => navigation.navigate(NAVIGATION.userProfile)}
+                // onPress={() => navigation.navigate(NAVIGATION.userProfile)}
                 >
                   <Image
-                    source={{ uri: item.user.profilePic }}
+                    source={{ uri: item.userByFollowinguserid?.profilePic == '' ? null : item.user?.profilePic }}
                     style={styles.profileImage}
                   />
                   <View style={styles.nameContainer}>
@@ -105,7 +120,7 @@ export default function Followers({ navigation }) {
                   icon={faEllipsis}
                   size={ms(15)}
                   color={theme.light.colors.secondary}
-                  onPress={() => { setfollowId(item.user.id), setOpen(true) }}
+                  onPress={() => { setfollowId(item.user.id), SetfollowUnfollowId(item.is_following), setOpen(true) }}
                 />
               </View>
             );
@@ -113,8 +128,8 @@ export default function Followers({ navigation }) {
         />
       </View>
       <ModalDown open={open} setOpen={setOpen}>
-        <ModalList onPress={followHandlePress}
-          title={strings.operations.follow + strings.home.DummyUser}
+        <ModalList onPress={followUnfollowId == false ? followHandlePress : UnfollowHandlePress}
+          title={followUnfollowId == false ? strings.operations.follow + strings.home.DummyUser : strings.operations.unFollow + strings.home.DummyUser}
           icon={faUserPlus}
           iconColor={theme.light.colors.primary}
           iconBg={theme.light.colors.primaryBgLight}
@@ -143,7 +158,7 @@ export default function Followers({ navigation }) {
           icon={faXmark}
           iconColor={theme.light.colors.secondary}
           iconBg={theme.light.colors.infoBgLight}
-        // onPress = {()=> Alert.alert("blocked")}
+          onPress={onBlock}
         />
       </ModalDown>
     </SafeAreaView>

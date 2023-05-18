@@ -69,6 +69,7 @@ import SearchPost from './SearchPost';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import queryString from 'query-string';
 import { POST_TYPE } from '@/constants/enums';
+import { followers } from '@/actions/UserActions';
 
 export function Home({ navigation }) {
   const ALLPOST = useSelector(getAllPostData)
@@ -190,6 +191,7 @@ export function Home({ navigation }) {
     setOpen(false)
     if (ALLPOST?.data[postIndex].is_following) {
       dispatch(unFollowUser(user?.id, postUserId, strings.home.post))
+      dispatch(followers(user?.id))
     }
     else {
       dispatch(followUser(user?.id, postUserId, strings.home.post))

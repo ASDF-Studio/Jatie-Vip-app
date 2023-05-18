@@ -451,6 +451,7 @@ export class UserController {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.FOLLOWERS;
       var data = JSON.stringify({
+        "loggedInUserId": userId,
         "id": userId
       });
       HttpClient.post(endpoint, data)
