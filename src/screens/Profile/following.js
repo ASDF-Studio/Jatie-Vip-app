@@ -36,11 +36,13 @@ export default function Following({ navigation }) {
   const dispatch = useDispatch()
 
   const [open, setOpen] = useState(false);
+
   const user = useSelector(getUser)
   const followerDataa = user.followersDatainReducer
 
 
   const [UnfollowId, setUnfollowId] = useState('')
+  const [username, setUserName] = useState('')
   const focus = useIsFocused()
   useEffect(() => {
     dispatch(followers(user?.id))
@@ -102,7 +104,7 @@ export default function Following({ navigation }) {
                   icon={faEllipsis}
                   size={ms(15)}
                   color={theme.light.colors.secondary}
-                  onPress={() => { setUnfollowId(item.userByFollowinguserid.id), setOpen(true) }}
+                  onPress={() => { setUnfollowId(item.userByFollowinguserid.id), setUserName(item.userByFollowinguserid.username), setOpen(true) }}
                 />
               </View>
             );
@@ -111,7 +113,7 @@ export default function Following({ navigation }) {
       </View>
       <ModalDown open={open} setOpen={setOpen}>
         <ModalList
-          title={strings.profile.unfollow + strings.home.DummyUser}
+          title={strings.profile.unfollow + ' ' + username}
           icon={faUserMinus}
           iconColor={theme.light.colors.primary}
           iconBg={theme.light.colors.primaryBgLight}
@@ -137,7 +139,7 @@ export default function Following({ navigation }) {
         // onPress = {()=> Alert.alert("report")}
         />
         <ModalList
-          title={strings.profile.block + strings.home.DummyUser}
+          title={strings.profile.block + '  ' + username}
           icon={faXmark}
           iconColor={theme.light.colors.secondary}
           iconBg={theme.light.colors.infoBgLight}
