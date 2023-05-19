@@ -46,7 +46,6 @@ export default function PastDetails({ navigation, route }) {
   const giveawayData = useSelector(getSingleGiveAwayData)
   const [open, setOpen] = useState(false);
 
-  console.log("DATA=-=-=-=-=SINGLE+AGIOEEBEBBE", giveawayData);
   useEffect(() => {
     const data = {
       userId: user?.id,
