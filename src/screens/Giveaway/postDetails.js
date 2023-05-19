@@ -22,11 +22,13 @@ import { getUser } from '@/selectors/UserSelectors';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 
 export default function PostDetails({ navigation, route }) {
-  const data = route.params.key
   const dispatch = useDispatch()
+
+  const data = route.params.key
+  const giveAwayId = data.id
+  const user = useSelector(getUser)
+
   const [active, setActive] = useState(false);
-
-
   const [disabledJoin, setDisabledJoin] = useState(data?.has_Joined)
   const joinGiveAwayLoading = useSelector(state =>
     isLoadingSelector([TYPES.JOIN_GIVEAWAY], state)
@@ -35,12 +37,6 @@ export default function PostDetails({ navigation, route }) {
     isLoadingSelector([TYPES.WITHDRAW_GIVEAWAY], state)
   );
 
-
-  console.log("DATTATATAFBVJKB V H    ", data);
-
-  const giveAwayId = data.id
-
-  const user = useSelector(getUser)
 
 
   const joinGiveAwayhandlePress = () => {

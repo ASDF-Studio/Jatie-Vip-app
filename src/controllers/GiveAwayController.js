@@ -146,14 +146,8 @@ export class GiveAwayController {
 
             HttpClient.post(endpoint, body)
                 .then((response) => {
-
                     resolve(response)
                     console.log('response of withDraw giveaway', JSON.stringify(response))
-
-                    showMessage({
-                        message: 'Participant withdrawn from the giveaway',
-                        type: 'success'
-                    })
                 })
                 .catch((error) => {
                     reject(new Error(error.message));
