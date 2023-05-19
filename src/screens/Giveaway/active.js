@@ -10,7 +10,7 @@ import {
   ImageBackground,
 } from 'react-native';
 import { theme } from '@/theme';
-import { AppImageViewer, Card, CardBody } from '@/components';
+import { AppImageViewer, Card, CardBody, CustomLoader } from '@/components';
 import { ms, vs } from 'react-native-size-matters';
 import { FontFamily } from '@/theme/Fonts';
 import { strings } from '@/localization';
@@ -21,10 +21,11 @@ import { faLock } from '@fortawesome/free-solid-svg-icons';
 import { Data } from './giveawayData/activeData';
 import { geAllActiveGiveAwayData } from '@/selectors/PostSelectors';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllActiveGiveaway } from '@/actions/PostActions';
+import { getAllActiveGiveaway, TYPES } from '@/actions/PostActions';
 import { getUser } from '@/selectors/UserSelectors';
 import { useEffect } from 'react';
 import { useIsFocused } from '@react-navigation/native';
+import { isLoadingSelector } from '@/selectors/StatusSelectors';
 
 export default function Active({ navigation, userType }) {
   const user = useSelector(getUser);
@@ -34,7 +35,9 @@ export default function Active({ navigation, userType }) {
   const dispatch = useDispatch()
   let counter = 1;
   const getActiveGiveWayData = useSelector(geAllActiveGiveAwayData)
-
+  const isLoading = useSelector(state =>
+    isLoadingSelector([TYPES.GET_ACTIVE_GIVEAWAY,], state)
+  );
 
   const focus = useIsFocused()
 
@@ -67,7 +70,9 @@ export default function Active({ navigation, userType }) {
         }}
       >
 
-
+        <CustomLoader
+          open={isLoading}
+        />
         <FlatList
           data={getActiveGiveWayData?.data ?? []}
           key={props => props.id}
@@ -223,7 +228,8 @@ export default function Active({ navigation, userType }) {
                             postTitle: item.postTitle,
                             postBody: item.postBody,
                             postExpires: item.postExpires,
-                            postImg: item.postImg
+                            postImg: item.postImg,
+                            has_Joined: item.has_Joined
                           }
 
                         })

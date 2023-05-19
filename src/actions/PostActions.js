@@ -1106,6 +1106,10 @@ export const giveAwayPost = (params) => async dispatch => {
     try {
         const user = await GiveAwayController.createGiveAwayPost(params);
         dispatch(giveAwayPostSuccess(user))
+        const data = {
+            userId: params.userId
+        }
+        dispatch(getAllActiveGiveaway(data))
         navigate(NAVIGATION.giveaway)
 
     } catch (error) {
@@ -1165,6 +1169,10 @@ export const joinGiveAway = (data) => async dispatch => {
     try {
         const post = await GiveAwayController.joinGiveawaydata(data);
         dispatch(joinGiveAwaySuccess(post))
+        const Data = {
+            userId: data?.userId
+        }
+        dispatch(getAllActiveGiveaway(Data))
 
     } catch (error) {
         dispatch(joinGiveAwayError(error))
@@ -1177,6 +1185,10 @@ export const WithDrawAway = (data) => async dispatch => {
     try {
         const post = await GiveAwayController.withDrawGiveawaydata(data);
         dispatch(withDrawGiveAwaySuccess(post))
+        const Data = {
+            userId: data?.userId
+        }
+        dispatch(getAllActiveGiveaway(Data))
 
     } catch (error) {
         dispatch(withDrawGiveAwaySuccess(error))

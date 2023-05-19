@@ -34,7 +34,8 @@ export class GiveAwayController {
             data.append('endDate', params.endDate);
             data.append('isVIPonly', params.isVIPonly);
             data.append('isUSAonly', params.isUSAonly);
-            // data.append('isUSAonly', params.winnerCount);
+            data.append('numOfWinners', params.winnerCount);
+            console.log("GIVEATWA__BOSY", data);
             const headers = {
                 'Content-Type': 'multipart/form-data'
             }
@@ -61,14 +62,12 @@ export class GiveAwayController {
                 "loggedInUserId": data.userId,
 
             })
-            console.log("BODY=-=-=-=-", body);
+            console.log("BODY=-=-=-=-JOINNN", body);
             HttpClient.post(endpoint, body)
                 .then((response) => {
 
                     resolve(response)
-
-
-                    // console.log('response of active giveaway', response)
+                    console.log('response of active giveaway JOIN', response)
                 })
                 .catch((error) => {
                     reject(new Error(error.message));
@@ -109,7 +108,7 @@ export class GiveAwayController {
                 "giveawayId": data?.giveawayId,
                 "participantId": data?.participantId
             })
-
+            console.log("JOINNNNN", body);
             HttpClient.post(endpoint, body)
                 .then((response) => {
 

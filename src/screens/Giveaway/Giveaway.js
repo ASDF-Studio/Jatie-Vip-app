@@ -27,7 +27,7 @@ export function Giveaway({ navigation }) {
 
   const id = user.id
   const isLoading = useSelector(state =>
-    isLoadingSelector([TYPES.GET_ACTIVE_GIVEAWAY, TYPES.GET_PAST_GIVEAWAY], state)
+    isLoadingSelector([TYPES.GET_ACTIVE_GIVEAWAY, TYPES.GET_PAST_GIVEAWAY,], state)
   );
 
 
@@ -43,7 +43,7 @@ export function Giveaway({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <CustomLoader open={isLoading} />
+      {/* <CustomLoader open={isLoading} /> */}
       <View style={styles.headerContainer}>
         <View style={styles.headerImageContainer}>
           <Logo />
@@ -101,7 +101,7 @@ export function Giveaway({ navigation }) {
       </View>
 
 
-      {userType?.user == `${strings.userType.admin}` && (
+      {(userType?.user == strings.userType.admin && status == strings.giveaway.active) && (
         <TouchableOpacity
           onPress={() => navigation.navigate(NAVIGATION.adminGiveawayPost)}
           style={[styles.adminBtn, styles.adminBtnDesign]}

@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { theme } from '@/theme';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
-import { Card, CardBody, Icon } from '@/components';
+import { Card, CardBody, CustomLoader, Icon } from '@/components';
 import { ms, vs } from 'react-native-size-matters';
 import { FontFamily } from '@/theme/Fonts';
 import { strings } from '@/localization';
@@ -19,9 +19,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { geAllPastGiveAwayData } from '@/selectors/PostSelectors';
 import { useEffect } from 'react';
-import { getAllPastGiveaway } from '@/actions/PostActions';
+import { getAllPastGiveaway, TYPES } from '@/actions/PostActions';
 import { getUser } from '@/selectors/UserSelectors';
 import { useIsFocused } from '@react-navigation/native';
+import { isLoadingSelector } from '@/selectors/StatusSelectors';
 
 export default function Past({ navigation }) {
 
@@ -32,7 +33,9 @@ export default function Past({ navigation }) {
   const focus = useIsFocused()
 
   const dispatch = useDispatch()
-
+  const isLoading = useSelector(state =>
+    isLoadingSelector([TYPES.GET_PAST_GIVEAWAY,], state)
+  );
   useEffect(() => {
     getPastData()
 
@@ -43,13 +46,14 @@ export default function Past({ navigation }) {
     const data = {
       userId: user?.id,
     }
-
-
     dispatch(getAllPastGiveaway(data))
   }
 
   return (
     <SafeAreaView>
+      <CustomLoader
+        open={isLoading}
+      />
       <FlatList
         data={getdataOfPast?.data || []}
         key={props => props?.id}
