@@ -32,9 +32,11 @@ import { useIsFocused } from '@react-navigation/native';
 import { followUser } from '@/actions/PostActions';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { getAllPostData } from '@/selectors/PostSelectors';
-export default function Followers({ navigation }) {
+export default function Followers({ navigation, route }) {
   const dispatch = useDispatch()
   const focus = useIsFocused()
+  const { id } = route.params
+
 
   const [open, setOpen] = useState(false);
   const [followId, setfollowId] = useState('')
@@ -47,7 +49,8 @@ export default function Followers({ navigation }) {
   const followerDataa = user.followersDatainReducer
 
   useEffect(() => {
-    dispatch(followers(user?.id))
+    dispatch(followers(user?.id, id))
+
   }, [focus]);
 
 
@@ -61,7 +64,7 @@ export default function Followers({ navigation }) {
     setOpen(false)
 
     setTimeout(() => {
-      dispatch(followers(user?.id))
+      dispatch(followers(user?.id, id))
     }, 1000);
 
   }
@@ -71,7 +74,7 @@ export default function Followers({ navigation }) {
     setOpen(false)
 
     setTimeout(() => {
-      dispatch(followers(user?.id))
+      dispatch(followers(user?.id, id))
     }, 1000);
 
   }

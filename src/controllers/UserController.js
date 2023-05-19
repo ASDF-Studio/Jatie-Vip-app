@@ -447,17 +447,18 @@ export class UserController {
     });
   }
 
-  static async followersList(userId) {
+  static async followersList(userId, id) {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.FOLLOWERS;
       var data = JSON.stringify({
         "loggedInUserId": userId,
-        "id": userId
+        "id": id
       });
       HttpClient.post(endpoint, data)
         .then((response) => {
 
           resolve(response);
+          console.log('response of list', response.data)
 
 
         })

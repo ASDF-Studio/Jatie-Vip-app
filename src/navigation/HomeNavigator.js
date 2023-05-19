@@ -12,6 +12,8 @@ import UpdatePost from '@/screens/Home/updatePost';
 import UserProfile from '@/screens/Profile/userProfile';
 import SinglePost from '@/screens/Home/SinglePost';
 import { AppNavigator } from './AppNavigator';
+import Followers from '@/screens/Profile/followers';
+import Following from '@/screens/Profile/following';
 
 const Stack = createNativeStackNavigator();
 
@@ -25,8 +27,11 @@ export function HomeNavigator() {
         name={NAVIGATION.AppNavigator} component={AppNavigator} />
       <Stack.Screen
         name={NAVIGATION.comments} component={Comments} />
+
       <Stack.Screen
         name={NAVIGATION.singlePost} component={SinglePost} />
+      <Stack.Screen name={NAVIGATION.followers} component={Followers} />
+      <Stack.Screen name={NAVIGATION.following} component={Following} />
       <Stack.Screen name={NAVIGATION.post} component={Post} />
       <Stack.Screen name={NAVIGATION.postOptions} component={PostOptions} />
       <Stack.Screen name={NAVIGATION.scheduledPost} component={SchedulePost} />
