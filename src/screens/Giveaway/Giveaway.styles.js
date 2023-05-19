@@ -32,6 +32,7 @@ export const styles = StyleSheet.create({
   adminBtnDesign: {
     backgroundColor: theme.light.colors.primary,
     width: ms(140),
+
   },
   adminBtnTxtColor: { color: theme.light.colors.white },
   iconContiner: {

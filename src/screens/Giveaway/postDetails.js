@@ -22,10 +22,12 @@ import { getUser } from '@/selectors/UserSelectors';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 
 export default function PostDetails({ navigation, route }) {
+  const data = route.params.key
   const dispatch = useDispatch()
   const [active, setActive] = useState(false);
 
 
+  const [disabledJoin, setDisabledJoin] = useState(data?.has_Joined)
   const joinGiveAwayLoading = useSelector(state =>
     isLoadingSelector([TYPES.JOIN_GIVEAWAY], state)
   );
@@ -33,7 +35,7 @@ export default function PostDetails({ navigation, route }) {
     isLoadingSelector([TYPES.WITHDRAW_GIVEAWAY], state)
   );
 
-  const data = route.params.key
+
   console.log("DATTATATAFBVJKB V H    ", data);
 
   const giveAwayId = data.id
@@ -44,7 +46,8 @@ export default function PostDetails({ navigation, route }) {
   const joinGiveAwayhandlePress = () => {
     const data = {
       giveawayId: giveAwayId,
-      participantId: user?.id
+      participantId: user?.id,
+      userId: user?.id
     }
     dispatch(joinGiveAway(data))
   }
@@ -52,7 +55,8 @@ export default function PostDetails({ navigation, route }) {
   const WithdrawGiveAwayhandlePress = () => {
     const data = {
       giveawayId: giveAwayId,
-      participantId: user?.id
+      participantId: user?.id,
+      userId: user?.id
     }
     dispatch(WithDrawAway(data))
   }
@@ -124,7 +128,7 @@ export default function PostDetails({ navigation, route }) {
 
 
                   >
-                    <Button onPress={() => { WithdrawGiveAwayhandlePress(), setActive(true) }}
+                    <Button onPress={() => { WithdrawGiveAwayhandlePress(), setActive(true), setDisabledJoin(false) }}
                       title={strings.giveaway.withdrawFromThisGiveaway}
                       style={styles.withdrawBtn}
                       textStyle={{
@@ -135,12 +139,15 @@ export default function PostDetails({ navigation, route }) {
                 </View>
                 <View>
                   <View style={styles.PostButtonContainer}>
-                    <TouchableOpacity >
+                    <TouchableOpacity
+                      disabled={disabledJoin}
+                    >
                       <Button
-
-                        onPress={() => { joinGiveAwayhandlePress(), setActive(false) }}
+                        // disabled={data?.has_Joined}
+                        disabled={disabledJoin}
+                        onPress={() => { joinGiveAwayhandlePress(), setActive(false), setDisabledJoin(true) }}
                         title={strings.giveaway.joinThisGiveaway}
-                        style={data?.has_Joined ? styles.outOfUS : styles.joinBtn}
+                        style={disabledJoin ? styles.outOfUS : styles.joinBtn}
                         textStyle={{
                           color: theme.light.colors.background,
                         }}

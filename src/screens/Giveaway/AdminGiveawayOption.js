@@ -20,6 +20,7 @@ import { ms } from 'react-native-size-matters';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
+import { getUser } from '@/selectors/UserSelectors';
 export default function AdminPostOption({ navigation, route }) {
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.GIVE_AWAY_POST], state)
@@ -27,9 +28,11 @@ export default function AdminPostOption({ navigation, route }) {
 
   const dispatch = useDispatch()
   const [schedulePost, setSchedulePost] = useState(false);
+  const user = useSelector(getUser)
   const [vipOnly, setVipOnly] = useState(false);
   const [pinPost, setPinPost] = useState(false);
-
+  const [startSwitch, setStartSwitch] = useState(false);
+  const [endSwitch, setEndSwitch] = useState(false);
   const [postDate, setPostDate] = useState(new Date());
   const [endDate, SetEndDate] = useState(new Date())
   const [openEndDatePicker, setopenEndDatePicker] = useState(false)
@@ -43,7 +46,8 @@ export default function AdminPostOption({ navigation, route }) {
     endDate: moment(endDate).format(),
     isVIPonly: vipOnly,
     isUSAonly: pinPost,
-    winnerCount: winnerCount
+    winnerCount: winnerCount,
+    userId: user?.id
   }
   const onCount = (type) => {
     var count = winnerCount
@@ -77,8 +81,8 @@ export default function AdminPostOption({ navigation, route }) {
               <Text style={styles.listTxt}>{strings.giveaway.startDate} </Text>
               <View style={styles.postSwitch}>
                 <AppSwitch
-                  value={schedulePost}
-                  onChange={() => setSchedulePost(prev => !prev)}
+                  value={startSwitch}
+                  onChange={() => setStartSwitch(!startSwitch)}
                 />
               </View>
             </View>
@@ -129,8 +133,9 @@ export default function AdminPostOption({ navigation, route }) {
               <Text style={styles.listTxt}>{strings.giveaway.endDate} </Text>
               <View style={styles.postSwitch}>
                 <AppSwitch
-                  value={schedulePost}
-                  onChange={() => setSchedulePost(prev => !prev)}
+                  value={endSwitch}
+                  onChange={() => setEndSwitch(!endSwitch)}
+
                 />
               </View>
             </View>
