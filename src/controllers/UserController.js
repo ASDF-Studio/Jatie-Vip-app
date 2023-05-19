@@ -500,7 +500,7 @@ export class UserController {
         .then((response) => {
 
           resolve(response);
-
+          console.log('response of search user users', response)
         })
         .catch((error) => {
           console.log('error in search user', error)
