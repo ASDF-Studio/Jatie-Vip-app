@@ -1,12 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { CardBody, CardHeader, Icon } from '@/components';
 import { theme, TextStyles } from '@/theme';
 import { ms } from 'react-native-size-matters';
 import { faEllipsis, faCircleUp } from '@fortawesome/free-solid-svg-icons';
 import PropsType from 'prop-types';
 import { FontFamily } from '@/theme/Fonts';
-import { ScrollView } from 'react-native-gesture-handler';
+
 import { CommentHeader } from './commentHeader';
 import { faCircleDown, faReplyAll } from '@fortawesome/pro-regular-svg-icons';
 import { useState } from 'react';
