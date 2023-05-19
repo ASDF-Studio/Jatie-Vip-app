@@ -68,7 +68,7 @@ export class GiveAwayController {
                     resolve(response)
 
 
-                    // console.log('response of active giveaway', response)
+                    console.log('response of active giveaway', response)
                 })
                 .catch((error) => {
                     reject(new Error(error.message));
@@ -109,7 +109,7 @@ export class GiveAwayController {
                 "giveawayId": data?.giveawayId,
                 "participantId": data?.participantId
             })
-
+            console.log("JOINNNNN", body);
             HttpClient.post(endpoint, body)
                 .then((response) => {
 

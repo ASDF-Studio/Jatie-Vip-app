@@ -56,7 +56,6 @@ export default function PostDetails({ navigation, route }) {
     }
     dispatch(WithDrawAway(data))
   }
-
   return (
     <SafeAreaView style={styles.contianer}>
       <CustomLoader open={active ? withdrawGiveAwayLoading : joinGiveAwayLoading} />
@@ -100,7 +99,7 @@ export default function PostDetails({ navigation, route }) {
                   })
                 }
                 <View>
-                  <View style={styles.PostButtonContainer}>
+                  {/* <View style={styles.PostButtonContainer}>
                     <TouchableOpacity
 
 
@@ -110,7 +109,7 @@ export default function PostDetails({ navigation, route }) {
                         style={styles.joinBtn} />
 
                     </TouchableOpacity>
-                  </View>
+                  </View> */}
                   <View style={styles.termsAndConsition}>
                     {termsAndCondition(
                       strings.giveaway.byJoining,
@@ -118,8 +117,13 @@ export default function PostDetails({ navigation, route }) {
                     )}
                   </View>
                 </View>
+
+
                 <View style={styles.PostButtonContainer}>
-                  <TouchableOpacity  >
+                  <TouchableOpacity
+
+
+                  >
                     <Button onPress={() => { WithdrawGiveAwayhandlePress(), setActive(true) }}
                       title={strings.giveaway.withdrawFromThisGiveaway}
                       style={styles.withdrawBtn}
@@ -133,8 +137,10 @@ export default function PostDetails({ navigation, route }) {
                   <View style={styles.PostButtonContainer}>
                     <TouchableOpacity >
                       <Button
+
+                        onPress={() => { joinGiveAwayhandlePress(), setActive(false) }}
                         title={strings.giveaway.joinThisGiveaway}
-                        style={styles.outOfUS}
+                        style={data?.has_Joined ? styles.outOfUS : styles.joinBtn}
                         textStyle={{
                           color: theme.light.colors.background,
                         }}

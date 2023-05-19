@@ -223,7 +223,8 @@ export default function Active({ navigation, userType }) {
                             postTitle: item.postTitle,
                             postBody: item.postBody,
                             postExpires: item.postExpires,
-                            postImg: item.postImg
+                            postImg: item.postImg,
+                            has_Joined: item.has_Joined
                           }
 
                         })
