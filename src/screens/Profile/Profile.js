@@ -42,7 +42,7 @@ export function Profile({ navigation }) {
   const focus = useIsFocused()
 
   useEffect(() => {
-    dispatch(followers(user?.id))
+    dispatch(followers(user?.id, user.id))
   }, [focus]);
 
   return (
@@ -90,10 +90,10 @@ export function Profile({ navigation }) {
       <HeaderTab
         title1={strings.profile.followers}
         count1={followerDataa?.data?.numOfFollowers}
-        onPress1={() => navigation.navigate(NAVIGATION.followers)}
+        onPress1={() => navigation.navigate(NAVIGATION.followers, { id: user.id })}
         title2={strings.profile.following}
         count2={followerDataa?.data?.numOfFollowing}
-        onPress2={() => navigation.navigate(NAVIGATION.following)}
+        onPress2={() => navigation.navigate(NAVIGATION.following, { id: user.id })}
       />
       <StatusNavigatorBar
         title1={strings.profile.myStatus}

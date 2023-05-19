@@ -8,6 +8,7 @@ import {
   FlatList,
   SafeAreaView,
   ImageBackground,
+  Alert,
 } from 'react-native';
 import {
   faCrown,
@@ -43,7 +44,7 @@ import { Data, demo } from './ProfileData/userProfileData';
 import { faSearch } from '@fortawesome/pro-regular-svg-icons';
 import { FontFamily } from '@/theme/Fonts';
 import { useDispatch, useSelector } from 'react-redux';
-import { getUserProfileByUserId } from '@/actions/UserActions';
+import { followers, getUserProfileByUserId } from '@/actions/UserActions';
 import { useEffect } from 'react';
 import { getUser } from '@/selectors/UserSelectors';
 import { isLoadingSelector, successSelector } from '@/selectors/StatusSelectors';
@@ -88,6 +89,7 @@ export default function UserProfile({ navigation, route }) {
   useEffect(() => {
     dispatch(getUserProfileByUserId(userId))
     getUserPostById(userId)
+    dispatch(followers(user?.id, userId))
   }, [isFollowSuccess, isunFollowSuccess])
 
   useEffect(() => {
@@ -184,10 +186,10 @@ export default function UserProfile({ navigation, route }) {
       <HeaderTab
         title1={strings.profile.followers}
         count1={user?.followers.length}
-        // onPress1 = {()=>Alert.alert('press 1')}
+        onPress1={() => navigation.navigate(NAVIGATION.followers, { id: userId })}
         title2={strings.profile.following}
         count2={user?.following.length}
-      // onPress2 = {()=>Alert.alert('press 2')}
+        onPress2={() => navigation.navigate(NAVIGATION.following, { id: userId })}
       />
       <HorizontalLine
         color={theme.light.colors.infoBgLight}

@@ -7,6 +7,7 @@ import {
   Image,
   TouchableOpacity,
   SafeAreaView,
+  Alert,
 } from 'react-native';
 import {
   faEllipsis,
@@ -28,24 +29,24 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
 import { useEffect } from 'react';
 import { useIsFocused } from '@react-navigation/native';
-import { unFollowUser } from '@/actions/PostActions';
+import { blockUser, unFollowUser } from '@/actions/PostActions';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { TYPES } from '@/actions/UserActions';
 
-export default function Following({ navigation }) {
+export default function Following({ navigation, route }) {
   const dispatch = useDispatch()
 
   const [open, setOpen] = useState(false);
 
   const user = useSelector(getUser)
   const followerDataa = user.followersDatainReducer
-
+  const { id } = route.params
 
   const [UnfollowId, setUnfollowId] = useState('')
   const [username, setUserName] = useState('')
   const focus = useIsFocused()
   useEffect(() => {
-    dispatch(followers(user?.id))
+    dispatch(followers(user?.id, id))
   }, [focus]);
 
   const isLoading = useSelector(state =>
@@ -56,11 +57,16 @@ export default function Following({ navigation }) {
     dispatch(unFollowUser(user?.id, UnfollowId))
     setOpen(false)
     setTimeout(() => {
-      dispatch(followers(user?.id))
+      dispatch(followers(user?.id, id))
     }, 1000);
 
-
   }
+
+  const blockUserById = () => {
+    dispatch(blockUser(user?.id, UnfollowId))
+    setOpen(false)
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <CustomLoader open={isLoading} />
@@ -79,7 +85,7 @@ export default function Following({ navigation }) {
       />
       <View>
         <FlatList
-          data={followerDataa?.data.following_List}
+          data={followerDataa?.data?.following_List}
           key={props => props.id}
           initialNumToRender={10}
           contentContainerStyle={styles.contentContainerStyle}
@@ -143,7 +149,7 @@ export default function Following({ navigation }) {
           icon={faXmark}
           iconColor={theme.light.colors.secondary}
           iconBg={theme.light.colors.infoBgLight}
-        // onPress = {()=> Alert.alert("blocked")}
+          onPress={blockUserById}
         />
       </ModalDown>
     </SafeAreaView>

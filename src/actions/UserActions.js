@@ -708,10 +708,11 @@ export const ChooseUser = (data) => {
 
 
 //followers 
-export const followers = (userId) => async dispatch => {
+export const followers = (userId, id) => async dispatch => {
+
   dispatch(followersRequest());
   try {
-    const user = await UserController.followersList(userId);
+    const user = await UserController.followersList(userId, id);
     dispatch(followersSuccess(user))
 
   } catch (error) {
