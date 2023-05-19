@@ -179,7 +179,7 @@ export class UserController {
       let data = new FormData()
       if (mimeType !== null) {
         let obj = [];
-        imageArray.map(item => {
+        imageArray && imageArray.map(item => {
           let filename = item.image.split("/").pop();
           obj = {
             uri: item.image,
