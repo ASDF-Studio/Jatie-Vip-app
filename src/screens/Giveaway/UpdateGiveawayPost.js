@@ -34,7 +34,6 @@ import { giveAwayPost } from '@/actions/PostActions';
 import { roundToNearestPixel } from 'react-native/Libraries/Utilities/PixelRatio';
 import { navigate } from '@/navigation/RootNavigation';
 
-let nextId = 0;
 
 export default function UpdateGiveawayPost({ navigation, route }) {
     const { DATA } = route.params

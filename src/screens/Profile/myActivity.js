@@ -11,8 +11,23 @@ import { ms } from 'react-native-size-matters';
 import { FontFamily } from '@/theme/Fonts';
 import { strings } from '@/localization';
 import { Data } from './ProfileData/myActivityData';
+import { useIsFocused } from '@react-navigation/native';
+import { useDispatch } from 'react-redux';
+import { getAllActivityByLoggedInUser } from '@/actions/UserActions';
 
 export default function MyActivity({ navigation }) {
+  const focus = useIsFocused();
+
+  const [open, setOpen] = useState(false);
+  const dispatch = useDispatch()
+  const user = useSelector(getUser);
+
+
+  // useEffect(() => {
+  //   if (focus) {
+  //     dispatch(getAllActivityByLoggedInUser(user?.id))
+  //   }
+  // }, [focus]);
   return (
     <View style={styles.pageContainer}>
       <FlatList

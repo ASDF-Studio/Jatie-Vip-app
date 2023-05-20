@@ -77,9 +77,9 @@ export default function Notification({ navigation }) {
               style={
                 item.new == false
                   ? [
-                      styles.notificationCard,
-                      { backgroundColor: theme.light.colors.white },
-                    ]
+                    styles.notificationCard,
+                    { backgroundColor: theme.light.colors.white },
+                  ]
                   : styles.notificationCard
               }
             >

@@ -34,7 +34,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 import { NAVIGATION } from '@/constants';
 import { item } from './giveawayData/pastDetailsData';
-import { getSingleGiveAwayById, TYPES } from '@/actions/PostActions';
+import { deleteGiveaway, endGiveaway, getSingleGiveAwayById, TYPES } from '@/actions/PostActions';
 import { getUser } from '@/selectors/UserSelectors';
 import { getSingleGiveAwayData } from '@/selectors/PostSelectors';
 
@@ -53,6 +53,19 @@ export default function PastDetails({ navigation, route }) {
     }
     dispatch(getSingleGiveAwayById(data))
   }, [])
+  const onEndGiveaway = () => {
+    const data = {
+      giveawayId: DATA?.id
+    }
+    dispatch(endGiveaway(data))
+  }
+  const onDeleteGiveaway = () => {
+    const data = {
+      id: DATA?.id,
+      userId: user?.id
+    }
+    dispatch(deleteGiveaway(data))
+  }
   return (
     <SafeAreaView style={styles.contianer}>
       <View style={styles.header}>
@@ -186,12 +199,15 @@ export default function PastDetails({ navigation, route }) {
           paddingBottom={8}
         />
         <ModalList
+          onPress={() => { onEndGiveaway(), setOpen(false) }}
           title={strings.giveaway.endNow}
           icon={faFlag}
           iconBg={theme.light.colors.infoBgLight}
           iconColor={theme.light.colors.secondary}
         />
         <ModalList
+          onPress={() => { onDeleteGiveaway(), setOpen(false) }}
+
           title={strings.giveaway.removeThisGiveaway}
           icon={faTrash}
           iconBg={theme.light.colors.infoBgLight}

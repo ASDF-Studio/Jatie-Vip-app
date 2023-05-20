@@ -1,4 +1,4 @@
-import { giveAwayPost, TYPES } from '@/actions/PostActions';
+import { giveAwayPost, TYPES, updateGiveaway } from '@/actions/PostActions';
 import { AppSwitch, Button, CustomLoader, TextField, TopBackButton } from '@/components';
 import { strings } from '@/localization';
 import { TextStyles, theme } from '@/theme';
@@ -63,7 +63,22 @@ export default function UpdateGiveawayOption({ navigation, route }) {
             setWinnerCount(count)
         }
     }
-
+    const onUpdateGiveaway = () => {
+        const data = {
+            postExpires: moment(endDate).format(),
+            startDate: moment(postDate).format(),
+            endDate: moment(endDate).format(),
+            isVIPonly: vipOnly,
+            isUSAonly: pinPost,
+            winnerCount: winnerCount,
+            userId: user?.id,
+            postTitle: finalData?.postTitle,
+            postBody: finalData?.postBody,
+            imageArray: finalData?.imageArray,
+        }
+        console.log("DATAA=-=--=-=-", JSON.stringify(data));
+        dispatch(updateGiveaway(data))
+    }
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView>
@@ -228,7 +243,7 @@ export default function UpdateGiveawayOption({ navigation, route }) {
 
                     <View style={styles.PostButtonContainer}>
                         <Button
-                            onPress={() => dispatch(giveAwayPost({ ...finalData, ...data }))}
+                            onPress={() => { onUpdateGiveaway() }}
                             style={styles.PostButton}
                             title={strings.exclusive.postButton}
                         />

@@ -81,6 +81,11 @@ export const TYPES = {
   GET_ALL_POST_BY_LOGGED_IN_USER_SUCCESS: "GET_ALL_POST_BY_LOGGED_IN_USER_SUCCESS",
   GET_ALL_POST_BY_LOGGED_IN_USER_ERROR: "GET_ALL_POST_BY_LOGGED_IN_USER_ERROR",
 
+  GET_ALL_ACTIVITY_BY_LOGGED_IN_USER: "GET_ALL_ACTIVITY_BY_LOGGED_IN_USER",
+  GET_ALL_ACTIVITY_BY_LOGGED_IN_USER_REQUEST: "GET_ALL_ACTIVITY_BY_LOGGED_IN_USER_REQUEST",
+  GET_ALL_ACTIVITY_BY_LOGGED_IN_USER_SUCCESS: "GET_ALL_ACTIVITY_BY_LOGGED_IN_USER_SUCCESS",
+  GET_ALL_ACTIVITY_BY_LOGGED_IN_USER_ERROR: "GET_ALL_ACTIVITY_BY_LOGGED_IN_USER_ERROR",
+
   //Followers
   FOLLOWERS: "FOLLOWERS",
   FOLLOWERS_REQUEST: "FOLLOWERS_REQUEST",
@@ -253,6 +258,34 @@ const getAllPostByLoggedInUserError = error => ({
   type: TYPES.GET_ALL_POST_BY_LOGGED_IN_USER_ERROR,
   payload: { error },
 });
+
+
+export const getAllActivityByLoggedInUserSuccess = post => ({
+  type: TYPES.GET_ALL_ACTIVITY_BY_LOGGED_IN_USER_SUCCESS,
+  payload: { post },
+});
+
+const getAllActivityByLoggedInUserRequest = () => ({
+  type: TYPES.GET_ALL_ACTIVITY_BY_LOGGED_IN_USER_REQUEST,
+  payload: null,
+});
+
+const getAllActivityByLoggedInUserError = error => ({
+  type: TYPES.GET_ALL_ACTIVITY_BY_LOGGED_IN_USER_ERROR,
+  payload: { error },
+});
+
+
+
+
+
+
+
+
+
+
+
+
 
 //create post
 export const createPostSuccess = user => ({
@@ -669,6 +702,27 @@ export const getAllPostsByLoggedInUser = (id) => async (dispatch, getState) => {
     dispatch(getAllPostByLoggedInUserSuccess(allPosts?.data))
   } catch (error) {
     dispatch(getAllPostByLoggedInUserError(error))
+  }
+};
+
+
+
+export const getAllActivityByLoggedInUser = (id) => async (dispatch, getState) => {
+  dispatch(globalReset())
+  dispatch(getAllActivityByLoggedInUserRequest());
+
+  const userType = getState().userType
+  let allPosts
+  try {
+    if (userType.user === strings.userType.free) {
+      allPosts = await UserController.postByUserId(id);
+    }
+    if (userType.user === strings.userType.admin) {
+      allPosts = await UserController.getAllPostByAdmin();
+    }
+    dispatch(getAllActivityByLoggedInUserSuccess(allPosts?.data))
+  } catch (error) {
+    dispatch(getAllActivityByLoggedInUserError(error))
   }
 };
 

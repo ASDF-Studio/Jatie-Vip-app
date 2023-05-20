@@ -67,6 +67,9 @@ export const API_END_POINTS = {
     // GiveAway Post 
     GIVE_AWAY_POST_ENDPOINT: 'giveaway/create',
 
+    UPDATE_GIVEAWAY: 'giveaway/update',
+    DELETE_GIVEAWAY: 'giveaway/delete',
+    END_GIVEAWAY: 'giveaway/select_random_winners',
 
     // Active giveaway get
     GET_ACTIVE_GIVEAWAY: 'giveaway/all_giveaway_active',

@@ -220,6 +220,23 @@ export const TYPES = {
     GET_SINGLE_GIVEAWAY_BY_ID_ERROR: " GET_SINGLE_GIVEAWAY_BY_ID_ERROR",
 
 
+    UPDATE_GIVEAWAY: "UPDATE_GIVEAWAY",
+    UPDATE_GIVEAWAY_REQUEST: " UPDATE_GIVEAWAY_REQUEST",
+    UPDATE_GIVEAWAY_SUCCESS: " UPDATE_GIVEAWAY_SUCCESS",
+    UPDATE_GIVEAWAY_ERROR: " UPDATE_GIVEAWAY_ERROR",
+
+
+    DELETE_GIVEAWAY: "DELETE_GIVEAWAY",
+    DELETE_GIVEAWAY_REQUEST: " DELETE_GIVEAWAY_REQUEST",
+    DELETE_GIVEAWAY_SUCCESS: " DELETE_GIVEAWAY_SUCCESS",
+    DELETE_GIVEAWAY_ERROR: "DELETE_GIVEAWAY_ERROR",
+
+    END_GIVEAWAY: "END_GIVEAWAY",
+    END_GIVEAWAY_REQUEST: " END_GIVEAWAY_REQUEST",
+    END_GIVEAWAY_SUCCESS: " END_GIVEAWAY_SUCCESS",
+    END_GIVEAWAY_ERROR: "END_GIVEAWAY_ERROR",
+
+
     //GET PAST GIVEAWAY
 
     JOIN_GIVEAWAY: "JOIN_GIVEAWAY",
@@ -424,9 +441,54 @@ const getSingleGiveawayByIdError = error => ({
 
 
 
+export const updateGiveawaySuccess = post => ({
+    type: TYPES.UPDATE_GIVEAWAY_SUCCESS,
+    payload: { post },
+});
 
 
+const updateGiveawayRequest = () => ({
+    type: TYPES.UPDATE_GIVEAWAY_REQUEST,
+    payload: null,
+});
 
+const updateGiveawayError = error => ({
+    type: TYPES.UPDATE_GIVEAWAY_ERROR,
+    payload: { error },
+});
+
+export const deleteGiveawaySuccess = post => ({
+    type: TYPES.DELETE_GIVEAWAY_SUCCESS,
+    payload: { post },
+});
+
+
+const deleteGiveawayRequest = () => ({
+    type: TYPES.DELETE_GIVEAWAY_REQUEST,
+    payload: null,
+});
+
+const deleteGiveawayError = error => ({
+    type: TYPES.DELETE_GIVEAWAY_ERROR,
+    payload: { error },
+});
+
+
+export const endGiveawaySuccess = post => ({
+    type: TYPES.END_GIVEAWAY_SUCCESS,
+    payload: { post },
+});
+
+
+const endGiveawayRequest = () => ({
+    type: TYPES.END_GIVEAWAY_REQUEST,
+    payload: null,
+});
+
+const endGiveawayError = error => ({
+    type: TYPES.END_GIVEAWAY_ERROR,
+    payload: { error },
+});
 
 
 
@@ -1178,6 +1240,73 @@ export const joinGiveAway = (data) => async dispatch => {
         dispatch(joinGiveAwayError(error))
     }
 };
+
+export const updateGiveaway = (data) => async dispatch => {
+
+    dispatch(updateGiveawayRequest());
+    try {
+        const post = await GiveAwayController.updateGiveawayData(data);
+        dispatch(updateGiveawaySuccess(post))
+        const Data = {
+            userId: data?.userId
+        }
+        dispatch(getAllActiveGiveaway(Data))
+
+    } catch (error) {
+        dispatch(updateGiveawayError(error))
+    }
+};
+
+
+
+export const deleteGiveaway = (data) => async dispatch => {
+
+    dispatch(deleteGiveawayRequest());
+    try {
+        const post = await GiveAwayController.deleteGiveawayData(data);
+        dispatch(deleteGiveawaySuccess(post))
+        const Data = {
+            userId: data?.userId
+        }
+        dispatch(getAllActiveGiveaway(Data))
+
+    } catch (error) {
+        dispatch(deleteGiveawayError(error))
+    }
+};
+
+
+
+export const endGiveaway = (data) => async dispatch => {
+
+    dispatch(endGiveawayRequest());
+    try {
+        const post = await GiveAwayController.endGiveawayData(data);
+        dispatch(endGiveawaySuccess(post))
+        const Data = {
+            userId: data?.userId
+        }
+        dispatch(getAllActiveGiveaway(Data))
+
+    } catch (error) {
+        dispatch(endGiveawayError(error))
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export const WithDrawAway = (data) => async dispatch => {
 
