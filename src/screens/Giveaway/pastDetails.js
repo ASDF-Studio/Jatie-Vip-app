@@ -173,6 +173,8 @@ export default function PastDetails({ navigation, route }) {
 
       <ModalDown open={open} setOpen={setOpen}>
         <ModalList
+          onPress={() => { navigation.navigate(NAVIGATION.updateGiveawayPost, { "DATA": DATA }), setOpen(false) }
+          }
           title={strings.giveaway.editGiveaway}
           icon={faPen}
           iconBg={theme.light.colors.infoBgLight}

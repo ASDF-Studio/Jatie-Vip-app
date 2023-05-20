@@ -7,6 +7,8 @@ import PastDetails from '@/screens/Giveaway/pastDetails';
 import Participants from '@/screens/Giveaway/participants';
 import AdminGiveawayPost from '@/screens/Giveaway/AdminGiveawayPost';
 import AdminGiveawayOption from '@/screens/Giveaway/AdminGiveawayOption';
+import UpdateGiveawayOption from '@/screens/Giveaway/UpdateGiveawayOption';
+import UpdateGiveawayPost from '@/screens/Giveaway/UpdateGiveawayPost';
 import Notification from '@/screens/Giveaway/notification';
 import Search from '@/screens/Giveaway/search';
 
@@ -42,6 +44,14 @@ export function GiveawayNavigator() {
       <Stack.Screen
         name={NAVIGATION.adminGiveawayOption}
         component={AdminGiveawayOption}
+      />
+      <Stack.Screen
+        name={NAVIGATION.updateGiveawayPost}
+        component={UpdateGiveawayPost}
+      />
+      <Stack.Screen
+        name={NAVIGATION.updateGiveawayOption}
+        component={UpdateGiveawayOption}
       />
       <Stack.Screen name={NAVIGATION.notification} component={Notification} />
       <Stack.Screen name={NAVIGATION.search} component={Search} />
