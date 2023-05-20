@@ -83,8 +83,27 @@ export default function PastDetails({ navigation, route }) {
               </View>
               <CardBody text={giveawayData?.all_giveaway?.postBody} />
               {/* {link(item.link)}
+
               <CardBody text={item.MoreDesc} /> */}
-              {DATA?.winners?.length > 0 &&
+
+              <View style={styles.thumbnailContainer}>
+                {
+                  giveawayData?.all_giveaway?.postImg.map((url) => {
+                    return (
+
+                      <Image
+                        style={styles.thumbnailImage}
+                        source={{
+                          uri: url
+                        }}
+                      />
+
+                    )
+                  })
+                }
+
+              </View>
+              {giveawayData?.winners?.length > 0 &&
                 <View>
                   <Text style={styles.winners}>{strings.giveaway.winners} </Text>
                 </View>
@@ -108,7 +127,7 @@ export default function PastDetails({ navigation, route }) {
                         />
                         <View style={styles.nameContainer}>
                           <Text style={styles.nameTxt}> {item?.fullName} </Text>
-                          <Text> {item?.username} </Text>
+                          <Text> {"@" + item?.username} </Text>
                         </View>
                       </View>
                       <View>
@@ -144,28 +163,7 @@ export default function PastDetails({ navigation, route }) {
                 </View>
               )}
 
-              <View style={styles.thumbnailContainer}>
-                {
-                  giveawayData?.all_giveaway?.postImg.map((url) => {
-                    return (
 
-                      <Image
-                        style={styles.thumbnailImage}
-                        source={{
-                          uri: url
-                        }}
-                      />
-
-                    )
-                  })
-                }
-                {/* <Image
-                  style={styles.thumbnailImage}
-                  source={{
-                    uri: item.photo,
-                  }}
-                /> */}
-              </View>
             </Card>
           </View>
         </ScrollView>

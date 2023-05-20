@@ -172,10 +172,10 @@ export class GiveAwayController {
                     resolve(response)
                     console.log('response of withDraw Singelllelelelegiveaway', JSON.stringify(response))
 
-                    showMessage({
-                        message: 'Participant withdrawn from the giveaway',
-                        type: 'success'
-                    })
+                    // showMessage({
+                    //     message: 'Participant withdrawn from the giveaway',
+                    //     type: 'success'
+                    // })
                 })
                 .catch((error) => {
                     reject(new Error(error.message));

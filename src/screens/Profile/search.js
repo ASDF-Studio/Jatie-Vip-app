@@ -130,6 +130,8 @@ export default function Search({ navigation }) {
 
                       <TouchableOpacity
                         style={styles.list}
+                        onPress={() => navigation.navigate(NAVIGATION.userProfile, { userId: item?.id })}
+
                       // onPress = {()=> navigation.navigate(NAVIGATION.userProfile)}
                       >
                         <Image

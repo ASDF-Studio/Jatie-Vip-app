@@ -52,6 +52,7 @@ import { Loader } from '@/components/Loader';
 import { UserController } from '@/controllers';
 import { navigationRef } from '@/navigation/RootNavigation';
 import { TYPES, followUser, unFollowUser } from '@/actions/PostActions';
+import { showMessage } from 'react-native-flash-message';
 
 export default function UserProfile({ navigation, route }) {
   const dispatch = useDispatch()
@@ -120,7 +121,12 @@ export default function UserProfile({ navigation, route }) {
 
     }
   }
-
+  const onMessageClick = () => {
+    showMessage({
+      message: 'Coming Soon',
+      type: 'info'
+    })
+  }
   const renderFollowTitle = () => {
     const loggedInUserID = getUserProfile?.id
     if (user) {
@@ -199,7 +205,9 @@ export default function UserProfile({ navigation, route }) {
 
       <View style={styles.messageHeader}>
         <View style={styles.messageLeft}>
-          <TouchableOpacity style={[styles.IconBox, styles.IconBoxDesign]}>
+          <TouchableOpacity
+            onPress={() => { onMessageClick() }}
+            style={[styles.IconBox, styles.IconBoxDesign]}>
             <FontAwesomeIcon
               icon={faMessage}
               color={theme.light.colors.success}
