@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     StyleSheet,
     View,
@@ -38,6 +38,7 @@ let nextId = 0;
 
 export default function UpdateGiveawayPost({ navigation, route }) {
     const { DATA } = route.params
+    console.log("Edit Giveaway Data", DATA);
     const user = useSelector(getUser);
     const dispatch = useDispatch()
     const [imageArray, setImageArray] = useState([]);
@@ -47,8 +48,13 @@ export default function UpdateGiveawayPost({ navigation, route }) {
     const [postImg, setPostImg] = useState([]);
     const [mimeType, setmimeType] = useState([]);
     const [postTitle, setPostTitle] = useState('');
+    const [postDesc, setPostDesc] = useState('');
     const [preImageArray, setPreImageArray] = useState([]);
     const [prePostImg, setPrePostImg] = useState([]);
+    let nextId = 100;
+    let preNextId = 100;
+    let next = 10;
+    let preNext = 10;
     useEffect(() => {
         setPostTitle(DATA?.postTitle)
         setPostDesc(DATA?.postBody)
@@ -186,12 +192,12 @@ export default function UpdateGiveawayPost({ navigation, route }) {
         const params = {
             userId: user?.id,
             postTitle: postTitle,
-            postBody: postTxt,
+            postBody: postDesc,
             imageArray: imageArray,
 
         }
 
-        navigation.navigate(NAVIGATION.adminGiveawayOption, { prevData: params })
+        navigation.navigate(NAVIGATION.updateGiveawayOption, { prevData: params })
     }
 
     return (
@@ -221,11 +227,11 @@ export default function UpdateGiveawayPost({ navigation, route }) {
                     </View>
                     <View style={styles.TextBoxDEsc}>
                         <TextInput
-                            value={setPostTxt}
+                            value={postDesc}
                             style={styles.InputTextBoxDEsc}
                             multiline={true}
                             placeholder={strings.exclusive.whatOnYourMind}
-                            onChangeText={setPostTxt}
+                            onChangeText={setPostDesc}
                         />
                     </View>
                 </View>
@@ -254,8 +260,8 @@ export default function UpdateGiveawayPost({ navigation, route }) {
 
                 <Button
                     title={strings.exclusive.next}
-                    disabled={postTxt ? false : true}
-                    opacity={postTxt ? 1 : 0.4}
+                    disabled={postDesc ? false : true}
+                    opacity={postDesc ? 1 : 0.4}
                     onPress={validation}
                     style={styles.giveAwayButtom}
                 />
