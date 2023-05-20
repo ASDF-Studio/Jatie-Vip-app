@@ -163,7 +163,7 @@ export class GiveAwayController {
             data.append('isVIPonly', params.isVIPonly);
             data.append('isUSAonly', params.isUSAonly);
             data.append('numOfWinners', params.winnerCount);
-            console.log("GIVEATWA__BOSY", data);
+            console.log("GIVEATWA__Update=-=-=-=", data);
             const headers = {
                 'Content-Type': 'multipart/form-data'
             }
