@@ -1251,6 +1251,7 @@ export const updateGiveaway = (data) => async dispatch => {
             userId: data?.userId
         }
         dispatch(getAllActiveGiveaway(Data))
+        navigationRef.navigate(NAVIGATION.giveaway)
 
     } catch (error) {
         dispatch(updateGiveawayError(error))
@@ -1269,6 +1270,7 @@ export const deleteGiveaway = (data) => async dispatch => {
             userId: data?.userId
         }
         dispatch(getAllActiveGiveaway(Data))
+        navigationRef.navigate(NAVIGATION.giveaway)
 
     } catch (error) {
         dispatch(deleteGiveawayError(error))
@@ -1287,6 +1289,7 @@ export const endGiveaway = (data) => async dispatch => {
             userId: data?.userId
         }
         dispatch(getAllActiveGiveaway(Data))
+        navigationRef.navigate(NAVIGATION.giveaway)
 
     } catch (error) {
         dispatch(endGiveawayError(error))
