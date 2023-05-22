@@ -314,27 +314,52 @@ export class UserController {
 
   // create post by admin
 
-  static async createPostByAdmin(id, postTitle, postBody, file, mimeType, imageArray) {
+  static async createPostByAdmin(id, postTitle, postBody, file, mimeType, imageArray, isImage) {
     return new Promise(async (resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.CREATE_POST_ADMIN;
       let data = new FormData()
+      console.log("VIDEO----", imageArray);
       if (mimeType !== null) {
-        let obj = [];
-        imageArray.map(item => {
-          let filename = item.image.split("/").pop();
-          obj = {
-            uri: item.image,
-            name: filename,
-            type: item.imageMime,
-          };
-          data.append('myimage', obj);
-        });
+        if (isImage == strings.exclusive.video) {
+          let obj = [];
+          imageArray.map(item => {
+            let filename = item.video.split("/").pop();
+            obj = {
+              uri: item.video,
+              name: filename,
+              type: item.imageMime,
+            };
+            data.append('myimage', obj);
+          });
+        } else {
+          let obj = [];
+          imageArray.map(item => {
+            let filename = item.image.split("/").pop();
+            obj = {
+              uri: item.image,
+              name: filename,
+              type: item.imageMime,
+            };
+            data.append('myimage', obj);
+          });
+        }
+        // let obj = [];
+        // imageArray.map(item => {
+        //   let filename = item.image.split("/").pop();
+        //   obj = {
+        //     uri: item.image,
+        //     name: filename,
+        //     type: item.imageMime,
+        //   };
+        //   data.append('myimage', obj);
+        // });
       }
 
       data.append('userId', id);
       data.append('postTitle', postTitle);
       data.append('postBody', postBody);
       data.append('postImg', mimeType == null && file);
+      console.log("FORM_DATA_______", data);
       const headers = {
         'Content-Type': 'multipart/form-data'
       }

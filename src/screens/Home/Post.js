@@ -51,7 +51,7 @@ export default function AdminPost({ navigation }) {
   const [isImage, setIsImage] = useState();
   const [postTxt, setPostTxt] = useState('');
   const [vipOnly, setVipOnly] = useState(false);
-
+  const [animating, setAnimating] = useState(false);
   const [postTitle, setPostTitle] = useState('');
   const [postBody, setPostBody] = useState('');
   const [postImg, setPostImg] = useState([]);
@@ -73,6 +73,8 @@ export default function AdminPost({ navigation }) {
   };
 
   const OpenGallery = () => {
+
+
     {
       isImage == strings.exclusive.image
         ? ImageCropPicker.openPicker({
@@ -107,15 +109,21 @@ export default function AdminPost({ navigation }) {
           loadingLabelText: 'loading',
         })
           .then(video => {
-            imageArray.push({
-              id: nextId++,
-              image: null,
-              video: video.path,
-              videoMime: video.mime,
+            video.forEach(item => {
+              imageArray.push({
+                id: nextId++,
+                image: null,
+                video: item.path,
+                videoMime: item.mime,
+              });
+              console.log("VIDEO=-=-=-Selction", video);
+              setPostImg(video.path);
+              setmimeType(video.mime);
+              setModalVisible(!isModalVisible);
             });
-            setPostImg(video.path);
-            setmimeType(video.mime);
-            setModalVisible(!isModalVisible);
+
+
+
           })
           .catch(e => {
             console.log('Error: ' + e);
@@ -171,6 +179,7 @@ export default function AdminPost({ navigation }) {
   };
 
   const validation = () => {
+
     if (postBody == '') {
       showMessage({
         message: strings.home.postBody,
@@ -192,7 +201,7 @@ export default function AdminPost({ navigation }) {
     else {
 
       let DATA = {
-        postTitle, postBody, postImg, mimeType, imageArray
+        postTitle, postBody, postImg, mimeType, imageArray, isImage
       }
 
       // let navigationPath = 'home';
@@ -410,13 +419,13 @@ export const FileUpload = imageArray => {
                       </Text>
                     </TouchableOpacity>
                     <View style={styles.videoPlayContainer}>
-                      {' '}
-                      <ActivityIndicator
-                        animating={animating}
+
+                      {/* <ActivityIndicator
+                        animating={true}
                         color={theme.light.colors.primary}
                         size="large"
                         style={styles.activityIndicator}
-                      />
+                      /> */}
                       <FontAwesomeIcon
                         icon={faCircle}
                         size={ms(30)}
@@ -434,7 +443,9 @@ export const FileUpload = imageArray => {
             })}
           </View>
         </View>
-      ) : null}
+      )
+        : null
+      }
     </ScrollView>
   );
 };

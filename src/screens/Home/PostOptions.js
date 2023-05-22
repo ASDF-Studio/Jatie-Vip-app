@@ -23,6 +23,7 @@ import { createPostByAdmin, updatePost } from '@/actions/UserActions';
 
 export default function PostOptions({ route, navigation }) {
   const { prevData } = route.params;
+  console.log("PREV_DATA", prevData);
   const [schedulePost, setSchedulePost] = useState(false);
   const [vipOnly, setVipOnly] = useState(false);
   const [pinPost, setPinPost] = useState(false);
@@ -42,10 +43,11 @@ export default function PostOptions({ route, navigation }) {
   const [openExpiringDatePicker, setOpenExpiringDatePicker] = useState(false);
 
   const handleSubmit = () => {
+
     if (prevData?.actionType === "Update") {
-      dispatch(updatePost(prevData?.postId, prevData?.userId, prevData?.postTitle, prevData?.postBody, prevData?.postImg, prevData?.preImageArray, prevData?.mimeType, prevData?.preMimeType, prevData?.imageArray, prevData?.user_Type, NAVIGATION.home))
+      dispatch(updatePost(prevData?.postId, prevData?.userId, prevData?.postTitle, prevData?.postBody, prevData?.postImg, prevData?.preImageArray, prevData?.mimeType, prevData?.preMimeType, prevData?.imageArray, prevData?.user_Type, NAVIGATION.home, prevData?.isImage))
     } else {
-      dispatch(createPostByAdmin(user?.id, prevData?.postTitle, prevData?.postBody, prevData?.postImg, prevData?.mimeType, prevData?.imageArray, NAVIGATION.home))
+      dispatch(createPostByAdmin(user?.id, prevData?.postTitle, prevData?.postBody, prevData?.postImg, prevData?.mimeType, prevData?.imageArray, NAVIGATION.home, prevData?.isImage))
     }
   };
 

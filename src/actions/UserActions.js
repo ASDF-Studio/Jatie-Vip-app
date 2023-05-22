@@ -552,11 +552,11 @@ export const logout = () => async dispatch => {
 
 // create_post action
 
-export const createPost = (id, postTitle, postBody, file, mimeType, imageArray, screen) => async dispatch => {
+export const createPost = (id, postTitle, postBody, file, mimeType, imageArray, screen, isImage) => async dispatch => {
   dispatch(globalReset())
   dispatch(createPostRequest());
   try {
-    const user = await UserController.createPost(id, postTitle, postBody, file, mimeType, imageArray);
+    const user = await UserController.createPost(id, postTitle, postBody, file, mimeType, imageArray, isImage);
     dispatch(createPostSuccess(user))
     if (screen == NAVIGATION.home) {
       showMessage({
@@ -585,11 +585,12 @@ export const createPost = (id, postTitle, postBody, file, mimeType, imageArray, 
 
 // create_post_by_admin action
 
-export const createPostByAdmin = (id, postTitle, postBody, file, mimeType, imageArray, screen) => async dispatch => {
+export const createPostByAdmin = (id, postTitle, postBody, postImg, mimeType, imageArray, screen, isImage) => async dispatch => {
+
   dispatch(globalReset())
   dispatch(createPostRequest());
   try {
-    const user = await UserController.createPostByAdmin(id, postTitle, postBody, file, mimeType, imageArray);
+    const user = await UserController.createPostByAdmin(id, postTitle, postBody, postImg, mimeType, imageArray, isImage);
     dispatch(createPostSuccess(user))
     if (screen == NAVIGATION.home) {
       showMessage({
