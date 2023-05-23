@@ -56,12 +56,12 @@ import { TYPES, followUser, unFollowUser } from '@/actions/PostActions';
 export default function UserProfile({ navigation, route }) {
   const dispatch = useDispatch()
   const { userId } = route?.params
-  console.log('otherpersoId', userId)
+  //console.log('otherpersoId', userId)
   const userr = useSelector(getUser)
-  console.log('MyId', userr.id)
+  // console.log('MyId', userr.id)
 
   const getUserProfile = useSelector(getUser)
-
+  const [active, setActive] = useState(false)
 
   const [openMore, setOpenMore] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
@@ -89,7 +89,7 @@ export default function UserProfile({ navigation, route }) {
   useEffect(() => {
     dispatch(getUserProfileByUserId(userId))
     getUserPostById(userId)
-    dispatch(followers(user?.id, userId))
+    // dispatch(followers(user?.id, userId))
   }, [isFollowSuccess, isunFollowSuccess])
 
   useEffect(() => {
@@ -186,7 +186,7 @@ export default function UserProfile({ navigation, route }) {
       <HeaderTab
         title1={strings.profile.followers}
         count1={user?.followers.length}
-        onPress1={() => navigation.navigate(NAVIGATION.followers, { id: userId })}
+        onPress1={() => navigation.navigate(NAVIGATION.followers, { id: userId, screenName: 'userProfile' })}
         title2={strings.profile.following}
         count2={user?.following.length}
         onPress2={() => navigation.navigate(NAVIGATION.following, { id: userId })}

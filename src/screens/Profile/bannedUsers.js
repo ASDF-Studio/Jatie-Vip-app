@@ -19,17 +19,54 @@ import {
   Badge,
   ModalDown,
   ModalList,
+  CustomLoader,
 } from '@/components';
 import { ms, vs } from 'react-native-size-matters';
 import { strings } from '@/localization';
 import { Data } from './ProfileData/bannedUsersData';
 import { faSearch } from '@fortawesome/pro-regular-svg-icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { TYPES, bannedUsers, unBannedUserById } from '@/actions/UserActions';
+import { useEffect } from 'react';
+import { useIsFocused } from '@react-navigation/native';
+import { getUser } from '@/selectors/UserSelectors';
+import { isLoadingSelector } from '@/selectors/StatusSelectors';
 
 export default function Notification({ navigation }) {
   const [open, setOpen] = useState(false);
+  const [bannedId, SetBannedId] = useState('')
+  const [userName, setUserName] = useState('')
+  const focus = useIsFocused();
+
+  const dispatch = useDispatch()
+  const user = useSelector(getUser)
+
+  const isLoading = useSelector(state =>
+    isLoadingSelector([TYPES.GET_ALL_BANNED_USERS], state)
+  );
+
+  useEffect(() => {
+    if (focus) {
+      dispatch(bannedUsers())
+    }
+  }, [focus]);
+
+
+  const unBannedHandlePress = () => {
+    dispatch(unBannedUserById(bannedId))
+    setOpen(false)
+    setTimeout(() => {
+      dispatch(bannedUsers())
+    }, 200);
+
+
+
+
+  }
 
   return (
     <SafeAreaView style={styles.container}>
+      <CustomLoader open={isLoading} />
       <TopBackButton
         onPress={() => navigation.goBack()}
         style={styles.TopBackButton}
@@ -60,7 +97,7 @@ export default function Notification({ navigation }) {
       <View style={styles.searchList}>
         <View>
           <FlatList
-            data={Data}
+            data={user.getAllBannedUsersKey.data}
             key={props => props.id}
             initialNumToRender={10}
             contentContainerStyle={styles.contentContainerStyle}
@@ -69,19 +106,19 @@ export default function Notification({ navigation }) {
                 <View style={styles.listContainer}>
                   <TouchableOpacity style={styles.list}>
                     <Image
-                      source={{ uri: item.image }}
+                      source={{ uri: item.user.profilePic }}
                       style={styles.profileImage}
                     />
                     <View style={styles.nameContainer}>
-                      <Text style={styles.nameTxt}> {item.name} </Text>
-                      <Text style={styles.userNameTxt}> {item.userName} </Text>
+                      <Text style={styles.nameTxt}> {item.user.fullName} </Text>
+                      <Text style={styles.userNameTxt}> {item.user.username} </Text>
                     </View>
                   </TouchableOpacity>
                   <Icon
                     icon={faEllipsis}
                     size={ms(15)}
                     color={theme.light.colors.secondary}
-                    onPress={() => setOpen(true)}
+                    onPress={() => { SetBannedId(item.user.id), setOpen(true) }}
                   />
                 </View>
               );
@@ -92,7 +129,7 @@ export default function Notification({ navigation }) {
 
       {open && (
         <ModalDown open={open} setOpen={setOpen}>
-          <ModalList
+          <ModalList onPress={unBannedHandlePress}
             title={strings.profile.unban + strings.home.DummyUser}
             icon={faCheck}
             iconColor={theme.light.colors.info}

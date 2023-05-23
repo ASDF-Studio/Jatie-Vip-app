@@ -13,8 +13,21 @@ import { ms, vs } from 'react-native-size-matters';
 import { CardHeader, HorizontalLine, TopBackButton } from '@/components';
 import { NAVIGATION } from '@/constants';
 import { Data } from './ProfileData/manageReportData';
+import { useIsFocused } from '@react-navigation/native';
+import { manageAllReports } from '@/actions/UserActions';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 export default function ManageReports({ navigation }) {
+
+  const focus = useIsFocused();
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (focus) {
+      dispatch(manageAllReports())
+    }
+  }, [focus]);
   return (
     <View style={styles.contianer}>
       <TopBackButton

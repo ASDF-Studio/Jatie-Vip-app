@@ -36,7 +36,9 @@ export default function Followers({ navigation, route }) {
   const dispatch = useDispatch()
   const focus = useIsFocused()
   const { id } = route.params
-
+  const { screenName } = route.params
+  console.log(screenName)
+  const { active } = route.params
 
   const [open, setOpen] = useState(false);
   const [followId, setfollowId] = useState('')
@@ -119,12 +121,13 @@ export default function Followers({ navigation, route }) {
                     <Text> {item.user.username} </Text>
                   </View>
                 </TouchableOpacity>
-                <Icon
+                {screenName == "userProfile" ? null : <Icon
                   icon={faEllipsis}
                   size={ms(15)}
                   color={theme.light.colors.secondary}
                   onPress={() => { setfollowId(item.user.id), SetfollowUnfollowId(item.is_following), setOpen(true) }}
-                />
+                />}
+
               </View>
             );
           }}

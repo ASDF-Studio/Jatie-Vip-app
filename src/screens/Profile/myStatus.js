@@ -106,9 +106,9 @@ export default function MyStatus({ navigation }) {
               </TouchableOpacity>
             ))}
           </View> */}
-                {item?.postImg?.length <= 2 ? (
+                {item.postImg?.length <= 2 ? (
                   <View style={styles.imageContainer}>
-                    {item?.postImg?.map(data => (
+                    {item.postImg?.map(data => (
                       counter = counter + 1,
                       <TouchableOpacity
                         key={counter}

@@ -78,7 +78,7 @@ export default function AdminPost({ navigation }) {
         ? ImageCropPicker.openPicker({
           width: ms(300),
           height: ms(400),
-          mediaType: strings.exclusive.image,
+          mediaType: strings.exclusive.video,
           multiple: true,
           compressImageQuality: 0.5
         })

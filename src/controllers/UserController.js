@@ -160,7 +160,8 @@ export class UserController {
       }
       HttpClient.post(endpoint, data)
         .then((response) => {
-          resolve(response);
+          resolve(response)
+          console.log('response of every single user', response);
         })
         .catch((error) => {
           reject(error);
@@ -202,6 +203,7 @@ export class UserController {
       await HttpClient.post(endpoint, data, { headers })
         .then((response) => {
           resolve(response);
+          console.log('response of create post', response)
         })
         .catch((error) => {
           reject(error);
@@ -361,6 +363,7 @@ export class UserController {
         .then((response) => {
 
           resolve(response);
+          console.log('resonse of posts id', response)
         })
         .catch((error) => {
           reject(new Error(error.message));
@@ -514,4 +517,79 @@ export class UserController {
       setTimeout(resolve, 500);
     });
   }
+
+  static async getAllActivityRequestApi(id) {
+
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.GET_ALL_ACTIVITY;
+      var data = JSON.stringify({
+        "loggedInUserId": id
+      });
+      HttpClient.post(endpoint, data)
+        .then((response) => {
+          resolve(response)
+          console.log('response of all activity', response)
+        })
+        .catch((error) => {
+          reject(new Error(error.message))
+          console.log('error of all activity', error)
+        });
+    });
+  }
+
+  static async manageAllreportsRequestApi() {
+
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.MANAGE_ALL_REPORTS;
+
+      HttpClient.post(endpoint)
+        .then((response) => {
+          resolve(response)
+          console.log('response of all managereports', response)
+        })
+        .catch((error) => {
+          reject(new Error(error.message))
+          console.log('error of all manage Reports', error)
+        });
+    });
+  }
+
+  static async getAllBannedUsersRequest() {
+
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.GET_ALL_BANNED_USERS;
+
+      HttpClient.post(endpoint)
+        .then((response) => {
+          resolve(response)
+          console.log('response of all banned Users', response)
+        })
+        .catch((error) => {
+          reject(new Error(error.message))
+          console.log('error of all banned users', error)
+        });
+    });
+  }
+
+
+  static async unBannedUserRequest(id) {
+
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.UNBANNED_USER_BY_ID;
+      var data = JSON.stringify({
+        "userId": id
+      });
+      HttpClient.post(endpoint, data)
+        .then((response) => {
+          resolve(response)
+          console.log('response of unBanned User', response)
+        })
+        .catch((error) => {
+          reject(new Error(error.message))
+          console.log('error of  UnBanned user', error)
+        });
+    });
+  }
+
 }
+
