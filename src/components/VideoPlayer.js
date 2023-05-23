@@ -41,6 +41,7 @@ export const AppVideoPlayer = ({ url, poster, play }) => {
           onEnterFullscreen={() => setFullScreen(prev => !prev)}
           style={{
             height: ms(200),
+
             // position: 'absolute',
           }}
           poster={poster}

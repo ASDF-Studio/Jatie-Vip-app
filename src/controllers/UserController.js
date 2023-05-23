@@ -359,16 +359,18 @@ export class UserController {
       data.append('postTitle', postTitle);
       data.append('postBody', postBody);
       data.append('postImg', mimeType == null && file);
-      console.log("FORM_DATA_______", data);
+      console.log("FORM_DATA_______", JSON.stringify(data));
       const headers = {
         'Content-Type': 'multipart/form-data'
       }
-
       await HttpClient.post(endpoint, data, { headers })
         .then((response) => {
+          console.log("POST_CREAT", response);
           resolve(response);
         })
         .catch((error) => {
+          console.log("ERROR__RESPONSE", error);
+
           reject(error);
         });
     });
