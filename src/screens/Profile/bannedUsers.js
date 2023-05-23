@@ -40,7 +40,7 @@ export default function Notification({ navigation }) {
 
   const dispatch = useDispatch()
   const user = useSelector(getUser)
-
+  console.log(user.id)
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.GET_ALL_BANNED_USERS], state)
   );
@@ -97,11 +97,12 @@ export default function Notification({ navigation }) {
       <View style={styles.searchList}>
         <View>
           <FlatList
-            data={user.getAllBannedUsersKey.data}
+
+            data={user?.getAllBannedUsersKey?.data}
             key={props => props.id}
             initialNumToRender={10}
             contentContainerStyle={styles.contentContainerStyle}
-            renderItem={({ item }) => {
+            renderItem={({ item, id }) => {
               return (
                 <View style={styles.listContainer}>
                   <TouchableOpacity style={styles.list}>
@@ -110,6 +111,7 @@ export default function Notification({ navigation }) {
                       style={styles.profileImage}
                     />
                     <View style={styles.nameContainer}>
+
                       <Text style={styles.nameTxt}> {item.user.fullName} </Text>
                       <Text style={styles.userNameTxt}> {item.user.username} </Text>
                     </View>

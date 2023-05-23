@@ -316,9 +316,10 @@ export function Home({ navigation }) {
                   <CardBody text={item.postBody} />
 
                   {/* video */}
-                  {/* {mimeType.split("/")[0] == "video" ? (
-                    <AppVideoPlayer url={item.video} poster={item.poster} />
-                  ) : null} */}
+                  {/* {item.video ? (
+                  <AppVideoPlayer url={item.video} poster={item.poster} />
+                ) : null} */}
+
                   {/* images */}
                   {item?.postImg?.length <= 2 ? (
                     <View style={styles.imageContainer}>
@@ -332,17 +333,12 @@ export function Home({ navigation }) {
                               setFeedImages(item.postImg)
                           }}
                         >
-                          {data?.mimeType.split("/")[0] == "video" ? (
-                            <AppVideoPlayer url={data.imageName}
-                            // poster={item.poster} 
-                            />
-                          ) : <Image
+                          <Image
                             source={{
-                              uri: data?.imageName,
+                              uri: data,
                             }}
                             style={styles.image}
-                          />}
-
+                          />
                         </TouchableOpacity>
                       ))}
                     </View>

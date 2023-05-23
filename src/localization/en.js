@@ -183,7 +183,7 @@ export const en = {
     analytics: 'Analytics',
     bannedUsers: 'Banned Users',
     reported: 'Reported',
-    reason: 'Reasion : Explicit Content',
+    reason: 'Reasion :',
     ban: 'Ban',
     unban: 'Unban',
     upvoted: 'Upvoted',

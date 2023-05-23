@@ -16,12 +16,17 @@ import { Data } from './ProfileData/manageReportData';
 import { useIsFocused } from '@react-navigation/native';
 import { manageAllReports } from '@/actions/UserActions';
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUser } from '@/selectors/UserSelectors';
 
 export default function ManageReports({ navigation }) {
 
   const focus = useIsFocused();
   const dispatch = useDispatch()
+
+  const user = useSelector(getUser)
+  const reports = user.allReportsKeyKey
+  console.log("reports", reports.data)
 
   useEffect(() => {
     if (focus) {
@@ -40,47 +45,52 @@ export default function ManageReports({ navigation }) {
       <HorizontalLine color={theme.light.colors.primaryBg} paddingBottom={12} />
       <View style={styles.body}>
         <FlatList
-          data={Data}
+          data={reports?.data}
           key={item => item.id}
           renderItem={({ item }) => (
-            <TouchableOpacity
+            <View
               style={styles.list}
-              onPress={() => {
-                if (item.reportOn == 'post') {
-                  navigation.navigate(NAVIGATION.manageReportOnPost);
-                }
-                if (item.reportOn == 'message') {
-                  navigation.navigate(NAVIGATION.manageReportOnMessage);
-                }
-                if (item.reportOn == 'profile') {
-                  navigation.navigate(NAVIGATION.manageReportOnProfile);
-                }
-              }}
+
             >
               <CardHeader
-                fullName={item.fullName}
-                userName={item.userName}
-                profilePic={item.profilePic}
-                time={item.time}
+                fullName={item.user.fullName}
+                userName={item.user.username}
+                profilePic={item.user.profilePic}
+              //  time={item.time}
               />
               <View style={styles.activity}>
                 <View style={styles.textContainer}>
                   <Text style={styles.statsTxt}>
                     {strings.profile.reported}
                   </Text>
-                  <Text style={styles.reactOnTxt}>
-                    {`this ${item.reportOn}`}
-                  </Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      if (item.reportedContent == 'post') {
+                        navigation.navigate(NAVIGATION.manageReportOnPost);
+                      }
+                      if (item.reportOn == 'message') {
+                        navigation.navigate(NAVIGATION.manageReportOnMessage);
+                      }
+                      if (item.reportOn == 'profile') {
+                        navigation.navigate(NAVIGATION.manageReportOnProfile);
+                      }
+                    }}
+                  >
+                    <Text style={styles.reactOnTxt}>
+                      this {''}
+                      {item.reportedContent}
+                    </Text>
+                  </TouchableOpacity>
                 </View>
                 <View style={styles.reasonContainer}>
-                  <Text style={styles.reasonTxt}>{strings.profile.reason}</Text>
+                  <Text style={styles.reasonTxt}>{strings.profile.reason}  {item.reportTitle}</Text>
                 </View>
               </View>
               <HorizontalLine
                 color={theme.light.colors.infoBg}
                 paddingBottom={12}
               />
-            </TouchableOpacity>
+            </View>
           )}
         />
       </View>
@@ -106,7 +116,8 @@ const styles = StyleSheet.create({
     backgroundColor: theme.light.colors.primaryBgLight,
   },
   list: {
-    backgroundColor: theme.light.colors.white,
+    backgroundColor: '#FFFFFF',
+
   },
   TopBackButton: { padding: ms(10) },
   activity: {

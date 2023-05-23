@@ -59,7 +59,7 @@ export default function ManageReportOnMessage({ navigation }) {
               navigation.navigate(NAVIGATION.manageReportOnPostAllComments)
             }
           >
-            <CommentCard
+            {/* <CommentCard
               name={card.name}
               userName={card.userName}
               imageUrl={card.imageUrl}
@@ -68,8 +68,8 @@ export default function ManageReportOnMessage({ navigation }) {
               likeCount={card.likeCount}
               // likePress = {}
               disLikeCount={card.disLikeCount}
-              // disLikePress = {}
-            />
+            // disLikePress = {}
+            /> */}
           </CommentContainer>
           <CardFooter likeCount={32} disLikeCount={3} commentCount={3} />
         </Card>

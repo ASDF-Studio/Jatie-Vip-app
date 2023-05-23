@@ -111,7 +111,7 @@ export const API_END_POINTS = {
     GET_ALL_ACTIVITY: 'user/all_activity_by_user_id',
 
     //Manage All Reports
-    MANAGE_ALL_REPORTS: 'user/all_report',
+    MANAGE_ALL_REPORTS: 'post/all_report',
 
     //GET All Banned Users
     GET_ALL_BANNED_USERS: 'user/all_banned',

@@ -482,6 +482,7 @@ export class PostController {
             HttpClient.post(endpoint, data, { headers })
                 .then((response) => {
                     resolve(response);
+                    console.log('reponse of report post', response)
                 })
                 .catch((error) => {
                     reject(error);
