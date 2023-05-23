@@ -133,6 +133,134 @@ export class GiveAwayController {
         });
     }
 
+    static async updateGiveawayData(params) {
+
+        return new Promise(async (resolve, reject) => {
+
+            const endpoint = API_BASE_URL + API_END_POINTS.UPDATE_GIVEAWAY;
+            let data = new FormData()
+            if (params.imageArray.length !== 0) {
+                let obj = [];
+                params.imageArray.map(item => {
+                    let filename = item.image.split("/").pop();
+                    obj = {
+                        uri: item.image,
+                        name: filename,
+                        type: item.imageMime,
+                    };
+
+                    data.append('myimage', obj)
+                });
+            }
+
+            data.append('postImg', '');
+            data.append('userId', params.userId);
+            data.append('postTitle', params.postTitle);
+            data.append('postBody', params.postBody);
+            data.append('postExpires', params.postExpires);
+            data.append('startDate', params.startDate);
+            data.append('endDate', params.endDate);
+            data.append('isVIPonly', params.isVIPonly);
+            data.append('isUSAonly', params.isUSAonly);
+            data.append('numOfWinners', params.winnerCount);
+            console.log("GIVEATWA__Update=-=-=-=", data);
+            const headers = {
+                'Content-Type': 'multipart/form-data'
+            }
+
+            await HttpClient.post(endpoint, data, { headers })
+                .then((response) => {
+                    resolve(response)
+                    console.log('giveaway update response', JSON.stringify(response))
+                })
+                .catch((error) => {
+                    reject(error)
+                    console.log('errror', error)
+                });
+        });
+
+
+    }
+
+    static async deleteGiveawayData(params) {
+
+        return new Promise(async (resolve, reject) => {
+
+            const endpoint = API_BASE_URL + API_END_POINTS.DELETE_GIVEAWAY;
+            let data = new FormData()
+
+            data.append('id', params?.id);
+            data.append('userId', params?.userId);
+
+            console.log("GIVEATWA__End", data);
+            const headers = {
+                'Content-Type': 'multipart/form-data'
+            }
+
+            await HttpClient.post(endpoint, data, { headers })
+                .then((response) => {
+                    resolve(response)
+                    console.log('giveaway delete response', JSON.stringify(response))
+                })
+                .catch((error) => {
+                    reject(error)
+                    console.log('errror', error)
+                });
+        });
+
+
+    }
+
+    static async endGiveawayData(params) {
+
+        return new Promise(async (resolve, reject) => {
+
+            const endpoint = API_BASE_URL + API_END_POINTS.END_GIVEAWAY;
+            let data = new FormData()
+
+            data.append('giveawayId', params.giveawayId);
+            console.log("GIVEATWA__End", data);
+            const headers = {
+                'Content-Type': 'multipart/form-data'
+            }
+
+            await HttpClient.post(endpoint, data, { headers })
+                .then((response) => {
+                    resolve(response)
+                    console.log('giveaway end response', JSON.stringify(response))
+                })
+                .catch((error) => {
+                    reject(error)
+                    console.log('errror', error)
+                });
+        });
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     static async withDrawGiveawaydata(data) {
 
@@ -172,10 +300,10 @@ export class GiveAwayController {
                     resolve(response)
                     console.log('response of withDraw Singelllelelelegiveaway', JSON.stringify(response))
 
-                    showMessage({
-                        message: 'Participant withdrawn from the giveaway',
-                        type: 'success'
-                    })
+                    // showMessage({
+                    //     message: 'Participant withdrawn from the giveaway',
+                    //     type: 'success'
+                    // })
                 })
                 .catch((error) => {
                     reject(new Error(error.message));

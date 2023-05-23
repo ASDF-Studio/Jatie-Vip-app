@@ -281,8 +281,13 @@ export class PostController {
             HttpClient.post(endpoint, body)
                 .then((response) => {
 
-                    resolve(response)
 
+
+
+
+
+
+                    resolve(response);
                     console.log('response of all posts', response);
                 })
                 .catch((error) => {

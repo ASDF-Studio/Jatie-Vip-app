@@ -88,7 +88,7 @@ export default function Followers({ navigation, route }) {
   }
   return (
     <SafeAreaView style={styles.container}>
-      <CustomLoader open={isLoading} />
+      {/* <CustomLoader open={isLoading} /> */}
       <TopBackButton
         onPress={() => navigation.goBack()}
         style={styles.TopBackButton}
@@ -110,7 +110,8 @@ export default function Followers({ navigation, route }) {
               <View style={styles.listContainer}>
                 <TouchableOpacity
                   style={styles.list}
-                // onPress={() => navigation.navigate(NAVIGATION.userProfile)}
+                  onPress={() => navigation.navigate(NAVIGATION.userProfile, { userId: item?.userByFollowinguserid?.id })}
+
                 >
                   <Image
                     source={{ uri: item.userByFollowinguserid?.profilePic == '' ? null : item.user?.profilePic }}

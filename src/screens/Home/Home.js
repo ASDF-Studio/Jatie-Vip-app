@@ -316,9 +316,9 @@ export function Home({ navigation }) {
                   <CardBody text={item.postBody} />
 
                   {/* video */}
-                  {/* {item.video ? (
-                  <AppVideoPlayer url={item.video} poster={item.poster} />
-                ) : null} */}
+                  {/* {mimeType.split("/")[0] == "video" ? (
+                    <AppVideoPlayer url={item.video} poster={item.poster} />
+                  ) : null} */}
                   {/* images */}
                   {item?.postImg?.length <= 2 ? (
                     <View style={styles.imageContainer}>
@@ -332,12 +332,17 @@ export function Home({ navigation }) {
                               setFeedImages(item.postImg)
                           }}
                         >
-                          <Image
+                          {data?.mimeType.split("/")[0] == "video" ? (
+                            <AppVideoPlayer url={data.imageName}
+                            // poster={item.poster} 
+                            />
+                          ) : <Image
                             source={{
-                              uri: data,
+                              uri: data?.imageName,
                             }}
                             style={styles.image}
-                          />
+                          />}
+
                         </TouchableOpacity>
                       ))}
                     </View>

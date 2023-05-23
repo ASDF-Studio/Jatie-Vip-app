@@ -34,7 +34,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 import { NAVIGATION } from '@/constants';
 import { item } from './giveawayData/pastDetailsData';
-import { getSingleGiveAwayById, TYPES } from '@/actions/PostActions';
+import { deleteGiveaway, endGiveaway, getSingleGiveAwayById, TYPES } from '@/actions/PostActions';
 import { getUser } from '@/selectors/UserSelectors';
 import { getSingleGiveAwayData } from '@/selectors/PostSelectors';
 
@@ -53,6 +53,19 @@ export default function PastDetails({ navigation, route }) {
     }
     dispatch(getSingleGiveAwayById(data))
   }, [])
+  const onEndGiveaway = () => {
+    const data = {
+      giveawayId: DATA?.id
+    }
+    dispatch(endGiveaway(data))
+  }
+  const onDeleteGiveaway = () => {
+    const data = {
+      id: DATA?.id,
+      userId: user?.id
+    }
+    dispatch(deleteGiveaway(data))
+  }
   return (
     <SafeAreaView style={styles.contianer}>
       <View style={styles.header}>
@@ -83,8 +96,27 @@ export default function PastDetails({ navigation, route }) {
               </View>
               <CardBody text={giveawayData?.all_giveaway?.postBody} />
               {/* {link(item.link)}
+
               <CardBody text={item.MoreDesc} /> */}
-              {DATA?.winners?.length > 0 &&
+
+              <View style={styles.thumbnailContainer}>
+                {
+                  giveawayData?.all_giveaway?.postImg.map((url) => {
+                    return (
+
+                      <Image
+                        style={styles.thumbnailImage}
+                        source={{
+                          uri: url
+                        }}
+                      />
+
+                    )
+                  })
+                }
+
+              </View>
+              {giveawayData?.winners?.length > 0 &&
                 <View>
                   <Text style={styles.winners}>{strings.giveaway.winners} </Text>
                 </View>
@@ -108,7 +140,7 @@ export default function PastDetails({ navigation, route }) {
                         />
                         <View style={styles.nameContainer}>
                           <Text style={styles.nameTxt}> {item?.fullName} </Text>
-                          <Text> {item?.username} </Text>
+                          <Text> {"@" + item?.username} </Text>
                         </View>
                       </View>
                       <View>
@@ -144,28 +176,7 @@ export default function PastDetails({ navigation, route }) {
                 </View>
               )}
 
-              <View style={styles.thumbnailContainer}>
-                {
-                  giveawayData?.all_giveaway?.postImg.map((url) => {
-                    return (
 
-                      <Image
-                        style={styles.thumbnailImage}
-                        source={{
-                          uri: url
-                        }}
-                      />
-
-                    )
-                  })
-                }
-                {/* <Image
-                  style={styles.thumbnailImage}
-                  source={{
-                    uri: item.photo,
-                  }}
-                /> */}
-              </View>
             </Card>
           </View>
         </ScrollView>
@@ -175,6 +186,8 @@ export default function PastDetails({ navigation, route }) {
 
       <ModalDown open={open} setOpen={setOpen}>
         <ModalList
+          onPress={() => { navigation.navigate(NAVIGATION.updateGiveawayPost, { "DATA": DATA }), setOpen(false) }
+          }
           title={strings.giveaway.editGiveaway}
           icon={faPen}
           iconBg={theme.light.colors.infoBgLight}
@@ -186,12 +199,15 @@ export default function PastDetails({ navigation, route }) {
           paddingBottom={8}
         />
         <ModalList
+          onPress={() => { onEndGiveaway(), setOpen(false) }}
           title={strings.giveaway.endNow}
           icon={faFlag}
           iconBg={theme.light.colors.infoBgLight}
           iconColor={theme.light.colors.secondary}
         />
         <ModalList
+          onPress={() => { onDeleteGiveaway(), setOpen(false) }}
+
           title={strings.giveaway.removeThisGiveaway}
           icon={faTrash}
           iconBg={theme.light.colors.infoBgLight}

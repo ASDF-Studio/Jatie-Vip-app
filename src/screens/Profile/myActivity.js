@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { theme } from '@/theme';
 import { Card, CardHeader, Icon } from '@/components';

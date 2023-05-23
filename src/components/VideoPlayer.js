@@ -6,14 +6,15 @@ import { ms } from 'react-native-size-matters';
 import VideoPlayer from 'react-native-video-controls';
 import { theme } from '@/theme';
 
-export const AppVideoPlayer = ({ url, poster }) => {
+export const AppVideoPlayer = ({ url, poster, play }) => {
   const [openFullScreen, setFullScreen] = useState(false);
-  const [pause, setPause] = useState();
+  const [pause, setPause] = useState(play);
   return (
     <View>
       {openFullScreen && (
         <Modal visible={openFullScreen} transparent={true}>
           <VideoPlayer
+
             source={{ uri: url }}
             navigator={null}
             toggleResizeModeOnFullscreen={true}
