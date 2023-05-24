@@ -10,7 +10,7 @@ import { TextStyles, theme } from '@/theme';
 import { FontFamily } from '@/theme/Fonts';
 import { strings } from '@/localization';
 import { ms, vs } from 'react-native-size-matters';
-import { CardHeader, HorizontalLine, TopBackButton } from '@/components';
+import { CardHeader, HorizontalLine, StatusNavigatorBar, TopBackButton } from '@/components';
 import { NAVIGATION } from '@/constants';
 import { Data } from './ProfileData/manageReportData';
 import { useIsFocused } from '@react-navigation/native';
@@ -18,15 +18,18 @@ import { manageAllReports } from '@/actions/UserActions';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
+import { useState } from 'react';
+import ReportedPosts from '@/components/ReportedPosts';
+import ReportedUsers from '@/components/ReportedUsers';
 
 export default function ManageReports({ navigation }) {
 
   const focus = useIsFocused();
   const dispatch = useDispatch()
-
+  const [status, setStatus] = useState(strings.reports.post);
   const user = useSelector(getUser)
   const reports = user.allReportsKeyKey
-  console.log("reports", reports.data)
+  //console.log('reports', reports.data)
 
   useEffect(() => {
     if (focus) {
@@ -42,58 +45,22 @@ export default function ManageReports({ navigation }) {
       <Text style={[styles.headerText, TextStyles.header]}>
         {strings.profile.manageReports}{' '}
       </Text>
+      <StatusNavigatorBar
+        title1={strings.reports.post}
+        key1={strings.reports.post}
+        title2={strings.reports.users}
+        key2={strings.reports.users}
+        status={status}
+        setStatus={setStatus}
+      />
       <HorizontalLine color={theme.light.colors.primaryBg} paddingBottom={12} />
-      <View style={styles.body}>
-        <FlatList
-          data={reports?.data}
-          key={item => item.id}
-          renderItem={({ item }) => (
-            <View
-              style={styles.list}
+      {status == `${strings.reports.post}` ? (
+        <ReportedPosts navigation={navigation} />
 
-            >
-              <CardHeader
-                fullName={item.user.fullName}
-                userName={item.user.username}
-                profilePic={item.user.profilePic}
-              //  time={item.time}
-              />
-              <View style={styles.activity}>
-                <View style={styles.textContainer}>
-                  <Text style={styles.statsTxt}>
-                    {strings.profile.reported}
-                  </Text>
-                  <TouchableOpacity
-                    onPress={() => {
-                      if (item.reportedContent == 'post') {
-                        navigation.navigate(NAVIGATION.manageReportOnPost);
-                      }
-                      if (item.reportOn == 'message') {
-                        navigation.navigate(NAVIGATION.manageReportOnMessage);
-                      }
-                      if (item.reportOn == 'profile') {
-                        navigation.navigate(NAVIGATION.manageReportOnProfile);
-                      }
-                    }}
-                  >
-                    <Text style={styles.reactOnTxt}>
-                      this {''}
-                      {item.reportedContent}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.reasonContainer}>
-                  <Text style={styles.reasonTxt}>{strings.profile.reason}  {item.reportTitle}</Text>
-                </View>
-              </View>
-              <HorizontalLine
-                color={theme.light.colors.infoBg}
-                paddingBottom={12}
-              />
-            </View>
-          )}
-        />
-      </View>
+      ) : (
+        <ReportedUsers navigation={navigation} />
+      )}
+
     </View>
   );
 }

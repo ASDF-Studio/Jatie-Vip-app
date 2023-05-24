@@ -68,6 +68,8 @@ export default function Comments({ navigation, route }) {
   const dispatch = useDispatch()
   const [openReplyTo, setOpenReplyTo] = useState(false);
   console.log("USER+_+_+_", USER)
+
+  console.log("id of comments", DATA?.id)
   //Option and Report
   const [open, setOpen] = useState(false);
   const [openToast, setOpenToast] = useState(false);

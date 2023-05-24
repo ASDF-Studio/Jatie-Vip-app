@@ -570,7 +570,7 @@ export class UserController {
       HttpClient.post(endpoint)
         .then((response) => {
           resolve(response)
-          console.log('response of all managereports', response)
+          console.log('response of all managereports', response.data)
         })
         .catch((error) => {
           reject(new Error(error.message))

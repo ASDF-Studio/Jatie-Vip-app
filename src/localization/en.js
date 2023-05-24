@@ -397,4 +397,9 @@ export const en = {
   userFollowedSuccsess: {
     followedSuccess: "Following"
   }
+  ,
+  reports: {
+    post: "Reported Posts",
+    users: "Reported Users"
+  }
 };

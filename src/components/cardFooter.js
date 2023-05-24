@@ -187,6 +187,7 @@ export const CardFooter = ({
           style={styles.ShareNodeIcon}
         />
         {showMore == undefined &&
+
           <Icon
             icon={faEllipsis}
             size={ms(13)}
@@ -194,6 +195,7 @@ export const CardFooter = ({
             onPress={morePress}
             style={styles.EllipsisIcon}
           />
+
         }
 
       </View>

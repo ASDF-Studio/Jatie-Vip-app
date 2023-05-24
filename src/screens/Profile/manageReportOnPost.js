@@ -12,12 +12,40 @@ import {
   CardFooter,
   CommentCard,
   CommentContainer,
+  ModalDown,
+  ModalList,
 } from '@/components';
 import { ms } from 'react-native-size-matters';
 import { NAVIGATION } from '@/constants';
 import { card, Data } from './ProfileData/manageReportOnPostData';
+import { useEffect } from 'react';
+import { getPostById } from '@/actions/PostActions';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUser } from '@/selectors/UserSelectors';
+import { getPostByIdData } from '@/selectors/PostSelectors';
+import { useIsFocused } from '@react-navigation/native';
+import { useState } from 'react';
+import { faFlag, faMessage, faTrash, faUserPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
 
-export default function ManageReportOnMessage({ navigation }) {
+export default function ManageReportOnMessage({ navigation, route }) {
+  const dispatch = useDispatch()
+  const focus = useIsFocused();
+
+  const { item } = route.params
+
+  const [open, setOpen] = useState(false);
+  const user = useSelector(getUser)
+  const postData = useSelector(getPostByIdData)
+  //console.log("POST__DATAA In SELECTOR", postData);
+
+  useEffect(() => {
+    dispatch(getPostById(item.id, user?.id))
+
+    // setLikeCount(item?.upVote)
+    // setDownCount(item?.downVote)
+    // setCommentCount(item?.comments_aggregate?.aggregate?.count)
+
+  }, [focus])
   return (
     <SafeAreaView style={styles.container}>
       <TopBackButton
@@ -29,9 +57,9 @@ export default function ManageReportOnMessage({ navigation }) {
       </Text>
       <HorizontalLine color={theme.light.colors.infoBgLight} paddingTop={10} />
       <CardHeader
-        fullName={Data.fullName}
-        userName={Data.userName}
-        profilePic={Data.profilePic}
+        fullName={item.user.fullName}
+        userName={item.user.username}
+        profilePic={item.user.profilePic}
         time={Data.time}
       />
       <View style={styles.activity}>
@@ -40,26 +68,26 @@ export default function ManageReportOnMessage({ navigation }) {
           <Text style={styles.reactOnTxt}>{strings.profile.thisPost}</Text>
         </View>
         <View style={styles.reasonContainer}>
-          <Text style={styles.reasonTxt}>{strings.profile.reason}</Text>
+          <Text style={styles.reasonTxt}>{strings.profile.reason}{item.reportTitle}</Text>
         </View>
       </View>
       <View style={styles.body}>
         <Card>
           <View style={styles.reportBound}>
             <CardHeader
-              fullName={Data.fullName}
-              userName={Data.userName}
-              profilePic={Data.profilePic}
-              time={Data.time}
+              fullName={postData?.user.fullName}
+              userName={postData?.user.username}
+              profilePic={postData?.user.profilePic}
+              time={postData?.created_at}
             />
-            <CardBody text={card.text} />
+            <CardBody text={postData?.postBody} />
           </View>
-          <CommentContainer
+          {/* <CommentContainer
             seeAllPress={() =>
               navigation.navigate(NAVIGATION.manageReportOnPostAllComments)
             }
-          >
-            {/* <CommentCard
+          > */}
+          {/* <CommentCard
               name={card.name}
               userName={card.userName}
               imageUrl={card.imageUrl}
@@ -70,11 +98,58 @@ export default function ManageReportOnMessage({ navigation }) {
               disLikeCount={card.disLikeCount}
             // disLikePress = {}
             /> */}
-          </CommentContainer>
-          <CardFooter likeCount={32} disLikeCount={3} commentCount={3} />
+          {/* </CommentContainer> */}
+          <CardFooter morePress={() => { setOpen(true) }}
+            commentPress={() => navigation.navigate(NAVIGATION.comments, { DATA: item.post, "POST_INDEX": "postIndex" })}
+            likeCount={postData?.upVote} disLikeCount={postData?.downVote} commentCount={postData?.comments_aggregate.aggregate.count} />
         </Card>
+
+
+        <ModalDown open={open} setOpen={setOpen}>
+          <ModalList
+            // onPress={() => { onFollow() }}
+            //  title={(!ALLPOST?.data[postIndex]?.is_following ? strings.operations.follow : strings.operations.unFollow) + " @" + postUserName}
+            icon={faUserPlus}
+            iconColor={theme.light.colors.primary}
+            iconBg={theme.light.colors.primaryBgLight}
+          />
+          <ModalList
+            title={strings.operations.sendPrivateMessage}
+            icon={faMessage}
+            iconColor={theme.light.colors.success}
+            iconBg={theme.light.colors.successBgLight}
+          />
+          <HorizontalLine
+            color={theme.light.colors.infoBgLight}
+            paddingTop={15}
+            paddingBottom={8}
+          />
+
+          <>
+            <ModalList
+              title={strings.home.deletePost}
+              icon={faTrash}
+              iconColor={theme.light.colors.secondary}
+              iconBg={theme.light.colors.infoBgLight}
+            // onPress={() => { setReplace(true), setOpen(false) }}
+            />
+            <ModalList
+              title={strings.operations.block + strings.home.DummyUser}
+              icon={faXmark}
+              iconColor={theme.light.colors.secondary}
+              iconBg={theme.light.colors.infoBgLight}
+            />
+            <ModalList
+              title={strings.operations.ban + strings.home.DummyUser}
+              icon={faFlag}
+              iconColor={theme.light.colors.secondary}
+              iconBg={theme.light.colors.infoBgLight}
+            />
+          </>
+
+        </ModalDown>
       </View>
-    </SafeAreaView>
+    </SafeAreaView >
   );
 }
 
@@ -143,3 +218,4 @@ const styles = StyleSheet.create({
     backgroundColor: theme.light.colors.primaryBgLightest,
   },
 });
+
