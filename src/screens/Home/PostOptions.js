@@ -23,7 +23,7 @@ import { createPostByAdmin, updatePost } from '@/actions/UserActions';
 
 export default function PostOptions({ route, navigation }) {
   const { prevData } = route.params;
-  console.log("PREV_DATA", prevData);
+  console.log("PREV_DATA", JSON.stringify(prevData));
   const [schedulePost, setSchedulePost] = useState(false);
   const [vipOnly, setVipOnly] = useState(false);
   const [pinPost, setPinPost] = useState(false);

@@ -57,6 +57,7 @@ export default function AdminPost({ navigation }) {
   const [postBody, setPostBody] = useState('');
   const [postImg, setPostImg] = useState([]);
   const [mimeType, setmimeType] = useState([]);
+  const [videoPoster, setVideoPoster] = useState([]);
   const dispatch = useDispatch();
   const user = useSelector(getUser);
 
@@ -74,7 +75,7 @@ export default function AdminPost({ navigation }) {
   };
 
   const OpenGallery = () => {
-
+    console.log("Testing-=-=-=-=-=", postImg);
 
     {
       isImage == strings.exclusive.image
@@ -96,6 +97,7 @@ export default function AdminPost({ navigation }) {
               });
               postImg.push(item.path);
               mimeType.push(item.mime);
+
               setModalVisible(!isModalVisible);
             });
           })
@@ -114,7 +116,6 @@ export default function AdminPost({ navigation }) {
           .then(video => {
 
             video.forEach(item => {
-
               createThumbnail({
                 url: item.path,
                 timeStamp: 10000,

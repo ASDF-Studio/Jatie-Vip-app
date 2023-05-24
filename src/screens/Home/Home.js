@@ -13,6 +13,9 @@ import {
   faUserPlus,
   faXmark,
   faPen,
+  faCircle,
+  faVideoCamera,
+  faPlay,
 } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -319,7 +322,28 @@ export function Home({ navigation }) {
                     <AppVideoPlayer url={item.video} poster={item.poster} />
                   ) : null} */}
                   {/* images */}
+                  {/* {item.postVideo.length > 0 &&
 
+                    // <Image
+                    //   source={{
+                    //     uri: item?.postVideo[index]?.cover,
+                    //   }}
+                    //   style={styles.image}
+                    // />
+                    <TouchableOpacity
+                      style={{ backgroundColor: "red", width: 50, height: 50, borderRadius: 100, justifyContent: "center", alignItems: "center" }}
+                    >
+                      <FontAwesomeIcon
+                        icon={faPlay}
+                        size={ms(15)}
+                        style={styles.Play}
+                      />
+
+                    </TouchableOpacity>
+
+
+
+                  } */}
                   {item?.postImg?.length <= 2 ? (
                     <View style={styles.imageContainer}>
                       {item?.postImg?.map(data => (
@@ -332,6 +356,7 @@ export function Home({ navigation }) {
                               setFeedImages(item.postImg)
                           }}
                         >
+
                           <Image
                             source={{
                               uri: data,
@@ -724,6 +749,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.light.colors.white,
+  },
+  Play: {
+    position: 'absolute',
+    color: theme.light.colors.background,
+    marginLeft: ms(8),
+    marginTop: ms(8),
   },
   header: {
     flexDirection: 'row',
