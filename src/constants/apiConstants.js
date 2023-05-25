@@ -117,5 +117,8 @@ export const API_END_POINTS = {
     GET_ALL_BANNED_USERS: 'user/all_banned',
 
     //UnBanned user By ID
-    UNBANNED_USER_BY_ID: 'user/unban_user'
+    UNBANNED_USER_BY_ID: 'user/unban_user',
+
+    //baned User By ID
+    BANNED_USER_BY_ID: 'user/ban_user',
 };

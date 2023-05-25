@@ -5,18 +5,24 @@ import { strings } from '@/localization'
 import { HorizontalLine } from './horizontalLine'
 import { useDispatch, useSelector } from 'react-redux'
 import { getUser } from '@/selectors/UserSelectors'
-import { manageAllReports } from '@/actions/UserActions'
+import { TYPES, manageAllReports } from '@/actions/UserActions'
 import { theme } from '@/theme'
 import { ms } from 'react-native-size-matters'
 import { FontFamily } from '@/theme/Fonts'
 import { useIsFocused } from '@react-navigation/native'
 import { useEffect } from 'react'
 import { NAVIGATION } from '@/constants'
+import { CustomLoader } from './CustomLoader'
+import { isLoadingSelector } from '@/selectors/StatusSelectors'
 
 const ReportedUsers = ({ navigation }) => {
 
     const user = useSelector(getUser)
     const reports = user.allReportsKeyKey
+    const isLoading = useSelector(state =>
+        isLoadingSelector([TYPES.MANAGE_ALL_REPORTS], state)
+    );
+    //console.log('reports of selector', JSON.stringify(reports.data.reported_user))
 
     const focus = useIsFocused();
 
@@ -28,6 +34,8 @@ const ReportedUsers = ({ navigation }) => {
     }, [focus]);
     return (
         <View style={styles.body}>
+            <CustomLoader open={isLoading} />
+
             <FlatList
                 data={reports?.data?.reported_user}
                 key={item => item.id}
@@ -37,9 +45,9 @@ const ReportedUsers = ({ navigation }) => {
 
                     >
                         <CardHeader
-                            fullName={item.user.fullName}
-                            userName={item.user.username}
-                            profilePic={item.user.profilePic}
+                            fullName={item.userByReportedby.fullName}
+                            userName={item.userByReportedby.username}
+                            profilePic={item.userByReportedby.profilePic}
                         //  time={item.time}
                         />
                         <View style={styles.activity}>
@@ -50,14 +58,12 @@ const ReportedUsers = ({ navigation }) => {
                                 <TouchableOpacity
                                     onPress={() => {
 
-                                        { navigation.navigate(NAVIGATION.manageReportOnProfile, { item: item }) };
+                                        { navigation.navigate(NAVIGATION.manageReportOnProfile, { item: item.userId, reportedByUserDetails: item }) };
                                     }
 
                                     }
                                 >
-                                    <Text style={styles.reactOnTxt}>
-                                        this {''}
-                                        {item.reportedContent}
+                                    <Text style={styles.reactOnTxt}>this Profile
                                     </Text>
                                 </TouchableOpacity>
                             </View>

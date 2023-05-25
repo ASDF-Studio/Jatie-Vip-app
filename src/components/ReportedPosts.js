@@ -5,19 +5,24 @@ import { strings } from '@/localization'
 import { HorizontalLine } from './horizontalLine'
 import { useDispatch, useSelector } from 'react-redux'
 import { getUser } from '@/selectors/UserSelectors'
-import { manageAllReports } from '@/actions/UserActions'
+import { TYPES, manageAllReports } from '@/actions/UserActions'
 import { theme } from '@/theme'
 import { ms } from 'react-native-size-matters'
 import { FontFamily } from '@/theme/Fonts'
 import { useIsFocused } from '@react-navigation/native'
 import { useEffect } from 'react'
 import { NAVIGATION } from '@/constants'
+import { isLoadingSelector } from '@/selectors/StatusSelectors'
+import { CustomLoader } from './CustomLoader'
 
 const ReportedPosts = ({ navigation }) => {
 
+    const isLoading = useSelector(state =>
+        isLoadingSelector([TYPES.MANAGE_ALL_REPORTS], state)
+    );
+
     const user = useSelector(getUser)
     const reports = user.allReportsKeyKey
-
     const focus = useIsFocused();
 
     const dispatch = useDispatch()
@@ -28,6 +33,7 @@ const ReportedPosts = ({ navigation }) => {
     }, [focus]);
     return (
         <View style={styles.body}>
+            <CustomLoader open={isLoading} />
             <FlatList
                 data={reports?.data?.reported_post}
                 key={item => item.id}

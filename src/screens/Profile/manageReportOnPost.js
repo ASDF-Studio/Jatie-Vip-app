@@ -26,6 +26,7 @@ import { getPostByIdData } from '@/selectors/PostSelectors';
 import { useIsFocused } from '@react-navigation/native';
 import { useState } from 'react';
 import { faFlag, faMessage, faTrash, faUserPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { bannedUserById, unBannedUserById } from '@/actions/UserActions';
 
 export default function ManageReportOnMessage({ navigation, route }) {
   const dispatch = useDispatch()
@@ -36,16 +37,23 @@ export default function ManageReportOnMessage({ navigation, route }) {
   const [open, setOpen] = useState(false);
   const user = useSelector(getUser)
   const postData = useSelector(getPostByIdData)
-  //console.log("POST__DATAA In SELECTOR", postData);
+  console.log("POST__DATAA In SELECTOR", postData);
 
   useEffect(() => {
-    dispatch(getPostById(item.id, user?.id))
+    dispatch(getPostById(item.objectId, user?.id))
 
     // setLikeCount(item?.upVote)
     // setDownCount(item?.downVote)
     // setCommentCount(item?.comments_aggregate?.aggregate?.count)
 
   }, [focus])
+
+  const bannedHandlePress = () => {
+    dispatch(bannedUserById(postData?.userId))
+    setOpen(false)
+    // console.log('banned id', postData?.user?.id)
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <TopBackButton
@@ -139,7 +147,7 @@ export default function ManageReportOnMessage({ navigation, route }) {
               iconColor={theme.light.colors.secondary}
               iconBg={theme.light.colors.infoBgLight}
             />
-            <ModalList
+            <ModalList onPress={bannedHandlePress}
               title={strings.operations.ban + strings.home.DummyUser}
               icon={faFlag}
               iconColor={theme.light.colors.secondary}

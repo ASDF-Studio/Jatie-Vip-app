@@ -40,7 +40,7 @@ export default function Notification({ navigation }) {
 
   const dispatch = useDispatch()
   const user = useSelector(getUser)
-  console.log(user.id)
+
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.GET_ALL_BANNED_USERS], state)
   );
@@ -73,7 +73,7 @@ export default function Notification({ navigation }) {
       />
       <View style={styles.listHeader}>
         <Text style={styles.headerTxt}>{strings.profile.bannedUsers}</Text>
-        <Badge count={23} size={ms(13)} />
+        <Badge count={user?.getAllBannedUsersKey?.data.length} size={ms(13)} />
       </View>
       <HorizontalLine
         color={theme.light.colors.primaryBg}

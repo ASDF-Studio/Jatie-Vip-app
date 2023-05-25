@@ -133,7 +133,13 @@ export const TYPES = {
   UNBANNED_USER_BY_ID: "UNBANNED_USER_BY_ID",
   UNBANNED_USER_BY_ID_REQUEST: "UNBANNED_USER_BY_ID_REQUEST",
   UNBANNED_USER_BY_ID_SUCCESS: "UNBANNED_USER_BY_ID_SUCCESS",
-  UNBANNED_USER_BY_ID_ERROR: "UNBANNED_USER_BY_ID_ERROR"
+  UNBANNED_USER_BY_ID_ERROR: "UNBANNED_USER_BY_ID_ERROR",
+
+  //BANNED_USER
+  BANNED_USER_BY_ID: "BANNED_USER_BY_ID",
+  BANNED_USER_BY_ID_REQUEST: "BANNED_USER_BY_ID_REQUEST",
+  BANNED_USER_BY_ID_SUCCESS: "BANNED_USER_BY_ID_SUCCESS",
+  BANNED_USER_BY_ID_ERROR: "BANNED_USER_BY_ID_ERROR",
 };
 
 const loginRequest = () => ({
@@ -496,6 +502,21 @@ const unBannedUserByIdError = error => ({
   payload: { error },
 });
 
+//banned User By ID
+export const bannedUserByIdSuccess = user => ({
+  type: TYPES.BANNED_USER_BY_ID_SUCCESS,
+  payload: { user },
+});
+
+const bannedUserByIdRequest = () => ({
+  type: TYPES.BANNED_USER_BY_ID_REQUEST,
+  payload: null,
+});
+
+const bannedUserByIdError = error => ({
+  type: TYPES.BANNED_USER_BY_ID_ERROR,
+  payload: { error },
+});
 
 export const login = (number) => async dispatch => {
   dispatch(globalReset())
@@ -951,6 +972,19 @@ export const unBannedUserById = (id) => async dispatch => {
 
   } catch (error) {
     dispatch(unBannedUserByIdError(error))
+  }
+
+};
+export const bannedUserById = (id) => async dispatch => {
+
+  dispatch(bannedUserByIdRequest());
+
+  try {
+    const user = await UserController.bannedUserRequest(id);
+    dispatch(bannedUserByIdSuccess(user))
+
+  } catch (error) {
+    dispatch(bannedUserByIdError(error))
   }
 
 };

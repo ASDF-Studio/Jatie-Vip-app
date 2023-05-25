@@ -1,6 +1,7 @@
 import { API_BASE_URL, API_END_POINTS } from '@/constants';
 import { strings } from '@/localization';
 import { HttpClient } from './HttpClient';
+import { showMessage } from 'react-native-flash-message';
 
 export class UserController {
 
@@ -570,7 +571,7 @@ export class UserController {
       HttpClient.post(endpoint)
         .then((response) => {
           resolve(response)
-          console.log('response of all managereports', response.data)
+          // console.log('response of all managereports', response.data)
         })
         .catch((error) => {
           reject(new Error(error.message))
@@ -588,6 +589,7 @@ export class UserController {
         .then((response) => {
           resolve(response)
           console.log('response of all banned Users', response)
+
         })
         .catch((error) => {
           reject(new Error(error.message))
@@ -608,6 +610,10 @@ export class UserController {
         .then((response) => {
           resolve(response)
           console.log('response of unBanned User', response)
+          showMessage({
+            message: 'User Unbanned',
+            type: 'success'
+          })
         })
         .catch((error) => {
           reject(new Error(error.message))
@@ -616,5 +622,28 @@ export class UserController {
     });
   }
 
+
+  static async bannedUserRequest(id) {
+
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.BANNED_USER_BY_ID;
+      var data = JSON.stringify({
+        "userId": id
+      });
+      HttpClient.post(endpoint, data)
+        .then((response) => {
+          resolve(response)
+          console.log('response of banned User', response)
+          showMessage({
+            message: 'User Banned',
+            type: 'success'
+          })
+        })
+        .catch((error) => {
+          reject(new Error(error.message))
+          console.log('error of  banned user', error)
+        });
+    });
+  }
 }
 

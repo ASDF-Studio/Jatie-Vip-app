@@ -23,8 +23,9 @@ import {
   CardFooter,
   PopUp,
   Button,
+  CustomLoader,
 } from '@/components';
-import { ms, vs } from 'react-native-size-matters';
+import { moderateScale, ms, vs } from 'react-native-size-matters';
 import {
   faCrown,
   faMessage,
@@ -41,14 +42,60 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { strings } from '@/localization';
 import { Data, demo, User } from './ProfileData/manageReportOnProfileData';
 import { faSearch } from '@fortawesome/pro-regular-svg-icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { bannedUserById, getUserProfileByUserId, TYPES } from '@/actions/UserActions';
+import { getUser } from '@/selectors/UserSelectors';
+import { UserController } from '@/controllers';
+import { UserData } from './ProfileData/manageReportOnMessageData';
+import { isLoadingSelector } from '@/selectors/StatusSelectors';
 
-export default function ManageReportOnMessage({ navigation }) {
+export default function ManageReportOnMessage({ navigation, route }) {
+
+  const isLoading = useSelector(state =>
+    isLoadingSelector([TYPES.GET_USER_PROFILE_BY_USER_ID], state)
+  );
   const [openMore, setOpenMore] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openBan, setOpenBan] = useState(false);
+  const [user, setUser] = useState(null)
+  const [userPosts, setuserPosts] = useState([])
+  const { item } = route.params
+  console.log("item", item)
+  const { reportedByUserDetails } = route.params
+  console.log('reportedByuserDetails', reportedByUserDetails)
+  const dispatch = useDispatch()
 
+  const getUserProfile = useSelector(getUser)
+
+  console.log('userData', user)
+
+  useEffect(() => {
+    dispatch(getUserProfileByUserId(item))
+    getUserPostById(item)
+
+  }, [])
+  useEffect(() => {
+    setUser(getUserProfile?.getUserByUserId)
+  }, [getUserProfile])
+
+  const getUserPostById = async (id) => {
+    const data = await UserController.postByUserId(id);
+    if (data) {
+      //setLoader(false);
+      setuserPosts(data.data);
+    }
+
+  }
+
+  const bannedHandlePress = () => {
+    dispatch(bannedUserById(item))
+    setOpenBan(false)
+    //  console.log('banned id', item)
+  }
   return (
     <SafeAreaView style={styles.container}>
+      <CustomLoader open={isLoading} />
       <TopBackButton
         onPress={() => navigation.goBack()}
         style={styles.TopBackButton}
@@ -58,18 +105,18 @@ export default function ManageReportOnMessage({ navigation }) {
       </Text>
       <HorizontalLine color={theme.light.colors.infoBgLight} paddingTop={10} />
       <CardHeader
-        fullName={User.fullName}
-        userName={User.userName}
-        profilePic={User.profilePic}
-        time={User.time}
+        fullName={reportedByUserDetails.userByReportedby.fullName}
+        userName={reportedByUserDetails.userByReportedby.username}
+        profilePic={reportedByUserDetails.userByReportedby.profilePic}
+        time={reportedByUserDetails.created_at}
       />
       <View style={styles.activity}>
         <View style={styles.textContainer}>
           <Text style={styles.statsTxt}> {strings.profile.reported} </Text>
-          <Text style={styles.reactOnTxt}> {`this Profile`} </Text>
+          <Text style={styles.reactOnTxt}>{`this Profile`}</Text>
         </View>
         <View style={styles.reasonContainer}>
-          <Text style={styles.reasonTxt}>{strings.profile.reason} </Text>
+          <Text style={styles.reasonTxt}>{strings.profile.reason}{reportedByUserDetails.reportTitle} </Text>
         </View>
       </View>
       <View style={styles.body}>
@@ -79,7 +126,7 @@ export default function ManageReportOnMessage({ navigation }) {
               <Image
                 style={styles.headerImage}
                 source={{
-                  uri: demo.headerImage,
+                  uri: user?.profilePic || null,
                 }}
               />
               <View style={styles.profileLogoContainer}>
@@ -90,8 +137,8 @@ export default function ManageReportOnMessage({ navigation }) {
                 />
               </View>
               <View>
-                <Text style={styles.fullNameTxt}> {User.fullName}</Text>
-                <Text style={styles.userNameTxt}> {User.userName} </Text>
+                <Text style={styles.fullNameTxt}>{user?.fullName}</Text>
+                <Text style={styles.userNameTxt}>{user?.username} </Text>
               </View>
             </View>
             <View style={styles.iconContiner}>
@@ -101,11 +148,11 @@ export default function ManageReportOnMessage({ navigation }) {
           </View>
           <HeaderTab
             title1={strings.profile.followers}
-            count1={10}
+            count1={user?.followers.length}
             // onPress1 = {()=>Alert.alert('press 1')}
             title2={strings.profile.following}
-            count2={20}
-            // onPress2 = {()=>Alert.alert('press 2')}
+            count2={user?.following.length}
+          // onPress2 = {()=>Alert.alert('press 2')}
           />
           <HorizontalLine
             color={theme.light.colors.infoBgLight}
@@ -148,18 +195,18 @@ export default function ManageReportOnMessage({ navigation }) {
           <HorizontalLine />
         </View>
         <FlatList
-          data={Data}
+          data={userPosts || []}
           key={props => props.id}
           renderItem={({ item }) => (
             <View style={styles.cardContainer}>
               <Card>
                 <CardHeader
-                  fullName={item.fullName}
-                  userName={item.userName}
-                  profilePic={item.profilePic}
-                  time={item.time}
+                  fullName={user?.fullName}
+                  userName={user?.username}
+                  profilePic={user?.profilePic}
+                  time={item.created_at}
                 />
-                <CardBody text={item.text} />
+                <CardBody text={item?.postBody} />
                 <CardFooter
                   likeCount={item.like}
                   // likePress = {()=> Alert.alert("like")}
@@ -187,7 +234,7 @@ export default function ManageReportOnMessage({ navigation }) {
               icon={faMessage}
               iconColor={theme.light.colors.success}
               iconBg={theme.light.colors.successBgLight}
-              // onPress = {()=> Alert.alert("working")}
+            // onPress = {()=> Alert.alert("working")}
             />
             <HorizontalLine
               color={theme.light.colors.infoBgLight}
@@ -241,15 +288,15 @@ export default function ManageReportOnMessage({ navigation }) {
             <View style={styles.imageViewContainer}>
               <Image
                 source={{
-                  uri: demo.popUpImage,
+                  uri: user?.profilePic
                 }}
                 style={styles.imageDesign}
               />
               <View>
                 <Text style={[TextStyles.header, styles.headerFullname]}>
-                  {User.fullName}{' '}
+                  {user?.fullName}
                 </Text>
-                <Text>{User.userName}</Text>
+                <Text> {user?.username}</Text>
                 <Text style={styles.freeMemberText}>
                   {' '}
                   {strings.profile.freeMember}{' '}
@@ -257,14 +304,14 @@ export default function ManageReportOnMessage({ navigation }) {
               </View>
             </View>
             <View>
-              <Button
+              <Button onPress={bannedHandlePress}
                 title={strings.profile.yesBan}
                 style={styles.yesBanButton}
                 textStyle={{
                   color: theme.light.colors.primary,
                 }}
               />
-              <Button
+              <Button onPress={() => setOpenBan(false)}
                 title={strings.profile.DoNotBan}
                 style={styles.DoNotBanButton}
               />
@@ -376,13 +423,15 @@ const styles = StyleSheet.create({
     {
       color: theme.light.colors.text,
       fontSize: ms(24),
+      marginLeft: moderateScale(10)
     },
   ],
   userNameTxt: {
     fontFamily: FontFamily.Recoleta_regular,
     fontSize: ms(14, 0.3),
-    position: 'absolute',
+    // position: 'absolute',
     bottom: ms(5),
+    marginLeft: moderateScale(10)
   },
   iconContiner: {
     flexDirection: 'row',
