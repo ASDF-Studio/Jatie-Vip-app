@@ -14,6 +14,7 @@ import {
   CommentContainer,
   ModalDown,
   ModalList,
+  CustomLoader,
 } from '@/components';
 import { ms } from 'react-native-size-matters';
 import { NAVIGATION } from '@/constants';
@@ -27,8 +28,13 @@ import { useIsFocused } from '@react-navigation/native';
 import { useState } from 'react';
 import { faFlag, faMessage, faTrash, faUserPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { bannedUserById, unBannedUserById } from '@/actions/UserActions';
-
+import { isLoadingSelector } from '@/selectors/StatusSelectors';
+import { TYPES } from '../../actions/PostActions'
 export default function ManageReportOnMessage({ navigation, route }) {
+  const isLoading = useSelector(state =>
+    isLoadingSelector([TYPES.GET_POST_BY_ID], state)
+  );
+
   const dispatch = useDispatch()
   const focus = useIsFocused();
 
@@ -48,6 +54,8 @@ export default function ManageReportOnMessage({ navigation, route }) {
 
   }, [focus])
 
+
+
   const bannedHandlePress = () => {
     dispatch(bannedUserById(postData?.userId))
     setOpen(false)
@@ -56,6 +64,7 @@ export default function ManageReportOnMessage({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <CustomLoader open={isLoading} />
       <TopBackButton
         onPress={() => navigation.goBack()}
         style={styles.TopBackButton}

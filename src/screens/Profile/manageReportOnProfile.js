@@ -24,6 +24,7 @@ import {
   PopUp,
   Button,
   CustomLoader,
+  AppImageViewer,
 } from '@/components';
 import { moderateScale, ms, vs } from 'react-native-size-matters';
 import {
@@ -49,12 +50,16 @@ import { getUser } from '@/selectors/UserSelectors';
 import { UserController } from '@/controllers';
 import { UserData } from './ProfileData/manageReportOnMessageData';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
+import { SwiperViewer } from '@/components/SwiperComponent';
 
 export default function ManageReportOnMessage({ navigation, route }) {
+  let counter = 1;
 
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.GET_USER_PROFILE_BY_USER_ID], state)
   );
+  const [showImageView, setShowImageView] = useState(false);
+  const [feedImages, setFeedImages] = useState([]);
   const [openMore, setOpenMore] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openBan, setOpenBan] = useState(false);
@@ -207,6 +212,86 @@ export default function ManageReportOnMessage({ navigation, route }) {
                   time={item.created_at}
                 />
                 <CardBody text={item?.postBody} />
+
+
+                {item?.postImg?.length <= 2 ? (
+                  <View style={styles.imageContainer}>
+                    {item?.postImg?.map(data => (
+                      counter = counter + 1,
+                      <TouchableOpacity
+                        key={counter}
+                        style={styles.touchContainer}
+                        onPress={() => {
+                          setShowImageView(true),
+                            setFeedImages(item?.postImg)
+                        }}
+                      >
+                        <Image
+                          source={{
+                            uri: data,
+                          }}
+                          style={styles.image}
+                        />
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                ) : item?.postImg?.length > 2 ? (
+                  counter = 1,
+                  <View style={styles.imageContainer}>
+                    {item?.postImg?.map(data =>
+                      counter == 1 ? (
+                        counter = counter + 1,
+                        <TouchableOpacity
+                          key={counter}
+                          style={styles.touchContainer}
+                          onPress={() => {
+                            setShowImageView(true),
+                              setFeedImages(item?.postImg);
+                            // console.log(feedImages)
+                          }}
+                        >
+                          <Image
+                            source={{
+                              uri: data,
+                            }}
+                            key={counter}
+                            style={styles.image}
+                          />
+                        </TouchableOpacity>
+                      ) : counter == 2 ? (
+                        counter = counter + 1,
+                        <TouchableOpacity
+                          key={counter}
+                          style={styles.touchContainer}
+                          onPress={() => {
+                            setShowImageView(true),
+                              setFeedImages(item?.postImg);
+                          }}
+                        >
+                          <ImageBackground
+                            source={{
+                              uri: data,
+                            }}
+                            key={counter}
+                            style={[styles.image, styles.moreImage]}
+                          >
+                            <TouchableOpacity
+                              onPress={() => {
+                                setShowImageView(true),
+                                  setFeedImages(item?.postImg);
+                              }}
+                            >
+                              <Text style={styles.extraImage}>
+                                {strings.message.plus}
+                                {item?.postImg?.length - 1}
+                              </Text>
+                            </TouchableOpacity>
+                          </ImageBackground>
+                        </TouchableOpacity>
+                      ) : null
+                    )}
+                  </View>
+                ) : null}
                 <CardFooter
                   likeCount={item.like}
                   // likePress = {()=> Alert.alert("like")}
@@ -319,6 +404,16 @@ export default function ManageReportOnMessage({ navigation, route }) {
           </View>
         </PopUp>
       </View>
+
+      {/*  image view modal */}
+      {showImageView && (
+        <AppImageViewer
+          visible={showImageView}
+          setVisible={() => setShowImageView(false)}
+          images={feedImages}
+        />
+
+      )}
     </SafeAreaView>
   );
 }
@@ -505,5 +600,32 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: theme.light.colors.primaryBgLight,
     margin: ms(12),
+  },
+  imageContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginRight: ms(-5),
+  },
+  touchContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginRight: ms(-5),
+  },
+  image: {
+    flex: 1,
+    width: '85%',
+    height: ms(200),
+    marginRight: ms(10),
+  },
+  moreImage: {
+    height: ms(200),
+    backgroundColor: theme.light.colors.hyperlink,
+    opacity: 0.7,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    width: '100%',
   },
 });

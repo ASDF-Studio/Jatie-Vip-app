@@ -48,7 +48,7 @@ export const SwiperViewer = ({ visible, setVisible, images }) => {
                     data={images}
                     renderItem={({ item }) => (
                         <View style={[styles.child]}>
-                            {item.mimetype.split("/")[0] == "image" ?
+                            {item?.mimetype?.split("/")[0] == "image" ?
                                 <Image
                                     source={{
                                         uri: item.mimetype.split("/")[0] == "image" ? item.url : "",
