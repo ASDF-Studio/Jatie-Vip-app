@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   StyleSheet,
   View,
@@ -42,6 +42,7 @@ import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { KeyboardManager } from 'react-native-keyboard-manager';
 import { KeyboardAccessoryView } from 'react-native-keyboard-accessory';
+import { createThumbnail } from "react-native-create-thumbnail";
 let nextId = 0;
 
 export default function AdminPost({ navigation }) {
@@ -56,6 +57,7 @@ export default function AdminPost({ navigation }) {
   const [postBody, setPostBody] = useState('');
   const [postImg, setPostImg] = useState([]);
   const [mimeType, setmimeType] = useState([]);
+  const [videoPoster, setVideoPoster] = useState([]);
   const dispatch = useDispatch();
   const user = useSelector(getUser);
 
@@ -73,14 +75,16 @@ export default function AdminPost({ navigation }) {
   };
 
   const OpenGallery = () => {
-
+    console.log("Testing-=-=-=-=-=", postImg);
 
     {
       isImage == strings.exclusive.image
         ? ImageCropPicker.openPicker({
           width: ms(300),
           height: ms(400),
-          mediaType: strings.exclusive.video,
+
+          maxFiles: 3,
+          mediaType: strings.exclusive.image,
           multiple: true,
           compressImageQuality: 0.5
         })
@@ -94,6 +98,7 @@ export default function AdminPost({ navigation }) {
               });
               postImg.push(item.path);
               mimeType.push(item.mime);
+
               setModalVisible(!isModalVisible);
             });
           })
@@ -103,20 +108,27 @@ export default function AdminPost({ navigation }) {
         : ImageCropPicker.openPicker({
           width: 300,
           height: 400,
+          maxFiles: 3,
           mediaType: strings.exclusive.video,
           multiple: true,
           compressImageQuality: 0.5,
           loadingLabelText: 'loading',
         })
           .then(video => {
+
             video.forEach(item => {
-              imageArray.push({
-                id: nextId++,
-                image: null,
-                video: item.path,
-                videoMime: item.mime,
-              });
-              console.log("VIDEO=-=-=-Selction", video);
+              createThumbnail({
+                url: item.path,
+                timeStamp: 10000,
+              })
+                .then(response => imageArray.push({
+                  id: nextId++,
+                  image: null,
+                  video: item.path,
+                  videoMime: item.mime,
+                  videoPoster: response?.path
+                }))
+                .catch(err => console.log({ err }));
               setPostImg(video.path);
               setmimeType(video.mime);
               setModalVisible(!isModalVisible);

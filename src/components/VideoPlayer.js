@@ -41,10 +41,11 @@ export const AppVideoPlayer = ({ url, poster, play }) => {
           onEnterFullscreen={() => setFullScreen(prev => !prev)}
           style={{
             height: ms(200),
+
             // position: 'absolute',
           }}
           poster={poster}
-          paused={pause}
+          paused={true}
           onPress={() => setPause(pause == true ? false : true)}
           resizeMode="cover"
           repeat

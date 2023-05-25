@@ -21,6 +21,22 @@ export const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 75,
   },
+  playButton: {
+    backgroundColor: theme.light.colors.primary, width: 50, height: 50, borderRadius: 100, justifyContent: "center", alignItems: "center"
+  },
+  image: {
+    flex: 1,
+    width: '85%',
+    height: ms(200),
+    marginRight: ms(10),
+  },
+  extraImage: {
+    color: theme.light.colors.white,
+    fontFamily: FontFamily.BrandonGrotesque_regular,
+    fontSize: ms(24, 0.3),
+    width: '100%',
+    padding: 35,
+  },
   exclusive: {
     paddingLeft: ms(7),
   },
@@ -53,6 +69,15 @@ export const styles = StyleSheet.create({
     fontSize: ms(18, 0.3),
     color: theme.light.colors.black,
     margin: ms(10),
+  },
+  playButtonBg: {
+    height: ms(200),
+    backgroundColor: theme.light.colors.hyperlink,
+    // opacity: 0.7,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    width: '100%',
   },
   cardRightContainer: {
     flexDirection: 'row',

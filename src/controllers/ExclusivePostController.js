@@ -6,22 +6,54 @@ export class ExclusivePostController {
 
     // create post
     static async createExclusivePost(params) {
-        // console.log("Params=-=-=->>>", JSON.stringify(params));
+        console.log("Params=-=-=->>>", JSON.stringify(params));
         return new Promise(async (resolve, reject) => {
 
             const endpoint = API_BASE_URL + API_END_POINTS.CREATE_EXCLUSIVE_POST;
             let data = new FormData()
+            // if (params.imageArray.length !== 0) {
+            //     let obj = [];
+            //     params.imageArray.map(item => {
+            //         let filename = item.image.split("/").pop();
+            //         obj = {
+            //             uri: item.image,
+            //             name: filename,
+            //             type: item.imageMime,
+            //         };
+            //         data.append('myimage', obj)
+            //     });
+            // }
             if (params.imageArray.length !== 0) {
+                // if (isImage == strings.exclusive.video) {
                 let obj = [];
+                let videoPoster = [];
+                var isVideo = false
                 params.imageArray.map(item => {
-                    let filename = item.image.split("/").pop();
+                    let filename = item.video == null ? item.image.split("/").pop() : item.video.split("/").pop();
                     obj = {
-                        uri: item.image,
+                        uri: item.video == null ? item.image : item.video,
                         name: filename,
-                        type: item.imageMime,
+                        type: item.video == null ? item.imageMime : item.videoMime,
+                        // videoPoster: item.video == null ? null : item?.videoPoster
                     };
-                    data.append('myimage', obj)
+                    if (item.video !== null) {
+                        let filename = item.videoPoster.split("/").pop();
+                        videoPoster = {
+                            uri: item.videoPoster,
+                            name: filename,
+                            // type: item.videoMime,
+                            // videoPoster: item.video == null ? null : item?.videoPoster
+                        };
+                        isVideo = true
+                    }
+                    data.append('myimage', obj);
                 });
+                if (isVideo) {
+                    data.append('videoPoster', videoPoster)
+                }
+                // data.append('videoPoster', videoPoster);
+                console.log("VIDEEO___OPOSTER", videoPoster);
+
             }
 
             data.append('postImg', '');
@@ -31,7 +63,6 @@ export class ExclusivePostController {
             data.append('isVIPonly', params.isVIPonly);
             data.append('isScheduled', params.schedulePost);
             data.append('scheduleDetails', params.scheduleDate);
-
             console.log("create_post=-=-=daa", JSON.stringify(data));
             const headers = {
                 'Content-Type': 'multipart/form-data'

@@ -47,6 +47,8 @@ import { deleteExclusivePost, getAllExclusivePost, TYPES } from '@/actions/PostA
 import { getUser } from '@/selectors/UserSelectors';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { getAllExclusiveData } from '@/selectors/PostSelectors';
+import { createThumbnail } from "react-native-create-thumbnail";
+import { SwiperViewer } from '@/components/SwiperComponent';
 
 export function Exclusive({ navigation }) {
   const dispatch = useDispatch()
@@ -93,6 +95,12 @@ export function Exclusive({ navigation }) {
     // var count = arr[postIndex]?.comments_aggregate?.aggregate?.count
     // arr[POST_INDEX].comments_aggregate.aggregate.count = count - 1;
     // dispatch(getAllPostSuccess(arr))
+  }
+  const onViewImageVideo = (data) => {
+
+    setShowImageView(true),
+
+      setFeedImages(data.postMediaContent)
   }
   return (
     <SafeAreaView style={styles.container}>
@@ -317,52 +325,91 @@ export function Exclusive({ navigation }) {
                     )}
                   </TouchableOpacity> */}
                     <>
-                      {item?.postImg?.length <= 2 ? (
+                      {item?.postMediaContent?.length <= 2 ? (
                         <View style={styles.imageContainer}>
-                          {item?.postImg?.map(data => (
+                          {item?.postMediaContent?.map(data => (
                             counter = counter + 1,
                             <TouchableOpacity
                               key={counter}
                               style={styles.touchContainer}
                               onPress={() => {
-                                // setShowImageView(true),
-                                //   setFeedImages(item.postImg)
-                                navigation.navigate(NAVIGATION.exclusiveThumbnail, { "DATA": item })
+                                onViewImageVideo(item)
                               }}
                             >
-                              <Image
+                              {data.mimetype.split("/")[0] == "image" ? <Image
                                 source={{
-                                  uri: data,
+                                  uri: data.url,
                                 }}
                                 style={styles.image}
-                              />
+                              /> : <ImageBackground
+                                source={{
+                                  uri: data.cover,
+                                }}
+                                key={counter}
+                                style={[styles.image, styles.playButtonBg]}
+                              >
+
+                                <TouchableOpacity
+                                  // activeOpacity={1}
+                                  style={styles.playButton}
+                                  onPress={() => {
+                                    onViewImageVideo(item)
+                                  }}
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faPlay}
+                                    size={ms(15)}
+                                    style={styles.Play}
+                                  />
+
+                                </TouchableOpacity>
+                              </ImageBackground>}
+
+
                             </TouchableOpacity>
                           ))}
                         </View>
-                      ) : item?.postImg?.length > 2 ? (
+                      ) : item?.postMediaContent?.length > 2 ? (
                         counter = 1,
                         <View style={styles.imageContainer}>
-                          {item?.postImg?.map(data =>
+                          {item?.postMediaContent?.map(data =>
                             counter == 1 ? (
                               counter = counter + 1,
                               <TouchableOpacity
                                 key={counter}
                                 style={styles.touchContainer}
                                 onPress={() => {
-                                  navigation.navigate(NAVIGATION.exclusiveThumbnail, { "DATA": item })
-
-                                  // setShowImageView(true),
-                                  //   setFeedImages(item.postImg);
-                                  // console.log(feedImages)
+                                  onViewImageVideo(item)
                                 }}
                               >
-                                <Image
+                                {data.mimetype.split("/")[0] == "image" ? <Image
                                   source={{
-                                    uri: data,
+                                    uri: data.url,
+                                  }}
+                                  style={styles.image}
+                                /> : <ImageBackground
+                                  source={{
+                                    uri: data.cover,
                                   }}
                                   key={counter}
-                                  style={styles.image}
-                                />
+                                  style={[styles.image, styles.playButtonBg]}
+                                >
+
+                                  <TouchableOpacity
+                                    // activeOpacity={1}
+                                    style={styles.playButton}
+                                    onPress={() => {
+                                      onViewImageVideo(item)
+                                    }}
+                                  >
+                                    <FontAwesomeIcon
+                                      icon={faPlay}
+                                      size={ms(15)}
+                                      style={styles.Play}
+                                    />
+
+                                  </TouchableOpacity>
+                                </ImageBackground>}
                               </TouchableOpacity>
                             ) : counter == 2 ? (
                               counter = counter + 1,
@@ -370,32 +417,28 @@ export function Exclusive({ navigation }) {
                                 key={counter}
                                 style={styles.touchContainer}
                                 onPress={() => {
-                                  navigation.navigate(NAVIGATION.exclusiveThumbnail, { "DATA": item })
-
-                                  // setShowImageView(true),
-                                  //   setFeedImages(item.postImg);
+                                  onViewImageVideo(item)
                                 }}
                               >
                                 <ImageBackground
                                   source={{
-                                    uri: data,
+                                    uri: data.mimetype.split("/")[0] == "image" ? data.url : data.cover,
                                   }}
                                   key={counter}
                                   style={[styles.image, styles.moreImage]}
                                 >
                                   <TouchableOpacity
                                     onPress={() => {
-                                      navigation.navigate(NAVIGATION.exclusiveThumbnail, { "DATA": item })
-
-                                      // setShowImageView(true),
-                                      //   setFeedImages(item.postImg);
+                                      onViewImageVideo(item)
                                     }}
                                   >
                                     <Text style={styles.extraImage}>
                                       {strings.message.plus}
-                                      {item?.postImg?.length - 1}
+                                      {item.postMediaContent?.length - 1}
                                     </Text>
+
                                   </TouchableOpacity>
+
                                 </ImageBackground>
                               </TouchableOpacity>
                             ) : null
@@ -432,7 +475,12 @@ export function Exclusive({ navigation }) {
 
       {/* Admin Button */}
       {showImageView && (
-        <AppImageViewer
+        // <AppImageViewer
+        //   visible={showImageView}
+        //   setVisible={() => setShowImageView(false)}
+        //   images={feedImages}
+        // />
+        <SwiperViewer
           visible={showImageView}
           setVisible={() => setShowImageView(false)}
           images={feedImages}

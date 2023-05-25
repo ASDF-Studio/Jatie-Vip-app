@@ -323,55 +323,54 @@ export class UserController {
       let data = new FormData()
       console.log("VIDEO----", imageArray);
       if (mimeType !== null) {
-        if (isImage == strings.exclusive.video) {
-          let obj = [];
-          imageArray.map(item => {
-            let filename = item.video.split("/").pop();
-            obj = {
-              uri: item.video,
+        // if (isImage == strings.exclusive.video) {
+        let obj = [];
+        let videoPoster = [];
+        var isVideo = false
+        imageArray.map(item => {
+          let filename = item.video == null ? item.image.split("/").pop() : item.video.split("/").pop();
+          obj = {
+            uri: item.video == null ? item.image : item.video,
+            name: filename,
+            type: item.video == null ? item.imageMime : item.videoMime,
+            // videoPoster: item.video == null ? null : item?.videoPoster
+          };
+          if (item.video !== null) {
+            let filename = item.videoPoster.split("/").pop();
+            videoPoster = {
+              uri: item.videoPoster,
               name: filename,
-              type: item.imageMime,
+              // type: item.videoMime,
+              // videoPoster: item.video == null ? null : item?.videoPoster
             };
-            data.append('myimage', obj);
-          });
-        } else {
-          let obj = [];
-          imageArray.map(item => {
-            let filename = item.image.split("/").pop();
-            obj = {
-              uri: item.image,
-              name: filename,
-              type: item.imageMime,
-            };
-            data.append('myimage', obj);
-          });
+            isVideo = true
+          }
+          data.append('myimage', obj);
+        });
+        if (isVideo) {
+          data.append('videoPoster', videoPoster)
         }
-        // let obj = [];
-        // imageArray.map(item => {
-        //   let filename = item.image.split("/").pop();
-        //   obj = {
-        //     uri: item.image,
-        //     name: filename,
-        //     type: item.imageMime,
-        //   };
-        //   data.append('myimage', obj);
-        // });
+        // data.append('videoPoster', videoPoster);
+        console.log("VIDEEO___OPOSTER", videoPoster);
+
       }
 
       data.append('userId', id);
       data.append('postTitle', postTitle);
       data.append('postBody', postBody);
       data.append('postImg', mimeType == null && file);
-      console.log("FORM_DATA_______", data);
+      console.log("FORM_DATA_______", JSON.stringify(data));
       const headers = {
         'Content-Type': 'multipart/form-data'
       }
-
       await HttpClient.post(endpoint, data, { headers })
         .then((response) => {
+          console.log("POST_CREAT", response);
           resolve(response);
         })
         .catch((error) => {
+          console.log("ERROR__RESPONSE", error);
+
           reject(error);
         });
     });

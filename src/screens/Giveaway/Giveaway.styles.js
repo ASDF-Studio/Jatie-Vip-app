@@ -83,4 +83,13 @@ export const styles = StyleSheet.create({
     fontFamily: FontFamily.BrandonGrotesque_bold,
     fontSize: ms(15, 0.3),
   },
+  moreImage: {
+    height: ms(200),
+    // backgroundColor: theme.light.colors.hyperlink,
+    opacity: 0.7,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    width: '100%',
+  },
 });
