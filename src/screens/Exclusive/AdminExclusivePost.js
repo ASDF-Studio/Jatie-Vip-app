@@ -29,6 +29,8 @@ import ImageCropPicker from 'react-native-image-crop-picker';
 import { Data, File } from './exclusiveData/adminExclusivePostData';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
+import { createThumbnail } from "react-native-create-thumbnail";
+
 
 let nextId = 0;
 
@@ -62,6 +64,7 @@ export default function AdminExclusivePost({ navigation }) {
           height: 400,
           mediaType: strings.exclusive.image,
           multiple: true,
+
           maxFiles: 3
         })
           .then(images => {
@@ -83,15 +86,35 @@ export default function AdminExclusivePost({ navigation }) {
           height: 400,
           mediaType: strings.exclusive.video,
           multiple: true,
+          maxFiles: 3,
           loadingLabelText: 'loading',
         })
           .then(video => {
-            imageArray.push({
-              id: nextId++,
-              image: null,
-              video: video.path,
+
+            video.forEach(item => {
+              createThumbnail({
+                url: item.path,
+                timeStamp: 10000,
+              })
+                .then(response => imageArray.push({
+                  id: nextId++,
+                  image: null,
+                  video: item.path,
+                  videoMime: item.mime,
+                  videoPoster: response?.path
+                }))
+                .catch(err => console.log({ err }));
+              setPostImg(video.path);
+              setmimeType(video.mime);
+              setModalVisible(!isModalVisible);
             });
-            setModalVisible(!isModalVisible);
+
+            // imageArray.push({
+            //   id: nextId++,
+            //   image: null,
+            //   video: video.path,
+            // });
+            // setModalVisible(!isModalVisible);
           })
           .catch(e => {
             console.log('Error: ' + e);
@@ -295,13 +318,13 @@ export const FileUpload = imageArray => {
                       </Text>
                     </View>
                     <View style={styles.videoPlayContainer}>
-                      {' '}
+                      {/* {' '}
                       <ActivityIndicator
                         animating={animating}
                         color={theme.light.colors.primary}
                         size="large"
                         style={styles.activityIndicator}
-                      />
+                      /> */}
                       <FontAwesomeIcon
                         icon={faCircle}
                         size={ms(30)}

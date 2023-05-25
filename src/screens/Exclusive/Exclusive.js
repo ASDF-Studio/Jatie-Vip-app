@@ -47,6 +47,7 @@ import { deleteExclusivePost, getAllExclusivePost, TYPES } from '@/actions/PostA
 import { getUser } from '@/selectors/UserSelectors';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { getAllExclusiveData } from '@/selectors/PostSelectors';
+import { createThumbnail } from "react-native-create-thumbnail";
 
 export function Exclusive({ navigation }) {
   const dispatch = useDispatch()

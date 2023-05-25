@@ -74,10 +74,27 @@ import dynamicLinks from '@react-native-firebase/dynamic-links';
 import queryString from 'query-string';
 import { POST_TYPE } from '@/constants/enums';
 import { followers } from '@/actions/UserActions';
+import { SwiperViewer } from '@/components/SwiperComponent';
 
 export function Home({ navigation }) {
   const ALLPOST = useSelector(getAllPostData)
-
+  const DATA_POST = [
+    {
+      "url": "https://d2wwqw32p0xkid.cloudfront.net/photo-1684821257393",
+      "mimetype": "image/jpeg",
+      "cover": ""
+    },
+    {
+      "url": "https://d2wwqw32p0xkid.cloudfront.net/photo-1684821257555",
+      "mimetype": "video/mp4",
+      "cover": "https://d2wwqw32p0xkid.cloudfront.net/photo-1684934701039"
+    },
+    {
+      "url": "https://d2wwqw32p0xkid.cloudfront.net/photo-1684821257656",
+      "mimetype": "image/jpeg",
+      "cover": ""
+    }
+  ]
   const userType = useSelector(state => state.userType);
   const user = useSelector(getUser);
 
@@ -209,7 +226,16 @@ export function Home({ navigation }) {
     setOpen(false)
     dispatch(getAllPost(user?.id, sortBy, follwingSwitch))
   }
+  const onViewImageVideo = (data) => {
 
+    //   let arr=[]
+    // for (i=0;i<data.postImg.length;i++){
+
+    // }
+    setShowImageView(true),
+      // setFeedImages(item.postImg)
+      setFeedImages(data.postMediaContent)
+  }
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="transparent" />
@@ -322,73 +348,92 @@ export function Home({ navigation }) {
                     <AppVideoPlayer url={item.video} poster={item.poster} />
                   ) : null} */}
                   {/* images */}
-                  {/* {item.postVideo.length > 0 &&
 
-                    // <Image
-                    //   source={{
-                    //     uri: item?.postVideo[index]?.cover,
-                    //   }}
-                    //   style={styles.image}
-                    // />
-                    <TouchableOpacity
-                      style={{ backgroundColor: "red", width: 50, height: 50, borderRadius: 100, justifyContent: "center", alignItems: "center" }}
-                    >
-                      <FontAwesomeIcon
-                        icon={faPlay}
-                        size={ms(15)}
-                        style={styles.Play}
-                      />
-
-                    </TouchableOpacity>
-
-
-
-                  } */}
-                  {item?.postImg?.length <= 2 ? (
+                  {item?.postMediaContent?.length <= 2 ? (
                     <View style={styles.imageContainer}>
-                      {item?.postImg?.map(data => (
+                      {item?.postMediaContent?.map(data => (
                         counter = counter + 1,
                         <TouchableOpacity
                           key={counter}
                           style={styles.touchContainer}
                           onPress={() => {
-                            setShowImageView(true),
-                              setFeedImages(item.postImg)
+                            onViewImageVideo(item)
                           }}
                         >
-
-                          <Image
+                          {data.mimetype.split("/")[0] == "image" ? <Image
                             source={{
-                              uri: data,
+                              uri: data.url,
                             }}
                             style={styles.image}
-                          />
+                          /> : <ImageBackground
+                            source={{
+                              uri: data.cover,
+                            }}
+                            key={counter}
+                            style={[styles.image, styles.playButtonBg]}
+                          >
+
+                            <TouchableOpacity
+                              // activeOpacity={1}
+                              style={styles.playButton}
+                              onPress={() => {
+                                onViewImageVideo(item)
+                              }}
+                            >
+                              <FontAwesomeIcon
+                                icon={faPlay}
+                                size={ms(15)}
+                                style={styles.Play}
+                              />
+
+                            </TouchableOpacity>
+                          </ImageBackground>}
+
 
                         </TouchableOpacity>
                       ))}
                     </View>
-                  ) : item?.postImg?.length > 2 ? (
+                  ) : item?.postMediaContent?.length > 2 ? (
                     counter = 1,
                     <View style={styles.imageContainer}>
-                      {item?.postImg?.map(data =>
+                      {item?.postMediaContent?.map(data =>
                         counter == 1 ? (
                           counter = counter + 1,
                           <TouchableOpacity
                             key={counter}
                             style={styles.touchContainer}
                             onPress={() => {
-                              setShowImageView(true),
-                                setFeedImages(item.postImg);
-                              // console.log(feedImages)
+                              onViewImageVideo(item)
                             }}
                           >
-                            <Image
+                            {data.mimetype.split("/")[0] == "image" ? <Image
                               source={{
-                                uri: data,
+                                uri: data.url,
+                              }}
+                              style={styles.image}
+                            /> : <ImageBackground
+                              source={{
+                                uri: data.cover,
                               }}
                               key={counter}
-                              style={styles.image}
-                            />
+                              style={[styles.image, styles.playButtonBg]}
+                            >
+
+                              <TouchableOpacity
+                                // activeOpacity={1}
+                                style={styles.playButton}
+                                onPress={() => {
+                                  onViewImageVideo(item)
+                                }}
+                              >
+                                <FontAwesomeIcon
+                                  icon={faPlay}
+                                  size={ms(15)}
+                                  style={styles.Play}
+                                />
+
+                              </TouchableOpacity>
+                            </ImageBackground>}
                           </TouchableOpacity>
                         ) : counter == 2 ? (
                           counter = counter + 1,
@@ -396,28 +441,41 @@ export function Home({ navigation }) {
                             key={counter}
                             style={styles.touchContainer}
                             onPress={() => {
-                              setShowImageView(true),
-                                setFeedImages(item.postImg);
+                              onViewImageVideo(item)
                             }}
                           >
                             <ImageBackground
                               source={{
-                                uri: data,
+                                uri: data.mimetype.split("/")[0] == "image" ? data.url : data.cover,
                               }}
                               key={counter}
                               style={[styles.image, styles.moreImage]}
                             >
                               <TouchableOpacity
                                 onPress={() => {
-                                  setShowImageView(true),
-                                    setFeedImages(item.postImg);
+                                  onViewImageVideo(item)
                                 }}
                               >
                                 <Text style={styles.extraImage}>
                                   {strings.message.plus}
-                                  {item?.postImg?.length - 1}
+                                  {item.postMediaContent?.length - 1}
                                 </Text>
+
                               </TouchableOpacity>
+                              {/* {data.mimetype.split("/")[0] == "video" &&
+                                <TouchableOpacity
+                                  // activeOpacity={1}
+                                  style={styles.playButton}
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faPlay}
+                                    size={ms(15)}
+                                    style={styles.Play}
+                                  />
+
+                                </TouchableOpacity>
+                              } */}
+
                             </ImageBackground>
                           </TouchableOpacity>
                         ) : null
@@ -505,7 +563,13 @@ export function Home({ navigation }) {
 
       {/*  image view modal */}
       {showImageView && (
-        <AppImageViewer
+        // <AppImageViewer
+        //   visible={showImageView}
+        //   setVisible={() => setShowImageView(false)}
+        //   images={feedImages}
+        // />
+
+        <SwiperViewer
           visible={showImageView}
           setVisible={() => setShowImageView(false)}
           images={feedImages}
@@ -926,8 +990,17 @@ const styles = StyleSheet.create({
   },
   moreImage: {
     height: ms(200),
-    backgroundColor: theme.light.colors.hyperlink,
+    // backgroundColor: theme.light.colors.hyperlink,
     opacity: 0.7,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    width: '100%',
+  },
+  playButtonBg: {
+    height: ms(200),
+    backgroundColor: theme.light.colors.hyperlink,
+    // opacity: 0.7,
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
@@ -1023,6 +1096,9 @@ const styles = StyleSheet.create({
   },
   arrowIconStyle: {
     color: theme.light.colors.infoBgLight,
+  },
+  playButton: {
+    backgroundColor: theme.light.colors.primary, width: 50, height: 50, borderRadius: 100, justifyContent: "center", alignItems: "center"
   },
 
   // delet confirm

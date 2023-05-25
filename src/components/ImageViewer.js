@@ -5,6 +5,7 @@ import React, { useState } from "react"
 import { Modal, StyleSheet, Text, View, TouchableOpacity, SafeAreaView } from "react-native"
 import ImageViewer from "react-native-image-zoom-viewer"
 import { ms } from "react-native-size-matters"
+import { AppVideoPlayer } from "./VideoPlayer"
 
 
 // image format
@@ -18,12 +19,13 @@ import { ms } from "react-native-size-matters"
 
 
 export const AppImageViewer = ({ visible, setVisible, images }) => {
+    console.log("DATA+_+_+_+_", images);
     let imageView = [];
     {
         images?.map(image => (
             imageView.push(
                 {
-                    url: image,
+                    url: image.mimetype.split("/")[0] == "image" ? image.url : image.cover,
                 }
             )
         ))
@@ -50,6 +52,7 @@ export const AppImageViewer = ({ visible, setVisible, images }) => {
                     onCancel={() => { }}
                 // backgroundColor  = {theme.light.colors.primaryBg}
                 />
+                {/* <AppVideoPlayer url={item.video} poster={item.poster} /> */}
 
             </Modal>
         </View>

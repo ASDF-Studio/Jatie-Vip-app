@@ -45,7 +45,7 @@ export const AppVideoPlayer = ({ url, poster, play }) => {
             // position: 'absolute',
           }}
           poster={poster}
-          paused={pause}
+          paused={true}
           onPress={() => setPause(pause == true ? false : true)}
           resizeMode="cover"
           repeat
