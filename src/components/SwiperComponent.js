@@ -1,8 +1,8 @@
 import { theme } from "@/theme"
-import { faClose } from "@fortawesome/free-solid-svg-icons"
+import { faClose, faPlay } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"
 import React, { useEffect, useRef, useState } from "react"
-import { Modal, StyleSheet, Text, View, TouchableOpacity, SafeAreaView, Dimensions, Image } from "react-native"
+import { Modal, StyleSheet, Text, View, TouchableOpacity, SafeAreaView, Dimensions, Image, ImageBackground } from "react-native"
 import ImageViewer from "react-native-image-zoom-viewer"
 import { ms } from "react-native-size-matters"
 import { AppVideoPlayer } from "./VideoPlayer"
@@ -14,14 +14,15 @@ export const SwiperViewer = ({ visible, setVisible, images }) => {
     const swipeRef = useRef(null)
 
     console.log("DATA+_+_+_+_", images);
+    const onPlayVideo = (data) => {
 
+    }
     return (
         <View>
             <Modal
                 visible={visible}
                 transparent={true}
             >
-
                 <View style={styles.indexView}>
                     <Text style={styles.swipeIndexText}>{swipeIndex + 1}/{images.length}</Text>
 
@@ -30,7 +31,6 @@ export const SwiperViewer = ({ visible, setVisible, images }) => {
                     style={styles.closeIcon}
                     onPress={setVisible}
                 >
-
                     <FontAwesomeIcon
                         icon={faClose}
                         size={30}
@@ -58,6 +58,25 @@ export const SwiperViewer = ({ visible, setVisible, images }) => {
                                 <View
                                     style={styles.videoView}
                                 >
+                                    {/* <ImageBackground
+                                        source={{
+                                            uri: item.cover,
+                                        }}
+                                        style={[styles.image, styles.playButtonBg]}
+                                    >
+                                        <TouchableOpacity
+                                            // activeOpacity={1}
+                                            style={styles.playButton}
+
+                                        >
+                                            <FontAwesomeIcon
+                                                icon={faPlay}
+                                                size={ms(15)}
+                                                style={styles.Play}
+                                            />
+
+                                        </TouchableOpacity>
+                                    </ImageBackground> */}
                                     <AppVideoPlayer url={item.url} />
 
                                 </View>
@@ -108,6 +127,24 @@ const styles = StyleSheet.create({
         width: '100%',
         height: ms(200),
         marginRight: ms(10),
+    },
+    playButton: {
+        backgroundColor: theme.light.colors.primary, width: 50, height: 50, borderRadius: 100, justifyContent: "center", alignItems: "center"
+    },
+    playButtonBg: {
+        height: ms(200),
+        backgroundColor: theme.light.colors.hyperlink,
+        // opacity: 0.7,
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden',
+        width: '100%',
+    },
+    Play: {
+        position: 'absolute',
+        color: theme.light.colors.background,
+        marginLeft: ms(8),
+        marginTop: ms(8),
     },
 
 })

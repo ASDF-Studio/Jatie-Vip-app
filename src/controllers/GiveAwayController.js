@@ -11,19 +11,52 @@ export class GiveAwayController {
 
             const endpoint = API_BASE_URL + API_END_POINTS.GIVE_AWAY_POST_ENDPOINT;
             let data = new FormData()
-            if (params.imageArray.length !== 0) {
-                let obj = [];
-                params.imageArray.map(item => {
-                    let filename = item.image.split("/").pop();
-                    obj = {
-                        uri: item.image,
-                        name: filename,
-                        type: item.imageMime,
-                    };
+            // if (params.imageArray.length !== 0) {
+            //     let obj = [];
+            //     params.imageArray.map(item => {
+            //         let filename = item.image.split("/").pop();
+            //         obj = {
+            //             uri: item.image,
+            //             name: filename,
+            //             type: item.imageMime,
+            //         };
 
-                    data.append('myimage', obj)
+            //         data.append('myimage', obj)
+            //     });
+            // }
+            if (params.imageArray.length !== 0) {
+                // if (isImage == strings.exclusive.video) {
+                let obj = [];
+                let videoPoster = [];
+                var isVideo = false
+                params.imageArray.map(item => {
+                    let filename = item.video == null ? item.image.split("/").pop() : item.video.split("/").pop();
+                    obj = {
+                        uri: item.video == null ? item.image : item.video,
+                        name: filename,
+                        type: item.video == null ? item.imageMime : item.videoMime,
+                        // videoPoster: item.video == null ? null : item?.videoPoster
+                    };
+                    if (item.video !== null) {
+                        let filename = item.videoPoster.split("/").pop();
+                        videoPoster = {
+                            uri: item.videoPoster,
+                            name: filename,
+                            // type: item.videoMime,
+                            // videoPoster: item.video == null ? null : item?.videoPoster
+                        };
+                        isVideo = true
+                    }
+                    data.append('myimage', obj);
                 });
+                if (isVideo) {
+                    data.append('videoPoster', videoPoster)
+                }
+                // data.append('videoPoster', videoPoster);
+                console.log("VIDEEO___OPOSTER", videoPoster);
+
             }
+
 
             data.append('postImg', '');
             data.append('userId', params.userId);
