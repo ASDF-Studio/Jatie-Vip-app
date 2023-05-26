@@ -8,7 +8,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import { Button, Card, CardBody, CustomLoader, Icon, TopBackButton } from '@/components';
+import { AppVideoPlayer, Button, Card, CardBody, CustomLoader, Icon, TopBackButton } from '@/components';
 import { TextStyles, theme } from '@/theme';
 import { FontFamily } from '@/theme/Fonts';
 import { ms, vs } from 'react-native-size-matters';
@@ -85,16 +85,18 @@ export default function PostDetails({ navigation, route }) {
 
                 {/* map function for images */}
                 {
-                  data.postImg.map((url) => {
+                  data.postMediaContent.map((item) => {
                     return (
+                      <View>
 
-                      <Image
-                        style={styles.thumbnailImage}
-                        source={{
-                          uri: url
-                        }}
-                      />
-
+                        {item?.mimetype?.split("/")[0] == "image" ?
+                          <Image
+                            style={[styles.thumbnailImage, { marginVertical: 5 }]}
+                            source={{
+                              uri: item.url
+                            }}
+                          /> : <AppVideoPlayer url={item.url} poster={item.cover} />}
+                      </View>
                     )
                   })
                 }

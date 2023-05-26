@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, FlatList, StyleSheet, Image, TouchableOpacity, ImageBackground, Text, SafeAreaView, ActivityIndicator } from 'react-native';
 import { theme } from '@/theme';
-import { faTrash, faPen } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faPen, faPlay } from '@fortawesome/free-solid-svg-icons';
 import {
   ModalDown,
   ModalList,
@@ -25,6 +25,8 @@ import { navigationRef } from '@/navigation/RootNavigation';
 import { TYPES, deletePost, getAllPostsByLoggedInUser } from '@/actions/UserActions';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { POST_TYPE } from '@/constants/enums';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { SwiperViewer } from '@/components/SwiperComponent';
 
 export default function MyStatus({ navigation }) {
   const [open, setOpen] = useState(false);
@@ -37,7 +39,7 @@ export default function MyStatus({ navigation }) {
   const [postBody, setPostBody] = useState('');
   const [postImg, setPostImg] = useState([]);
   const [feedImages, setFeedImages] = useState([]);
-
+  // console.log("PROFILE__DATA", user.getAllPostsByLoggedInUser);
   const userType = useSelector(state => state.userType);
 
   const [openReplace, setReplace] = useState(false);
@@ -63,6 +65,17 @@ export default function MyStatus({ navigation }) {
   let DATA = {
     postId, postTitle, postBody, postImg
   }
+  const onViewImageVideo = (data) => {
+
+    //   let arr=[]
+    // for (i=0;i<data.postImg.length;i++){
+
+    // }
+    setShowImageView(true),
+      // setFeedImages(item.postImg)
+      setFeedImages(data.postMediaContent)
+  }
+  console.log("DATATTAATAT-=-=-", user.getAllPostsByLoggedInUser);
   return (
     <SafeAreaView>
       {isLoading ?
@@ -106,7 +119,7 @@ export default function MyStatus({ navigation }) {
               </TouchableOpacity>
             ))}
           </View> */}
-                {item?.postImg?.length <= 2 ? (
+                {/* {item?.postImg?.length <= 2 ? (
                   <View style={styles.imageContainer}>
                     {item?.postImg?.map(data => (
                       counter = counter + 1,
@@ -182,7 +195,173 @@ export default function MyStatus({ navigation }) {
                       ) : null
                     )}
                   </View>
+                ) : null} */}
+
+
+                {item?.postMediaContent?.length <= 2 ? (
+                  <View style={styles.imageContainer}>
+                    {item?.postMediaContent?.map(data => (
+                      counter = counter + 1,
+                      <TouchableOpacity
+                        key={counter}
+                        style={styles.touchContainer}
+                        onPress={() => {
+                          onViewImageVideo(item)
+                        }}
+                      >
+                        {data?.mimetype.split("/")[0] == "image" ? <Image
+                          source={{
+                            uri: data.url,
+                          }}
+                          style={styles.image}
+                        /> : <ImageBackground
+                          source={{
+                            uri: data.cover,
+                          }}
+                          key={counter}
+                          style={[styles.image, styles.playButtonBg]}
+                        >
+
+                          <TouchableOpacity
+                            // activeOpacity={1}
+                            style={styles.playButton}
+                            onPress={() => {
+                              onViewImageVideo(item)
+                            }}
+                          >
+                            <FontAwesomeIcon
+                              icon={faPlay}
+                              size={ms(15)}
+                              style={styles.Play}
+                            />
+
+                          </TouchableOpacity>
+                        </ImageBackground>}
+
+
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                ) : item?.postMediaContent?.length > 2 ? (
+                  counter = 1,
+                  <View style={styles.imageContainer}>
+                    {item?.postMediaContent?.map(data =>
+                      counter == 1 ? (
+                        counter = counter + 1,
+                        <TouchableOpacity
+                          key={counter}
+                          style={styles.touchContainer}
+                          onPress={() => {
+                            onViewImageVideo(item)
+                          }}
+                        >
+                          {data?.mimetype.split("/")[0] == "image" ? <Image
+                            source={{
+                              uri: data.url,
+                            }}
+                            style={styles.image}
+                          /> : <ImageBackground
+                            source={{
+                              uri: data.cover,
+                            }}
+                            key={counter}
+                            style={[styles.image, styles.playButtonBg]}
+                          >
+
+                            <TouchableOpacity
+                              // activeOpacity={1}
+                              style={styles.playButton}
+                              onPress={() => {
+                                onViewImageVideo(item)
+                              }}
+                            >
+                              <FontAwesomeIcon
+                                icon={faPlay}
+                                size={ms(15)}
+                                style={styles.Play}
+                              />
+
+                            </TouchableOpacity>
+                          </ImageBackground>}
+                        </TouchableOpacity>
+                      ) : counter == 2 ? (
+                        counter = counter + 1,
+                        <TouchableOpacity
+                          key={counter}
+                          style={styles.touchContainer}
+                          onPress={() => {
+                            onViewImageVideo(item)
+                          }}
+                        >
+                          <ImageBackground
+                            source={{
+                              uri: data?.mimetype.split("/")[0] == "image" ? data.url : data.cover,
+                            }}
+                            key={counter}
+                            style={[styles.image, styles.moreImage]}
+                          >
+                            <TouchableOpacity
+                              onPress={() => {
+                                onViewImageVideo(item)
+                              }}
+                            >
+                              <Text style={styles.extraImage}>
+                                {strings.message.plus}
+                                {item.postMediaContent?.length - 1}
+                              </Text>
+
+                            </TouchableOpacity>
+                            {/* {data.mimetype.split("/")[0] == "video" &&
+                                <TouchableOpacity
+                                  // activeOpacity={1}
+                                  style={styles.playButton}
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faPlay}
+                                    size={ms(15)}
+                                    style={styles.Play}
+                                  />
+
+                                </TouchableOpacity>
+                              } */}
+
+                          </ImageBackground>
+                        </TouchableOpacity>
+                      ) : null
+                    )}
+                  </View>
                 ) : null}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 <CardFooter
                   postType={POST_TYPE.PROFILE}
                   postID={item?.id}
@@ -213,7 +392,13 @@ export default function MyStatus({ navigation }) {
 
 
       {showImageView && (
-        <AppImageViewer
+        // <AppImageViewer
+        //   visible={showImageView}
+        //   setVisible={() => setShowImageView(false)}
+        //   images={feedImages}
+        // />
+
+        <SwiperViewer
           visible={showImageView}
           setVisible={() => setShowImageView(false)}
           images={feedImages}
@@ -283,12 +468,31 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginRight: ms(-5),
   },
+  Play: {
+    position: 'absolute',
+    color: theme.light.colors.background,
+    marginLeft: ms(8),
+    marginTop: ms(8),
+  },
+  playButtonBg: {
+    height: ms(200),
+    backgroundColor: theme.light.colors.hyperlink,
+    // opacity: 0.7,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    width: '100%',
+  },
+
   touchContainer: {
     flex: 1,
     flexDirection: 'row',
     // paddingRight: ms(40),
     justifyContent: 'space-between',
     marginRight: ms(-5),
+  },
+  playButton: {
+    backgroundColor: theme.light.colors.primary, width: 50, height: 50, borderRadius: 100, justifyContent: "center", alignItems: "center"
   },
   image: {
     flex: 1,

@@ -107,6 +107,7 @@ export function Home({ navigation }) {
   const [follwingSwitch, setFollowingSwtich] = useState(false);
   const [showImageView, setShowImageView] = useState(false);
   const [feedImages, setFeedImages] = useState([]);
+  const [editData, setEditdata] = useState({})
 
   const [reportListOpen, setReportListOpen] = useState(false);
   const [reportOption, setReportOption] = useState([
@@ -360,7 +361,7 @@ export function Home({ navigation }) {
                             onViewImageVideo(item)
                           }}
                         >
-                          {data.mimetype.split("/")[0] == "image" ? <Image
+                          {data?.mimetype?.split("/")[0] == "image" ? <Image
                             source={{
                               uri: data.url,
                             }}
@@ -406,7 +407,7 @@ export function Home({ navigation }) {
                               onViewImageVideo(item)
                             }}
                           >
-                            {data.mimetype.split("/")[0] == "image" ? <Image
+                            {data?.mimetype?.split("/")[0] == "image" ? <Image
                               source={{
                                 uri: data.url,
                               }}
@@ -446,7 +447,7 @@ export function Home({ navigation }) {
                           >
                             <ImageBackground
                               source={{
-                                uri: data.mimetype.split("/")[0] == "image" ? data.url : data.cover,
+                                uri: data?.mimetype?.split("/")[0] == "image" ? data.url : data.cover,
                               }}
                               key={counter}
                               style={[styles.image, styles.moreImage]}
@@ -507,6 +508,7 @@ export function Home({ navigation }) {
                       setPostTitle(item?.postTitle)
                       setPostBody(item?.postBody);
                       setPostImg(item?.postImg);
+                      setEditdata(item)
                     }}
                   />
                 </Card>
@@ -586,7 +588,7 @@ export function Home({ navigation }) {
               iconColor={theme.light.colors.info}
               onPress={() => {
                 navigationRef.navigate(NAVIGATION.updatePost, {
-                  prevData: { DATA },
+                  prevData: editData,
                 }), setOpen(false);
               }}
             />

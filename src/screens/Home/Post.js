@@ -75,8 +75,6 @@ export default function AdminPost({ navigation }) {
   };
 
   const OpenGallery = () => {
-    console.log("Testing-=-=-=-=-=", postImg);
-
     {
       isImage == strings.exclusive.image
         ? ImageCropPicker.openPicker({

@@ -239,7 +239,7 @@ export default function Active({ navigation, userType }) {
                                 onViewImageVideo(item)
                               }}
                             >
-                              {data.mimetype.split("/")[0] == "image" ? <Image
+                              {data?.mimetype?.split("/")[0] == "image" ? <Image
                                 source={{
                                   uri: data.url,
                                 }}
@@ -285,7 +285,7 @@ export default function Active({ navigation, userType }) {
                                   onViewImageVideo(item)
                                 }}
                               >
-                                {data.mimetype.split("/")[0] == "image" ? <Image
+                                {data?.mimetype?.split("/")[0] == "image" ? <Image
                                   source={{
                                     uri: data.url,
                                   }}
@@ -325,7 +325,7 @@ export default function Active({ navigation, userType }) {
                               >
                                 <ImageBackground
                                   source={{
-                                    uri: data.mimetype.split("/")[0] == "image" ? data.url : data.cover,
+                                    uri: data?.mimetype?.split("/")[0] == "image" ? data.url : data.cover,
                                   }}
                                   key={counter}
                                   style={[styles.image, styles.moreImage]}
@@ -374,8 +374,10 @@ export default function Active({ navigation, userType }) {
                             postBody: item.postBody,
                             postExpires: item.postExpires,
                             postImg: item.postImg,
-                            has_Joined: item.has_Joined
-                          }
+                            has_Joined: item.has_Joined,
+                            postMediaContent: item.postMediaContent
+                          },
+                          DATA: item
 
                         })
                       }

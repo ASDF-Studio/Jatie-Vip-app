@@ -5,6 +5,7 @@ import { navigationRef } from '@/navigation/RootNavigation';
 import { StackActions } from '@react-navigation/native';
 import { showMessage } from 'react-native-flash-message';
 import { globalReset } from './GlobalActions';
+import { getAllPost } from './PostActions';
 
 export const TYPES = {
   CLEAR_STORE: 'CLEAR_STORE',
@@ -630,14 +631,17 @@ export const updatePost = (id, userId, postTitle, postBody, file, preImageArray,
         message: strings.updatePost.updatedSuccess,
         type: "success"
       })
+      dispatch(getAllPost(userId, strings.sortBy.recent, false))
       navigationRef.dispatch(StackActions.popToTop())
       navigationRef.navigate(NAVIGATION.home)
+
     }
     if (screen == NAVIGATION.profile) {
       showMessage({
         message: strings.updatePost.updatedSuccess,
         type: "success"
       })
+
       navigationRef.dispatch(StackActions.popToTop())
       navigationRef.navigate(NAVIGATION.profile)
     }

@@ -26,6 +26,7 @@ export default function Thubmnail({ navigation, route }) {
   const user = useSelector(getUser)
   const exclusiveData = useSelector(getSingleExclusiveData)
   console.log("SINGLE__DATA", exclusiveData);
+
   useEffect(() => {
     const data = {
       postId: DATA?.id,
@@ -67,6 +68,41 @@ export default function Thubmnail({ navigation, route }) {
               );
             }
           })} */}
+
+
+          {exclusiveData?.postMediaContent.map(item => {
+            if (item == null) {
+              return;
+            } else {
+              return (
+                <View style={styles.photoContainer} key={item.pID}>
+
+                  {item?.mimetype?.split("/")[0] == "image" ?
+                    <Image
+                      style={styles.photo}
+                      source={{ uri: item.url }}
+                    /> :
+                    <AppVideoPlayer url={item.url} poster={item.cover} />
+
+                  }
+                  {/* <Image
+                    style={styles.photo}
+                    source={{ uri: item }}
+                  /> */}
+                </View>
+              );
+            }
+          })}
+
+
+
+
+
+
+
+
+
+
 
           {exclusiveData?.postImg.map(item => {
             if (item == null) {
