@@ -280,7 +280,7 @@ export class PostController {
             })
             HttpClient.post(endpoint, body)
                 .then((response) => {
-                    // console.log("POST_ADATA=-=-=-=-=-=-=-", JSON.stringify(response.data));
+                    // console.log("POST_ADATA=-=-=-=-=New-=-=-", JSON.stringify(response.data));
                     resolve(response);
                     console.log('response of all posts', response);
                 })

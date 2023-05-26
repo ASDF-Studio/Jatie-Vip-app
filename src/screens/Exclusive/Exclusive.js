@@ -71,6 +71,7 @@ export function Exclusive({ navigation }) {
   const CheckIcon = (
     <FontAwesomeIcon icon={faCheck} color={theme.light.colors.primary} />
   );
+  console.log("DATA=-=-=-=-=-", exclusiveData?.data);
   useEffect(() => {
     const data = {
       userId: user?.id,
@@ -336,7 +337,7 @@ export function Exclusive({ navigation }) {
                                 onViewImageVideo(item)
                               }}
                             >
-                              {data.mimetype.split("/")[0] == "image" ? <Image
+                              {data?.mimetype?.split("/")[0] == "image" ? <Image
                                 source={{
                                   uri: data.url,
                                 }}
@@ -382,7 +383,7 @@ export function Exclusive({ navigation }) {
                                   onViewImageVideo(item)
                                 }}
                               >
-                                {data.mimetype.split("/")[0] == "image" ? <Image
+                                {data?.mimetype?.split("/")[0] == "image" ? <Image
                                   source={{
                                     uri: data.url,
                                   }}
@@ -422,7 +423,7 @@ export function Exclusive({ navigation }) {
                               >
                                 <ImageBackground
                                   source={{
-                                    uri: data.mimetype.split("/")[0] == "image" ? data.url : data.cover,
+                                    uri: data?.mimetype?.split("/")[0] == "image" ? data.url : data.cover,
                                   }}
                                   key={counter}
                                   style={[styles.image, styles.moreImage]}

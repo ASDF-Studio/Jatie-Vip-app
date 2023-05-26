@@ -217,21 +217,51 @@ export class UserController {
       const endpoint = API_BASE_URL + API_END_POINTS.UPDATE_POST;
       let data = new FormData()
       if (mimeType !== null) {
+        // if (isImage == strings.exclusive.video) {
         let obj = [];
+        let videoPoster = [];
+        var isVideo = false
+
         imageArray.map(item => {
-          let filename = item.image.split("/").pop();
+          let filename = item.video == null ? item.image.split("/").pop() : item.video.split("/").pop();
           obj = {
-            uri: item.image,
+            uri: item.video == null ? item.image : item.video,
             name: filename,
-            type: item.imageMime,
+            type: item.video == null ? item.imageMime : item.videoMime,
+            // videoPoster: item.video == null ? null : item?.videoPoster
           };
+          if (item.video !== null) {
+            let filename = item.videoPoster.split("/").pop();
+            videoPoster = {
+              uri: item.videoPoster,
+              name: filename,
+              // type: item.videoMime,
+              // videoPoster: item.video == null ? null : item?.videoPoster
+            };
+            isVideo = true
+          }
           data.append('myimage', obj);
         });
+        if (isVideo) {
+          data.append('videoPoster', videoPoster)
+        }
+        // data.append('videoPoster', videoPoster);
+        console.log("VIDEEO___OPOSTER", videoPoster);
+
       }
-      if (preMimeType == null) {
+      if (preImageArray.length > 0) {
+        let preMedia = [];
+
         preImageArray.map(item => {
-          data.append('postImg', item.image);
+          preMedia = {
+            "url": item.url,
+            "mimetype": item.mimetype,
+            "cover": item.cover
+          };
+
         });
+        data.append('postMediaContent', preMedia);
+
       }
       data.append('id', id);
       data.append('userId', userId);
@@ -239,15 +269,20 @@ export class UserController {
       data.append('postBody', postBody);
       // data.append('postImg', preFile);
       data.append('userType', userType);
+
+
+      console.log("FormDATA=-=-=-=-=-", JSON.stringify(data));
       const headers = {
         'Content-Type': 'multipart/form-data'
       }
 
       await HttpClient.post(endpoint, data, { headers })
         .then((response) => {
+          console.log("respnseeefdsfdsfdsf", response);
           resolve(response);
         })
         .catch((error) => {
+          console.log("ERROR", error);
           reject(error);
         });
     });
@@ -386,7 +421,7 @@ export class UserController {
       });
       HttpClient.post(endpoint, data)
         .then((response) => {
-
+          console.log("API_RESPOMSEE_+_+_+_+_+_+_++_+", JSON.stringify(response));
           resolve(response);
           console.log('resonse of posts id   ', response)
         })
