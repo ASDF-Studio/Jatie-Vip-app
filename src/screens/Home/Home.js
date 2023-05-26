@@ -361,7 +361,7 @@ export function Home({ navigation }) {
                             onViewImageVideo(item)
                           }}
                         >
-                          {data.mimetype.split("/")[0] == "image" ? <Image
+                          {data?.mimetype?.split("/")[0] == "image" ? <Image
                             source={{
                               uri: data.url,
                             }}

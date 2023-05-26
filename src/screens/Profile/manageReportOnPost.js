@@ -77,7 +77,8 @@ export default function ManageReportOnMessage({ navigation, route }) {
         fullName={item.user.fullName}
         userName={item.user.username}
         profilePic={item.user.profilePic}
-        time={Data.time}
+        time={item.created_at}
+        userId={item?.user.id}
       />
       <View style={styles.activity}>
         <View style={styles.textContainer}>
@@ -96,6 +97,7 @@ export default function ManageReportOnMessage({ navigation, route }) {
               userName={postData?.user.username}
               profilePic={postData?.user.profilePic}
               time={postData?.created_at}
+              userId={postData?.userId}
             />
             <CardBody text={postData?.postBody} />
           </View>
@@ -117,15 +119,21 @@ export default function ManageReportOnMessage({ navigation, route }) {
             /> */}
           {/* </CommentContainer> */}
           <CardFooter morePress={() => { setOpen(true) }}
-            commentPress={() => navigation.navigate(NAVIGATION.comments, { DATA: item.post, "POST_INDEX": "postIndex" })}
-            likeCount={postData?.upVote} disLikeCount={postData?.downVote} commentCount={postData?.comments_aggregate.aggregate.count} />
+            postIndex={0}
+            userID={user?.id}
+            postID={postData?.id}
+            likeCount={postData?.upVote}
+            disLikeCount={postData?.downVote}
+            commentCount={postData?.comments_aggregate.aggregate.count}
+            commentPress={() => navigation.navigate(NAVIGATION.comments,
+              { DATA: item.post, "POST_INDEX": 0 })} />
         </Card>
 
 
         <ModalDown open={open} setOpen={setOpen}>
           <ModalList
             // onPress={() => { onFollow() }}
-            //  title={(!ALLPOST?.data[postIndex]?.is_following ? strings.operations.follow : strings.operations.unFollow) + " @" + postUserName}
+            title={'Follow' + ' @' + postData?.user.username}
             icon={faUserPlus}
             iconColor={theme.light.colors.primary}
             iconBg={theme.light.colors.primaryBgLight}
@@ -151,13 +159,13 @@ export default function ManageReportOnMessage({ navigation, route }) {
             // onPress={() => { setReplace(true), setOpen(false) }}
             />
             <ModalList
-              title={strings.operations.block + strings.home.DummyUser}
+              title={strings.operations.block + ' @' + postData?.user.username}
               icon={faXmark}
               iconColor={theme.light.colors.secondary}
               iconBg={theme.light.colors.infoBgLight}
             />
             <ModalList onPress={bannedHandlePress}
-              title={strings.operations.ban + strings.home.DummyUser}
+              title={strings.operations.ban + ' @' + postData?.user.username}
               icon={faFlag}
               iconColor={theme.light.colors.secondary}
               iconBg={theme.light.colors.infoBgLight}

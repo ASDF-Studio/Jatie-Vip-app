@@ -48,7 +48,8 @@ const ReportedUsers = ({ navigation }) => {
                             fullName={item.userByReportedby.fullName}
                             userName={item.userByReportedby.username}
                             profilePic={item.userByReportedby.profilePic}
-                        //  time={item.time}
+                            time={item.created_at}
+                            userId={item.userByReportedby.id}
                         />
                         <View style={styles.activity}>
                             <View style={styles.textContainer}>

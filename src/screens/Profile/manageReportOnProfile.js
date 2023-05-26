@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   FlatList,
   SafeAreaView,
+  Alert,
 } from 'react-native';
 import { theme, TextStyles } from '@/theme';
 import { FontFamily } from '@/theme/Fonts';
@@ -51,6 +52,9 @@ import { UserController } from '@/controllers';
 import { UserData } from './ProfileData/manageReportOnMessageData';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { SwiperViewer } from '@/components/SwiperComponent';
+import { POST_TYPE } from '@/constants/enums';
+import { NAVIGATION } from '@/constants';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function ManageReportOnMessage({ navigation, route }) {
   let counter = 1;
@@ -65,24 +69,31 @@ export default function ManageReportOnMessage({ navigation, route }) {
   const [openBan, setOpenBan] = useState(false);
   const [user, setUser] = useState(null)
   const [userPosts, setuserPosts] = useState([])
+  const [postIndex, setPostIndex] = useState(0);
   const { item } = route.params
   console.log("item", item)
   const { reportedByUserDetails } = route.params
-  console.log('reportedByuserDetails', reportedByUserDetails)
+  // console.log('reportedByuserDetails', reportedByUserDetails)
   const dispatch = useDispatch()
 
   const getUserProfile = useSelector(getUser)
 
   console.log('userData', user)
 
+  const focus = useIsFocused()
+  //console.log('userPosts', user)
+  const userr = useSelector(getUser)
   useEffect(() => {
     dispatch(getUserProfileByUserId(item))
-    getUserPostById(item)
+    setTimeout(() => {
+      getUserPostById(item)
+    }, 100);
 
-  }, [])
+
+  }, [focus])
   useEffect(() => {
     setUser(getUserProfile?.getUserByUserId)
-  }, [getUserProfile])
+  }, [getUserProfile, focus])
 
   const getUserPostById = async (id) => {
     const data = await UserController.postByUserId(id);
@@ -100,7 +111,7 @@ export default function ManageReportOnMessage({ navigation, route }) {
   }
   return (
     <SafeAreaView style={styles.container}>
-      <CustomLoader open={isLoading} />
+      {/* <CustomLoader open={isLoading} /> */}
       <TopBackButton
         onPress={() => navigation.goBack()}
         style={styles.TopBackButton}
@@ -114,6 +125,7 @@ export default function ManageReportOnMessage({ navigation, route }) {
         userName={reportedByUserDetails.userByReportedby.username}
         profilePic={reportedByUserDetails.userByReportedby.profilePic}
         time={reportedByUserDetails.created_at}
+        userId={reportedByUserDetails.userByReportedby.id}
       />
       <View style={styles.activity}>
         <View style={styles.textContainer}>
@@ -152,12 +164,13 @@ export default function ManageReportOnMessage({ navigation, route }) {
             </View>
           </View>
           <HeaderTab
+            onPress1={() => navigation.navigate(NAVIGATION.followers, { id: item, screenName: 'userProfile' })}
             title1={strings.profile.followers}
-            count1={user?.followers.length}
+            count1={user?.followers?.length}
             // onPress1 = {()=>Alert.alert('press 1')}
             title2={strings.profile.following}
             count2={user?.following.length}
-          // onPress2 = {()=>Alert.alert('press 2')}
+            onPress2={() => navigation.navigate(NAVIGATION.following, { id: item, screenName: 'userProfile' })}
           />
           <HorizontalLine
             color={theme.light.colors.infoBgLight}
@@ -202,7 +215,7 @@ export default function ManageReportOnMessage({ navigation, route }) {
         <FlatList
           data={userPosts || []}
           key={props => props.id}
-          renderItem={({ item }) => (
+          renderItem={({ item, index }) => (
             <View style={styles.cardContainer}>
               <Card>
                 <CardHeader
@@ -293,14 +306,29 @@ export default function ManageReportOnMessage({ navigation, route }) {
                   </View>
                 ) : null}
                 <CardFooter
-                  likeCount={item.like}
-                  // likePress = {()=> Alert.alert("like")}
-                  disLikeCount={item.disLike}
-                  // disLikePress = {()=> Alert.alert("dislike")}
-                  commentCount={item.comment}
-                  // commentPress = {()=> Alert.alert("Comment")}
+                  likeCount={item?.upVote}
+                  disLikeCount={item?.downVote}
+                  postID={user.id}
+                  userID={userr?.id}
+                  postType={POST_TYPE.REGULAR}
+                  postData={item}
+                  postIndex={index}
+
+
+                  commentCount={item?.comments_aggregate?.aggregate?.count ?? 0}
+                  commentPress={() => navigation.navigate(NAVIGATION.comments, { DATA: item, "POST_INDEX": index })}
                   // sharePress = {()=> Alert.alert("share")}
-                  morePress={() => setOpenEdit(true)}
+                  morePress={() => {
+                    setPostIndex(index)
+                    // setIsAdminPost(item?.isAdminPost),
+                    //setPostUserName(item?.user?.username)
+                    //   setOpen(true);
+                    // setPostUserId(item?.userId);
+                    // setpostId(item?.id);
+                    //setPostTitle(item?.postTitle)
+                    //   setPostBody(item?.postBody);
+                    //  setPostImg(item?.postImg);
+                  }}
                 />
               </Card>
             </View>
@@ -309,7 +337,7 @@ export default function ManageReportOnMessage({ navigation, route }) {
         {openMore && (
           <ModalDown open={openMore} setOpen={setOpenMore}>
             <ModalList
-              title={strings.operations.follow + strings.home.DummyUser}
+              title={strings.operations.follow + ' @' + user?.username}
               icon={faUserPlus}
               iconColor={theme.light.colors.primary}
               iconBg={theme.light.colors.primaryBgLight}
@@ -332,13 +360,13 @@ export default function ManageReportOnMessage({ navigation, route }) {
               iconBg={theme.light.colors.infoBgLight}
             />
             <ModalList
-              title={strings.operations.block + strings.home.DummyUser}
+              title={strings.operations.block + ' @' + user?.username}
               icon={faXmark}
               iconColor={theme.light.colors.secondary}
               iconBg={theme.light.colors.infoBgLight}
             />
             <ModalList
-              title={strings.operations.ban + strings.home.DummyUser}
+              title={strings.operations.ban + ' @' + user?.username}
               icon={faFlag}
               iconColor={theme.light.colors.secondary}
               iconBg={theme.light.colors.infoBgLight}

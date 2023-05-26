@@ -46,7 +46,7 @@ export default function MyActivity({ navigation }) {
                 time={item.created_at}
               />
               <View style={styles.activity}>
-                {item.status == `${strings.profile.upvoted}` ? (
+                {item.activityDetails == 'upvoted this' ? (
                   <Icon
                     icon={faCircleUp}
                     size={ms(15)}
@@ -58,7 +58,7 @@ export default function MyActivity({ navigation }) {
                     ]}
                   />
                 ) : null}
-                {item.status == `${strings.profile.downVoted}` ? (
+                {item.activityDetails == 'downvoted this' ? (
                   <Icon
                     icon={faCircleDown}
                     size={ms(15)}
@@ -70,7 +70,7 @@ export default function MyActivity({ navigation }) {
                     ]}
                   />
                 ) : null}
-                {item.activityDetails == "Commented on " ? (
+                {item.activityDetails == "commented on this" ? (
                   <Icon
                     icon={faComment}
                     size={ms(15)}
@@ -85,8 +85,8 @@ export default function MyActivity({ navigation }) {
                 <View style={styles.textContainer}>
                   <Text style={styles.statsTxt}> {item.activityDetails} </Text>
                   <Text style={styles.reactOnTxt}>
-                    {' '}
-                    {`${item.reactOn}'s post`}{' '}
+
+                    {`post`}{' '}
                   </Text>
                 </View>
               </View>

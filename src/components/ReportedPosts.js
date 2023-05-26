@@ -46,7 +46,8 @@ const ReportedPosts = ({ navigation }) => {
                             fullName={item.user.fullName}
                             userName={item.user.username}
                             profilePic={item.user.profilePic}
-                        //  time={item.time}
+                            time={item.created_at}
+                            userId={item?.user.id}
                         />
                         <View style={styles.activity}>
                             <View style={styles.textContainer}>
