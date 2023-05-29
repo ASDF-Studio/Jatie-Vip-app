@@ -96,7 +96,6 @@ export const CommentInput = React.forwardRef((props, ref,) => {
         backgroundColor: theme.light.colors.activeTabIcon
       });
     } else {
-      console.log("ISEDIT__", props.isEdit, "COMMEEEE", props.commentData)
       setComment('')
       if (!isEdit) {
         var arr = ALLPOST?.data

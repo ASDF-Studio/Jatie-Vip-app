@@ -303,6 +303,7 @@ export function Home({ navigation }) {
       {/* <Text onPress={() => onSinglePost()}>Mukul</Text> */}
       {/* {console.log(allPost.Admin_Post)} */}
       {/* feed list */}
+
       <View style={styles.feedContainer}>
         {isLoading ?
 
@@ -368,7 +369,7 @@ export function Home({ navigation }) {
                             style={styles.image}
                           /> : <ImageBackground
                             source={{
-                              uri: data.cover,
+                              uri: data?.cover,
                             }}
                             key={counter}
                             style={[styles.image, styles.playButtonBg]}
@@ -414,7 +415,7 @@ export function Home({ navigation }) {
                               style={styles.image}
                             /> : <ImageBackground
                               source={{
-                                uri: data.cover,
+                                uri: data?.cover,
                               }}
                               key={counter}
                               style={[styles.image, styles.playButtonBg]}
@@ -447,7 +448,7 @@ export function Home({ navigation }) {
                           >
                             <ImageBackground
                               source={{
-                                uri: data?.mimetype?.split("/")[0] == "image" ? data.url : data.cover,
+                                uri: data?.mimetype?.split("/")[0] == "image" ? data.url : data?.cover,
                               }}
                               key={counter}
                               style={[styles.image, styles.moreImage]}

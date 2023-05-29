@@ -39,6 +39,7 @@ export default function MyStatus({ navigation }) {
   const [postBody, setPostBody] = useState('');
   const [postImg, setPostImg] = useState([]);
   const [feedImages, setFeedImages] = useState([]);
+  const [editData, setEditdata] = useState({})
   // console.log("PROFILE__DATA", user.getAllPostsByLoggedInUser);
   const userType = useSelector(state => state.userType);
 
@@ -75,7 +76,7 @@ export default function MyStatus({ navigation }) {
       // setFeedImages(item.postImg)
       setFeedImages(data.postMediaContent)
   }
-  console.log("DATATTAATAT-=-=-", user.getAllPostsByLoggedInUser);
+
   return (
     <SafeAreaView>
       {isLoading ?
@@ -216,7 +217,7 @@ export default function MyStatus({ navigation }) {
                           style={styles.image}
                         /> : <ImageBackground
                           source={{
-                            uri: data.cover,
+                            uri: data?.cover,
                           }}
                           key={counter}
                           style={[styles.image, styles.playButtonBg]}
@@ -234,11 +235,8 @@ export default function MyStatus({ navigation }) {
                               size={ms(15)}
                               style={styles.Play}
                             />
-
                           </TouchableOpacity>
                         </ImageBackground>}
-
-
                       </TouchableOpacity>
                     ))}
                   </View>
@@ -262,12 +260,11 @@ export default function MyStatus({ navigation }) {
                             style={styles.image}
                           /> : <ImageBackground
                             source={{
-                              uri: data.cover,
+                              uri: data?.cover,
                             }}
                             key={counter}
                             style={[styles.image, styles.playButtonBg]}
                           >
-
                             <TouchableOpacity
                               // activeOpacity={1}
                               style={styles.playButton}
@@ -295,7 +292,7 @@ export default function MyStatus({ navigation }) {
                         >
                           <ImageBackground
                             source={{
-                              uri: data?.mimetype.split("/")[0] == "image" ? data.url : data.cover,
+                              uri: data?.mimetype.split("/")[0] == "image" ? data.url : data?.cover,
                             }}
                             key={counter}
                             style={[styles.image, styles.moreImage]}
@@ -332,36 +329,6 @@ export default function MyStatus({ navigation }) {
                   </View>
                 ) : null}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                 <CardFooter
                   postType={POST_TYPE.PROFILE}
                   postID={item?.id}
@@ -381,6 +348,8 @@ export default function MyStatus({ navigation }) {
                     setPostTitle(item?.postTitle);
                     setPostBody(item?.postBody);
                     setPostImg(item?.postImg);
+                    setEditdata(item)
+
                   }}
                 />
               </Card>
@@ -416,7 +385,7 @@ export default function MyStatus({ navigation }) {
             iconColor={theme.light.colors.info}
             onPress={() => {
               navigationRef.navigate(NAVIGATION.updatePost, {
-                prevData: { DATA },
+                prevData: editData,
               }), setOpen(false);
             }}
           // onPress={console.log(postId, user?.id)}

@@ -311,6 +311,7 @@ export const en = {
     deletePost: 'Delete Post',
     ban: 'Ban',
     createGiveaway: 'Create A Giveaway',
+    updateGiveaway: 'Update A Giveaway',
     next: 'Next',
     minus: '-',
 

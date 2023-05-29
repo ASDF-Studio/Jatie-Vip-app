@@ -8,6 +8,7 @@ import {
   Text,
   Platform,
   ImageBackground,
+  ActivityIndicator,
 } from 'react-native';
 import { theme } from '@/theme';
 import { AppImageViewer, Card, CardBody, CustomLoader } from '@/components';
@@ -39,7 +40,6 @@ export default function Active({ navigation, userType }) {
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.GET_ACTIVE_GIVEAWAY,], state)
   );
-
   const focus = useIsFocused()
 
   useEffect(() => {
@@ -81,8 +81,16 @@ export default function Active({ navigation, userType }) {
         }}
       >
 
-        <CustomLoader
-          open={isLoading}
+
+        {/* <CustomLoader
+            open={isLoading}
+          /> */}
+
+        <ActivityIndicator
+          animating={isLoading}
+          size={"large"}
+
+          color={theme.light.colors.primary}
         />
         <FlatList
           data={getActiveGiveWayData?.data ?? []}
@@ -246,7 +254,7 @@ export default function Active({ navigation, userType }) {
                                 style={styles.image}
                               /> : <ImageBackground
                                 source={{
-                                  uri: data.cover,
+                                  uri: data?.cover,
                                 }}
                                 key={counter}
                                 style={[styles.image, styles.playButtonBg]}
@@ -292,7 +300,7 @@ export default function Active({ navigation, userType }) {
                                   style={styles.image}
                                 /> : <ImageBackground
                                   source={{
-                                    uri: data.cover,
+                                    uri: data?.cover,
                                   }}
                                   key={counter}
                                   style={[styles.image, styles.playButtonBg]}
@@ -325,7 +333,7 @@ export default function Active({ navigation, userType }) {
                               >
                                 <ImageBackground
                                   source={{
-                                    uri: data?.mimetype?.split("/")[0] == "image" ? data.url : data.cover,
+                                    uri: data?.mimetype?.split("/")[0] == "image" ? data.url : data?.cover,
                                   }}
                                   key={counter}
                                   style={[styles.image, styles.moreImage]}

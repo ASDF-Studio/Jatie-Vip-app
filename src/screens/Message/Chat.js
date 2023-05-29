@@ -194,7 +194,6 @@ export default function Chat({ navigation, route }) {
 
 
   const renderCustomBubbleView = (props) => {
-    console.log('check current message', props.currentMessage)
     const isCurrentUser = props.currentMessage.user._id === user?.id
 
     return (

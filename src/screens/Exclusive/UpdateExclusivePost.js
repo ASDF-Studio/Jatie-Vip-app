@@ -30,12 +30,13 @@ import ImageCropPicker from 'react-native-image-crop-picker';
 import { Data, File } from './exclusiveData/adminExclusivePostData';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
+import { createThumbnail } from "react-native-create-thumbnail";
 
 let nextId = 0;
 
 export default function UpdateExclusivePost({ navigation, route }) {
   const { DATA } = route.params
-  console.log("DATA=-=-=-", DATA);
+  console.log("DATA=-=-POPOPOPOPOPOPOP=-", DATA);
   const user = useSelector(getUser);
   const dispatch = useDispatch()
   const [imageArray, setImageArray] = useState([]);
@@ -57,21 +58,55 @@ export default function UpdateExclusivePost({ navigation, route }) {
   useEffect(() => {
     setPostTitle(DATA?.postTitle)
     setPostDesc(DATA?.postBody)
+    // {
+    //   DATA?.postImg.map(item => (
+    //     preImageArray.push({
+    //       id: next--,
+    //       image: item,
+    //       imageMime: null,
+    //       video: null,
+    //     }),
+    //     imageArray.push({
+    //       id: preNext--,
+    //       image: item,
+    //       imageMime: null,
+    //       video: null,
+    //     })
+    //   ))
+    //   setPrePostImg(DATA.postImg)
+    // }
     {
-      DATA?.postImg.map(item => (
+      DATA?.postMediaContent.map(item => (
+        // preImageArray.push({
+        //   id: next--,
+        //   image: item.mimetype.split("/")[0] == "image" ? item.url : null,
+        //   imageMime: null,
+        //   video: item.mimetype.split("/")[0] == "video" ? item.url : null,
+        // }),
+
+
         preImageArray.push({
           id: next--,
-          image: item,
-          imageMime: null,
-          video: null,
+          "url": item.url,
+          "mimetype": item.mimetype,
+          "cover": item.cover
         }),
-        imageArray.push({
+        imageArrayDisplay.push({
           id: preNext--,
-          image: item,
-          imageMime: null,
-          video: null,
+          image: item.mimetype.split("/")[0] == "image" ? item.url : null,
+          imageMime: item.mimetype,
+          video: item.mimetype.split("/")[0] == "video" ? item.url : null,
         })
+
+        // ,
+        // imageArray.push({
+        //   id: preNext--,
+        //   image: item.mimetype.split("/")[0] == "image" ? item.url : null,
+        //   imageMime: item.mimetype,
+        //   video: item.mimetype.split("/")[0] == "video" ? item.url : null,
+        // })
       ))
+      // setPreImageArray(data?.postMediaContent)
       setPrePostImg(DATA.postImg)
     }
 
@@ -84,7 +119,13 @@ export default function UpdateExclusivePost({ navigation, route }) {
     setModalVisible(!isModalVisible);
   };
   deleteFile = id => {
-    setImageArray(imageArray.filter(a => a.id !== id));
+    // setImageArray(imageArray.filter(a => a.id !== id));
+    setImageArrayDisplay(imageArrayDisplay.filter(a => a.id !== id));
+    if (id >= 100) {
+      setImageArray(imageArray.filter(a => a.id !== id));
+    } else {
+      setPreImageArray(preImageArray.filter(a => a.id !== id));
+    }
   };
 
   const OpenGallery = () => {
@@ -94,6 +135,7 @@ export default function UpdateExclusivePost({ navigation, route }) {
         ? ImageCropPicker.openPicker({
           width: 300,
           height: 400,
+          maxFiles: 3,
           mediaType: strings.exclusive.image,
           multiple: true,
         })
@@ -102,6 +144,13 @@ export default function UpdateExclusivePost({ navigation, route }) {
               imageArray.push({
                 id: nextId++,
                 image: item.path,
+                imageMime: item.mime,
+                video: null,
+              });
+              imageArrayDisplay.push({
+                id: preNextId++,
+                image: item.path,
+                imageMime: item.mime,
                 video: null,
               });
               setModalVisible(!isModalVisible);
@@ -115,15 +164,40 @@ export default function UpdateExclusivePost({ navigation, route }) {
           height: 400,
           mediaType: strings.exclusive.video,
           multiple: true,
+          maxFiles: 3,
+          compressImageQuality: 0.5,
           loadingLabelText: 'loading',
         })
           .then(video => {
-            imageArray.push({
-              id: nextId++,
-              image: null,
-              video: video.path,
+            video.forEach(item => {
+              createThumbnail({
+                url: item.path,
+                timeStamp: 10000,
+              })
+                .then(response => {
+                  imageArray.push({
+                    id: nextId++,
+                    image: null,
+                    video: item.path,
+                    videoMime: item.mime,
+                    videoPoster: response?.path
+                  })
+                  imageArrayDisplay.push({
+                    id: nextId++,
+                    image: null,
+                    video: item.path,
+                    videoMime: item.mime,
+                    videoPoster: response?.path
+                  })
+                }
+
+                )
+                .catch(err => console.log({ err }));
+              setPostImg(video.path);
+              setmimeType(video.mime);
+              setModalVisible(!isModalVisible);
             });
-            setModalVisible(!isModalVisible);
+
           })
           .catch(e => {
             console.log('Error: ' + e);
@@ -146,10 +220,17 @@ export default function UpdateExclusivePost({ navigation, route }) {
           height: 400,
           cropping: false,
         })
-          .then(image => {
+          .then(item => {
             imageArray.push({
               id: nextId++,
-              image: image.path,
+              image: item.path,
+              imageMime: item.mime,
+              video: null,
+            });
+            imageArrayDisplay.push({
+              id: preNextId++,
+              image: item.path,
+              imageMime: item.mime,
               video: null,
             });
             setModalVisible(!isModalVisible);
@@ -163,13 +244,21 @@ export default function UpdateExclusivePost({ navigation, route }) {
           cropping: false,
           mediaType: strings.exclusive.video,
         })
-          .then(image => {
+          .then(item => {
             imageArray.push({
               id: nextId++,
               image: null,
-              video: image.path,
-            });
-            setModalVisible(!isModalVisible);
+              video: item.path,
+              videoMime: item.mime,
+              videoPoster: response?.path
+            })
+            imageArrayDisplay.push({
+              id: nextId++,
+              image: null,
+              video: item.path,
+              videoMime: item.mime,
+              videoPoster: response?.path
+            })
           })
           .catch(e => {
             console.log('Error: ' + e);
@@ -191,9 +280,14 @@ export default function UpdateExclusivePost({ navigation, route }) {
       postId: DATA?.id,
       vipOnly: DATA?.isVIPonly,
       pinnedPost: DATA?.isPinned,
-      schedulePost: DATA?.isScheduled
+      schedulePost: DATA?.isScheduled,
+      preImageArray: preImageArray,
+      mimeType: mimeType
 
     }
+
+    // console.log("ARRRAAATA", JSON.stringify(params));
+    // return false
     navigation.navigate(NAVIGATION.updateExclusiveOption, { prevData: params })
   }
 
@@ -244,7 +338,7 @@ export default function UpdateExclusivePost({ navigation, route }) {
       </ScrollView>
 
       {/* {BttomContantLayout()} */}
-      {FileUpload(imageArray)}
+      {FileUpload(imageArrayDisplay)}
 
       <View style={styles.BottomFileContainer}>
         <View style={styles.iconContainer}>
@@ -343,13 +437,13 @@ export const FileUpload = imageArray => {
                       </Text>
                     </View>
                     <View style={styles.videoPlayContainer}>
-                      {' '}
+                      {/* {' '}
                       <ActivityIndicator
                         animating={false}
                         color={theme.light.colors.primary}
                         size="large"
                         style={styles.activityIndicator}
-                      />
+                      /> */}
                       <FontAwesomeIcon
                         icon={faCircle}
                         size={ms(30)}

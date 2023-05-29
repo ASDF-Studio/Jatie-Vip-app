@@ -31,7 +31,6 @@ export class UserController {
       });
       HttpClient.post(endpoint, data)
         .then((response) => {
-          console.log("LOGIN_R_0-0-0-0ESSSSS", JSON.stringify(response))
           resolve(response);
         })
         .catch((error) => {
@@ -122,7 +121,6 @@ export class UserController {
       });
       HttpClient.post(endpoint, data)
         .then((response) => {
-          console.log("followerId-0-0-0ESSSSS", JSON.stringify(response))
           resolve(response);
         })
         .catch((error) => {
@@ -141,7 +139,6 @@ export class UserController {
       });
       HttpClient.post(endpoint, data)
         .then((response) => {
-          console.log("unfollowerId-0-0-0ESSSSS", JSON.stringify(response))
           resolve(response);
         })
         .catch((error) => {
@@ -243,23 +240,24 @@ export class UserController {
           data.append('videoPoster', videoPoster)
         }
         // data.append('videoPoster', videoPoster);
-        console.log("VIDEEO___OPOSTER", videoPoster);
 
       }
-      if (preImageArray.length > 0) {
-        let preMedia = [];
+      // if (preImageArray.length > 0) {
+      //   let preMedia = [];
 
-        preImageArray.map(item => {
-          preMedia = {
-            "url": item.url,
-            "mimetype": item.mimetype,
-            "cover": item.cover
-          };
+      //   preImageArray.map(item => {
+      //     preMedia = {
+      //       "url": item.url,
+      //       "mimetype": item.mimetype,
+      //       "cover": item?.cover
+      //     };
+      //     ;
+      //     data.append('postMediaContent', preMedia)
+      //   });
 
-        });
-        data.append('postMediaContent', preMedia);
+      // }
+      data.append('postMediaContent', preImageArray.length > 0 ? JSON.stringify(preImageArray) : "")
 
-      }
       data.append('id', id);
       data.append('userId', userId);
       data.append('postTitle', postTitle);
@@ -268,18 +266,16 @@ export class UserController {
       data.append('userType', userType);
 
 
-      console.log("FormDATA=-=-=-=-=-", JSON.stringify(data));
+      // return false
       const headers = {
         'Content-Type': 'multipart/form-data'
       }
 
       await HttpClient.post(endpoint, data, { headers })
         .then((response) => {
-          console.log("respnseeefdsfdsfdsf", response);
           resolve(response);
         })
         .catch((error) => {
-          console.log("ERROR", error);
           reject(error);
         });
     });
@@ -353,7 +349,6 @@ export class UserController {
     return new Promise(async (resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.CREATE_POST_ADMIN;
       let data = new FormData()
-      console.log("VIDEO----", imageArray);
       if (mimeType !== null) {
         // if (isImage == strings.exclusive.video) {
         let obj = [];
@@ -383,7 +378,6 @@ export class UserController {
           data.append('videoPoster', videoPoster)
         }
         // data.append('videoPoster', videoPoster);
-        console.log("VIDEEO___OPOSTER", videoPoster);
 
       }
 
@@ -391,17 +385,14 @@ export class UserController {
       data.append('postTitle', postTitle);
       data.append('postBody', postBody);
       data.append('postImg', mimeType == null && file);
-      console.log("FORM_DATA_______", JSON.stringify(data));
       const headers = {
         'Content-Type': 'multipart/form-data'
       }
       await HttpClient.post(endpoint, data, { headers })
         .then((response) => {
-          console.log("POST_CREAT", response);
           resolve(response);
         })
         .catch((error) => {
-          console.log("ERROR__RESPONSE", error);
 
           reject(error);
         });
@@ -418,7 +409,6 @@ export class UserController {
       });
       HttpClient.post(endpoint, data)
         .then((response) => {
-          console.log("API_RESPOMSEE_+_+_+_+_+_+_++_+", JSON.stringify(response));
           resolve(response);
         })
         .catch((error) => {
@@ -517,12 +507,10 @@ export class UserController {
         .then((response) => {
 
           resolve(response);
-          console.log('response of list', response.data)
 
 
         })
         .catch((error) => {
-          console.log('error in folloowers list', error)
           reject(new Error(error.message));
         });
     });
@@ -541,7 +529,6 @@ export class UserController {
 
         })
         .catch((error) => {
-          console.log('error in block list', error)
           reject(new Error(error.message));
         });
     });
@@ -562,7 +549,6 @@ export class UserController {
 
         })
         .catch((error) => {
-          console.log('error in search user', error)
           reject(new Error(error.message));
         });
     });

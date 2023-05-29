@@ -419,13 +419,10 @@ export class PostController {
                 "id": id,
                 "likeUserID": userId,
             });
-            console.log("COMMMEMEMEMEEMEMEM", body)
             HttpClient.post(endpoint, body)
                 .then((response) => {
-                    console.log("RESPONSEEEEEEEE", JSON.stringify(response))
                     resolve(response)
                 }).catch((error) => {
-                    console.log("ERROROROROROR", JSON.stringify(error))
                     reject(error)
                 });
         })
@@ -451,7 +448,6 @@ export class PostController {
 
     //Report Post
     static async reportPostAPI(params) {
-        console.log('check report params: ', params)
         return new Promise((resolve, reject) => {
             const endpoint = API_BASE_URL + API_END_POINTS.REPORT_POST;
             let data = new FormData()
@@ -492,7 +488,6 @@ export class PostController {
             });
             HttpClient.post(endpoint, data)
                 .then((response) => {
-                    console.log("followerId-0-0-0ESSSSS", JSON.stringify(response))
                     resolve(response);
                 })
                 .catch((error) => {
@@ -511,7 +506,6 @@ export class PostController {
             });
             HttpClient.post(endpoint, data)
                 .then((response) => {
-                    console.log("unfollowerId-0-0-0ESSSSS", JSON.stringify(response))
                     resolve(response);
                 })
                 .catch((error) => {
@@ -531,7 +525,6 @@ export class PostController {
             });
             HttpClient.post(endpoint, data)
                 .then((response) => {
-                    console.log("Block-0-0-0ESSSSS", JSON.stringify(response))
                     resolve(response);
                 })
                 .catch((error) => {
@@ -549,7 +542,6 @@ export class PostController {
             });
             HttpClient.post(endpoint, data)
                 .then((response) => {
-                    console.log("UN___Block-0-0-0ESSSSS", JSON.stringify(response))
                     resolve(response);
                 })
                 .catch((error) => {

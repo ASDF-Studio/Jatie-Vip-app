@@ -33,7 +33,6 @@ export default function SinglePost({ navigation, route }) {
     const ALLPOST = useSelector(getAllPostData)
     const user = useSelector(getUser);
     const postData = useSelector(getPostByIdData)
-    console.log("POST__DATAA", postData);
 
     const [postUserName, setPostUserName] = useState('');
     const [open, setOpen] = useState(false);

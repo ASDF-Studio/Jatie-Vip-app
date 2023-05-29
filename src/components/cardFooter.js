@@ -117,7 +117,6 @@ export const CardFooter = ({
       },
         dynamicLinks.ShortLinkType.DEFAULT
       )
-      console.log("LINKL=-=-=", link);
       return link
     } catch (error) {
       console.log("error raised", error)
@@ -126,7 +125,7 @@ export const CardFooter = ({
 
   const shareUser = async () => {
     const getLink = await generateLink()
-    console.log("get linkkk kdjfkdlfdf", getLink)
+    // console.log("get linkkk kdjfkdlfdf", getLink)
     const res = await Share.open(({
       // message: 'Dummy message',
       url: getLink

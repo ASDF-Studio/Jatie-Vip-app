@@ -71,13 +71,14 @@ export function Exclusive({ navigation }) {
   const CheckIcon = (
     <FontAwesomeIcon icon={faCheck} color={theme.light.colors.primary} />
   );
-  console.log("DATA=-=-=-=-=-", exclusiveData?.data);
+  // console.log("DATA=-=-=-=-=-", exclusiveData?.data);
   useEffect(() => {
     const data = {
       userId: user?.id,
+      postFilter: sortBy.toLowerCase()
     }
     dispatch(getAllExclusivePost(data))
-  }, [focus])
+  }, [sortBy, focus])
   const onEditPost = () => {
     setOpen(false)
     // navigation.navigate(NAVIGATION.exclusiveThumbnail)
@@ -272,7 +273,7 @@ export function Exclusive({ navigation }) {
                 <View style={styles.fullNameTxtContainer}>
                   <Text style={styles.fullNameTxt}>{item.postBody}</Text>
                 </View>
-                {item?.postImg?.length > 0 &&
+                {item?.postMediaContent?.length > 0 &&
                   <View style={styles.thumbnailContainer}>
                     {/* Vip only */}
                     {/* <TouchableOpacity
@@ -344,7 +345,7 @@ export function Exclusive({ navigation }) {
                                 style={styles.image}
                               /> : <ImageBackground
                                 source={{
-                                  uri: data.cover,
+                                  uri: data?.cover,
                                 }}
                                 key={counter}
                                 style={[styles.image, styles.playButtonBg]}
@@ -390,7 +391,7 @@ export function Exclusive({ navigation }) {
                                   style={styles.image}
                                 /> : <ImageBackground
                                   source={{
-                                    uri: data.cover,
+                                    uri: data?.cover,
                                   }}
                                   key={counter}
                                   style={[styles.image, styles.playButtonBg]}
@@ -423,7 +424,7 @@ export function Exclusive({ navigation }) {
                               >
                                 <ImageBackground
                                   source={{
-                                    uri: data?.mimetype?.split("/")[0] == "image" ? data.url : data.cover,
+                                    uri: data?.mimetype?.split("/")[0] == "image" ? data.url : data?.cover,
                                   }}
                                   key={counter}
                                   style={[styles.image, styles.moreImage]}

@@ -996,7 +996,6 @@ export const getAllPinPost = () => async dispatch => {
     dispatch(getAllPinPostRequest());
     try {
         const post = await PostController.getAllPinnedPost();
-        console.log("responser=-=-=-=-", JSON.stringify(post))
         dispatch(getAllPinPostSuccess(post))
 
     } catch (error) {
@@ -1023,7 +1022,6 @@ export const editComment = (id, userId, commentBody, commentIndex) => async disp
         commentData: comment,
         commentIndex: commentIndex
     }
-    console.log("OBJECTTTT", JSON.stringify(object))
     dispatch(editCommentSuccess(object))
     // } catch (error) {
     //     console.log("NEWdfdfdfdWW_COMMENT_erorr", error)
@@ -1034,7 +1032,6 @@ export const deleteComment = (id, userId) => async dispatch => {
     dispatch(deleteCommentRequest());
     try {
         const comment = await PostController.DeleteComment(id, userId);
-        console.log("DELETETETETE", JSON.stringify(comment))
         showMessage({
             message: strings.deleteCommentSuccsess.deletedSuccess,
             type: "success"
@@ -1047,7 +1044,6 @@ export const deleteComment = (id, userId) => async dispatch => {
     }
 };
 export const followUser = (followerId, followId, type) => async dispatch => {
-    console.log('******88888', followerId)
     dispatch(followUserRequest());
     try {
         const user = await PostController.followUser(followerId, followId);
@@ -1111,7 +1107,6 @@ export const getPostById = (postId, userId) => async dispatch => {
     dispatch(getPostByIdRequest())
     try {
         const user = await PostController.getPostById(postId, userId)
-        console.log("POST__BY=-=-=-=-=", JSON.stringify(user));
         dispatch(getPostByIdSuccess(user.data))
     } catch (error) {
         dispatch(getPostByIdError(error))
@@ -1343,7 +1338,6 @@ export const createExclusivePost = (data) => async dispatch => {
 };
 
 export const getAllExclusivePost = (data) => async dispatch => {
-
     dispatch(getAllExclusivePostRequest());
     try {
         const post = await ExclusivePostController.getAllExclusivePost(data);
