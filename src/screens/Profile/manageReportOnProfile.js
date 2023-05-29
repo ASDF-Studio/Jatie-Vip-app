@@ -46,7 +46,7 @@ import { Data, demo, User } from './ProfileData/manageReportOnProfileData';
 import { faSearch } from '@fortawesome/pro-regular-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { bannedUserById, getUserProfileByUserId, TYPES } from '@/actions/UserActions';
+import { bannedUserById, getUserProfileByUserId, TYPES, unBannedUserById } from '@/actions/UserActions';
 import { getUser } from '@/selectors/UserSelectors';
 import { UserController } from '@/controllers';
 import { UserData } from './ProfileData/manageReportOnMessageData';
@@ -55,6 +55,8 @@ import { SwiperViewer } from '@/components/SwiperComponent';
 import { POST_TYPE } from '@/constants/enums';
 import { NAVIGATION } from '@/constants';
 import { useIsFocused } from '@react-navigation/native';
+import { followUser } from '@/actions/PostActions';
+import { unFollowUser } from '@/actions/PostActions';
 
 export default function ManageReportOnMessage({ navigation, route }) {
   let counter = 1;
@@ -73,12 +75,12 @@ export default function ManageReportOnMessage({ navigation, route }) {
   const { item } = route.params
   console.log("item", item)
   const { reportedByUserDetails } = route.params
-  // console.log('reportedByuserDetails', reportedByUserDetails)
+  //  console.log('reportedByuserDetails', reportedByUserDetails)
   const dispatch = useDispatch()
 
   const getUserProfile = useSelector(getUser)
 
-  console.log('userData', user)
+  console.log('userDataaaaaaaaa', user)
 
   const focus = useIsFocused()
   //console.log('userPosts', user)
@@ -104,11 +106,50 @@ export default function ManageReportOnMessage({ navigation, route }) {
 
   }
 
-  const bannedHandlePress = () => {
-    dispatch(bannedUserById(item))
-    setOpenBan(false)
-    //  console.log('banned id', item)
+
+  const banUnBanHandlePress = () => {
+    if (user?.isBanned == true) {
+      dispatch(unBannedUserById(item))
+      setOpenBan(false)
+      setTimeout(() => {
+        dispatch(getUserProfileByUserId(item))
+
+      }, 100);
+    }
+    else {
+      dispatch(bannedUserById(item))
+      setOpenBan(false)
+      setTimeout(() => {
+        dispatch(getUserProfileByUserId(item))
+
+      }, 100);
+    }
   }
+
+  const onFollow = () => {
+
+
+    if (user?.is_following == true) {
+      dispatch(unFollowUser(userr?.id, item))
+      console.log(userr?.id, user?.id)
+      //setOpen(false)
+      setTimeout(() => {
+        dispatch(getUserProfileByUserId(item))
+      }, 100);
+
+    }
+    else {
+      dispatch(followUser(userr?.id, item))
+      // setOpen(false)
+      console.log(userr?.id, user.id)
+      //   console.log(user?.id, postData?.userId)
+      setTimeout(() => {
+        dispatch(getUserProfileByUserId(item))
+      }, 100);
+    }
+
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       {/* <CustomLoader open={isLoading} /> */}
@@ -337,7 +378,9 @@ export default function ManageReportOnMessage({ navigation, route }) {
         {openMore && (
           <ModalDown open={openMore} setOpen={setOpenMore}>
             <ModalList
-              title={strings.operations.follow + ' @' + user?.username}
+
+              onPress={onFollow}
+              title={user?.is_following == true ? strings.operations.unFollow + ' @' + user?.username : strings.operations.follow + ' @' + user?.username}
               icon={faUserPlus}
               iconColor={theme.light.colors.primary}
               iconBg={theme.light.colors.primaryBgLight}
@@ -359,14 +402,14 @@ export default function ManageReportOnMessage({ navigation, route }) {
               iconColor={theme.light.colors.secondary}
               iconBg={theme.light.colors.infoBgLight}
             />
-            <ModalList
+            {/* <ModalList
               title={strings.operations.block + ' @' + user?.username}
               icon={faXmark}
               iconColor={theme.light.colors.secondary}
               iconBg={theme.light.colors.infoBgLight}
-            />
+            /> */}
             <ModalList
-              title={strings.operations.ban + ' @' + user?.username}
+              title={user?.isBanned == true ? strings.operations.unBan + ' @' + user?.username : strings.operations.ban + ' @' + user?.username}
               icon={faFlag}
               iconColor={theme.light.colors.secondary}
               iconBg={theme.light.colors.infoBgLight}
@@ -417,7 +460,7 @@ export default function ManageReportOnMessage({ navigation, route }) {
               </View>
             </View>
             <View>
-              <Button onPress={bannedHandlePress}
+              <Button onPress={banUnBanHandlePress}
                 title={strings.profile.yesBan}
                 style={styles.yesBanButton}
                 textStyle={{

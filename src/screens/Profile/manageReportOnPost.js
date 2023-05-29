@@ -20,7 +20,7 @@ import { ms } from 'react-native-size-matters';
 import { NAVIGATION } from '@/constants';
 import { card, Data } from './ProfileData/manageReportOnPostData';
 import { useEffect } from 'react';
-import { getPostById } from '@/actions/PostActions';
+import { followUser, getPostById, unFollowUser } from '@/actions/PostActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
 import { getPostByIdData } from '@/selectors/PostSelectors';
@@ -30,6 +30,7 @@ import { faFlag, faMessage, faTrash, faUserPlus, faXmark } from '@fortawesome/fr
 import { bannedUserById, unBannedUserById } from '@/actions/UserActions';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { TYPES } from '../../actions/PostActions'
+import { manageAllReports } from '@/actions/UserActions';
 export default function ManageReportOnMessage({ navigation, route }) {
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.GET_POST_BY_ID], state)
@@ -37,16 +38,20 @@ export default function ManageReportOnMessage({ navigation, route }) {
 
   const dispatch = useDispatch()
   const focus = useIsFocused();
-
+  const [banValue, setBanvalue] = useState(item?.post?.user.isBanned)
   const { item } = route.params
-
+  console.log('Item', item.post.user.isBanned)
   const [open, setOpen] = useState(false);
   const user = useSelector(getUser)
   const postData = useSelector(getPostByIdData)
-  console.log("POST__DATAA In SELECTOR", postData);
+  console.log("POST__DATAA In SELECTOR", JSON.stringify(postData.is_following));
+
+
 
   useEffect(() => {
     dispatch(getPostById(item.objectId, user?.id))
+    console.log(item.objectId, user?.id)
+
 
     // setLikeCount(item?.upVote)
     // setDownCount(item?.downVote)
@@ -57,9 +62,53 @@ export default function ManageReportOnMessage({ navigation, route }) {
 
 
   const bannedHandlePress = () => {
+
     dispatch(bannedUserById(postData?.userId))
+    setBanvalue(true)
     setOpen(false)
+    setTimeout(() => {
+      dispatch(manageAllReports())
+    }, 500);
+
     // console.log('banned id', postData?.user?.id)
+  }
+  const unbannedHandlePress = () => {
+    setOpen(true)
+    dispatch(unBannedUserById(postData?.userId))
+
+    setBanvalue(false)
+    setTimeout(() => {
+      dispatch(manageAllReports())
+    }, 500);
+    // console.log('banned id', postData?.user?.id)
+  }
+  const onbanPress = () => {
+    banValue == true ? unbannedHandlePress() : bannedHandlePress()
+    // console.log('banned id', postData?.user?.id)
+  }
+
+  const onFollow = () => {
+
+
+    if (postData.is_following == true) {
+      dispatch(unFollowUser(user?.id, postData?.userId))
+      // console.log(user?.id, postData?.userId)
+      setOpen(false)
+      setTimeout(() => {
+        dispatch(getPostById(item.objectId, user?.id))
+      }, 100);
+
+    }
+    else {
+      dispatch(followUser(user?.id, postData?.userId))
+      setOpen(false)
+
+      //console.log(user?.id, postData?.userId)
+      setTimeout(() => {
+        dispatch(getPostById(item.objectId, user?.id))
+      }, 100);
+    }
+
   }
 
   return (
@@ -132,8 +181,8 @@ export default function ManageReportOnMessage({ navigation, route }) {
 
         <ModalDown open={open} setOpen={setOpen}>
           <ModalList
-            // onPress={() => { onFollow() }}
-            title={'Follow' + ' @' + postData?.user.username}
+            onPress={() => { onFollow() }}
+            title={postData.is_following == true ? 'UnFollow' + ' @' + postData?.user.username : 'Follow' + ' @' + postData?.user.username}
             icon={faUserPlus}
             iconColor={theme.light.colors.primary}
             iconBg={theme.light.colors.primaryBgLight}
@@ -158,14 +207,14 @@ export default function ManageReportOnMessage({ navigation, route }) {
               iconBg={theme.light.colors.infoBgLight}
             // onPress={() => { setReplace(true), setOpen(false) }}
             />
-            <ModalList
+            {/* <ModalList
               title={strings.operations.block + ' @' + postData?.user.username}
               icon={faXmark}
               iconColor={theme.light.colors.secondary}
               iconBg={theme.light.colors.infoBgLight}
-            />
-            <ModalList onPress={bannedHandlePress}
-              title={strings.operations.ban + ' @' + postData?.user.username}
+            /> */}
+            <ModalList onPress={() => onbanPress()}
+              title={banValue == true ? strings.operations.unBan + ' @' + postData?.user.username : strings.operations.ban + ' @' + postData?.user.username}
               icon={faFlag}
               iconColor={theme.light.colors.secondary}
               iconBg={theme.light.colors.infoBgLight}

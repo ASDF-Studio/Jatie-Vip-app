@@ -75,7 +75,7 @@ export default function MyStatus({ navigation }) {
       // setFeedImages(item.postImg)
       setFeedImages(data.postMediaContent)
   }
-  console.log("DATATTAATAT-=-=-", user.getAllPostsByLoggedInUser);
+  //  console.log("DATATTAATAT-=-=-", user.getAllPostsByLoggedInUser);
   return (
     <SafeAreaView>
       {isLoading ?
@@ -209,7 +209,7 @@ export default function MyStatus({ navigation }) {
                           onViewImageVideo(item)
                         }}
                       >
-                        {data?.mimetype.split("/")[0] == "image" ? <Image
+                        {data?.mimetype?.split("/")[0] == "image" ? <Image
                           source={{
                             uri: data.url,
                           }}

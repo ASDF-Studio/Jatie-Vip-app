@@ -162,7 +162,7 @@ export class UserController {
       HttpClient.post(endpoint, data)
         .then((response) => {
           resolve(response)
-          console.log('response of every single user', response);
+          //  console.log('response of every single user', response);
         })
         .catch((error) => {
           reject(error);
@@ -421,7 +421,7 @@ export class UserController {
       });
       HttpClient.post(endpoint, data)
         .then((response) => {
-          console.log("API_RESPOMSEE_+_+_+_+_+_+_++_+", JSON.stringify(response));
+          // console.log("API_RESPOMSEE_+_+_+_+_+_+_++_+", JSON.stringify(response));
           resolve(response);
           console.log('resonse of posts id   ', response)
         })

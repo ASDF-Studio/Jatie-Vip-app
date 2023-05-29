@@ -1111,7 +1111,7 @@ export const getPostById = (postId, userId) => async dispatch => {
     dispatch(getPostByIdRequest())
     try {
         const user = await PostController.getPostById(postId, userId)
-        console.log("POST__BY=-=-=-=-=", JSON.stringify(user));
+        //  console.log("POST__BY=-=-=-=-=", JSON.stringify(user));
         dispatch(getPostByIdSuccess(user.data))
     } catch (error) {
         dispatch(getPostByIdError(error))

@@ -45,7 +45,7 @@ const ReportedPosts = ({ navigation }) => {
                         <CardHeader
                             fullName={item.user.fullName}
                             userName={item.user.username}
-                            profilePic={item.user.profilePic}
+                            profilePic={item.user?.profilePic}
                             time={item.created_at}
                             userId={item?.user.id}
                         />

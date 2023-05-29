@@ -191,7 +191,7 @@ export default function UserProfile({ navigation, route }) {
       </View>
       <HeaderTab
         title1={strings.profile.followers}
-        count1={user?.followers.length}
+        count1={user?.followers?.length}
         onPress1={() => navigation.navigate(NAVIGATION.followers, { id: userId, screenName: 'userProfile' })}
         title2={strings.profile.following}
         count2={user?.following.length}
