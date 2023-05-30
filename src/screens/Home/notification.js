@@ -22,9 +22,26 @@ import { NAVIGATION } from '@/constants/navigation';
 import { strings } from '@/localization';
 import { Data, profilePic } from '@/screens/CommonData/notoficationData';
 import { faSearch } from '@fortawesome/pro-regular-svg-icons';
+import { fetchAllNotifications } from '@/actions/UserActions';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUser } from '@/selectors/UserSelectors';
 
 export default function Notification({ navigation }) {
   const [read, setRead] = useState(false);
+  const dispatch = useDispatch()
+
+  const loggedInUser = useSelector(getUser)
+
+  useEffect(() => {
+    getAllNotifications()
+  }, [])
+
+
+  const getAllNotifications = () => {
+    dispatch(fetchAllNotifications(loggedInUser.id, read))
+    console.log(loggedInUser.id, read)
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -77,9 +94,9 @@ export default function Notification({ navigation }) {
               style={
                 item.new == false
                   ? [
-                      styles.notificationCard,
-                      { backgroundColor: theme.light.colors.white },
-                    ]
+                    styles.notificationCard,
+                    { backgroundColor: theme.light.colors.white },
+                  ]
                   : styles.notificationCard
               }
             >

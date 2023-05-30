@@ -141,6 +141,13 @@ export const TYPES = {
   BANNED_USER_BY_ID_REQUEST: "BANNED_USER_BY_ID_REQUEST",
   BANNED_USER_BY_ID_SUCCESS: "BANNED_USER_BY_ID_SUCCESS",
   BANNED_USER_BY_ID_ERROR: "BANNED_USER_BY_ID_ERROR",
+
+
+  //GET_ALL_NOTIFICATIONS
+  GET_ALL_NOTIFICATIONS: "GET_ALL_NOTIFICATIONS",
+  GET_ALL_NOTIFICATIONS_REQUEST: "GET_ALL_NOTIFICATIONS_REQUEST",
+  GET_ALL_NOTIFICATIONS_SUCCESS: "GET_ALL_NOTIFICATIONS_SUCCESS",
+  GET_ALL_NOTIFICATIONS_ERROR: "GET_ALL_NOTIFICATIONS_ERROR"
 };
 
 const loginRequest = () => ({
@@ -516,6 +523,22 @@ const bannedUserByIdRequest = () => ({
 
 const bannedUserByIdError = error => ({
   type: TYPES.BANNED_USER_BY_ID_ERROR,
+  payload: { error },
+});
+
+//Get all Notifications
+export const getAllNotificationsSuccess = user => ({
+  type: TYPES.GET_ALL_NOTIFICATIONS_SUCCESS,
+  payload: { user },
+});
+
+const getAllNotificationsRequest = () => ({
+  type: TYPES.GET_ALL_NOTIFICATIONS_REQUEST,
+  payload: null,
+});
+
+const getAllNotificationsError = error => ({
+  type: TYPES.GET_ALL_NOTIFICATIONS_ERROR,
   payload: { error },
 });
 
@@ -988,6 +1011,21 @@ export const bannedUserById = (id) => async dispatch => {
 
   } catch (error) {
     dispatch(bannedUserByIdError(error))
+  }
+
+};
+
+export const fetchAllNotifications = (id, read) => async dispatch => {
+
+
+  dispatch(getAllNotificationsRequest());
+
+  try {
+    const user = await UserController.AllNotificationsRequest(id, read);
+    dispatch(getAllNotificationsSuccess(user))
+
+  } catch (error) {
+    dispatch(getAllNotificationsError(error))
   }
 
 };

@@ -121,4 +121,7 @@ export const API_END_POINTS = {
 
     //baned User By ID
     BANNED_USER_BY_ID: 'user/ban_user',
+
+    //GET ALL NOTIFICATIONS
+    GET_ALL_NOTIFICATIONS: 'user/all_notification_by_user_id'
 };

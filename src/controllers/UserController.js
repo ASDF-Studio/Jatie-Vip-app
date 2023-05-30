@@ -668,5 +668,29 @@ export class UserController {
         });
     });
   }
+
+
+  static async AllNotificationsRequest(id, read) {
+
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.GET_ALL_NOTIFICATIONS;
+
+      //  console.log("endPoint", endpoint)
+      var data = JSON.stringify({
+        "loggedInUserId": id,
+        "viewStatus": "read"
+      });
+      HttpClient.post(endpoint, data)
+        .then((response) => {
+          resolve(response)
+          console.log('response of All Notifications', response)
+
+        })
+        .catch((error) => {
+          reject(new Error(error.message))
+          console.log('error of All notifications', error)
+        });
+    });
+  }
 }
 
