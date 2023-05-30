@@ -320,7 +320,6 @@ export default function EditProfile({ navigation }) {
       height: ms(400),
       cropping: true,
     }).then(image => {
-      console.log(image);
       setmimeType(image.mime)
       setprofileimage(image.path)
       setReplace(false);
@@ -338,7 +337,6 @@ export default function EditProfile({ navigation }) {
       setprofileimage(image.path)
       setmimeType(image.mime)
       setReplace(false);
-      console.log(image);
     });
   };
 

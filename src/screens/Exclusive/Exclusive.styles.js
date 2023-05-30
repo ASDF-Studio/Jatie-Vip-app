@@ -234,6 +234,15 @@ export const styles = StyleSheet.create({
     height: ms(200),
     marginRight: ms(10),
   },
+  thumbnailImage: {
+    width: '100%',
+    height: vs(180),
+    padding: ms(80),
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+
+    //  marginBottom: 10
+  },
   moreImage: {
     height: ms(200),
     backgroundColor: theme.light.colors.hyperlink,
@@ -242,6 +251,40 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     overflow: 'hidden',
     width: '100%',
+  },
+  absolute: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0
+  },
+  vipOnlyContainer: {
+    backgroundColor: theme.light.colors.primary,
+    width: ms(100),
+    height: vs(25),
+    borderRadius: 6,
+    position: 'absolute',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: ms(10),
+    top: '42%',
+    left: '38%',
+
+    // marginLeft: '43%',
+    // marginTop: '22%',
+  },
+  vipOnlyText: {
+    fontFamily: FontFamily.BrandonGrotesque_medium,
+    color: theme.light.colors.background,
+    paddingLeft: ms(10),
+  },
+  lock: {
+    color: theme.light.colors.background,
+  },
+  thumbnailContainer: {
+    width: '100%',
+    height: vs(180),
   },
 
 });

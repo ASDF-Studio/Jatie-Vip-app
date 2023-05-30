@@ -8,6 +8,7 @@ import {
   Text,
   Platform,
   ImageBackground,
+  ActivityIndicator,
 } from 'react-native';
 import { theme } from '@/theme';
 import { AppImageViewer, Card, CardBody, CustomLoader } from '@/components';
@@ -39,7 +40,6 @@ export default function Active({ navigation, userType }) {
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.GET_ACTIVE_GIVEAWAY,], state)
   );
-
   const focus = useIsFocused()
 
   useEffect(() => {
@@ -77,12 +77,20 @@ export default function Active({ navigation, userType }) {
       <SafeAreaView
         style={{
           marginTop: Platform.OS === 'ios' ? -48 : 0,
-          marginBottom: Platform.OS === 'ios' ? -70 : 0,
+          marginBottom: Platform.OS === 'ios' ? -38 : 0,
         }}
       >
 
-        <CustomLoader
-          open={isLoading}
+
+        {/* <CustomLoader
+            open={isLoading}
+          /> */}
+
+        <ActivityIndicator
+          animating={isLoading}
+          size={"large"}
+
+          color={theme.light.colors.primary}
         />
         <FlatList
           data={getActiveGiveWayData?.data ?? []}
@@ -103,14 +111,17 @@ export default function Active({ navigation, userType }) {
 
                 {/* VIP only */}
 
-                {userType.user == `${strings.userType.free}` &&
-                  item.status == `${strings.userType.free}` ? (
-                  <View style={styles.thumbnailContainer}>
+                {(userType.user == `${strings.userType.free}` &&
+                  item.isVIPonly) ? (
+                  <TouchableOpacity
+                    onPress={() => userType.user == `${strings.userType.free}` && navigation.navigate(NAVIGATION.upgradeMembership)}
+
+                    style={styles.thumbnailContainer}>
                     <Image
                       blurRadius={15}
                       style={styles.thumbnailImage}
                       source={{
-                        uri: item.photo,
+                        uri: item?.postMediaContent[0]?.mimetype?.split("/")[0] == "image" ? item?.postMediaContent[0]?.url : item?.postMediaContent[0]?.cover,
                       }}
                     />
                     <View style={styles.vipOnlyContainer}>
@@ -123,7 +134,7 @@ export default function Active({ navigation, userType }) {
                         {strings.giveaway.vipOnly}
                       </Text>
                     </View>
-                  </View>
+                  </TouchableOpacity>
                 ) : (
 
 
@@ -246,7 +257,7 @@ export default function Active({ navigation, userType }) {
                                 style={styles.image}
                               /> : <ImageBackground
                                 source={{
-                                  uri: data.cover,
+                                  uri: data?.cover,
                                 }}
                                 key={counter}
                                 style={[styles.image, styles.playButtonBg]}
@@ -292,7 +303,7 @@ export default function Active({ navigation, userType }) {
                                   style={styles.image}
                                 /> : <ImageBackground
                                   source={{
-                                    uri: data.cover,
+                                    uri: data?.cover,
                                   }}
                                   key={counter}
                                   style={[styles.image, styles.playButtonBg]}
@@ -325,7 +336,7 @@ export default function Active({ navigation, userType }) {
                               >
                                 <ImageBackground
                                   source={{
-                                    uri: data?.mimetype?.split("/")[0] == "image" ? data.url : data.cover,
+                                    uri: data?.mimetype?.split("/")[0] == "image" ? data.url : data?.cover,
                                   }}
                                   key={counter}
                                   style={[styles.image, styles.moreImage]}

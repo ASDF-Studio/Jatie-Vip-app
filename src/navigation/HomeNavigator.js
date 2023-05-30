@@ -14,6 +14,7 @@ import SinglePost from '@/screens/Home/SinglePost';
 import { AppNavigator } from './AppNavigator';
 import Followers from '@/screens/Profile/followers';
 import Following from '@/screens/Profile/following';
+import UpgradeMembership from '@/screens/Profile/upgradeMembership';
 
 const Stack = createNativeStackNavigator();
 
@@ -39,6 +40,7 @@ export function HomeNavigator() {
       <Stack.Screen name={NAVIGATION.search} component={Search} />
       <Stack.Screen name={NAVIGATION.updatePost} component={UpdatePost} />
       <Stack.Screen name={NAVIGATION.userProfile} component={UserProfile} />
+      <Stack.Screen name={NAVIGATION.upgradeMembership} component={UpgradeMembership} />
     </Stack.Navigator>
   );
 }

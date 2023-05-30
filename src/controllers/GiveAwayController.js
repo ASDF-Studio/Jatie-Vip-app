@@ -95,7 +95,6 @@ export class GiveAwayController {
                 "loggedInUserId": data.userId,
 
             })
-            console.log("BODY=-=-=-=-JOINNN", body);
             HttpClient.post(endpoint, body)
                 .then((response) => {
 
@@ -172,20 +171,53 @@ export class GiveAwayController {
 
             const endpoint = API_BASE_URL + API_END_POINTS.UPDATE_GIVEAWAY;
             let data = new FormData()
+            // if (params.imageArray.length !== 0) {
+            //     let obj = [];
+            //     params.imageArray.map(item => {
+            //         let filename = item.image.split("/").pop();
+            //         obj = {
+            //             uri: item.image,
+            //             name: filename,
+            //             type: item.imageMime,
+            //         };
+
+            //         data.append('myimage', obj)
+            //     });
+            // }
             if (params.imageArray.length !== 0) {
                 let obj = [];
-                params.imageArray.map(item => {
-                    let filename = item.image.split("/").pop();
-                    obj = {
-                        uri: item.image,
-                        name: filename,
-                        type: item.imageMime,
-                    };
+                let videoPoster = [];
+                var isVideo = false
 
-                    data.append('myimage', obj)
+                params.imageArray.map(item => {
+                    let filename = item.video == null ? item.image.split("/").pop() : item.video.split("/").pop();
+                    obj = {
+                        uri: item.video == null ? item.image : item.video,
+                        name: filename,
+                        type: item.video == null ? item.imageMime : item.videoMime,
+                        // videoPoster: item.video == null ? null : item?.videoPoster
+                    };
+                    if (item.video !== null) {
+                        let filename = item.videoPoster.split("/").pop();
+                        videoPoster = {
+                            uri: item.videoPoster,
+                            name: filename,
+                            // type: item.videoMime,
+                            // videoPoster: item.video == null ? null : item?.videoPoster
+                        };
+                        isVideo = true
+                    }
+                    data.append('myimage', obj);
                 });
+                if (isVideo) {
+                    data.append('videoPoster', videoPoster)
+                }
+                console.log("preImageArray=-=-=-=-=-", params.preImageArray);
+
             }
 
+            data.append('postMediaContent', params.preImageArray.length > 0 ? JSON.stringify(params.preImageArray) : "")
+            data.append('id', params?.id);
             data.append('postImg', '');
             data.append('userId', params.userId);
             data.append('postTitle', params.postTitle);
@@ -308,11 +340,9 @@ export class GiveAwayController {
             HttpClient.post(endpoint, body)
                 .then((response) => {
                     resolve(response)
-                    console.log('response of withDraw giveaway', JSON.stringify(response))
                 })
                 .catch((error) => {
                     reject(new Error(error.message));
-                    console.log("error of join giveaway", error)
                 });
         });
     }
@@ -326,12 +356,10 @@ export class GiveAwayController {
                 "giveawayId": data?.giveawayId,
                 "loggedInUserId": data?.userId
             })
-            console.log("SINGLE____", body);
             HttpClient.post(endpoint, body)
                 .then((response) => {
 
                     resolve(response)
-                    console.log('response of withDraw Singelllelelelegiveaway', JSON.stringify(response))
 
                     // showMessage({
                     //     message: 'Participant withdrawn from the giveaway',
@@ -340,7 +368,6 @@ export class GiveAwayController {
                 })
                 .catch((error) => {
                     reject(new Error(error.message));
-                    console.log("error of join giveaway", error)
                 });
         });
     }

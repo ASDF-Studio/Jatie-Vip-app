@@ -23,7 +23,7 @@ import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { getUser } from '@/selectors/UserSelectors';
 export default function UpdateGiveawayOption({ navigation, route }) {
     const isLoading = useSelector(state =>
-        isLoadingSelector([TYPES.GIVE_AWAY_POST], state)
+        isLoadingSelector([TYPES.UPDATE_GIVEAWAY], state)
     );
 
     const dispatch = useDispatch()
@@ -39,7 +39,6 @@ export default function UpdateGiveawayOption({ navigation, route }) {
     const [openPostDatePicker, setOpenPostDatePicker] = useState(false);
     const [winnerCount, setWinnerCount] = useState(0)
     const finalData = route.params.prevData
-
     const data = {
         postExpires: moment(endDate).format(),
         startDate: moment(postDate).format(),
@@ -75,8 +74,9 @@ export default function UpdateGiveawayOption({ navigation, route }) {
             postTitle: finalData?.postTitle,
             postBody: finalData?.postBody,
             imageArray: finalData?.imageArray,
+            preImageArray: finalData?.preImageArray,
+            id: finalData?.id
         }
-        console.log("DATAA=-=--=-=-", JSON.stringify(data));
         dispatch(updateGiveaway(data))
     }
     return (

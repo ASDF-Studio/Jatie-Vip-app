@@ -6,7 +6,6 @@ export class ExclusivePostController {
 
     // create post
     static async createExclusivePost(params) {
-        console.log("Params=-=-=->>>", JSON.stringify(params));
         return new Promise(async (resolve, reject) => {
 
             const endpoint = API_BASE_URL + API_END_POINTS.CREATE_EXCLUSIVE_POST;
@@ -52,7 +51,6 @@ export class ExclusivePostController {
                     data.append('videoPoster', videoPoster)
                 }
                 // data.append('videoPoster', videoPoster);
-                console.log("VIDEEO___OPOSTER", videoPoster);
 
             }
 
@@ -63,23 +61,18 @@ export class ExclusivePostController {
             data.append('isVIPonly', params.isVIPonly);
             data.append('isScheduled', params.schedulePost);
             data.append('scheduleDetails', params.scheduleDate);
-            console.log("create_post=-=-=daa", JSON.stringify(data));
             const headers = {
                 'Content-Type': 'multipart/form-data'
             }
-            console.log("END_POIMNT===", endpoint);
             try {
                 await HttpClient.post(endpoint, data, { headers })
                     .then((response) => {
                         resolve(response)
-                        console.log('excl;uiveee post response', JSON.stringify(response))
                     })
                     .catch((error) => {
                         reject(error)
-                        console.log('errror', error)
                     });
             } catch (error) {
-                console.log("Error-catsc", error);
             }
 
         });
@@ -93,9 +86,9 @@ export class ExclusivePostController {
             const endpoint = API_BASE_URL + API_END_POINTS.GET_EXCLUSIVE_POST;
             const body = JSON.stringify({
                 "loggedInUserId": data.userId,
+                "postsFilter": data.postFilter
 
             })
-            // console.log("BODY=-=-=-=-EXclusive", body);
             HttpClient.post(endpoint, body)
                 .then((response) => {
 
@@ -125,7 +118,6 @@ export class ExclusivePostController {
                 .then((response) => {
 
                     resolve(response)
-                    console.log('response of past exclusiveBY ID', JSON.stringify(response))
                 })
                 .catch((error) => {
                     reject(new Error(error.message));
@@ -143,12 +135,10 @@ export class ExclusivePostController {
                 "id": data.postId
 
             })
-            console.log("FORM__DATA", body);
             HttpClient.post(endpoint, body)
                 .then((response) => {
 
                     resolve(response)
-                    console.log('response of past exclusive delete', JSON.stringify(response))
                 })
                 .catch((error) => {
                     reject(new Error(error.message));
@@ -159,22 +149,55 @@ export class ExclusivePostController {
     static async updateExclusivePost(params) {
 
         return new Promise(async (resolve, reject) => {
-            console.log("POSTTSTSTTSSTS", params);
             const endpoint = API_BASE_URL + API_END_POINTS.UPDATE_EXCLUSIVE_POST;
             let data = new FormData()
+            // if (params.imageArray.length !== 0) {
+            //     let obj = [];
+            //     params.imageArray.map(item => {
+            //         let filename = item.image.split("/").pop();
+            //         obj = {
+            //             uri: item.image,
+            //             name: filename,
+            //             type: item.imageMime,
+            //         };
+
+            //         data.append('myimage', obj)
+            //     });
+            // }
             if (params.imageArray.length !== 0) {
                 let obj = [];
-                params.imageArray.map(item => {
-                    let filename = item.image.split("/").pop();
-                    obj = {
-                        uri: item.image,
-                        name: filename,
-                        type: item.imageMime,
-                    };
+                let videoPoster = [];
+                var isVideo = false
 
-                    data.append('myimage', obj)
+                params.imageArray.map(item => {
+                    let filename = item.video == null ? item.image.split("/").pop() : item.video.split("/").pop();
+                    obj = {
+                        uri: item.video == null ? item.image : item.video,
+                        name: filename,
+                        type: item.video == null ? item.imageMime : item.videoMime,
+                        // videoPoster: item.video == null ? null : item?.videoPoster
+                    };
+                    if (item.video !== null) {
+                        let filename = item.videoPoster.split("/").pop();
+                        videoPoster = {
+                            uri: item.videoPoster,
+                            name: filename,
+                            // type: item.videoMime,
+                            // videoPoster: item.video == null ? null : item?.videoPoster
+                        };
+                        isVideo = true
+                    }
+                    data.append('myimage', obj);
                 });
+                if (isVideo) {
+                    data.append('videoPoster', videoPoster)
+                }
+                console.log("preImageArray=-=-=-=-=-", params.preImageArray);
+
             }
+
+            data.append('postMediaContent', params.preImageArray.length > 0 ? JSON.stringify(params.preImageArray) : "")
+
             data.append("id", params.postId)
             data.append('postImg', '');
             data.append('userId', params.userId);
@@ -184,6 +207,9 @@ export class ExclusivePostController {
             data.append('isScheduled', params.schedulePost);
             data.append('scheduleDetails', params.scheduleDate);
             console.log("update_exclisisadasdas", JSON.stringify(data));
+
+
+
             const headers = {
                 'Content-Type': 'multipart/form-data'
             }
@@ -191,7 +217,6 @@ export class ExclusivePostController {
             await HttpClient.post(endpoint, data, { headers })
                 .then((response) => {
                     resolve(response)
-                    console.log('giveaway post response', JSON.stringify(response))
                 })
                 .catch((error) => {
                     reject(error)

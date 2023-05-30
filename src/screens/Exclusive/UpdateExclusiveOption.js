@@ -37,7 +37,6 @@ export default function UpdateExclusiveOption({ navigation, route }) {
     const [endDate, SetEndDate] = useState(new Date())
     const [openEndDatePicker, setopenEndDatePicker] = useState(false)
     const finalData = route.params.prevData
-    console.log("Final_data", finalData);
     // const [publishingDate, setPublishingDate] = useState(new Date());
     // const [openPublishingDatePicker, setOpenPublishingDatePicker] = useState(false);
 
@@ -60,10 +59,11 @@ export default function UpdateExclusiveOption({ navigation, route }) {
             postBody: finalData?.postBody,
             imageArray: finalData?.imageArray,
             schedulePost: schedulePost,
+            preImageArray: finalData?.preImageArray,
             scheduleDate: moment(postDate).format()
 
         }
-        console.log("DATAA=-=--=-=-", JSON.stringify(data));
+        // return false
         dispatch(updateExclusivePost(data))
     }
     return (

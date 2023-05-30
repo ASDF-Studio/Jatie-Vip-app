@@ -40,6 +40,8 @@ import { navigationRef } from '@/navigation/RootNavigation';
 // import { useIsFocused } from '@react-navigation/native';
 import { UserController } from '@/controllers';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
+import { getAllPost } from '@/actions/PostActions';
+import { createThumbnail } from "react-native-create-thumbnail";
 
 let nextId = 100;
 let preNextId = 100;
@@ -48,6 +50,7 @@ let preNext = 10;
 
 export default function UpdatePost({ route, navigation }) {
   const { prevData } = route.params;
+
   const userType = useSelector(state => state.userType);
   const dispatch = useDispatch()
   const user = useSelector(getUser);
@@ -75,30 +78,57 @@ export default function UpdatePost({ route, navigation }) {
   // const focus = useIsFocused();
 
   useEffect(() => {
-    getPostById(prevData?.DATA)
+    getPostById(prevData)
   }, []);
 
   const getPostById = async (data) => {
     setPostDetails(data);
-    setPostId(data.postId);
+    setPostId(data.id);
     setUserId(user?.id);
     setPostTitle(data.postTitle);
     setPostBody(data.postBody);
+    // {
+    //   data?.postImg.map(item => (
+    //     preImageArray.push({
+    //       id: next--,
+    //       image: item,
+    //       imageMime: null,
+    //       video: null,
+    //     }),
+    //     imageArrayDisplay.push({
+    //       id: preNext--,
+    //       image: item,
+    //       imageMime: null,
+    //       video: null,
+    //     })
+    //   ))
+    //   setPrePostImg(data.postImg)
+    // }
+
     {
-      data?.postImg.map(item => (
+      data?.postMediaContent.map(item => (
+        // preImageArray.push({
+        //   id: next--,
+        //   image: item.mimetype.split("/")[0] == "image" ? item.url : null,
+        //   imageMime: null,
+        //   video: item.mimetype.split("/")[0] == "video" ? item.url : null,
+        // }),
+
+
         preImageArray.push({
           id: next--,
-          image: item,
-          imageMime: null,
-          video: null,
+          "url": item.url,
+          "mimetype": item.mimetype,
+          "cover": item.cover
         }),
         imageArrayDisplay.push({
           id: preNext--,
-          image: item,
+          image: item.mimetype.split("/")[0] == "image" ? item.url : null,
           imageMime: null,
-          video: null,
+          video: item.mimetype.split("/")[0] == "video" ? item.url : null,
         })
       ))
+      // setPreImageArray(data?.postMediaContent)
       setPrePostImg(data.postImg)
     }
   }
@@ -126,6 +156,7 @@ export default function UpdatePost({ route, navigation }) {
         ? ImageCropPicker.openPicker({
           width: 300,
           height: 400,
+          maxFiles: 3,
           mediaType: strings.exclusive.image,
           multiple: true,
           compressImageQuality: 0.5
@@ -157,25 +188,55 @@ export default function UpdatePost({ route, navigation }) {
           height: 400,
           mediaType: strings.exclusive.video,
           multiple: true,
+          maxFiles: 3,
           compressImageQuality: 0.5,
           loadingLabelText: 'loading',
         })
           .then(video => {
-            imageArray.push({
-              id: nextId++,
-              image: null,
-              video: video.path,
-              videoMime: video.mime,
+            // imageArray.push({
+            //   id: nextId++,
+            //   image: null,
+            //   video: video.path,
+            //   videoMime: video.mime,
+            // });
+            // imageArrayDisplay.push({
+            //   id: preNextId++,
+            //   image: null,
+            //   imageMime: video.mime,
+            //   video: null,
+            // });
+            // postImg.push(video.path);
+            // mimeType.push(video.mime);
+            // setModalVisible(!isModalVisible);
+            video.forEach(item => {
+              createThumbnail({
+                url: item.path,
+                timeStamp: 10000,
+              })
+                .then(response => {
+                  imageArray.push({
+                    id: nextId++,
+                    image: null,
+                    video: item.path,
+                    videoMime: item.mime,
+                    videoPoster: response?.path
+                  })
+                  imageArrayDisplay.push({
+                    id: nextId++,
+                    image: null,
+                    video: item.path,
+                    videoMime: item.mime,
+                    videoPoster: response?.path
+                  })
+                }
+
+                )
+                .catch(err => console.log({ err }));
+              setPostImg(video.path);
+              setmimeType(video.mime);
+              setModalVisible(!isModalVisible);
             });
-            imageArrayDisplay.push({
-              id: preNextId++,
-              image: null,
-              imageMime: video.mime,
-              video: null,
-            });
-            postImg.push(video.path);
-            mimeType.push(video.mime);
-            setModalVisible(!isModalVisible);
+
           })
           .catch(e => {
             console.log('Error: ' + e);
@@ -269,15 +330,17 @@ export default function UpdatePost({ route, navigation }) {
 
       {
         userType.user == strings.userType.free && (
-          dispatch(updatePost(postId, userId, postTitle, postBody, postImg, preImageArray, mimeType, preMimeType, imageArray, user_Type, NAVIGATION.profile))
+          dispatch(updatePost(postId, userId, postTitle, postBody, postImg, preImageArray, mimeType, preMimeType, imageArray, user_Type, NAVIGATION.home)),
+          dispatch(getAllPost(user?.id, prevData.DATA.sortBy, prevData.DATA.follwingSwitch, NAVIGATION.home))
+          // console.log("DATA", DATA)
         )
       }
+      dispatch(getAllPost(user?.id, strings.sortBy.recent, false))
       {
         userType.user == strings.userType.admin && (
           navigationRef.navigate(NAVIGATION.postOptions, {
             prevData: DATA,
           })
-          // dispatch(updatePost(postId, userId, postTitle, postBody, postImg, preImageArray, mimeType, preMimeType, imageArray, user_Type, NAVIGATION.profile))
         )
       }
 
@@ -358,7 +421,7 @@ export default function UpdatePost({ route, navigation }) {
             )}
 
             {/* show only for admin */}
-            {/* {userType.user == strings.userType.admin && (
+            {userType.user == strings.userType.admin && (
               <>
                 <View style={styles.verticalBar} />
                 <Icon
@@ -370,7 +433,7 @@ export default function UpdatePost({ route, navigation }) {
                   style={styles.icon}
                 />
               </>
-            )} */}
+            )}
           </View>
 
           {/* button */}
@@ -478,13 +541,13 @@ export const FileUpload = imageArray => {
                       </Text>
                     </View>
                     <View style={styles.videoPlayContainer}>
-                      {' '}
+                      {/* {' '}
                       <ActivityIndicator
                         animating={animating}
                         color={theme.light.colors.primary}
                         size="large"
                         style={styles.activityIndicator}
-                      />
+                      /> */}
                       <FontAwesomeIcon
                         icon={faCircle}
                         size={ms(30)}
@@ -696,3 +759,4 @@ const styles = StyleSheet.create({
     marginRight: ms(10),
   },
 });
+

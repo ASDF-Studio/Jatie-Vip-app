@@ -33,15 +33,15 @@ import { getUser } from '@/selectors/UserSelectors';
 import { giveAwayPost } from '@/actions/PostActions';
 import { roundToNearestPixel } from 'react-native/Libraries/Utilities/PixelRatio';
 import { navigate } from '@/navigation/RootNavigation';
-
+import { createThumbnail } from "react-native-create-thumbnail";
 
 export default function UpdateGiveawayPost({ navigation, route }) {
     const { DATA } = route.params
-    console.log("Edit Giveaway Data", DATA);
     const user = useSelector(getUser);
     const dispatch = useDispatch()
     const [imageArray, setImageArray] = useState([]);
     const [isModalVisible, setModalVisible] = useState(false);
+    const [imageArrayDisplay, setImageArrayDisplay] = useState([]);
     const [isImage, setIsImage] = useState();
     const [postTxt, setPostTxt] = useState('');
     const [postImg, setPostImg] = useState([]);
@@ -57,25 +57,64 @@ export default function UpdateGiveawayPost({ navigation, route }) {
     useEffect(() => {
         setPostTitle(DATA?.postTitle)
         setPostDesc(DATA?.postBody)
+        // {
+        //     DATA?.postImg.map(item => (
+        //         preImageArray.push({
+        //             id: next--,
+        //             image: item,
+        //             imageMime: null,
+        //             video: null,
+        //         }),
+        //         imageArray.push({
+        //             id: preNext--,
+        //             image: item,
+        //             imageMime: null,
+        //             video: null,
+        //         })
+        //     ))
+        //     setPrePostImg(DATA.postImg)
+        // }
+
+        // setImageArray(DATA?.postImg)
+
+
+
         {
-            DATA?.postImg.map(item => (
+            DATA?.postMediaContent.map(item => (
+                // preImageArray.push({
+                //   id: next--,
+                //   image: item.mimetype.split("/")[0] == "image" ? item.url : null,
+                //   imageMime: null,
+                //   video: item.mimetype.split("/")[0] == "video" ? item.url : null,
+                // }),
+
+
                 preImageArray.push({
                     id: next--,
-                    image: item,
-                    imageMime: null,
-                    video: null,
+                    "url": item.url,
+                    "mimetype": item.mimetype,
+                    "cover": item.cover
                 }),
-                imageArray.push({
+                imageArrayDisplay.push({
                     id: preNext--,
-                    image: item,
-                    imageMime: null,
-                    video: null,
+                    image: item.mimetype.split("/")[0] == "image" ? item.url : null,
+                    imageMime: item.mimetype,
+                    video: item.mimetype.split("/")[0] == "video" ? item.url : null,
                 })
+
+                // ,
+                // imageArray.push({
+                //   id: preNext--,
+                //   image: item.mimetype.split("/")[0] == "image" ? item.url : null,
+                //   imageMime: item.mimetype,
+                //   video: item.mimetype.split("/")[0] == "video" ? item.url : null,
+                // })
             ))
+            // setPreImageArray(data?.postMediaContent)
             setPrePostImg(DATA.postImg)
         }
 
-        // setImageArray(DATA?.postImg)
+
     }, [])
     const toggleModal = () => {
         setModalVisible(!isModalVisible);
@@ -84,7 +123,13 @@ export default function UpdateGiveawayPost({ navigation, route }) {
         setModalVisible(!isModalVisible);
     };
     deleteFile = id => {
-        setImageArray(imageArray.filter(a => a.id !== id));
+        // setImageArray(imageArray.filter(a => a.id !== id));
+        setImageArrayDisplay(imageArrayDisplay.filter(a => a.id !== id));
+        if (id >= 100) {
+            setImageArray(imageArray.filter(a => a.id !== id));
+        } else {
+            setPreImageArray(preImageArray.filter(a => a.id !== id));
+        }
     };
 
     const OpenGallery = () => {
@@ -95,6 +140,7 @@ export default function UpdateGiveawayPost({ navigation, route }) {
                     height: ms(400),
                     mediaType: strings.exclusive.image,
                     multiple: true,
+                    maxFiles: 3,
                     compressImageQuality: 0.5
                 })
                     .then(images => {
@@ -105,10 +151,13 @@ export default function UpdateGiveawayPost({ navigation, route }) {
                                 imageMime: item.mime,
                                 video: null,
                             });
-                            postImg.push(item.path);
-                            mimeType.push(item.mime);
-                            setModalVisible(!isModalVisible)
-                                ;
+                            imageArrayDisplay.push({
+                                id: preNextId++,
+                                image: item.path,
+                                imageMime: item.mime,
+                                video: null,
+                            });
+                            setModalVisible(!isModalVisible);
                         });
                     })
                     .catch(e => {
@@ -119,19 +168,39 @@ export default function UpdateGiveawayPost({ navigation, route }) {
                     height: 400,
                     mediaType: strings.exclusive.video,
                     multiple: true,
+                    maxFiles: 3,
                     compressImageQuality: 0.5,
                     loadingLabelText: 'loading',
                 })
                     .then(video => {
-                        imageArray.push({
-                            id: nextId++,
-                            image: null,
-                            video: video.path,
-                            videoMime: video.mime,
+                        video.forEach(item => {
+                            createThumbnail({
+                                url: item.path,
+                                timeStamp: 10000,
+                            })
+                                .then(response => {
+                                    imageArray.push({
+                                        id: nextId++,
+                                        image: null,
+                                        video: item.path,
+                                        videoMime: item.mime,
+                                        videoPoster: response?.path
+                                    })
+                                    imageArrayDisplay.push({
+                                        id: nextId++,
+                                        image: null,
+                                        video: item.path,
+                                        videoMime: item.mime,
+                                        videoPoster: response?.path
+                                    })
+                                }
+
+                                )
+                                .catch(err => console.log({ err }));
+                            setPostImg(video.path);
+                            setmimeType(video.mime);
+                            setModalVisible(!isModalVisible);
                         });
-                        setPostImg(video.path);
-                        setmimeType(video.mime);
-                        setModalVisible(!isModalVisible);
                     })
                     .catch(e => {
                         console.log('Error: ' + e);
@@ -145,6 +214,7 @@ export default function UpdateGiveawayPost({ navigation, route }) {
                 ? ImageCropPicker.openCamera({
                     width: 300,
                     height: 400,
+                    maxFiles: 3,
                     cropping: false,
                     compressImageQuality: 0.5,
                 })
@@ -165,6 +235,7 @@ export default function UpdateGiveawayPost({ navigation, route }) {
                 : ImageCropPicker.openCamera({
                     width: 300,
                     height: 400,
+                    maxFiles: 3,
                     cropping: false,
                     mediaType: strings.exclusive.video,
                     compressImageQuality: 0.5,
@@ -193,6 +264,8 @@ export default function UpdateGiveawayPost({ navigation, route }) {
             postTitle: postTitle,
             postBody: postDesc,
             imageArray: imageArray,
+            preImageArray: preImageArray,
+            id: DATA?.id
 
         }
 
@@ -237,7 +310,7 @@ export default function UpdateGiveawayPost({ navigation, route }) {
             </ScrollView>
 
             {/* {BttomContantLayout()} */}
-            {FileUpload(imageArray)}
+            {FileUpload(imageArrayDisplay)}
 
             <View style={styles.BottomFileContainer}>
                 <View style={styles.iconContainer}>
@@ -336,13 +409,13 @@ export const FileUpload = imageArray => {
                                             </Text>
                                         </View>
                                         <View style={styles.videoPlayContainer}>
-                                            {' '}
+                                            {/* {' '}
                                             <ActivityIndicator
                                                 animating={animating}
                                                 color={theme.light.colors.primary}
                                                 size="large"
                                                 style={styles.activityIndicator}
-                                            />
+                                            /> */}
                                             <FontAwesomeIcon
                                                 icon={faCircle}
                                                 size={ms(30)}

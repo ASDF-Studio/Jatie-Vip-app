@@ -5,8 +5,10 @@ import { GiveAwayController } from '@/controllers/GiveAwayController';
 import { PostController } from '@/controllers/PostController';
 import { strings } from '@/localization';
 import { navigate, navigationRef } from '@/navigation/RootNavigation';
+import { getUser } from '@/selectors/UserSelectors';
 import { StackActions } from '@react-navigation/native';
 import { showMessage } from 'react-native-flash-message';
+import { useSelector } from 'react-redux';
 import { globalReset } from './GlobalActions';
 
 export const TYPES = {
@@ -945,7 +947,7 @@ export const updatePost = (id, userId, postTitle, postBody, file, preImageArray,
 
 export const deletePost = (id, postUserId, userId, userType, screen) => async dispatch => {
     dispatch(globalReset())
-    dispatch(deletePostRequest());
+    dispatch(deletePostRequest())
     try {
         const user = await UserController.deletePost(id, postUserId, userId, userType);
         dispatch(deletePostSuccess(user))
@@ -971,10 +973,10 @@ export const deletePost = (id, postUserId, userId, userType, screen) => async di
         dispatch(deletePostError(error));
     }
 };
-export const getAllPost = (userId, filterBy, isFollowingData) => async dispatch => {
+export const getAllPost = (userId, filterBy, isFollowingData, isVip) => async dispatch => {
     dispatch(getAllPostRequest());
     try {
-        const post = await PostController.getAllPost(userId, filterBy, isFollowingData);
+        const post = await PostController.getAllPost(userId, filterBy, isFollowingData, isVip);
         dispatch(getAllPostSuccess(post))
 
     } catch (error) {
@@ -996,7 +998,6 @@ export const getAllPinPost = () => async dispatch => {
     dispatch(getAllPinPostRequest());
     try {
         const post = await PostController.getAllPinnedPost();
-        console.log("responser=-=-=-=-", JSON.stringify(post))
         dispatch(getAllPinPostSuccess(post))
 
     } catch (error) {
@@ -1023,7 +1024,6 @@ export const editComment = (id, userId, commentBody, commentIndex) => async disp
         commentData: comment,
         commentIndex: commentIndex
     }
-    console.log("OBJECTTTT", JSON.stringify(object))
     dispatch(editCommentSuccess(object))
     // } catch (error) {
     //     console.log("NEWdfdfdfdWW_COMMENT_erorr", error)
@@ -1034,7 +1034,6 @@ export const deleteComment = (id, userId) => async dispatch => {
     dispatch(deleteCommentRequest());
     try {
         const comment = await PostController.DeleteComment(id, userId);
-        console.log("DELETETETETE", JSON.stringify(comment))
         showMessage({
             message: strings.deleteCommentSuccsess.deletedSuccess,
             type: "success"
@@ -1047,7 +1046,6 @@ export const deleteComment = (id, userId) => async dispatch => {
     }
 };
 export const followUser = (followerId, followId, type) => async dispatch => {
-    console.log('******88888', followerId)
     dispatch(followUserRequest());
     try {
         const user = await PostController.followUser(followerId, followId);
@@ -1111,7 +1109,6 @@ export const getPostById = (postId, userId) => async dispatch => {
     dispatch(getPostByIdRequest())
     try {
         const user = await PostController.getPostById(postId, userId)
-        //  console.log("POST__BY=-=-=-=-=", JSON.stringify(user));
         dispatch(getPostByIdSuccess(user.data))
     } catch (error) {
         dispatch(getPostByIdError(error))
@@ -1343,7 +1340,6 @@ export const createExclusivePost = (data) => async dispatch => {
 };
 
 export const getAllExclusivePost = (data) => async dispatch => {
-
     dispatch(getAllExclusivePostRequest());
     try {
         const post = await ExclusivePostController.getAllExclusivePost(data);

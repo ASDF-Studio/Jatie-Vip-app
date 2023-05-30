@@ -19,7 +19,6 @@ import { AppVideoPlayer } from "./VideoPlayer"
 
 
 export const AppImageViewer = ({ visible, setVisible, images }) => {
-    console.log("DATA+_+_+_+_", images);
     let imageView = [];
     {
         images?.map(image => (

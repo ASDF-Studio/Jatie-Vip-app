@@ -30,7 +30,6 @@ export const CardBody = ({ text }) => {
   }
 
   const onPressUserName = (text, index) => {
-    console.log('check syntax text: ' + text)
     const userId = extractUserId(`${text}`)
 
     //TODO:  Navigate to the  user profile on the basis of user id mentioned in the comment section

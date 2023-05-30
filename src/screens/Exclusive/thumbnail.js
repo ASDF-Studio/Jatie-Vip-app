@@ -25,7 +25,6 @@ export default function Thubmnail({ navigation, route }) {
   const dispatch = useDispatch()
   const user = useSelector(getUser)
   const exclusiveData = useSelector(getSingleExclusiveData)
-  console.log("SINGLE__DATA", exclusiveData);
 
   useEffect(() => {
     const data = {

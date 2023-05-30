@@ -13,7 +13,7 @@ export const SwiperViewer = ({ visible, setVisible, images }) => {
     const [swipeIndex, setWipeIndex] = useState(0)
     const swipeRef = useRef(null)
 
-    console.log("DATA+_+_+_+_", images);
+    // console.log("DATA+_+_+_+_", images);
     const onPlayVideo = (data) => {
 
     }

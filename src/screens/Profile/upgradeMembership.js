@@ -3,16 +3,28 @@ import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 import { TextStyles, theme } from '@/theme';
 import { Logo } from '@/assets';
 import { ms, vs } from 'react-native-size-matters';
-import { Button } from '@/components';
+import { Button, TopBackButton } from '@/components';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { FontFamily } from '@/theme/Fonts';
 import { NAVIGATION } from '@/constants';
 import { strings } from '@/localization';
+import { navigationRef } from '@/navigation/RootNavigation';
 
 export default function UpgradeMembership({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <View style={styles.left}>
+          <TopBackButton
+            onPress={() => navigationRef.goBack()}
+            style={styles.TopBackButton}
+          />
+
+
+        </View>
+
+      </View>
       <View style={styles.logo}>
         <Logo height={ms(100)} width={ms(100)} />
       </View>
@@ -111,6 +123,26 @@ const styles = StyleSheet.create({
   headerTxtContainer: {
     alignItems: 'center',
     marginTop: vs(20),
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: ms(10),
+    margin: ms(5),
+    flex: 0.1,
+  },
+  headerText: { color: theme.light.colors.black },
+  TopBackButton: {
+    paddingRight: ms(5),
+    paddingLeft: ms(10),
+  },
+  left: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  right: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   card: {
     backgroundColor: theme.light.colors.white,
