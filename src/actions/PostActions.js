@@ -5,8 +5,10 @@ import { GiveAwayController } from '@/controllers/GiveAwayController';
 import { PostController } from '@/controllers/PostController';
 import { strings } from '@/localization';
 import { navigate, navigationRef } from '@/navigation/RootNavigation';
+import { getUser } from '@/selectors/UserSelectors';
 import { StackActions } from '@react-navigation/native';
 import { showMessage } from 'react-native-flash-message';
+import { useSelector } from 'react-redux';
 import { globalReset } from './GlobalActions';
 
 export const TYPES = {
@@ -945,7 +947,7 @@ export const updatePost = (id, userId, postTitle, postBody, file, preImageArray,
 
 export const deletePost = (id, postUserId, userId, userType, screen) => async dispatch => {
     dispatch(globalReset())
-    dispatch(deletePostRequest());
+    dispatch(deletePostRequest())
     try {
         const user = await UserController.deletePost(id, postUserId, userId, userType);
         dispatch(deletePostSuccess(user))
@@ -971,10 +973,10 @@ export const deletePost = (id, postUserId, userId, userType, screen) => async di
         dispatch(deletePostError(error));
     }
 };
-export const getAllPost = (userId, filterBy, isFollowingData) => async dispatch => {
+export const getAllPost = (userId, filterBy, isFollowingData, isVip) => async dispatch => {
     dispatch(getAllPostRequest());
     try {
-        const post = await PostController.getAllPost(userId, filterBy, isFollowingData);
+        const post = await PostController.getAllPost(userId, filterBy, isFollowingData, isVip);
         dispatch(getAllPostSuccess(post))
 
     } catch (error) {

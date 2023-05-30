@@ -270,20 +270,24 @@ export class PostController {
         });
     }
     //get All post 
-    static async getAllPost(userId, filterBy, isFollowingData) {
+    static async getAllPost(userId, filterBy, isFollowingData, isVip) {
         return new Promise((resolve, reject) => {
             const endpoint = API_BASE_URL + API_END_POINTS.ALL_POST;
             const body = JSON.stringify({
                 "loggedInUserId": userId,
                 "followingOnly": isFollowingData,
+                "isVIPonly": isVip,
                 "postsFilter": filterBy.toLowerCase()
             })
+            console.log("POST_ADATA=-=-=-=-=New-=-=body", body);
+
             HttpClient.post(endpoint, body)
                 .then((response) => {
-                    // console.log("POST_ADATA=-=-=-=-=New-=-=-", JSON.stringify(response.data));
+                    console.log("POST_ADATA=-=-=-=-=New-=-=-", JSON.stringify(response.data));
                     resolve(response);
                 })
                 .catch((error) => {
+                    console.log("ERPOPOPo", error);
                     reject(new Error(error.message));
                 });
         });

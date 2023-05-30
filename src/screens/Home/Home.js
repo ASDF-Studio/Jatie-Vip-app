@@ -16,6 +16,7 @@ import {
   faCircle,
   faVideoCamera,
   faPlay,
+  faLock,
 } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -78,26 +79,10 @@ import { SwiperViewer } from '@/components/SwiperComponent';
 
 export function Home({ navigation }) {
   const ALLPOST = useSelector(getAllPostData)
-  const DATA_POST = [
-    {
-      "url": "https://d2wwqw32p0xkid.cloudfront.net/photo-1684821257393",
-      "mimetype": "image/jpeg",
-      "cover": ""
-    },
-    {
-      "url": "https://d2wwqw32p0xkid.cloudfront.net/photo-1684821257555",
-      "mimetype": "video/mp4",
-      "cover": "https://d2wwqw32p0xkid.cloudfront.net/photo-1684934701039"
-    },
-    {
-      "url": "https://d2wwqw32p0xkid.cloudfront.net/photo-1684821257656",
-      "mimetype": "image/jpeg",
-      "cover": ""
-    }
-  ]
+
   const userType = useSelector(state => state.userType);
   const user = useSelector(getUser);
-
+  // console.log("USERRR", user);
   const dispatch = useDispatch()
   const [vipArea, setVipArea] = useState(strings.home.vipArea);
   const [open, setOpen] = useState(false);
@@ -108,7 +93,6 @@ export function Home({ navigation }) {
   const [showImageView, setShowImageView] = useState(false);
   const [feedImages, setFeedImages] = useState([]);
   const [editData, setEditdata] = useState({})
-
   const [reportListOpen, setReportListOpen] = useState(false);
   const [reportOption, setReportOption] = useState([
     { label: 'Explicit Content', value: 'Explicit Content' },
@@ -133,7 +117,6 @@ export function Home({ navigation }) {
     { title: strings.home.popularThisMonth, value: strings.sortBy.month },
 
   ]
-
   // click on more
   const [postUserName, setPostUserName] = useState('');
   const [postUserFollowed, setPostUserFollowed] = useState(false);
@@ -149,8 +132,8 @@ export function Home({ navigation }) {
 
 
   useEffect(() => {
-    dispatch(getAllPost(user?.id, sortBy, follwingSwitch))
-  }, [sortBy, follwingSwitch]);
+    dispatch(getAllPost(user?.id, sortBy, follwingSwitch, vipArea == `${strings.home.newFeed}` ? false : true))
+  }, [sortBy, follwingSwitch, vipArea]);
 
 
   useEffect(() => {
@@ -237,6 +220,7 @@ export function Home({ navigation }) {
       // setFeedImages(item.postImg)
       setFeedImages(data.postMediaContent)
   }
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="transparent" />
@@ -293,8 +277,8 @@ export function Home({ navigation }) {
       <StatusNavigatorBar
         title1={strings.home.newFeed}
         title2={strings.home.vipArea}
-        key1={strings.home.vipArea}
-        key2={strings.home.newFeed}
+        key1={strings.home.newFeed}
+        key2={strings.home.vipArea}
         status={vipArea}
         setStatus={setVipArea}
         showLock={userType.user == `${strings.userType.free}` ? true : false}
@@ -317,7 +301,8 @@ export function Home({ navigation }) {
             // ref={flatListRef}
             ListHeaderComponent={
               <View>
-                <ShareFeed onPress={() => navigation.navigate(NAVIGATION.post)} />
+
+                {userType.user !== `${strings.userType.free}` && (<ShareFeed onPress={() => navigation.navigate(NAVIGATION.post)} />)}
                 {userType.user == `${strings.userType.admin}` && (
                   <SeeSchedulePost
                     title={strings.home.seeSchedulePost}
@@ -333,73 +318,70 @@ export function Home({ navigation }) {
             contentContainerStyle={{ flexGrow: 1 }}
             renderItem={({ item, index }) => (
               <View style={styles.cardContainer}>
-                <Card>
-                  <CardHeader
-                    fullName={item?.user?.fullName}
-                    userName={item?.user?.username}
-                    profilePic={item?.user?.profilePic}
-                    time={item?.created_at}
-                    userId={item?.userId}
-                    // isOfficial={item.isOffical}
-                    showPin={item?.isPinned}
-                  />
-                  <CardBody text={item.postBody} />
 
-                  {/* video */}
-                  {/* {mimeType.split("/")[0] == "video" ? (
-                    <AppVideoPlayer url={item.video} poster={item.poster} />
-                  ) : null} */}
-                  {/* images */}
+                {(userType.user == `${strings.userType.free}` && vipArea == `${strings.home.vipArea}`) ?
 
-                  {item?.postMediaContent?.length <= 2 ? (
-                    <View style={styles.imageContainer}>
-                      {item?.postMediaContent?.map(data => (
-                        counter = counter + 1,
-                        <TouchableOpacity
-                          key={counter}
-                          style={styles.touchContainer}
-                          onPress={() => {
-                            onViewImageVideo(item)
-                          }}
-                        >
-                          {data?.mimetype?.split("/")[0] == "image" ? <Image
+
+                  <TouchableOpacity
+
+                    onPress={() => userType.user == `${strings.userType.free}` && navigation.navigate(NAVIGATION.upgradeMembership)}
+                  >
+
+                    <Card>
+                      <CardHeader
+                        fullName={item?.user?.fullName}
+                        userName={item?.user?.username}
+                        profilePic={item?.user?.profilePic}
+                        time={item?.created_at}
+                        userId={item?.userId}
+                        // isOfficial={item.isOffical}
+                        showPin={item?.isPinned}
+                      />
+                      <CardBody text={item.postBody} />
+
+                      {item?.postMediaContent?.length > 0 ? (
+                        <View style={styles.thumbnailContainer}>
+                          <Image
+                            blurRadius={4}
+                            style={styles.thumbnailImage}
                             source={{
-                              uri: data.url,
+                              uri: item?.postMediaContent[0]?.mimetype?.split("/")[0] == "image" ? item?.postMediaContent[0]?.url : item?.postMediaContent[0]?.cover,
                             }}
-                            style={styles.image}
-                          /> : <ImageBackground
-                            source={{
-                              uri: data?.cover,
-                            }}
-                            key={counter}
-                            style={[styles.image, styles.playButtonBg]}
-                          >
+                          />
+                          <View style={styles.vipOnlyContainer}>
+                            <FontAwesomeIcon
+                              icon={faLock}
+                              size={ms(10)}
+                              style={styles.lock}
+                            />
+                            <Text style={styles.vipOnlyText}>
+                              {strings.giveaway.vipOnly}
+                            </Text>
+                          </View>
 
-                            <TouchableOpacity
-                              // activeOpacity={1}
-                              style={styles.playButton}
-                              onPress={() => {
-                                onViewImageVideo(item)
-                              }}
-                            >
-                              <FontAwesomeIcon
-                                icon={faPlay}
-                                size={ms(15)}
-                                style={styles.Play}
-                              />
+                        </View>
+                      ) : null}
 
-                            </TouchableOpacity>
-                          </ImageBackground>}
+                    </Card>
+                  </TouchableOpacity>
+                  :
+                  <Card>
+                    <CardHeader
+                      fullName={item?.user?.fullName}
+                      userName={item?.user?.username}
+                      profilePic={item?.user?.profilePic}
+                      time={item?.created_at}
+                      userId={item?.userId}
+                      // isOfficial={item.isOffical}
+                      showPin={item?.isPinned}
+                    />
+                    <CardBody text={item.postBody} />
 
 
-                        </TouchableOpacity>
-                      ))}
-                    </View>
-                  ) : item?.postMediaContent?.length > 2 ? (
-                    counter = 1,
-                    <View style={styles.imageContainer}>
-                      {item?.postMediaContent?.map(data =>
-                        counter == 1 ? (
+
+                    {item?.postMediaContent?.length <= 2 ? (
+                      <View style={styles.imageContainer}>
+                        {item?.postMediaContent?.map(data => (
                           counter = counter + 1,
                           <TouchableOpacity
                             key={counter}
@@ -436,38 +418,43 @@ export function Home({ navigation }) {
 
                               </TouchableOpacity>
                             </ImageBackground>}
-                          </TouchableOpacity>
-                        ) : counter == 2 ? (
-                          counter = counter + 1,
-                          <TouchableOpacity
-                            key={counter}
-                            style={styles.touchContainer}
-                            onPress={() => {
-                              onViewImageVideo(item)
-                            }}
-                          >
-                            <ImageBackground
-                              source={{
-                                uri: data?.mimetype?.split("/")[0] == "image" ? data.url : data?.cover,
-                              }}
-                              key={counter}
-                              style={[styles.image, styles.moreImage]}
-                            >
-                              <TouchableOpacity
-                                onPress={() => {
-                                  onViewImageVideo(item)
-                                }}
-                              >
-                                <Text style={styles.extraImage}>
-                                  {strings.message.plus}
-                                  {item.postMediaContent?.length - 1}
-                                </Text>
 
-                              </TouchableOpacity>
-                              {/* {data.mimetype.split("/")[0] == "video" &&
+
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+                    ) : item?.postMediaContent?.length > 2 ? (
+                      counter = 1,
+                      <View style={styles.imageContainer}>
+                        {item?.postMediaContent?.map(data =>
+                          counter == 1 ? (
+                            counter = counter + 1,
+                            <TouchableOpacity
+                              key={counter}
+                              style={styles.touchContainer}
+                              onPress={() => {
+                                onViewImageVideo(item)
+                              }}
+                            >
+                              {data?.mimetype?.split("/")[0] == "image" ? <Image
+                                source={{
+                                  uri: data.url,
+                                }}
+                                style={styles.image}
+                              /> : <ImageBackground
+                                source={{
+                                  uri: data?.cover,
+                                }}
+                                key={counter}
+                                style={[styles.image, styles.playButtonBg]}
+                              >
+
                                 <TouchableOpacity
                                   // activeOpacity={1}
                                   style={styles.playButton}
+                                  onPress={() => {
+                                    onViewImageVideo(item)
+                                  }}
                                 >
                                   <FontAwesomeIcon
                                     icon={faPlay}
@@ -476,44 +463,86 @@ export function Home({ navigation }) {
                                   />
 
                                 </TouchableOpacity>
-                              } */}
+                              </ImageBackground>}
+                            </TouchableOpacity>
+                          ) : counter == 2 ? (
+                            counter = counter + 1,
+                            <TouchableOpacity
+                              key={counter}
+                              style={styles.touchContainer}
+                              onPress={() => {
+                                onViewImageVideo(item)
+                              }}
+                            >
+                              <ImageBackground
+                                source={{
+                                  uri: data?.mimetype?.split("/")[0] == "image" ? data.url : data?.cover,
+                                }}
+                                key={counter}
+                                style={[styles.image, styles.moreImage]}
+                              >
+                                <TouchableOpacity
+                                  onPress={() => {
+                                    onViewImageVideo(item)
+                                  }}
+                                >
+                                  <Text style={styles.extraImage}>
+                                    {strings.message.plus}
+                                    {item.postMediaContent?.length - 1}
+                                  </Text>
 
-                            </ImageBackground>
-                          </TouchableOpacity>
-                        ) : null
-                      )}
-                    </View>
-                  ) : null}
+                                </TouchableOpacity>
+                                {/* {data.mimetype.split("/")[0] == "video" &&
+              <TouchableOpacity
+                // activeOpacity={1}
+                style={styles.playButton}
+              >
+                <FontAwesomeIcon
+                  icon={faPlay}
+                  size={ms(15)}
+                  style={styles.Play}
+                />
+
+              </TouchableOpacity>
+            } */}
+
+                              </ImageBackground>
+                            </TouchableOpacity>
+                          ) : null
+                        )}
+                      </View>
+                    ) : null}
 
 
-                  <CardFooter
-                    // likePress={() => onUpVote(item.id, item.userId, user?.id, item)}
-                    // disLikePress={() => onDownVote(item.id, item.userId, user?.id, item)}
-                    postID={item.id}
-                    postType={POST_TYPE.REGULAR}
-                    postUserID={item?.userId}
-                    userID={user?.id}
-                    likeCount={item?.upVote}
-                    disLikeCount={item?.downVote}
-                    commentCount={item?.comments_aggregate?.aggregate?.count}
-                    postData={item}
-                    postIndex={index}
-                    commentPress={() => navigation.navigate(NAVIGATION.comments, { DATA: item, "POST_INDEX": index })}
-                    morePress={() => {
-                      setPostIndex(index)
-                      setIsAdminPost(item?.isAdminPost),
-                        setPostUserName(item?.user?.username)
-                      setOpen(true);
-                      setPostUserId(item?.userId);
-                      setpostId(item?.id);
-                      setPostTitle(item?.postTitle)
-                      setPostBody(item?.postBody);
-                      setPostImg(item?.postImg);
-                      setEditdata(item)
-                    }}
-                  />
-                </Card>
+                    <CardFooter
 
+                      // likePress={() => onUpVote(item.id, item.userId, user?.id, item)}
+                      // disLikePress={() => onDownVote(item.id, item.userId, user?.id, item)}
+                      postID={item.id}
+                      postType={POST_TYPE.REGULAR}
+                      postUserID={item?.userId}
+                      userID={user?.id}
+                      likeCount={item?.upVote}
+                      disLikeCount={item?.downVote}
+                      commentCount={item?.comments_aggregate?.aggregate?.count}
+                      postData={item}
+                      postIndex={index}
+                      commentPress={() => navigation.navigate(NAVIGATION.comments, { DATA: item, "POST_INDEX": index })}
+                      morePress={() => {
+                        setPostIndex(index)
+                        setIsAdminPost(item?.isAdminPost),
+                          setPostUserName(item?.user?.username)
+                        setOpen(true);
+                        setPostUserId(item?.userId);
+                        setpostId(item?.id);
+                        setPostTitle(item?.postTitle)
+                        setPostBody(item?.postBody);
+                        setPostImg(item?.postImg);
+                        setEditdata(item)
+                      }}
+                    />
+                  </Card>
+                }
               </View>
             )}
           />
@@ -878,6 +907,7 @@ const styles = StyleSheet.create({
       color: theme.light.colors.black,
     },
   ],
+
   recentTxt: {
     fontFamily: FontFamily.Recoleta_medium,
     fontSize: ms(12, 0.3),
@@ -1125,5 +1155,41 @@ const styles = StyleSheet.create({
   },
   loaderStyle: {
     alignSelf: "center", justifyContent: "center", marginTop: ms(50)
-  }
+  },
+  thumbnailImage: {
+    width: '100%',
+    height: vs(180),
+    padding: ms(80),
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+
+    //  marginBottom: 10
+  },
+  vipOnlyContainer: {
+    backgroundColor: theme.light.colors.primary,
+    width: ms(100),
+    height: vs(25),
+    borderRadius: 6,
+    position: 'absolute',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: ms(10),
+    top: '42%',
+    left: '38%',
+
+    // marginLeft: '43%',
+    // marginTop: '22%',
+  },
+  vipOnlyText: {
+    fontFamily: FontFamily.BrandonGrotesque_medium,
+    color: theme.light.colors.background,
+    paddingLeft: ms(10),
+  },
+  lock: {
+    color: theme.light.colors.background,
+  },
+  thumbnailContainer: {
+    width: '100%',
+    height: vs(180),
+  },
 });

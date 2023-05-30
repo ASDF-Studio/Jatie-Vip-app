@@ -77,7 +77,7 @@ export default function Active({ navigation, userType }) {
       <SafeAreaView
         style={{
           marginTop: Platform.OS === 'ios' ? -48 : 0,
-          marginBottom: Platform.OS === 'ios' ? -70 : 0,
+          marginBottom: Platform.OS === 'ios' ? -38 : 0,
         }}
       >
 
@@ -111,14 +111,17 @@ export default function Active({ navigation, userType }) {
 
                 {/* VIP only */}
 
-                {userType.user == `${strings.userType.free}` &&
-                  item.status == `${strings.userType.free}` ? (
-                  <View style={styles.thumbnailContainer}>
+                {(userType.user == `${strings.userType.free}` &&
+                  item.isVIPonly) ? (
+                  <TouchableOpacity
+                    onPress={() => userType.user == `${strings.userType.free}` && navigation.navigate(NAVIGATION.upgradeMembership)}
+
+                    style={styles.thumbnailContainer}>
                     <Image
                       blurRadius={15}
                       style={styles.thumbnailImage}
                       source={{
-                        uri: item.photo,
+                        uri: item?.postMediaContent[0]?.mimetype?.split("/")[0] == "image" ? item?.postMediaContent[0]?.url : item?.postMediaContent[0]?.cover,
                       }}
                     />
                     <View style={styles.vipOnlyContainer}>
@@ -131,7 +134,7 @@ export default function Active({ navigation, userType }) {
                         {strings.giveaway.vipOnly}
                       </Text>
                     </View>
-                  </View>
+                  </TouchableOpacity>
                 ) : (
 
 
