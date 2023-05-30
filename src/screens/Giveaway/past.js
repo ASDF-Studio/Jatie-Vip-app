@@ -51,9 +51,9 @@ export default function Past({ navigation, userType }) {
   }
   const onViewImageVideo = (data) => {
 
-    setShowImageView(true),
+    // setShowImageView(true),
 
-      setFeedImages(data.postMediaContent)
+    //   setFeedImages(data.postMediaContent)
   }
   return (
     <SafeAreaView>
@@ -232,6 +232,7 @@ export default function Past({ navigation, userType }) {
                         {item?.postMediaContent?.map(data => (
                           counter = counter + 1,
                           <TouchableOpacity
+                            activeOpacity={1}
                             key={counter}
                             style={styles.touchContainer}
                             onPress={() => {
@@ -278,6 +279,8 @@ export default function Past({ navigation, userType }) {
                           counter == 1 ? (
                             counter = counter + 1,
                             <TouchableOpacity
+                              activeOpacity={1}
+
                               key={counter}
                               style={styles.touchContainer}
                               onPress={() => {
@@ -298,6 +301,8 @@ export default function Past({ navigation, userType }) {
                               >
 
                                 <TouchableOpacity
+                                  activeOpacity={1}
+
                                   // activeOpacity={1}
                                   style={styles.playButton}
                                   onPress={() => {
@@ -317,6 +322,8 @@ export default function Past({ navigation, userType }) {
                             counter = counter + 1,
                             <TouchableOpacity
                               key={counter}
+                              activeOpacity={1}
+
                               style={styles.touchContainer}
                               onPress={() => {
                                 onViewImageVideo(item)
@@ -330,6 +337,7 @@ export default function Past({ navigation, userType }) {
                                 style={[styles.image, styles.moreImage]}
                               >
                                 <TouchableOpacity
+                                  activeOpacity={1}
 
                                   onPress={() => {
                                     onViewImageVideo(item)
@@ -506,7 +514,7 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-    width: '85%',
+    width: '100%',
     height: ms(200),
     marginRight: ms(10),
   },
