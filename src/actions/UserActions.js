@@ -635,11 +635,11 @@ export const unFollowUser = (unFollowerId, followId) => async dispatch => {
 };
 
 
-export const getUserProfileByUserId = (userId) => async dispatch => {
+export const getUserProfileByUserId = (userId, loggedInID) => async dispatch => {
   dispatch(globalReset())
   dispatch(getUserProfileByUserIdRequest());
   try {
-    const user = await UserController.getUserProfileByUseridAPI(userId);
+    const user = await UserController.getUserProfileByUseridAPI(userId, loggedInID);
     dispatch(getUserProfileByUserIdSuccess(user?.data));
   } catch (error) {
 

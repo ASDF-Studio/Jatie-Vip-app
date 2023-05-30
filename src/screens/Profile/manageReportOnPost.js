@@ -38,13 +38,13 @@ export default function ManageReportOnMessage({ navigation, route }) {
 
   const dispatch = useDispatch()
   const focus = useIsFocused();
-  const [banValue, setBanvalue] = useState(item?.post?.user.isBanned)
+  const [banValue, setBanvalue] = useState(item?.post?.user?.isBanned)
   const { item } = route.params
-  console.log('Item', item.post.user.isBanned)
+  console.log('Item', item?.post?.user?.isBanned)
   const [open, setOpen] = useState(false);
   const user = useSelector(getUser)
   const postData = useSelector(getPostByIdData)
-  console.log("POST__DATAA In SELECTOR", JSON.stringify(postData.is_following));
+  console.log("POST__DATAA In SELECTOR", JSON.stringify(postData?.is_following));
 
 
 
@@ -90,7 +90,7 @@ export default function ManageReportOnMessage({ navigation, route }) {
   const onFollow = () => {
 
 
-    if (postData.is_following == true) {
+    if (postData?.is_following == true) {
       dispatch(unFollowUser(user?.id, postData?.userId))
       // console.log(user?.id, postData?.userId)
       setOpen(false)
@@ -182,7 +182,7 @@ export default function ManageReportOnMessage({ navigation, route }) {
         <ModalDown open={open} setOpen={setOpen}>
           <ModalList
             onPress={() => { onFollow() }}
-            title={postData.is_following == true ? 'UnFollow' + ' @' + postData?.user.username : 'Follow' + ' @' + postData?.user.username}
+            title={postData?.is_following == true ? 'UnFollow' + ' @' + postData?.user.username : 'Follow' + ' @' + postData?.user.username}
             icon={faUserPlus}
             iconColor={theme.light.colors.primary}
             iconBg={theme.light.colors.primaryBgLight}

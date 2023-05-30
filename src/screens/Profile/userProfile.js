@@ -57,7 +57,7 @@ import { showMessage } from 'react-native-flash-message';
 export default function UserProfile({ navigation, route }) {
   const dispatch = useDispatch()
   const { userId } = route?.params
-  //console.log('otherpersoId', userId)
+  console.log('otherpersoId', userId)
   const userr = useSelector(getUser)
   // console.log('MyId', userr.id)
 
@@ -79,7 +79,7 @@ export default function UserProfile({ navigation, route }) {
   const [postImg, setPostImg] = useState([]);
   let counter = 1;
 
-
+  //console.log('other person details', JSON.stringify(user))
   const isFollowSuccess = useSelector(state =>
     isLoadingSelector([TYPES.FOLLOW_USER], state)
   );
@@ -87,9 +87,15 @@ export default function UserProfile({ navigation, route }) {
     isLoadingSelector([TYPES.UN_FOLLOW_USER], state)
   );
 
+  const loggedInId = useSelector(getUser)
+
   useEffect(() => {
-    dispatch(getUserProfileByUserId(userId))
-    getUserPostById(userId)
+    dispatch(getUserProfileByUserId(userId, userr.id))
+    // console.log("id", userId, userr.id)
+    setTimeout(() => {
+      getUserPostById(userId)
+    }, 100);
+
     // dispatch(followers(user?.id, userId))
   }, [isFollowSuccess, isunFollowSuccess])
 
@@ -106,20 +112,47 @@ export default function UserProfile({ navigation, route }) {
 
   }
 
-  const onFollow = () => {
-    const loggedInUserID = getUserProfile?.id
-    if (user) {
-      const isLoggedInUserAFollower = user.followers.includes(loggedInUserID)
+  // const onFollow = () => {
+  //   const loggedInUserID = getUserProfile?.id
+  //   if (user) {
+  //     const isLoggedInUserAFollower = user.followers.includes(loggedInUserID)
 
-      if (isLoggedInUserAFollower) {
-        // Hit unfollow API
-        dispatch(unFollowUser(loggedInUserID, user?.id))
-      } else {
-        // Hit follow API
-        dispatch(followUser(loggedInUserID, user?.id))
-      }
+  //     if (isLoggedInUserAFollower) {
+  //       // Hit unfollow API
+  //       dispatch(unFollowUser(loggedInUserID, user?.id))
+  //     } else {
+  //       // Hit follow API
+  //       dispatch(followUser(loggedInUserID, user?.id))
+  //     }
+
+  //   }
+  // }
+
+  const onFollow = () => {
+
+
+    if (user?.is_following == true) {
+      dispatch(unFollowUser(loggedInId.id, user.id))
+      setOpenMore(false)
+      console.log("check", loggedInId.id, user.id)
+      //setOpen(false)
+      setTimeout(() => {
+        dispatch(getUserProfileByUserId(userId, userr.id))
+      }, 100);
 
     }
+    else {
+      dispatch(followUser(loggedInId.id, user.id))
+      setOpenMore(false)
+
+      // setOpen(false)
+      console.log("follower log", loggedInId.id, user.id)
+
+      setTimeout(() => {
+        dispatch(getUserProfileByUserId(userId, userr.id))
+      }, 100);
+    }
+
   }
   const onMessageClick = () => {
     showMessage({
@@ -130,7 +163,7 @@ export default function UserProfile({ navigation, route }) {
   const renderFollowTitle = () => {
     const loggedInUserID = getUserProfile?.id
     if (user) {
-      const isLoggedInUserAFollower = user.followers.includes(loggedInUserID)
+      const isLoggedInUserAFollower = user?.followers?.includes(loggedInUserID)
       return isLoggedInUserAFollower ? strings.profile.unfollow : strings.profile.follow
     }
   }
@@ -191,11 +224,11 @@ export default function UserProfile({ navigation, route }) {
       </View>
       <HeaderTab
         title1={strings.profile.followers}
-        count1={user?.followers?.length}
+        count1={user?.followerListsByFollowinguserid?.length}
         onPress1={() => navigation.navigate(NAVIGATION.followers, { id: userId, screenName: 'userProfile' })}
         title2={strings.profile.following}
-        count2={user?.following.length}
-        onPress2={() => navigation.navigate(NAVIGATION.following, { id: userId })}
+        count2={user?.follower_lists?.length}
+        onPress2={() => navigation.navigate(NAVIGATION.following, { id: userId, screenName: 'userProfile' })}
       />
       <HorizontalLine
         color={theme.light.colors.infoBgLight}
@@ -222,7 +255,8 @@ export default function UserProfile({ navigation, route }) {
               icon={faUserPlus}
               color={theme.light.colors.primary}
             />
-            <Text style={[styles.labelColor]}> {renderFollowTitle()} </Text>
+            {/* <Text style={[styles.labelColor]}> {renderFollowTitle()} </Text> */}
+            <Text style={[styles.labelColor]}> {user?.is_following == true ? "Unfollow" : "Follow"} </Text>
           </TouchableOpacity>
         </View>
         <TouchableOpacity
@@ -367,8 +401,8 @@ export default function UserProfile({ navigation, route }) {
         openMore && (
           <ModalDown open={openMore} setOpen={setOpenMore}>
             <ModalList
-
-              title={strings.operations.follow}
+              onPress={onFollow}
+              title={user.is_following == true ? strings.operations.unFollow + ' @' + user?.username : strings.operations.follow + ' @' + user?.username}
               icon={faUserPlus}
               iconColor={theme.light.colors.primary}
               iconBg={theme.light.colors.primaryBgLight}

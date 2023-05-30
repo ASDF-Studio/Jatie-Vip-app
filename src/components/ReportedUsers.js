@@ -141,4 +141,4 @@ export const styles = StyleSheet.create({
     },
 });
 
-export default ReportedUsers
+export default ReportedUsers                 

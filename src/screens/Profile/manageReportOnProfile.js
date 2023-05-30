@@ -73,20 +73,21 @@ export default function ManageReportOnMessage({ navigation, route }) {
   const [userPosts, setuserPosts] = useState([])
   const [postIndex, setPostIndex] = useState(0);
   const { item } = route.params
-  console.log("item", item)
+  //console.log("item", item)
   const { reportedByUserDetails } = route.params
-  //  console.log('reportedByuserDetails', reportedByUserDetails)
+  // console.log('data of card ', JSON.stringify(reportedByUserDetails))
   const dispatch = useDispatch()
 
   const getUserProfile = useSelector(getUser)
 
-  console.log('userDataaaaaaaaa', user)
+  //console.log('userDataaaaaaaaa', user)
 
   const focus = useIsFocused()
   //console.log('userPosts', user)
   const userr = useSelector(getUser)
   useEffect(() => {
-    dispatch(getUserProfileByUserId(item))
+    dispatch(getUserProfileByUserId(item, userr.id))
+
     setTimeout(() => {
       getUserPostById(item)
     }, 100);
@@ -131,20 +132,20 @@ export default function ManageReportOnMessage({ navigation, route }) {
 
     if (user?.is_following == true) {
       dispatch(unFollowUser(userr?.id, item))
-      console.log(userr?.id, user?.id)
+
       //setOpen(false)
       setTimeout(() => {
-        dispatch(getUserProfileByUserId(item))
+        dispatch(getUserProfileByUserId(item, userr.id))
       }, 100);
 
     }
     else {
       dispatch(followUser(userr?.id, item))
       // setOpen(false)
-      console.log(userr?.id, user.id)
-      //   console.log(user?.id, postData?.userId)
+      console.log("follower log", userr?.id, item)
+
       setTimeout(() => {
-        dispatch(getUserProfileByUserId(item))
+        dispatch(getUserProfileByUserId(item, userr.id))
       }, 100);
     }
 
@@ -207,10 +208,10 @@ export default function ManageReportOnMessage({ navigation, route }) {
           <HeaderTab
             onPress1={() => navigation.navigate(NAVIGATION.followers, { id: item, screenName: 'userProfile' })}
             title1={strings.profile.followers}
-            count1={user?.followers?.length}
+            count1={user?.followerListsByFollowinguserid?.length}
             // onPress1 = {()=>Alert.alert('press 1')}
             title2={strings.profile.following}
-            count2={user?.following.length}
+            count2={user?.follower_lists?.length}
             onPress2={() => navigation.navigate(NAVIGATION.following, { id: item, screenName: 'userProfile' })}
           />
           <HorizontalLine
@@ -232,15 +233,15 @@ export default function ManageReportOnMessage({ navigation, route }) {
                   {strings.profile.message}{' '}
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.IconBox, styles.IconBoxDesign]}>
+              <TouchableOpacity onPress={onFollow} style={[styles.IconBox, styles.IconBoxDesign]}>
                 <FontAwesomeIcon
                   icon={faUserPlus}
                   size={ms(13)}
                   color={theme.light.colors.primary}
                 />
                 <Text style={styles.followersBtnTxt}>
-                  {' '}
-                  {strings.profile.follow}{' '}
+
+                  {user?.is_following == true ? strings.operations.unFollow : strings.operations.follow}
                 </Text>
               </TouchableOpacity>
             </View>

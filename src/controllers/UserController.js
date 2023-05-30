@@ -5,6 +5,7 @@ import { showMessage } from 'react-native-flash-message';
 
 export class UserController {
 
+
   static async login(number) {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.LOGIN;
@@ -153,16 +154,18 @@ export class UserController {
 
 
   // get User profile by user id API
-  static async getUserProfileByUseridAPI(userId) {
+  static async getUserProfileByUseridAPI(userId, loggedInID) {
+
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.GET_USER_PROFILE_BY_USER_ID;
       var data = {
-        id: userId
+        id: userId,
+        loggedInUserId: loggedInID
       }
       HttpClient.post(endpoint, data)
         .then((response) => {
           resolve(response)
-          //  console.log('response of every single user', response);
+          console.log('response of every single user', JSON.stringify(response));
         })
         .catch((error) => {
           reject(error);

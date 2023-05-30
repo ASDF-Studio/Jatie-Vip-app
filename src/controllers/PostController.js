@@ -276,6 +276,7 @@ export class PostController {
             const body = JSON.stringify({
                 "loggedInUserId": userId,
                 "followingOnly": isFollowingData,
+                "isVIPonly": false,
                 "postsFilter": filterBy.toLowerCase()
             })
             HttpClient.post(endpoint, body)
