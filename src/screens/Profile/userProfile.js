@@ -35,6 +35,7 @@ import {
   ModalList,
   AppImageViewer,
   TopBackButton,
+  CustomLoader,
 } from '@/components';
 import { strings } from '@/localization';
 import { HorizontalLine } from '@/components';
@@ -53,6 +54,7 @@ import { UserController } from '@/controllers';
 import { navigationRef } from '@/navigation/RootNavigation';
 import { TYPES, followUser, unFollowUser } from '@/actions/PostActions';
 import { showMessage } from 'react-native-flash-message';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function UserProfile({ navigation, route }) {
   const dispatch = useDispatch()
@@ -79,12 +81,20 @@ export default function UserProfile({ navigation, route }) {
   const [postImg, setPostImg] = useState([]);
   let counter = 1;
 
+
+  const focus = useIsFocused()
   //console.log('other person details', JSON.stringify(user))
   const isFollowSuccess = useSelector(state =>
     isLoadingSelector([TYPES.FOLLOW_USER], state)
   );
   const isunFollowSuccess = useSelector(state =>
     isLoadingSelector([TYPES.UN_FOLLOW_USER], state)
+  );
+
+
+
+  const isProfileLoading = useSelector(state =>
+    isLoadingSelector([TYPES.GET_USER_BY], state)
   );
 
   const loggedInId = useSelector(getUser)
@@ -97,7 +107,7 @@ export default function UserProfile({ navigation, route }) {
     }, 100);
 
     // dispatch(followers(user?.id, userId))
-  }, [isFollowSuccess, isunFollowSuccess])
+  }, [isFollowSuccess, isunFollowSuccess, focus])
 
   useEffect(() => {
     setUser(getUserProfile?.getUserByUserId)
@@ -170,6 +180,7 @@ export default function UserProfile({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <CustomLoader open={isProfileLoading} />
       <View style={styles.header}>
         <View style={styles.left}>
           <TopBackButton

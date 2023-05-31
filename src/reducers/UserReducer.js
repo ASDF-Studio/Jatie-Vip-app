@@ -26,6 +26,8 @@ export const userReducer = (state = {}, { payload, type }) => {
       return { ...state, getAllBannedUsersKey: payload.user };
     case TYPES.MANAGE_ALL_REPORTS_SUCCESS:
       return { ...state, allReportsKeyKey: payload.user };
+    case TYPES.GET_ALL_NOTIFICATIONS_SUCCESS:
+      return { ...state, notificationKey: payload.user };
     case TYPES.CLEAR_STORE:
       return {};
     default:

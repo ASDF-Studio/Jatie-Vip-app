@@ -32,6 +32,7 @@ import { useIsFocused } from '@react-navigation/native';
 import { followUser } from '@/actions/PostActions';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { getAllPostData } from '@/selectors/PostSelectors';
+import { navigate } from '@/navigation/RootNavigation';
 export default function Followers({ navigation, route }) {
   const dispatch = useDispatch()
   const focus = useIsFocused()
@@ -112,7 +113,7 @@ export default function Followers({ navigation, route }) {
               <View style={styles.listContainer}>
                 <TouchableOpacity
                   style={styles.list}
-                  onPress={() => navigation.navigate(NAVIGATION.userProfile, { userId: item?.user?.id })}
+                  onPress={() => navigate(NAVIGATION.userProfile, { userId: item?.user?.id, }, console.log('check issue', item?.user?.id))}
 
                 >
                   <Image

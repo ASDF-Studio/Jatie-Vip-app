@@ -678,12 +678,12 @@ export class UserController {
       //  console.log("endPoint", endpoint)
       var data = JSON.stringify({
         "loggedInUserId": id,
-        "viewStatus": "read"
+        "viewStatus": read == true ? "unread" : "all"
       });
       HttpClient.post(endpoint, data)
         .then((response) => {
           resolve(response)
-          console.log('response of All Notifications', response)
+          console.log('response of All Notifications', JSON.stringify(response))
 
         })
         .catch((error) => {

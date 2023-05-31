@@ -26,6 +26,8 @@ import { fetchAllNotifications } from '@/actions/UserActions';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
+import { getPostById } from '@/actions/PostActions';
+import { navigate } from '@/navigation/RootNavigation';
 
 export default function Notification({ navigation }) {
   const [read, setRead] = useState(false);
@@ -33,15 +35,19 @@ export default function Notification({ navigation }) {
 
   const loggedInUser = useSelector(getUser)
 
+  const notificationData = loggedInUser.notificationKey
+
+
+  //console.log('data', notificationData?.data)
   useEffect(() => {
-    getAllNotifications()
-  }, [])
-
-
-  const getAllNotifications = () => {
     dispatch(fetchAllNotifications(loggedInUser.id, read))
-    console.log(loggedInUser.id, read)
+  }, [read])
+
+  const singelPostHnadlePress = () => {
+    dispatch(getPostById(item.objectId, loggedInUser?.id))
+    console.log(item.objectId, user?.id)
   }
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -49,7 +55,7 @@ export default function Notification({ navigation }) {
         <View style={styles.left}>
           <Image
             source={{
-              uri: profilePic.Photo,
+              uri: loggedInUser.profilePic,
             }}
             style={styles.profilePic}
           />
@@ -86,10 +92,10 @@ export default function Notification({ navigation }) {
       <HorizontalLine paddingTop={10} />
       <View style={styles.notifyContainer}>
         <FlatList
-          data={Data}
+          data={notificationData?.data}
           key={item => item.id}
           renderItem={({ item }) => (
-            <TouchableOpacity
+            <View
               //    style={styles.notificationCard}
               style={
                 item.new == false
@@ -101,10 +107,10 @@ export default function Notification({ navigation }) {
               }
             >
               <CardHeader
-                fullName={item.fullName}
-                userName={item.userName}
-                profilePic={item.profilePic}
-                time={item.time}
+                fullName={item?.userByUserwhofiredevent?.fullName}
+                userName={item?.userByUserwhofiredevent?.username}
+                profilePic={item?.userByUserwhofiredevent?.profilePic}
+                time={item?.created_at}
               />
               <View style={styles.activity}>
                 {item.status == `${strings.profile.upvoted}` ? (
@@ -123,7 +129,7 @@ export default function Notification({ navigation }) {
                     style={styles.circleDownIcon}
                   />
                 ) : null}
-                {item.status == `${strings.profile.commented}` ? (
+                {item.type == 'comment' ? (
                   <Icon
                     icon={faMessage}
                     size={ms(15)}
@@ -133,13 +139,17 @@ export default function Notification({ navigation }) {
                 ) : null}
                 <View style={styles.textContainer}>
                   <Text style={styles.statsTxt}> {item.status} </Text>
-                  <Text style={styles.reactOnTxt}>
-                    {' '}
-                    {`${item.reactOn}'s post`}{' '}
-                  </Text>
+                  <TouchableOpacity onPress={() => navigate(NAVIGATION.singlePost, { postId: item.objectId })}>
+                    <Text style={styles.reactOnTxt}>
+
+                      {item.text}{' '}
+
+                      post
+                    </Text>
+                  </TouchableOpacity>
                 </View>
               </View>
-            </TouchableOpacity>
+            </View>
           )}
         />
       </View>
