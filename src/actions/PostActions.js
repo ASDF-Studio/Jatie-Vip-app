@@ -217,12 +217,26 @@ export const TYPES = {
     GET_ACTIVE_GIVEAWAY_ERROR: "GET_ACTIVE_GIVEAWAY_ERROR",
 
 
+    GET_ACTIVE_GIVEAWAY_PAGINATION: "GET_ACTIVE_GIVEAWAY_PAGINATION",
+    GET_ACTIVE_GIVEAWAY_PAGINATION_REQUEST: "GET_ACTIVE_GIVEAWAY_PAGINATION_REQUEST",
+    GET_ACTIVE_GIVEAWAY_PAGINATION_SUCCESS: "GET_ACTIVE_GIVEAWAY_PAGINATION_SUCCESS",
+    GET_ACTIVE_GIVEAWAY_PAGINATION_ERROR: "GET_ACTIVE_GIVEAWAY_PAGINATION_ERROR",
+
+
     //GET PAST GIVEAWAY
 
     GET_PAST_GIVEAWAY: "GET_PAST_GIVEAWAY",
     GET_PAST_GIVEAWAY_REQUEST: "GET_PAST_GIVEAWAY_REQUEST",
     GET_PAST_GIVEAWAY_SUCCESS: "GET_PAST_GIVEAWAY_SUCCESS",
     GET_PAST_GIVEAWAY_ERROR: "GET_PAST_GIVEAWAY_ERROR",
+
+
+    GET_PAST_GIVEAWAY_PAGINATION: "GET_PAST_GIVEAWAY_PAGINATION",
+    GET_PAST_GIVEAWAY_PAGINATION_REQUEST: "GET_PAST_GIVEAWAY_PAGINATION_REQUEST",
+    GET_PAST_GIVEAWAY_PAGINATION_SUCCESS: "GET_PAST_GIVEAWAY_PAGINATION_SUCCESS",
+    GET_PAST_GIVEAWAY_PAGINATION_ERROR: "GET_PAST_GIVEAWAY_PAGINATION_ERROR",
+
+
 
     GET_SINGLE_GIVEAWAY_BY_ID: "GET_PAST_GIVEAWAY_BY_ID",
     GET_SINGLE_GIVEAWAY_BY_ID_REQUEST: " GET_SINGLE_GIVEAWAY_BY_ID_REQUEST",
@@ -270,6 +284,12 @@ export const TYPES = {
     GET_ALL_EXCLUSIVE_POST_REQUEST: "GET_ALL_EXCLUSIVE_POST_REQUEST",
     GET_ALL_EXCLUSIVE_POST_SUCCESS: "GET_ALL_EXCLUSIVE_POST_SUCCESS",
     GET_ALL_EXCLUSIVE_POST_ERROR: "GET_ALL_EXCLUSIVE_POST_ERROR",
+
+    GET_ALL_EXCLUSIVE_POST_PAGINATION: "GET_ALL_EXCLUSIVE_POST_PAGINATION",
+    GET_ALL_EXCLUSIVE_POST_PAGINATION_REQUEST: "GET_ALL_EXCLUSIVE_POST_PAGINATION_REQUEST",
+    GET_ALL_EXCLUSIVE_POST_PAGINATION_SUCCESS: "GET_ALL_EXCLUSIVE_POST_PAGINATION_SUCCESS",
+    GET_ALL_EXCLUSIVE_POST_PAGINATION_ERROR: "GET_ALL_EXCLUSIVE_POST_PAGINATION_ERROR",
+
 
     GET_ALL_EXCLUSIVE_POST_BY_ID: "GET_ALL_EXCLUSIVE_POST_BY_ID",
     GET_ALL_EXCLUSIVE_POST_BY_ID_REQUEST: "GET_ALL_EXCLUSIVE_POST_BY_ID_REQUEST",
@@ -1244,7 +1264,33 @@ export const getAllActiveGiveaway = (data) => async dispatch => {
     }
 };
 
+export const getAllActiveGiveawayPagination = (data) => async dispatch => {
+
+    dispatch(getActiveGiveAwayRequest());
+    try {
+        const post = await GiveAwayController.getAllActiveGivePost(data);
+        dispatch(getActiveGiveAwaySuccess(post))
+
+    } catch (error) {
+        dispatch(getActiveGiveAwayError(error))
+    }
+};
+
+
 export const getAllPastGiveaway = (data) => async dispatch => {
+
+    dispatch(getPastGiveAwayRequest());
+    try {
+        const post = await GiveAwayController.getAllPastGiveAwayPost(data);
+        dispatch(getPastGiveAwaySuccess(post))
+
+    } catch (error) {
+        dispatch(getPastGiveAwayError(error))
+    }
+};
+
+
+export const getAllPastGiveawayPagination = (data) => async dispatch => {
 
     dispatch(getPastGiveAwayRequest());
     try {
@@ -1392,6 +1438,19 @@ export const createExclusivePost = (data) => async dispatch => {
 };
 
 export const getAllExclusivePost = (data) => async dispatch => {
+    dispatch(getAllExclusivePostRequest());
+    try {
+        const post = await ExclusivePostController.getAllExclusivePost(data);
+
+        dispatch(getAllExclusivePostSuccess(post))
+
+    } catch (error) {
+        dispatch(getAllExclusivePostError(error))
+    }
+
+};
+
+export const getAllExclusivePagination = (data) => async dispatch => {
     dispatch(getAllExclusivePostRequest());
     try {
         const post = await ExclusivePostController.getAllExclusivePost(data);
