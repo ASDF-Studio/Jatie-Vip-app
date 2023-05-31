@@ -56,6 +56,14 @@ export const TYPES = {
     GET_ALL_POST_SUCCESS: "GET_ALL_POST_SUCCESS",
     GET_ALL_POST_ERROR: "GET_ALL_POST_ERROR",
 
+    //Pagination all post 
+
+    GET_ALL_POST_PAGINATION: "GET_ALL_POST_PAGINATION",
+    GET_ALL_POST_PAGINATION_REQUEST: "GET_ALL_POST_PAGINATION_REQUEST",
+    GET_ALL_POST_PAGINATION_SUCCESS: "GET_ALL_POST_PAGINATION_SUCCESS",
+    GET_ALL_POST_PAGINATION_ERROR: "GET_ALL_POST_PAGINATION_ERROR",
+
+
     // Search All Post 
 
     SEARCH_ALL_POST: "SEARCH_ALL_POST",
@@ -316,6 +324,31 @@ const getAllPostError = error => ({
     type: TYPES.GET_ALL_POST_ERROR,
     payload: { error },
 });
+
+
+export const getAllPostPaginationSuccess = post => ({
+    type: TYPES.GET_ALL_POST_PAGINATION_SUCCESS,
+    payload: { post },
+});
+const getAllPostPaginationRequest = () => ({
+    type: TYPES.GET_ALL_POST_PAGINATION_REQUEST,
+    payload: null,
+});
+
+const getAllPostPaginationError = error => ({
+    type: TYPES.GET_ALL_POST_PAGINATION_ERROR,
+    payload: { error },
+});
+
+
+
+
+
+
+
+
+
+
 
 //SEARCH ALL POST 
 
@@ -973,14 +1006,33 @@ export const deletePost = (id, postUserId, userId, userType, screen) => async di
         dispatch(deletePostError(error));
     }
 };
-export const getAllPost = (userId, filterBy, isFollowingData, isVip) => async dispatch => {
+export const getAllPost = (userId, filterBy, isFollowingData, isVip, page) => async dispatch => {
     dispatch(getAllPostRequest());
+    console.log("PAGE____+___+_+_+_+_+_", page);
+
     try {
-        const post = await PostController.getAllPost(userId, filterBy, isFollowingData, isVip);
+        const post = await PostController.getAllPost(userId, filterBy, isFollowingData, isVip, page);
         dispatch(getAllPostSuccess(post))
+
 
     } catch (error) {
         dispatch(getAllPostError(error))
+    }
+
+};
+export const getAllPostPagination = (userId, filterBy, isFollowingData, isVip, page) => async dispatch => {
+    dispatch(getAllPostPaginationRequest());
+    // console.log("PAGE____+___+_+_+_+_+_", page);
+
+    try {
+        const post = await PostController.getAllPost(userId, filterBy, isFollowingData, isVip, page);
+
+
+        dispatch(getAllPostPaginationSuccess(post))
+
+
+    } catch (error) {
+        dispatch(getAllPostPaginationError(error))
     }
 
 };
@@ -1005,10 +1057,10 @@ export const getAllPinPost = () => async dispatch => {
     }
 
 };
-export const commentOnPost = (postId, userId, commentBody) => async dispatch => {
+export const commentOnPost = (postId, userId, commentBody, commentOwnerId) => async dispatch => {
     dispatch(commentOnPostRequest());
     // try {
-    const comment = await PostController.commentOnPost(postId, userId, commentBody);
+    const comment = await PostController.commentOnPost(postId, userId, commentBody, commentOwnerId);
     dispatch(commentOnPostSuccess(comment));
     // } catch (error) {
     //     alert(error)

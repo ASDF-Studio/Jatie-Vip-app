@@ -270,14 +270,15 @@ export class PostController {
         });
     }
     //get All post 
-    static async getAllPost(userId, filterBy, isFollowingData, isVip) {
+    static async getAllPost(userId, filterBy, isFollowingData, isVip, page) {
         return new Promise((resolve, reject) => {
             const endpoint = API_BASE_URL + API_END_POINTS.ALL_POST;
             const body = JSON.stringify({
                 "loggedInUserId": userId,
                 "followingOnly": isFollowingData,
                 "isVIPonly": isVip,
-                "postsFilter": filterBy.toLowerCase()
+                "postsFilter": filterBy.toLowerCase(),
+                "dateCursor": page
             })
             console.log("POST_ADATA=-=-=-=-=New-=-=body", body);
 
@@ -314,13 +315,14 @@ export class PostController {
 
     //comment on post 
 
-    static async commentOnPost(postId, userId, commentBody) {
+    static async commentOnPost(postId, userId, commentBody, commentOwnerId) {
         return new Promise((resolve, reject) => {
             const endpoint = API_BASE_URL + API_END_POINTS.COMMENT_ON_POST;
             var body = JSON.stringify({
                 "postId": postId,
                 "userId": userId,
-                "commentBody": commentBody
+                "commentBody": commentBody,
+                "postOwnerId": commentOwnerId
             });
             console.log("COMMENT_BODY", body)
             HttpClient.post(endpoint, body)

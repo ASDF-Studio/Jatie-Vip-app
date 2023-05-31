@@ -43,7 +43,7 @@ export const CardFooter = ({
   const [downVote, setDownVote] = useState(disLikeCount);
   const ALLPOST = useSelector(getAllPostData)
   const user = useSelector(getUser);
-  const postArray = postType === POST_TYPE.REGULAR ? ALLPOST?.data : user?.getAllPostsByLoggedInUser
+  const postArray = postType === POST_TYPE.REGULAR ? ALLPOST : user?.getAllPostsByLoggedInUser
   const upVoteHandel = () => {
 
     onUpVote(postID, userID)
@@ -73,7 +73,10 @@ export const CardFooter = ({
       arr[postIndex].has_upvoted = false;
       arr[postIndex].upVote = upVotenumber - 1;
     }
-    dispatch(getAllPostSuccess(arr))
+    const ob = {
+      data: arr
+    }
+    dispatch(getAllPostSuccess(ob))
     const apiData = await UserController.upVote(postID, userID);
   }
   const onDownVote = async (postID, userID) => {
@@ -96,8 +99,10 @@ export const CardFooter = ({
       arr[postIndex].has_downvoted = false;
       arr[postIndex].downVote = downVoteNumber - 1;
     }
-
-    dispatch(getAllPostSuccess(arr))
+    const ob = {
+      data: arr
+    }
+    dispatch(getAllPostSuccess(ob))
     const apiData = await UserController.downVote(postID, userID);
   }
   const generateLink = async () => {

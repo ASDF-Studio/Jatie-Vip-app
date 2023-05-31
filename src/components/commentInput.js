@@ -98,12 +98,15 @@ export const CommentInput = React.forwardRef((props, ref,) => {
     } else {
       setComment('')
       if (!isEdit) {
-        var arr = ALLPOST?.data
-        dispatch(commentOnPost(props.postId, props.userId, comment.trim()))
+        var arr = ALLPOST
+        dispatch(commentOnPost(props.postId, props.userId, comment.trim(), props.commentOwnerId))
         props.updateParentState()
         var count = arr[props.postIndex]?.comments_aggregate?.aggregate?.count
         arr[props.postIndex].comments_aggregate.aggregate.count = count + 1;
-        dispatch(getAllPostSuccess(arr))
+        const ob = {
+          data: arr
+        }
+        dispatch(getAllPostSuccess(ob))
       } else {
         setIsEdit(false)
         dispatch(editComment(props.commentId, props.userId, comment.trim(), props.commentIndex))
