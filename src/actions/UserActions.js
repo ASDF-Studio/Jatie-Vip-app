@@ -82,6 +82,14 @@ export const TYPES = {
   GET_ALL_POST_BY_LOGGED_IN_USER_SUCCESS: "GET_ALL_POST_BY_LOGGED_IN_USER_SUCCESS",
   GET_ALL_POST_BY_LOGGED_IN_USER_ERROR: "GET_ALL_POST_BY_LOGGED_IN_USER_ERROR",
 
+
+  GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION: " GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION",
+  GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION_REQUEST: " GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION_REQUEST",
+  GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION_SUCCESS: " GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION_SUCCESS",
+  GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION_ERROR: " GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION_ERROR",
+
+
+
   GET_ALL_ACTIVITY_BY_LOGGED_IN_USER: "GET_ALL_ACTIVITY_BY_LOGGED_IN_USER",
   GET_ALL_ACTIVITY_BY_LOGGED_IN_USER_REQUEST: "GET_ALL_ACTIVITY_BY_LOGGED_IN_USER_REQUEST",
   GET_ALL_ACTIVITY_BY_LOGGED_IN_USER_SUCCESS: "GET_ALL_ACTIVITY_BY_LOGGED_IN_USER_SUCCESS",
@@ -259,6 +267,30 @@ const getAllPostByLoggedInUserError = error => ({
   type: TYPES.GET_ALL_POST_BY_LOGGED_IN_USER_ERROR,
   payload: { error },
 });
+
+export const getAllPostByLoggedInUserPaginationSuccess = post => ({
+  type: TYPES.GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION_SUCCESS,
+  payload: { post },
+});
+
+const getAllPostByLoggedInUserPaginationRequest = () => ({
+  type: TYPES.GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION_REQUEST,
+  payload: null,
+});
+
+const getAllPostByLoggedInUserPaginationError = error => ({
+  type: TYPES.GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION_ERROR,
+  payload: { error },
+});
+
+
+
+
+
+
+
+
+
 
 
 export const getAllActivityByLoggedInUserSuccess = post => ({
@@ -709,7 +741,24 @@ export const getAllPostsByLoggedInUser = (id) => async (dispatch, getState) => {
   }
 };
 
+export const getAllPostsByLogInUserPagination = (id, page) => async (dispatch, getState) => {
+  dispatch(globalReset())
+  dispatch(getAllPostByLoggedInUserPaginationRequest());
 
+  const userType = getState().userType
+  let allPosts
+  try {
+    if (userType.user === strings.userType.free) {
+      allPosts = await UserController.postByUserId(id, page);
+    }
+    if (userType.user === strings.userType.admin) {
+      allPosts = await UserController.getAllPostByAdmin(page);
+    }
+    dispatch(getAllPostByLoggedInUserPaginationSuccess(allPosts?.data))
+  } catch (error) {
+    dispatch(getAllPostByLoggedInUserPaginationError(error))
+  }
+};
 
 export const getAllActivityByLoggedInUser = (id) => async (dispatch, getState) => {
   dispatch(globalReset())

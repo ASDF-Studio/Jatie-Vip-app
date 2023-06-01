@@ -307,6 +307,11 @@ export const TYPES = {
     DELETE_EXCLUSIVE_POST_ERROR: "DELETE_EXCLUSIVE_POST_ERROR",
 
 
+    GET_SCHEDULE_POST: "GET_SCHEDULE_POST",
+    GET_SCHEDULE_POST_REQUEST: "GET_SCHEDULE_POST_REQUEST",
+    GET_SCHEDULE_POST_SUCCESS: "GET_SCHEDULE_POST_SUCCESS",
+    GET_SCHEDULE_POST_ERROR: "GET_SCHEDULE_POST_ERROR",
+
 
 };
 
@@ -361,8 +366,49 @@ const getAllPostPaginationError = error => ({
 });
 
 
+export const getAllExclusivePostPaginationSuccess = post => ({
+    type: TYPES.GET_ALL_EXCLUSIVE_POST_PAGINATION_SUCCESS,
+    payload: { post },
+});
+const getAllExclusivePostPaginationnRequest = () => ({
+    type: TYPES.GET_ACTIVE_GIVEAWAY_PAGINATION_REQUEST,
+    payload: null,
+});
+
+const getAllExclusivePostPaginationError = error => ({
+    type: TYPES.GET_ACTIVE_GIVEAWAY_PAGINATION_ERROR,
+    payload: { error },
+});
 
 
+export const getActiveGiveAwayPaginationSuccess = post => ({
+    type: TYPES.GET_ACTIVE_GIVEAWAY_PAGINATION_SUCCESS,
+    payload: { post },
+});
+const getActiveGiveAwayPaginationRequest = () => ({
+    type: TYPES.GET_ACTIVE_GIVEAWAY_PAGINATION_REQUEST,
+    payload: null,
+});
+
+const getActiveGiveAwayPaginationError = error => ({
+    type: TYPES.GET_ACTIVE_GIVEAWAY_PAGINATION_ERROR,
+    payload: { error },
+});
+
+
+export const getPastGiveAwayPaginationSuccess = post => ({
+    type: TYPES.GET_PAST_GIVEAWAY_PAGINATION_SUCCESS,
+    payload: { post },
+});
+const getPastGiveAwayPaginationRequest = () => ({
+    type: TYPES.GET_PAST_GIVEAWAY_PAGINATION_REQUEST,
+    payload: null,
+});
+
+const getPastGiveAwayPaginationError = error => ({
+    type: TYPES.GET_PAST_GIVEAWAY_PAGINATION_ERROR,
+    payload: { error },
+});
 
 
 
@@ -873,6 +919,44 @@ const updateExclusivePostError = error => ({
     payload: { error },
 });
 
+
+
+
+
+export const getSchedulePostSuccess = post => ({
+    type: TYPES.GET_SCHEDULE_POST_SUCCESS,
+    payload: { post },
+});
+
+const getSchedulePostRequest = () => ({
+    type: TYPES.GET_SCHEDULE_POST_REQUEST,
+    payload: null,
+});
+
+const getSchedulePostError = error => ({
+    type: TYPES.GET_SCHEDULE_POST_ERROR,
+    payload: { error },
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //
 export const getExclusivePostByIdSuccess = post => ({
     type: TYPES.GET_ALL_EXCLUSIVE_POST_BY_ID_SUCCESS,
@@ -1266,13 +1350,13 @@ export const getAllActiveGiveaway = (data) => async dispatch => {
 
 export const getAllActiveGiveawayPagination = (data) => async dispatch => {
 
-    dispatch(getActiveGiveAwayRequest());
+    dispatch(getActiveGiveAwayPaginationRequest());
     try {
         const post = await GiveAwayController.getAllActiveGivePost(data);
-        dispatch(getActiveGiveAwaySuccess(post))
+        dispatch(getActiveGiveAwayPaginationSuccess(post))
 
     } catch (error) {
-        dispatch(getActiveGiveAwayError(error))
+        dispatch(getActiveGiveAwayPaginationError(error))
     }
 };
 
@@ -1292,13 +1376,13 @@ export const getAllPastGiveaway = (data) => async dispatch => {
 
 export const getAllPastGiveawayPagination = (data) => async dispatch => {
 
-    dispatch(getPastGiveAwayRequest());
+    dispatch(getPastGiveAwayPaginationRequest());
     try {
         const post = await GiveAwayController.getAllPastGiveAwayPost(data);
-        dispatch(getPastGiveAwaySuccess(post))
+        dispatch(getPastGiveAwayPaginationSuccess(post))
 
     } catch (error) {
-        dispatch(getPastGiveAwayError(error))
+        dispatch(getPastGiveAwayPaginationError(error))
     }
 };
 
@@ -1451,14 +1535,14 @@ export const getAllExclusivePost = (data) => async dispatch => {
 };
 
 export const getAllExclusivePagination = (data) => async dispatch => {
-    dispatch(getAllExclusivePostRequest());
+    dispatch(getAllExclusivePostPaginationnRequest());
     try {
         const post = await ExclusivePostController.getAllExclusivePost(data);
 
-        dispatch(getAllExclusivePostSuccess(post))
+        dispatch(getAllExclusivePostPaginationSuccess(post))
 
     } catch (error) {
-        dispatch(getAllExclusivePostError(error))
+        dispatch(getAllExclusivePostPaginationError(error))
     }
 
 };
@@ -1508,6 +1592,19 @@ export const updateExclusivePost = (data) => async dispatch => {
 
     } catch (error) {
         dispatch(updateExclusivePostError(error))
+    }
+
+};
+
+
+export const getSchedulePost = () => async dispatch => {
+
+    dispatch(getSchedulePostRequest());
+    try {
+        const post = await ExclusivePostController.getAllSchedulePost();
+        dispatch(getSchedulePostSuccess(post))
+    } catch (error) {
+        dispatch(getSchedulePostError(error))
     }
 
 };

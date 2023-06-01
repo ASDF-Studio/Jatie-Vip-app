@@ -96,6 +96,8 @@ export const API_END_POINTS = {
     DELETE_EXCLUSIVE_POST: 'exclusive/delete',
     UPDATE_EXCLUSIVE_POST: 'exclusive/update',
 
+    // Schedule post
+    SCHEDULE_POST: 'post/all_scheduled_post',
 
     //Followers endPoint
     FOLLOWERS: 'user/get_follower_list',

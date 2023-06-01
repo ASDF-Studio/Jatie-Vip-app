@@ -86,7 +86,8 @@ export class ExclusivePostController {
             const endpoint = API_BASE_URL + API_END_POINTS.GET_EXCLUSIVE_POST;
             const body = JSON.stringify({
                 "loggedInUserId": data.userId,
-                "postsFilter": data.postFilter
+                "postsFilter": data.postFilter,
+                "dateCursor": data?.page
 
             })
             HttpClient.post(endpoint, body)
@@ -225,6 +226,29 @@ export class ExclusivePostController {
         });
 
 
+    }
+    static async getAllSchedulePost() {
+
+        return new Promise((resolve, reject) => {
+            const endpoint = API_BASE_URL + API_END_POINTS.SCHEDULE_POST;
+            // const body = JSON.stringify({
+            //     "loggedInUserId": data.userId,
+            //     "dateCursor": data?.page
+
+            // })
+            HttpClient.post(endpoint)
+                .then((response) => {
+
+                    resolve(response)
+
+
+                    // console.log('response of active exclusive', response)
+                })
+                .catch((error) => {
+                    reject(new Error(error.message));
+                    console.log("error", error)
+                });
+        });
     }
 
 }

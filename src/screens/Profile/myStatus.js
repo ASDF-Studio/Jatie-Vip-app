@@ -40,6 +40,8 @@ export default function MyStatus({ navigation }) {
   const [postImg, setPostImg] = useState([]);
   const [feedImages, setFeedImages] = useState([]);
   const [editData, setEditdata] = useState({})
+  const [postIndex, setPostIndex] = useState(0);
+  const [fetchExclusivePost, setExclusivePost] = useState(true);
   // console.log("PROFILE__DATA", user.getAllPostsByLoggedInUser);
   const userType = useSelector(state => state.userType);
 
@@ -56,6 +58,9 @@ export default function MyStatus({ navigation }) {
 
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.DELETE_POST, TYPES.GET_ALL_POST_BY_LOGGED_IN_USER], state)
+  );
+  const isLoadingMore = useSelector(state =>
+    isLoadingSelector([TYPES.GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION], state)
   );
 
   const onDelete = () => {
@@ -76,7 +81,23 @@ export default function MyStatus({ navigation }) {
       // setFeedImages(item.postImg)
       setFeedImages(data.postMediaContent)
   }
+  const onLoadMorePost = () => {
+    const post = user.getAllPostsByLoggedInUser.slice(-1)
+    const page = post[0].created_at
+    dispatch(getAllPostsByLogInUserPagination(user?.id, page))
 
+  }
+  const renderFooterPost = () => {
+    return (
+      <View style={{}}>
+        {isLoadingMore &&
+          <ActivityIndicator size={"large"} color="orange" />
+
+        }
+
+      </View>
+    );
+  };
   return (
     <SafeAreaView>
       {isLoading ?
@@ -89,6 +110,22 @@ export default function MyStatus({ navigation }) {
           data={user.getAllPostsByLoggedInUser ?? []}
           extraData={user.getAllPostsByLoggedInUser}
           key={props => props.id}
+          ListFooterComponent={renderFooterPost}
+
+          // onEndReached={onLoadMorePost}
+          onEndReachedThreshold={0.1}
+          onEndReached={() => {
+            if (!fetchExclusivePost) {
+              // console.log(onEndReachedCalledDuringMomentum)
+              onLoadMorePost();
+              setExclusivePost(true);
+              // onEndReachedCalledDuringMomentum = true;
+            }
+          }}
+          onMomentumScrollBegin={() => {
+            setExclusivePost(false);
+            // onEndReachedCalledDuringMomentum = false;
+          }}
           renderItem={({ item, index }) => (
             <View style={styles.cardContainer}>
               <Card>

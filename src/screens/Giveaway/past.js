@@ -19,7 +19,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { geAllPastGiveAwayData } from '@/selectors/PostSelectors';
 import { useEffect } from 'react';
-import { getAllPastGiveaway, TYPES } from '@/actions/PostActions';
+import { getAllPastGiveaway, getAllPastGiveawayPagination, TYPES } from '@/actions/PostActions';
 import { getUser } from '@/selectors/UserSelectors';
 import { useIsFocused } from '@react-navigation/native';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
@@ -29,7 +29,9 @@ export default function Past({ navigation, userType }) {
 
   const getdataOfPast = useSelector(geAllPastGiveAwayData)
   // console.log('selector data', getdataOfPast)
-
+  const [showImageView, setShowImageView] = useState(false);
+  const [feedImages, setFeedImages] = useState([]);
+  const [fetchPastGiveaway, setFetchPastGiveaway] = useState(true);
   const user = useSelector(getUser);
   const focus = useIsFocused()
 
@@ -55,14 +57,56 @@ export default function Past({ navigation, userType }) {
 
     //   setFeedImages(data.postMediaContent)
   }
+  const isLoadingMore = useSelector(state =>
+    isLoadingSelector([TYPES.GET_PAST_GIVEAWAY_PAGINATION], state)
+  );
+  const onLoadMorePost = () => {
+    const post = getdataOfPast.slice(-1)
+    const page = post[0].created_at
+    const data = {
+      userId: user?.id,
+      postFilter: sortBy.toLowerCase(),
+      page: page
+    }
+    dispatch(getAllPastGiveawayPagination(data))
+
+  }
+  const renderFooterPost = () => {
+    return (
+      <View style={{}}>
+        {isLoadingMore &&
+          <ActivityIndicator size={"large"} color="orange" />
+
+        }
+
+      </View>
+    );
+  };
+  let counter = 1;
   return (
     <SafeAreaView>
       <CustomLoader
         open={isLoading}
       />
       <FlatList
-        data={getdataOfPast?.data || []}
+        data={getdataOfPast ?? []}
         key={props => props?.id}
+        ListFooterComponent={renderFooterPost}
+
+        // onEndReached={onLoadMorePost}
+        onEndReachedThreshold={0.1}
+        onEndReached={() => {
+          if (!fetchPastGiveaway) {
+            // console.log(onEndReachedCalledDuringMomentum)
+            onLoadMorePost();
+            setFetchPastGiveaway(true);
+            // onEndReachedCalledDuringMomentum = true;
+          }
+        }}
+        onMomentumScrollBegin={() => {
+          setFetchPastGiveaway(false);
+          // onEndReachedCalledDuringMomentum = false;
+        }}
         renderItem={({ item }) => (
           <View style={styles.cardContainer}>
             <Card>

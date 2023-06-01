@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { theme } from '@/theme';
+import Moment from 'moment';
 import { AppImageViewer, Card, CardBody, CustomLoader } from '@/components';
 import { ms, vs } from 'react-native-size-matters';
 import { FontFamily } from '@/theme/Fonts';
@@ -22,7 +23,7 @@ import { faLock, faPlay } from '@fortawesome/free-solid-svg-icons';
 import { Data } from './giveawayData/activeData';
 import { geAllActiveGiveAwayData } from '@/selectors/PostSelectors';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllActiveGiveaway, TYPES } from '@/actions/PostActions';
+import { getAllActiveGiveaway, getAllActiveGiveawayPagination, TYPES } from '@/actions/PostActions';
 import { getUser } from '@/selectors/UserSelectors';
 import { useEffect } from 'react';
 import { useIsFocused } from '@react-navigation/native';
@@ -34,6 +35,7 @@ export default function Active({ navigation, userType }) {
   const [open, setOpen] = useState(false);
   const [showImageView, setShowImageView] = useState(false);
   const [feedImages, setFeedImages] = useState([]);
+  const [fetchActiveGiveaway, setFetchActiveGiveaway] = useState(true);
   const dispatch = useDispatch()
   let counter = 1;
   const getActiveGiveWayData = useSelector(geAllActiveGiveAwayData)
@@ -59,6 +61,31 @@ export default function Active({ navigation, userType }) {
 
       setFeedImages(data.postMediaContent)
   }
+  const isLoadingMore = useSelector(state =>
+    isLoadingSelector([TYPES.GET_ACTIVE_GIVEAWAY_PAGINATION], state)
+  );
+  const onLoadMorePost = () => {
+    const post = getActiveGiveWayData.slice(-1)
+    const page = post[0].created_at
+    const data = {
+      userId: user?.id,
+      postFilter: sortBy.toLowerCase(),
+      page: page
+    }
+    dispatch(getAllActiveGiveawayPagination(data))
+
+  }
+  const renderFooterPost = () => {
+    return (
+      <View style={{}}>
+        {isLoadingMore &&
+          <ActivityIndicator size={"large"} color="orange" />
+
+        }
+
+      </View>
+    );
+  };
   return (
     <>
       {/*  image view modal */}
@@ -93,8 +120,24 @@ export default function Active({ navigation, userType }) {
           color={theme.light.colors.primary}
         />
         <FlatList
-          data={getActiveGiveWayData?.data ?? []}
+          data={getActiveGiveWayData ?? []}
           key={props => props.id}
+          ListFooterComponent={renderFooterPost}
+
+          // onEndReached={onLoadMorePost}
+          onEndReachedThreshold={0.1}
+          onEndReached={() => {
+            if (!fetchActiveGiveaway) {
+              // console.log(onEndReachedCalledDuringMomentum)
+              onLoadMorePost();
+              setFetchActiveGiveaway(true);
+              // onEndReachedCalledDuringMomentum = true;
+            }
+          }}
+          onMomentumScrollBegin={() => {
+            setFetchActiveGiveaway(false);
+            // onEndReachedCalledDuringMomentum = false;
+          }}
           renderItem={({ item, index }) => (
             <View style={styles.FlatListContainer}>
               <Card>
@@ -103,8 +146,10 @@ export default function Active({ navigation, userType }) {
                 </View>
                 <View>
                   <Text style={styles.officialTxt}>
-                    {strings.giveaway.EndsIn}
-                    <Text style={styles.EndTimeTxt}> {item.postExpires}</Text>
+                    {strings.giveaway.EndsIn + " "}
+                    <Text style={styles.EndTimeTxt}>{Moment.utc(item.postExpires).format('hh:mm A  MMM D, YYYY')}{' '}
+                      {/* {item.postExpires} */}
+                    </Text>
                   </Text>
                 </View>
                 <CardBody text={item.postBody} />
