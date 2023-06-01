@@ -22,7 +22,7 @@ import { FontFamily } from '@/theme/Fonts';
 import { useIsFocused } from "@react-navigation/native";
 import { NAVIGATION } from '@/constants';
 import { navigationRef } from '@/navigation/RootNavigation';
-import { TYPES, deletePost, getAllPostsByLoggedInUser } from '@/actions/UserActions';
+import { TYPES, deletePost, getAllPostsByLoggedInUser, getAllPostsByLogInUserPagination } from '@/actions/UserActions';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { POST_TYPE } from '@/constants/enums';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -81,6 +81,24 @@ export default function MyStatus({ navigation }) {
       // setFeedImages(item.postImg)
       setFeedImages(data.postMediaContent)
   }
+  const onLoadMorePost = () => {
+    const post = user.getAllPostsByLoggedInUser.slice(-1)
+    const page = post[0].created_at
+
+    dispatch(getAllPostsByLogInUserPagination(user?.id, page))
+
+  }
+  const renderFooterPost = () => {
+    return (
+      <View style={{}}>
+        {isLoadingMore &&
+          <ActivityIndicator size={"large"} color="orange" />
+
+        }
+
+      </View>
+    );
+  };
   return (
     <SafeAreaView>
       {isLoading ?
