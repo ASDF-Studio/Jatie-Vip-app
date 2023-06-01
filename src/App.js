@@ -8,18 +8,32 @@ import { RootNavigator } from '@/navigation';
 import FlashMessage from "react-native-flash-message";
 import * as Sentry from '@sentry/react-native';
 
-
+import messaging from '@react-native-firebase/messaging';
+import { getFCMToken, requestUserPermission } from './helper/utils/pushNotifications';
 //import { requestUserPermission } from 'utils/PushNotifications';
 enableScreens();
 Sentry.init({
   dsn: 'https://7b8d6347944f41148a983605c2e88d17@o4504937868492800.ingest.sentry.io/4504937962864640',
 });
 
-// useEffect(() => {
-//   requestUserPermission()
-// }, [])
+
 
 export function App() {
+  useEffect(() => {
+    requestUserPermission()
+    getFCMToken()
+  }, [])
+
+  // async function requestUserPermission() {
+  //   const authStatus = await messaging().requestPermission();
+  //   const enabled =
+  //     authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+  //     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+  //   if (enabled) {
+  //     console.log("Authorization status:", authStatus);
+  //   }
+  // }
   return (
     <Sentry.ErrorBoundary>
       <Provider store={store}>

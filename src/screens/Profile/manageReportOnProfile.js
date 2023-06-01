@@ -87,7 +87,7 @@ export default function ManageReportOnMessage({ navigation, route }) {
   const userr = useSelector(getUser)
   useEffect(() => {
     dispatch(getUserProfileByUserId(item, userr.id))
-
+    console.log('use eff')
     setTimeout(() => {
       getUserPostById(item)
     }, 100);

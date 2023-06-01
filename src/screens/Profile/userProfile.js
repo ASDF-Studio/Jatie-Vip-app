@@ -57,6 +57,7 @@ import { showMessage } from 'react-native-flash-message';
 import { useIsFocused } from '@react-navigation/native';
 
 export default function UserProfile({ navigation, route }) {
+  const [postIndex, setPostIndex] = useState(0);
   const dispatch = useDispatch()
   const { userId } = route?.params
   console.log('otherpersoId', userId)
@@ -83,7 +84,9 @@ export default function UserProfile({ navigation, route }) {
 
 
   const focus = useIsFocused()
-  //console.log('other person details', JSON.stringify(user))
+  console.log('other person details', JSON.stringify(user))
+
+
   const isFollowSuccess = useSelector(state =>
     isLoadingSelector([TYPES.FOLLOW_USER], state)
   );
@@ -284,7 +287,7 @@ export default function UserProfile({ navigation, route }) {
       <FlatList
         data={userPosts || []}
         key={props => props.id}
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           <View style={styles.cardContainer}>
             <Card>
               <CardHeader
@@ -374,9 +377,10 @@ export default function UserProfile({ navigation, route }) {
                 </View>
               ) : null}
               <CardFooter
-                postID={item?.id}
+                postIndex={index}
+                postID={user?.id}
                 postUserID={item?.userId}
-                userID={user?.id}
+                userID={loggedInId?.id}
                 likeCount={item?.upVote}
                 disLikeCount={item?.downVote}
                 upVoteUserID={item?.upVoteUserId}
@@ -385,6 +389,7 @@ export default function UserProfile({ navigation, route }) {
                 commentPress={() => console.log("Comment")}
                 sharePress={() => console.log("share")}
                 morePress={() => {
+                  setPostIndex(index)
                   setOpenMore(true)
 
                   setpostId(item?.id);

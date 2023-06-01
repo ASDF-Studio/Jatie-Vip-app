@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { theme } from '@/theme';
 import { Card, CardHeader, Icon } from '@/components';
 import {
@@ -16,6 +16,8 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllActivityByUserId, getAllPostsByLoggedInUser } from '@/actions/UserActions';
 import { getUser } from '@/selectors/UserSelectors';
+import { navigate } from '@/navigation/RootNavigation';
+import { NAVIGATION } from '@/constants';
 
 
 export default function MyActivity({ navigation }) {
@@ -23,7 +25,7 @@ export default function MyActivity({ navigation }) {
   const focus = useIsFocused();
   const user = useSelector(getUser);
 
-
+  console.log("myactivity DAta", user?.MyActivityKey)
 
   useEffect(() => {
     if (focus) {
@@ -44,6 +46,8 @@ export default function MyActivity({ navigation }) {
                 userName={user.username}
                 profilePic={user.profilePic}
                 time={item.created_at}
+                userId={item?.userId}
+
               />
               <View style={styles.activity}>
                 {item.activityDetails == 'upvoted this' ? (
@@ -84,10 +88,13 @@ export default function MyActivity({ navigation }) {
                 ) : null}
                 <View style={styles.textContainer}>
                   <Text style={styles.statsTxt}> {item.activityDetails} </Text>
-                  <Text style={styles.reactOnTxt}>
+                  <TouchableOpacity onPress={() => navigate(NAVIGATION.singlePost, { postId: item.activityObjectId })}>
+                    <Text style={styles.reactOnTxt}>
 
-                    {`post`}{' '}
-                  </Text>
+                      {`post`}{' '}
+
+                    </Text>
+                  </TouchableOpacity>
                 </View>
               </View>
             </Card>

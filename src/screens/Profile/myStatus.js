@@ -96,6 +96,7 @@ export default function MyStatus({ navigation }) {
                   userName={user?.username}
                   profilePic={user?.profilePic}
                   time={item.created_at}
+                  userId={user.id}
                 />
                 <CardBody text={item?.postBody} />
                 {/* images */}

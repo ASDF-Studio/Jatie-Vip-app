@@ -16,28 +16,30 @@ import {
   faCircleDown,
   faMessage,
 } from '@fortawesome/free-solid-svg-icons';
-import { AppSwitch, HorizontalLine, Icon, CardHeader } from '@/components';
+import { AppSwitch, HorizontalLine, Icon, CardHeader, CustomLoader } from '@/components';
 import { ms } from 'react-native-size-matters';
 import { NAVIGATION } from '@/constants/navigation';
 import { strings } from '@/localization';
 import { Data, profilePic } from '@/screens/CommonData/notoficationData';
 import { faSearch } from '@fortawesome/pro-regular-svg-icons';
-import { fetchAllNotifications } from '@/actions/UserActions';
+import { TYPES, fetchAllNotifications } from '@/actions/UserActions';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
 import { getPostById } from '@/actions/PostActions';
 import { navigate } from '@/navigation/RootNavigation';
+import { isLoadingSelector } from '@/selectors/StatusSelectors';
 
 export default function Notification({ navigation }) {
   const [read, setRead] = useState(false);
   const dispatch = useDispatch()
 
   const loggedInUser = useSelector(getUser)
-
   const notificationData = loggedInUser.notificationKey
 
-
+  const isLoading = useSelector(state =>
+    isLoadingSelector([TYPES.GET_ALL_NOTIFICATIONS], state)
+  );
   //console.log('data', notificationData?.data)
   useEffect(() => {
     dispatch(fetchAllNotifications(loggedInUser.id, read))
@@ -51,6 +53,8 @@ export default function Notification({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
+
+      <CustomLoader open={isLoading} />
       <View style={styles.header}>
         <View style={styles.left}>
           <Image
