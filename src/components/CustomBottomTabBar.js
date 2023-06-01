@@ -84,7 +84,7 @@ function CustomBottomTabBar({ state, descriptors, navigation }) {
             canPreventDefault: true,
           });
           if (index == 0) {
-            dispatch(getAllPost(user?.id, strings.sortBy.recent, false))
+            dispatch(getAllPost(user?.id, strings.sortBy.recent, strings.home.newFeed, false, ""))
           }
           else if (index == 2) {
             const data = {

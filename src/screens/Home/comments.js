@@ -120,10 +120,13 @@ export default function Comments({ navigation, route }) {
     dispatch(deleteComment(commentId, USER?.id))
     childRef.current.resetValue()
     updateParentState()
-    var arr = ALLPOST?.data
+    var arr = ALLPOST
     var count = arr[POST_INDEX]?.comments_aggregate?.aggregate?.count
     arr[POST_INDEX].comments_aggregate.aggregate.count = count - 1;
-    dispatch(getAllPostSuccess(arr))
+    const ob = {
+      data: arr
+    }
+    dispatch(getAllPostSuccess(ob))
   }
   const onEditComment = () => {
     setIsEdit(true)
@@ -296,6 +299,7 @@ export default function Comments({ navigation, route }) {
             userId={USER?.id}
             updateParentState={updateParentState}
             commentIndex={commentIndex}
+            commentOwnerId={DATA?.userId}
           // scrollRef={handleTextInputFocus}
           />
         }

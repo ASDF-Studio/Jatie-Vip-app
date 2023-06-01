@@ -56,6 +56,14 @@ export const TYPES = {
     GET_ALL_POST_SUCCESS: "GET_ALL_POST_SUCCESS",
     GET_ALL_POST_ERROR: "GET_ALL_POST_ERROR",
 
+    //Pagination all post 
+
+    GET_ALL_POST_PAGINATION: "GET_ALL_POST_PAGINATION",
+    GET_ALL_POST_PAGINATION_REQUEST: "GET_ALL_POST_PAGINATION_REQUEST",
+    GET_ALL_POST_PAGINATION_SUCCESS: "GET_ALL_POST_PAGINATION_SUCCESS",
+    GET_ALL_POST_PAGINATION_ERROR: "GET_ALL_POST_PAGINATION_ERROR",
+
+
     // Search All Post 
 
     SEARCH_ALL_POST: "SEARCH_ALL_POST",
@@ -209,12 +217,26 @@ export const TYPES = {
     GET_ACTIVE_GIVEAWAY_ERROR: "GET_ACTIVE_GIVEAWAY_ERROR",
 
 
+    GET_ACTIVE_GIVEAWAY_PAGINATION: "GET_ACTIVE_GIVEAWAY_PAGINATION",
+    GET_ACTIVE_GIVEAWAY_PAGINATION_REQUEST: "GET_ACTIVE_GIVEAWAY_PAGINATION_REQUEST",
+    GET_ACTIVE_GIVEAWAY_PAGINATION_SUCCESS: "GET_ACTIVE_GIVEAWAY_PAGINATION_SUCCESS",
+    GET_ACTIVE_GIVEAWAY_PAGINATION_ERROR: "GET_ACTIVE_GIVEAWAY_PAGINATION_ERROR",
+
+
     //GET PAST GIVEAWAY
 
     GET_PAST_GIVEAWAY: "GET_PAST_GIVEAWAY",
     GET_PAST_GIVEAWAY_REQUEST: "GET_PAST_GIVEAWAY_REQUEST",
     GET_PAST_GIVEAWAY_SUCCESS: "GET_PAST_GIVEAWAY_SUCCESS",
     GET_PAST_GIVEAWAY_ERROR: "GET_PAST_GIVEAWAY_ERROR",
+
+
+    GET_PAST_GIVEAWAY_PAGINATION: "GET_PAST_GIVEAWAY_PAGINATION",
+    GET_PAST_GIVEAWAY_PAGINATION_REQUEST: "GET_PAST_GIVEAWAY_PAGINATION_REQUEST",
+    GET_PAST_GIVEAWAY_PAGINATION_SUCCESS: "GET_PAST_GIVEAWAY_PAGINATION_SUCCESS",
+    GET_PAST_GIVEAWAY_PAGINATION_ERROR: "GET_PAST_GIVEAWAY_PAGINATION_ERROR",
+
+
 
     GET_SINGLE_GIVEAWAY_BY_ID: "GET_PAST_GIVEAWAY_BY_ID",
     GET_SINGLE_GIVEAWAY_BY_ID_REQUEST: " GET_SINGLE_GIVEAWAY_BY_ID_REQUEST",
@@ -262,6 +284,12 @@ export const TYPES = {
     GET_ALL_EXCLUSIVE_POST_REQUEST: "GET_ALL_EXCLUSIVE_POST_REQUEST",
     GET_ALL_EXCLUSIVE_POST_SUCCESS: "GET_ALL_EXCLUSIVE_POST_SUCCESS",
     GET_ALL_EXCLUSIVE_POST_ERROR: "GET_ALL_EXCLUSIVE_POST_ERROR",
+
+    GET_ALL_EXCLUSIVE_POST_PAGINATION: "GET_ALL_EXCLUSIVE_POST_PAGINATION",
+    GET_ALL_EXCLUSIVE_POST_PAGINATION_REQUEST: "GET_ALL_EXCLUSIVE_POST_PAGINATION_REQUEST",
+    GET_ALL_EXCLUSIVE_POST_PAGINATION_SUCCESS: "GET_ALL_EXCLUSIVE_POST_PAGINATION_SUCCESS",
+    GET_ALL_EXCLUSIVE_POST_PAGINATION_ERROR: "GET_ALL_EXCLUSIVE_POST_PAGINATION_ERROR",
+
 
     GET_ALL_EXCLUSIVE_POST_BY_ID: "GET_ALL_EXCLUSIVE_POST_BY_ID",
     GET_ALL_EXCLUSIVE_POST_BY_ID_REQUEST: "GET_ALL_EXCLUSIVE_POST_BY_ID_REQUEST",
@@ -316,6 +344,31 @@ const getAllPostError = error => ({
     type: TYPES.GET_ALL_POST_ERROR,
     payload: { error },
 });
+
+
+export const getAllPostPaginationSuccess = post => ({
+    type: TYPES.GET_ALL_POST_PAGINATION_SUCCESS,
+    payload: { post },
+});
+const getAllPostPaginationRequest = () => ({
+    type: TYPES.GET_ALL_POST_PAGINATION_REQUEST,
+    payload: null,
+});
+
+const getAllPostPaginationError = error => ({
+    type: TYPES.GET_ALL_POST_PAGINATION_ERROR,
+    payload: { error },
+});
+
+
+
+
+
+
+
+
+
+
 
 //SEARCH ALL POST 
 
@@ -973,14 +1026,33 @@ export const deletePost = (id, postUserId, userId, userType, screen) => async di
         dispatch(deletePostError(error));
     }
 };
-export const getAllPost = (userId, filterBy, isFollowingData, isVip) => async dispatch => {
+export const getAllPost = (userId, filterBy, isFollowingData, isVip, page) => async dispatch => {
     dispatch(getAllPostRequest());
+    console.log("PAGE____+___+_+_+_+_+_", page);
+
     try {
-        const post = await PostController.getAllPost(userId, filterBy, isFollowingData, isVip);
+        const post = await PostController.getAllPost(userId, filterBy, isFollowingData, isVip, page);
         dispatch(getAllPostSuccess(post))
+
 
     } catch (error) {
         dispatch(getAllPostError(error))
+    }
+
+};
+export const getAllPostPagination = (userId, filterBy, isFollowingData, isVip, page) => async dispatch => {
+    dispatch(getAllPostPaginationRequest());
+    // console.log("PAGE____+___+_+_+_+_+_", page);
+
+    try {
+        const post = await PostController.getAllPost(userId, filterBy, isFollowingData, isVip, page);
+
+
+        dispatch(getAllPostPaginationSuccess(post))
+
+
+    } catch (error) {
+        dispatch(getAllPostPaginationError(error))
     }
 
 };
@@ -1005,10 +1077,10 @@ export const getAllPinPost = () => async dispatch => {
     }
 
 };
-export const commentOnPost = (postId, userId, commentBody) => async dispatch => {
+export const commentOnPost = (postId, userId, commentBody, commentOwnerId) => async dispatch => {
     dispatch(commentOnPostRequest());
     // try {
-    const comment = await PostController.commentOnPost(postId, userId, commentBody);
+    const comment = await PostController.commentOnPost(postId, userId, commentBody, commentOwnerId);
     dispatch(commentOnPostSuccess(comment));
     // } catch (error) {
     //     alert(error)
@@ -1192,7 +1264,33 @@ export const getAllActiveGiveaway = (data) => async dispatch => {
     }
 };
 
+export const getAllActiveGiveawayPagination = (data) => async dispatch => {
+
+    dispatch(getActiveGiveAwayRequest());
+    try {
+        const post = await GiveAwayController.getAllActiveGivePost(data);
+        dispatch(getActiveGiveAwaySuccess(post))
+
+    } catch (error) {
+        dispatch(getActiveGiveAwayError(error))
+    }
+};
+
+
 export const getAllPastGiveaway = (data) => async dispatch => {
+
+    dispatch(getPastGiveAwayRequest());
+    try {
+        const post = await GiveAwayController.getAllPastGiveAwayPost(data);
+        dispatch(getPastGiveAwaySuccess(post))
+
+    } catch (error) {
+        dispatch(getPastGiveAwayError(error))
+    }
+};
+
+
+export const getAllPastGiveawayPagination = (data) => async dispatch => {
 
     dispatch(getPastGiveAwayRequest());
     try {
@@ -1340,6 +1438,19 @@ export const createExclusivePost = (data) => async dispatch => {
 };
 
 export const getAllExclusivePost = (data) => async dispatch => {
+    dispatch(getAllExclusivePostRequest());
+    try {
+        const post = await ExclusivePostController.getAllExclusivePost(data);
+
+        dispatch(getAllExclusivePostSuccess(post))
+
+    } catch (error) {
+        dispatch(getAllExclusivePostError(error))
+    }
+
+};
+
+export const getAllExclusivePagination = (data) => async dispatch => {
     dispatch(getAllExclusivePostRequest());
     try {
         const post = await ExclusivePostController.getAllExclusivePost(data);

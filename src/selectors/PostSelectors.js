@@ -1,5 +1,5 @@
 export const getAllPostData = state => {
-    return Object.keys(state.post).length > 0 ? state.post : null;
+    return Object.keys(state.post).length > 0 ? state.post.feedData : null;
 };
 
 export const getCommentsByPostIdData = state => {

@@ -1,8 +1,12 @@
 import { TYPES } from '@/actions/PostActions';
 import { strings } from '@/localization';
+const initialState = {
+  feedData: [],
+};
 
 export const postReducer = (state = {}, { payload, type }) => {
-  // console.log("TYPOPOPOPOPPO", type);
+
+
   switch (type) {
     case TYPES.VOTE_DOWN_SUCCESS:
       return {
@@ -32,10 +36,21 @@ export const postReducer = (state = {}, { payload, type }) => {
     case TYPES.GET_ALL_POST_SUCCESS:
       return {
         ...state,
-        ...payload.post
+        feedData: payload.post.data
 
       }
-
+    case TYPES.GET_ALL_POST_PAGINATION_SUCCESS:
+      if (payload.post.data.length == 0) {
+        return {
+          ...state,
+          feedData: [...state.feedData],
+        }
+      } else {
+        return {
+          ...state,
+          feedData: [...state.feedData, ...payload.post.data],
+        }
+      }
     case TYPES.SEARCH_ALL_POST_SUCCESS:
       return {
         ...state,

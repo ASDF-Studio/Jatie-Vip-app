@@ -39,7 +39,7 @@ export default function SinglePost({ navigation, route }) {
     const [reportOptionValue, setReportOptionValue] = useState('');
     const [reportComment, setReportCommnet] = useState('');
     const [allPinnedPost, setAllPinnedPost] = useState([]);
-    const [allPost, setAllPost] = useState(ALLPOST?.data ? ALLPOST.data : []);
+    const [allPost, setAllPost] = useState(ALLPOST ? ALLPOST : []);
     const [postUserId, setPostUserId] = useState(null);
     const [postTitle, setPostTitle] = useState('');
     const [postBody, setPostBody] = useState('');
@@ -288,7 +288,7 @@ export default function SinglePost({ navigation, route }) {
                             <ModalDown open={open} setOpen={setOpen}>
                                 <ModalList
                                     //   onPress={() => { onFollow() }}
-                                    title={(!ALLPOST?.data[postIndex]?.is_following ? strings.operations.follow : strings.operations.unFollow) + " @" + postUserName}
+                                    title={(!ALLPOST[postIndex]?.is_following ? strings.operations.follow : strings.operations.unFollow) + " @" + postUserName}
                                     icon={faUserPlus}
                                     iconColor={theme.light.colors.primary}
                                     iconBg={theme.light.colors.primaryBgLight}

@@ -552,5 +552,9 @@ export const styles = StyleSheet.create({
     height: ms(200),
     marginRight: ms(10),
   },
+  thumbnailContainer: {
+    width: '100%',
+    minHeight: vs(180),
+  },
 
 });

@@ -65,7 +65,7 @@ import { Logo } from '@/assets';
 import { faBell, faSearch } from '@fortawesome/pro-regular-svg-icons';
 import { getUser } from '@/selectors/UserSelectors';
 import { navigationRef } from '@/navigation/RootNavigation';
-import { getAllPost, TYPES, deletePost, reportPost, followUser, blockUser, unFollowUser } from '@/actions/PostActions';
+import { getAllPost, TYPES, deletePost, reportPost, followUser, blockUser, unFollowUser, getAllPostPagination } from '@/actions/PostActions';
 import { getAllPostData } from '@/selectors/PostSelectors';
 import { isLoadingSelector, successSelector } from '@/selectors/StatusSelectors';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -76,15 +76,16 @@ import queryString from 'query-string';
 import { POST_TYPE } from '@/constants/enums';
 import { followers } from '@/actions/UserActions';
 import { SwiperViewer } from '@/components/SwiperComponent';
+import { useRef } from 'react';
 
 export function Home({ navigation }) {
   const ALLPOST = useSelector(getAllPostData)
-
+  const flatListRef = useRef()
   const userType = useSelector(state => state.userType);
   const user = useSelector(getUser);
   // console.log("USERRR", user);
   const dispatch = useDispatch()
-  const [vipArea, setVipArea] = useState(strings.home.vipArea);
+  const [vipArea, setVipArea] = useState(strings.home.newFeed);
   const [open, setOpen] = useState(false);
   const [openReport, setOpenReport] = useState(false);
   const [recentFilterOpen, setRecentFilterOpen] = useState(false);
@@ -94,6 +95,8 @@ export function Home({ navigation }) {
   const [feedImages, setFeedImages] = useState([]);
   const [editData, setEditdata] = useState({})
   const [reportListOpen, setReportListOpen] = useState(false);
+  const [fetchFeedPost, setFetchFeedPost] = useState(true);
+  const [loadMoreRundownLoader, setLoadMoreRundownLoader] = useState(false);
   const [reportOption, setReportOption] = useState([
     { label: 'Explicit Content', value: 'Explicit Content' },
     { label: 'Bullying or Harassment', value: 'Bullying or Harassment' },
@@ -132,7 +135,8 @@ export function Home({ navigation }) {
 
 
   useEffect(() => {
-    dispatch(getAllPost(user?.id, sortBy, follwingSwitch, vipArea == `${strings.home.newFeed}` ? false : true))
+    const page = ""
+    dispatch(getAllPost(user?.id, sortBy, follwingSwitch, vipArea == `${strings.home.newFeed}` ? false : true, page))
   }, [sortBy, follwingSwitch, vipArea]);
 
 
@@ -162,7 +166,10 @@ export function Home({ navigation }) {
   }
 
   const isLoading = useSelector(state =>
-    isLoadingSelector([TYPES.GET_ALL_POST, TYPES.SEARCH_ALL_POST], state)
+    isLoadingSelector([TYPES.GET_ALL_POST, TYPES.SEARCH_ALL_POST,], state)
+  );
+  const isLoadingMore = useSelector(state =>
+    isLoadingSelector([TYPES.GET_ALL_POST_PAGINATION], state)
   );
 
   const isShowReportToast = useSelector(state =>
@@ -194,7 +201,7 @@ export function Home({ navigation }) {
   const onFollow = () => {
     // setPostUserFollowed(true)
     setOpen(false)
-    if (ALLPOST?.data[postIndex].is_following) {
+    if (ALLPOST[postIndex].is_following) {
       dispatch(unFollowUser(user?.id, postUserId, strings.home.post))
       dispatch(followers(user?.id))
     }
@@ -221,6 +228,38 @@ export function Home({ navigation }) {
       setFeedImages(data.postMediaContent)
   }
 
+  const handleScroll = ({ nativeEvent }) => {
+    const { layoutMeasurement, contentOffset, contentSize } = nativeEvent;
+    const isEndReached =
+      layoutMeasurement.height + contentOffset.y >= contentSize.height - 50;
+
+    if (isEndReached) {
+      onLoadMorePost()
+      // fetchMoreData();
+    }
+  };
+
+  // Add the event listener when the component mounts
+  // and remove it when the component unmounts
+
+
+  const onLoadMorePost = () => {
+    const post = ALLPOST.slice(-1)
+    console.log("LAST_POST===", post[0].created_at);
+    const page = post[0].created_at
+    dispatch(getAllPostPagination(user?.id, sortBy, follwingSwitch, vipArea == `${strings.home.newFeed}` ? false : true, page))
+  }
+  const renderFooterPost = () => {
+    return (
+      <View style={{}}>
+        {isLoadingMore &&
+          <ActivityIndicator size={"large"} color="orange" />
+
+        }
+
+      </View>
+    );
+  };
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="transparent" />
@@ -298,7 +337,7 @@ export function Home({ navigation }) {
             style={styles.loaderStyle}
           /> :
           <FlatList
-            // ref={flatListRef}
+            ref={flatListRef}
             ListHeaderComponent={
               <View>
 
@@ -313,7 +352,25 @@ export function Home({ navigation }) {
 
               </View>
             }
-            data={searchEnabled ? ALLPOST?.searchedPosts : ALLPOST?.data}
+            ListFooterComponent={renderFooterPost}
+
+            // onEndReached={onLoadMorePost}
+            // onEndReachedThreshold={0.5}
+            onEndReached={() => {
+              // if (!fetchFeedPost) {
+              // console.log(onEndReachedCalledDuringMomentum)
+              onLoadMorePost();
+              setFetchFeedPost(true);
+              // onEndReachedCalledDuringMomentum = true;
+              // }
+            }}
+            onMomentumScrollBegin={() => {
+              setFetchFeedPost(false);
+              // onEndReachedCalledDuringMomentum = false;
+            }}
+            extraData={searchEnabled ? ALLPOST?.searchedPosts : ALLPOST}
+            onEndReachedThreshold={0.5}
+            data={searchEnabled ? ALLPOST?.searchedPosts : ALLPOST}
             keyExtractor={item => item.id}
             contentContainerStyle={{ flexGrow: 1 }}
             renderItem={({ item, index }) => (
@@ -639,7 +696,7 @@ export function Home({ navigation }) {
           <ModalDown open={open} setOpen={setOpen}>
             <ModalList
               onPress={() => { onFollow() }}
-              title={(!ALLPOST?.data[postIndex]?.is_following ? strings.operations.follow : strings.operations.unFollow) + " @" + postUserName}
+              title={(!ALLPOST[postIndex]?.is_following ? strings.operations.follow : strings.operations.unFollow) + " @" + postUserName}
               icon={faUserPlus}
               iconColor={theme.light.colors.primary}
               iconBg={theme.light.colors.primaryBgLight}
