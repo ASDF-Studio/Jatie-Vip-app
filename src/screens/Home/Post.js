@@ -80,6 +80,7 @@ export default function AdminPost({ navigation }) {
         ? ImageCropPicker.openPicker({
           width: ms(300),
           height: ms(400),
+
           maxFiles: 3,
           mediaType: strings.exclusive.image,
           multiple: true,
@@ -217,7 +218,7 @@ export default function AdminPost({ navigation }) {
 
       {
         userType.user === strings.userType.free && (
-          dispatch(createPost(user?.id, postTitle, postBody, postImg, mimeType, imageArray,))
+          dispatch(createPost(user?.id, postTitle, postBody, postImg, mimeType, imageArray, NAVIGATION.home))
         )
       }
       {

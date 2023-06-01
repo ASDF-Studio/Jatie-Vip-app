@@ -8,38 +8,38 @@ import { ms } from "react-native-size-matters"
 import { FontFamily } from "@/theme/Fonts"
 
 
-export const CommentContainer = ({seeAllPress, children})=>{
-    return(
-        <View style = {styles.container}>
+export const CommentContainer = ({ seeAllPress, children }) => {
+    return (
+        <View style={styles.container}>
             {/* comment body */}
             {children}
-            <TouchableOpacity 
-                style = {styles.seeAllcontainer}    
-                onPress = {seeAllPress}
+            <TouchableOpacity
+                style={styles.seeAllcontainer}
+                onPress={seeAllPress}
             >
-                <FontAwesomeIcon 
-                    icon = {faChevronDown}
-                    color = {theme.light.colors.info}
+                <FontAwesomeIcon
+                    icon={faChevronDown}
+                    color={theme.light.colors.info}
                 />
-                <Text style = {styles.seeAllTxt}>{strings.home.seeAllComments} </Text>
+                <Text style={styles.seeAllTxt}>{strings.home.seeAllComments} </Text>
             </TouchableOpacity>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    container : {
-        width : '100%',
+    container: {
+        width: '100%',
     },
-    seeAllcontainer : {
-        flexDirection : 'row',
-        alignItems : 'center',
-        padding : ms(10)
+    seeAllcontainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: ms(10)
     },
-    seeAllTxt : {
-        fontFamily : FontFamily.Recoleta_semibold,
-        fontSize : ms(13, 0.3),
-        color : theme.light.colors.info,
-        paddingLeft : ms(5)
+    seeAllTxt: {
+        fontFamily: FontFamily.Recoleta_semibold,
+        fontSize: ms(13, 0.3),
+        color: theme.light.colors.info,
+        paddingLeft: ms(5)
     }
 })

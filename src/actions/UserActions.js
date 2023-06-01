@@ -117,8 +117,45 @@ export const TYPES = {
   UNBLOCK_USER_BY_ID: "UNBLOCK_USER_BY_ID",
   UNBLOCK_USER_BY_ID_REQUEST: "UNBLOCK_USER_BY_ID_REQUEST",
   UNBLOCK_USER_BY_ID_SUCCESS: "UNBLOCK_USER_BY_ID_SUCCESS",
-  UNBLOCK_USER_BY_ID_ERROR: "UNBLOCK_USER_BY_ID_ERROR"
+  UNBLOCK_USER_BY_ID_ERROR: "UNBLOCK_USER_BY_ID_ERROR",
 
+  //GET_ALL_ACTIVITY
+  GET_ALL_ACTIVITY: "GET_ALL_ACTIVITY",
+  GET_ALL_ACTIVITY_REQUEST: " GET_ALL_ACTIVITY_REQUEST",
+  GET_ALL_ACTIVITY_SUCCESS: "GET_ALL_ACTIVITY_SUCCESS",
+  GET_ALL_ACTIVITY_ERROR: "GET_ALL_ACTIVITY_ERROR",
+
+
+  //MANAGE_ALL_REPORTS
+  MANAGE_ALL_REPORTS: "MANAGE_ALL_REPORTS",
+  MANAGE_ALL_REPORTS_REQUEST: "MANAGE_ALL_REPORTS_REQUEST",
+  MANAGE_ALL_REPORTS_SUCCESS: "MANAGE_ALL_REPORTS_SUCCESS",
+  MANAGE_ALL_REPORTS_ERROR: "MANAGE_ALL_REPORTS_ERROR",
+
+  //GET_ALL_BANNED_USERS
+  GET_ALL_BANNED_USERS: "GET_ALL_BANNED_USERS",
+  GET_ALL_BANNED_USERS_REQUEST: "GET_ALL_BANNED_USERS_REQUEST",
+  GET_ALL_BANNED_USERS_SUCCESS: "GET_ALL_BANNED_USERS_SUCCESS",
+  GET_ALL_BANNED_USERS_ERROR: "GET_ALL_BANNED_USERS_ERROR",
+
+  //UNBANNED_USER
+  UNBANNED_USER_BY_ID: "UNBANNED_USER_BY_ID",
+  UNBANNED_USER_BY_ID_REQUEST: "UNBANNED_USER_BY_ID_REQUEST",
+  UNBANNED_USER_BY_ID_SUCCESS: "UNBANNED_USER_BY_ID_SUCCESS",
+  UNBANNED_USER_BY_ID_ERROR: "UNBANNED_USER_BY_ID_ERROR",
+
+  //BANNED_USER
+  BANNED_USER_BY_ID: "BANNED_USER_BY_ID",
+  BANNED_USER_BY_ID_REQUEST: "BANNED_USER_BY_ID_REQUEST",
+  BANNED_USER_BY_ID_SUCCESS: "BANNED_USER_BY_ID_SUCCESS",
+  BANNED_USER_BY_ID_ERROR: "BANNED_USER_BY_ID_ERROR",
+
+
+  //GET_ALL_NOTIFICATIONS
+  GET_ALL_NOTIFICATIONS: "GET_ALL_NOTIFICATIONS",
+  GET_ALL_NOTIFICATIONS_REQUEST: "GET_ALL_NOTIFICATIONS_REQUEST",
+  GET_ALL_NOTIFICATIONS_SUCCESS: "GET_ALL_NOTIFICATIONS_SUCCESS",
+  GET_ALL_NOTIFICATIONS_ERROR: "GET_ALL_NOTIFICATIONS_ERROR"
 };
 
 const loginRequest = () => ({
@@ -442,6 +479,100 @@ const unblockUserByIdError = error => ({
   payload: { error },
 });
 
+//Get All activity by user Id
+export const getAllActivitySuccess = user => ({
+  type: TYPES.GET_ALL_ACTIVITY_SUCCESS,
+  payload: { user },
+});
+
+const getAllActivityRequest = () => ({
+  type: TYPES.GET_ALL_ACTIVITY_REQUEST,
+  payload: null,
+});
+
+const getAllActivityError = error => ({
+  type: TYPES.GET_ALL_ACTIVITY_ERROR,
+  payload: { error },
+});
+
+// manage All reports
+export const manageAllReportsSuccess = user => ({
+  type: TYPES.MANAGE_ALL_REPORTS_SUCCESS,
+  payload: { user },
+});
+
+const manageAllReportsRequest = () => ({
+  type: TYPES.MANAGE_ALL_REPORTS_REQUEST,
+  payload: null,
+});
+
+const manageAllReportsError = error => ({
+  type: TYPES.MANAGE_ALL_REPORTS_ERROR,
+  payload: { error },
+});
+
+export const getBannedUsersSuccess = user => ({
+  type: TYPES.GET_ALL_BANNED_USERS_SUCCESS,
+  payload: { user },
+});
+
+const getBannedUsersRequest = () => ({
+  type: TYPES.GET_ALL_BANNED_USERS_REQUEST,
+  payload: null,
+});
+
+const getAllBannedUsersError = error => ({
+  type: TYPES.GET_ALL_BANNED_USERS_ERROR,
+  payload: { error },
+});
+
+//Unbanned User By ID
+export const unBannedUserByIdSuccess = user => ({
+  type: TYPES.UNBANNED_USER_BY_ID_SUCCESS,
+  payload: { user },
+});
+
+const unBannedUserByIdRequest = () => ({
+  type: TYPES.UNBANNED_USER_BY_ID_REQUEST,
+  payload: null,
+});
+
+const unBannedUserByIdError = error => ({
+  type: TYPES.UNBANNED_USER_BY_ID_ERROR,
+  payload: { error },
+});
+
+//banned User By ID
+export const bannedUserByIdSuccess = user => ({
+  type: TYPES.BANNED_USER_BY_ID_SUCCESS,
+  payload: { user },
+});
+
+const bannedUserByIdRequest = () => ({
+  type: TYPES.BANNED_USER_BY_ID_REQUEST,
+  payload: null,
+});
+
+const bannedUserByIdError = error => ({
+  type: TYPES.BANNED_USER_BY_ID_ERROR,
+  payload: { error },
+});
+
+//Get all Notifications
+export const getAllNotificationsSuccess = user => ({
+  type: TYPES.GET_ALL_NOTIFICATIONS_SUCCESS,
+  payload: { user },
+});
+
+const getAllNotificationsRequest = () => ({
+  type: TYPES.GET_ALL_NOTIFICATIONS_REQUEST,
+  payload: null,
+});
+
+const getAllNotificationsError = error => ({
+  type: TYPES.GET_ALL_NOTIFICATIONS_ERROR,
+  payload: { error },
+});
 
 export const login = (number) => async dispatch => {
   dispatch(globalReset())
@@ -558,11 +689,11 @@ export const unFollowUser = (unFollowerId, followId) => async dispatch => {
 };
 
 
-export const getUserProfileByUserId = (userId) => async dispatch => {
+export const getUserProfileByUserId = (userId, loggedInID) => async dispatch => {
   dispatch(globalReset())
   dispatch(getUserProfileByUserIdRequest());
   try {
-    const user = await UserController.getUserProfileByUseridAPI(userId);
+    const user = await UserController.getUserProfileByUseridAPI(userId, loggedInID);
     dispatch(getUserProfileByUserIdSuccess(user?.data));
   } catch (error) {
 
@@ -867,3 +998,83 @@ export const searchUser = (searchuservalue) => async dispatch => {
 //   }
 
 // };
+export const getAllActivityByUserId = (id) => async dispatch => {
+
+  dispatch(getAllActivityRequest());
+  try {
+    const user = await UserController.getAllActivityRequestApi(id);
+    dispatch(getAllActivitySuccess(user))
+
+  } catch (error) {
+    dispatch(getAllActivityError(error))
+  }
+
+};
+
+export const manageAllReports = () => async dispatch => {
+
+  dispatch(manageAllReportsRequest());
+  try {
+    const user = await UserController.manageAllreportsRequestApi();
+    dispatch(manageAllReportsSuccess(user))
+
+  } catch (error) {
+    dispatch(manageAllReportsError(error))
+  }
+
+};
+
+export const bannedUsers = () => async dispatch => {
+
+  dispatch(getBannedUsersRequest());
+  try {
+    const user = await UserController.getAllBannedUsersRequest();
+    dispatch(getBannedUsersSuccess(user))
+
+  } catch (error) {
+    dispatch(getAllBannedUsersError(error))
+  }
+
+};
+
+export const unBannedUserById = (id) => async dispatch => {
+
+  dispatch(unBannedUserByIdRequest());
+
+  try {
+    const user = await UserController.unBannedUserRequest(id);
+    dispatch(unBannedUserByIdSuccess(user))
+
+  } catch (error) {
+    dispatch(unBannedUserByIdError(error))
+  }
+
+};
+export const bannedUserById = (id) => async dispatch => {
+
+  dispatch(bannedUserByIdRequest());
+
+  try {
+    const user = await UserController.bannedUserRequest(id);
+    dispatch(bannedUserByIdSuccess(user))
+
+  } catch (error) {
+    dispatch(bannedUserByIdError(error))
+  }
+
+};
+
+export const fetchAllNotifications = (id, read) => async dispatch => {
+
+
+  dispatch(getAllNotificationsRequest());
+
+  try {
+    const user = await UserController.AllNotificationsRequest(id, read);
+    dispatch(getAllNotificationsSuccess(user))
+
+  } catch (error) {
+    dispatch(getAllNotificationsError(error))
+  }
+
+};

@@ -12,14 +12,108 @@ import {
   CardFooter,
   CommentCard,
   CommentContainer,
+  ModalDown,
+  ModalList,
+  CustomLoader,
 } from '@/components';
 import { ms } from 'react-native-size-matters';
 import { NAVIGATION } from '@/constants';
 import { card, Data } from './ProfileData/manageReportOnPostData';
+import { useEffect } from 'react';
+import { followUser, getPostById, unFollowUser } from '@/actions/PostActions';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUser } from '@/selectors/UserSelectors';
+import { getPostByIdData } from '@/selectors/PostSelectors';
+import { useIsFocused } from '@react-navigation/native';
+import { useState } from 'react';
+import { faFlag, faMessage, faTrash, faUserPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { bannedUserById, unBannedUserById } from '@/actions/UserActions';
+import { isLoadingSelector } from '@/selectors/StatusSelectors';
+import { TYPES } from '../../actions/PostActions'
+import { manageAllReports } from '@/actions/UserActions';
+export default function ManageReportOnMessage({ navigation, route }) {
+  const isLoading = useSelector(state =>
+    isLoadingSelector([TYPES.GET_POST_BY_ID], state)
+  );
 
-export default function ManageReportOnMessage({ navigation }) {
+  const dispatch = useDispatch()
+  const focus = useIsFocused();
+  const [banValue, setBanvalue] = useState(item?.post?.user?.isBanned)
+  const { item } = route.params
+  console.log('Item', item?.post?.user?.isBanned)
+  const [open, setOpen] = useState(false);
+  const user = useSelector(getUser)
+  const postData = useSelector(getPostByIdData)
+  console.log("POST__DATAA In SELECTOR", JSON.stringify(postData?.is_following));
+
+
+
+  useEffect(() => {
+    dispatch(getPostById(item.objectId, user?.id))
+    console.log(item.objectId, user?.id)
+
+
+    // setLikeCount(item?.upVote)
+    // setDownCount(item?.downVote)
+    // setCommentCount(item?.comments_aggregate?.aggregate?.count)
+
+  }, [focus])
+
+
+
+  const bannedHandlePress = () => {
+
+    dispatch(bannedUserById(postData?.userId))
+    setBanvalue(true)
+    setOpen(false)
+    setTimeout(() => {
+      dispatch(manageAllReports())
+    }, 500);
+
+    // console.log('banned id', postData?.user?.id)
+  }
+  const unbannedHandlePress = () => {
+    setOpen(true)
+    dispatch(unBannedUserById(postData?.userId))
+
+    setBanvalue(false)
+    setTimeout(() => {
+      dispatch(manageAllReports())
+    }, 500);
+    // console.log('banned id', postData?.user?.id)
+  }
+  const onbanPress = () => {
+    banValue == true ? unbannedHandlePress() : bannedHandlePress()
+    // console.log('banned id', postData?.user?.id)
+  }
+
+  const onFollow = () => {
+
+
+    if (postData?.is_following == true) {
+      dispatch(unFollowUser(user?.id, postData?.userId))
+      // console.log(user?.id, postData?.userId)
+      setOpen(false)
+      setTimeout(() => {
+        dispatch(getPostById(item.objectId, user?.id))
+      }, 100);
+
+    }
+    else {
+      dispatch(followUser(user?.id, postData?.userId))
+      setOpen(false)
+
+      //console.log(user?.id, postData?.userId)
+      setTimeout(() => {
+        dispatch(getPostById(item.objectId, user?.id))
+      }, 100);
+    }
+
+  }
+
   return (
     <SafeAreaView style={styles.container}>
+      <CustomLoader open={isLoading} />
       <TopBackButton
         onPress={() => navigation.goBack()}
         style={styles.TopBackButton}
@@ -29,10 +123,11 @@ export default function ManageReportOnMessage({ navigation }) {
       </Text>
       <HorizontalLine color={theme.light.colors.infoBgLight} paddingTop={10} />
       <CardHeader
-        fullName={Data.fullName}
-        userName={Data.userName}
-        profilePic={Data.profilePic}
-        time={Data.time}
+        fullName={item.user.fullName}
+        userName={item.user.username}
+        profilePic={item.user.profilePic}
+        time={item.created_at}
+        userId={item?.user.id}
       />
       <View style={styles.activity}>
         <View style={styles.textContainer}>
@@ -40,26 +135,27 @@ export default function ManageReportOnMessage({ navigation }) {
           <Text style={styles.reactOnTxt}>{strings.profile.thisPost}</Text>
         </View>
         <View style={styles.reasonContainer}>
-          <Text style={styles.reasonTxt}>{strings.profile.reason}</Text>
+          <Text style={styles.reasonTxt}>{strings.profile.reason}{item.reportTitle}</Text>
         </View>
       </View>
       <View style={styles.body}>
         <Card>
           <View style={styles.reportBound}>
             <CardHeader
-              fullName={Data.fullName}
-              userName={Data.userName}
-              profilePic={Data.profilePic}
-              time={Data.time}
+              fullName={postData?.user.fullName}
+              userName={postData?.user.username}
+              profilePic={postData?.user.profilePic}
+              time={postData?.created_at}
+              userId={postData?.userId}
             />
-            <CardBody text={card.text} />
+            <CardBody text={postData?.postBody} />
           </View>
-          <CommentContainer
+          {/* <CommentContainer
             seeAllPress={() =>
               navigation.navigate(NAVIGATION.manageReportOnPostAllComments)
             }
-          >
-            <CommentCard
+          > */}
+          {/* <CommentCard
               name={card.name}
               userName={card.userName}
               imageUrl={card.imageUrl}
@@ -68,13 +164,66 @@ export default function ManageReportOnMessage({ navigation }) {
               likeCount={card.likeCount}
               // likePress = {}
               disLikeCount={card.disLikeCount}
-              // disLikePress = {}
-            />
-          </CommentContainer>
-          <CardFooter likeCount={32} disLikeCount={3} commentCount={3} />
+            // disLikePress = {}
+            /> */}
+          {/* </CommentContainer> */}
+          <CardFooter morePress={() => { setOpen(true) }}
+            postIndex={0}
+            userID={user?.id}
+            postID={postData?.id}
+            likeCount={postData?.upVote}
+            disLikeCount={postData?.downVote}
+            commentCount={postData?.comments_aggregate.aggregate.count}
+            commentPress={() => navigation.navigate(NAVIGATION.comments,
+              { DATA: item.post, "POST_INDEX": 0 })} />
         </Card>
+
+
+        <ModalDown open={open} setOpen={setOpen}>
+          <ModalList
+            onPress={() => { onFollow() }}
+            title={postData?.is_following == true ? 'UnFollow' + ' @' + postData?.user.username : 'Follow' + ' @' + postData?.user.username}
+            icon={faUserPlus}
+            iconColor={theme.light.colors.primary}
+            iconBg={theme.light.colors.primaryBgLight}
+          />
+          <ModalList
+            title={strings.operations.sendPrivateMessage}
+            icon={faMessage}
+            iconColor={theme.light.colors.success}
+            iconBg={theme.light.colors.successBgLight}
+          />
+          <HorizontalLine
+            color={theme.light.colors.infoBgLight}
+            paddingTop={15}
+            paddingBottom={8}
+          />
+
+          <>
+            <ModalList
+              title={strings.home.deletePost}
+              icon={faTrash}
+              iconColor={theme.light.colors.secondary}
+              iconBg={theme.light.colors.infoBgLight}
+            // onPress={() => { setReplace(true), setOpen(false) }}
+            />
+            {/* <ModalList
+              title={strings.operations.block + ' @' + postData?.user.username}
+              icon={faXmark}
+              iconColor={theme.light.colors.secondary}
+              iconBg={theme.light.colors.infoBgLight}
+            /> */}
+            <ModalList onPress={() => onbanPress()}
+              title={banValue == true ? strings.operations.unBan + ' @' + postData?.user.username : strings.operations.ban + ' @' + postData?.user.username}
+              icon={faFlag}
+              iconColor={theme.light.colors.secondary}
+              iconBg={theme.light.colors.infoBgLight}
+            />
+          </>
+
+        </ModalDown>
       </View>
-    </SafeAreaView>
+    </SafeAreaView >
   );
 }
 
@@ -143,3 +292,4 @@ const styles = StyleSheet.create({
     backgroundColor: theme.light.colors.primaryBgLightest,
   },
 });
+

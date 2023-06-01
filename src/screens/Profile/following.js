@@ -41,7 +41,7 @@ export default function Following({ navigation, route }) {
   const user = useSelector(getUser)
   const followerDataa = user.followersDatainReducer
   const { id } = route.params
-
+  const { screenName } = route.params
   const [UnfollowId, setUnfollowId] = useState('')
   const [username, setUserName] = useState('')
   const focus = useIsFocused()
@@ -106,12 +106,15 @@ export default function Following({ navigation, route }) {
                     <Text style={styles.userNameTxt}>{item.userByFollowinguserid?.username} </Text>
                   </View>
                 </TouchableOpacity>
-                <Icon
+
+
+                {screenName == "userProfile" ? null : <Icon
                   icon={faEllipsis}
                   size={ms(15)}
                   color={theme.light.colors.secondary}
                   onPress={() => { setUnfollowId(item.userByFollowinguserid.id), setUserName(item.userByFollowinguserid.username), setOpen(true) }}
-                />
+
+                />}
               </View>
             );
           }}

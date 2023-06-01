@@ -183,7 +183,7 @@ export const en = {
     analytics: 'Analytics',
     bannedUsers: 'Banned Users',
     reported: 'Reported',
-    reason: 'Reasion : Explicit Content',
+    reason: 'Reasion :',
     ban: 'Ban',
     unban: 'Unban',
     upvoted: 'Upvoted',
@@ -397,5 +397,10 @@ export const en = {
   },
   userFollowedSuccsess: {
     followedSuccess: "Following"
+  }
+  ,
+  reports: {
+    post: "Reported Posts",
+    users: "Reported Users"
   }
 };

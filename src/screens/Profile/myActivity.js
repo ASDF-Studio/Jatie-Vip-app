@@ -12,38 +12,41 @@ import { FontFamily } from '@/theme/Fonts';
 import { strings } from '@/localization';
 import { Data } from './ProfileData/myActivityData';
 import { useIsFocused } from '@react-navigation/native';
-import { useDispatch } from 'react-redux';
-import { getAllActivityByLoggedInUser } from '@/actions/UserActions';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllActivityByUserId, getAllPostsByLoggedInUser } from '@/actions/UserActions';
+import { getUser } from '@/selectors/UserSelectors';
+
 
 export default function MyActivity({ navigation }) {
-  const focus = useIsFocused();
-
-  const [open, setOpen] = useState(false);
   const dispatch = useDispatch()
+  const focus = useIsFocused();
+  const user = useSelector(getUser);
 
 
 
-  // useEffect(() => {
-  //   if (focus) {
-  //     dispatch(getAllActivityByLoggedInUser(user?.id))
-  //   }
-  // }, [focus]);
+  useEffect(() => {
+    if (focus) {
+      dispatch(getAllActivityByUserId(user.id))
+
+    }
+  }, [focus]);
   return (
     <View style={styles.pageContainer}>
       <FlatList
-        data={Data}
+        data={user?.MyActivityKey?.data}
         key={item => item.id}
         renderItem={({ item }) => (
           <View style={styles.cardContainer}>
             <Card>
               <CardHeader
-                fullName={item.fullName}
-                userName={item.userName}
-                profilePic={item.profilePic}
-                time={item.time}
+                fullName={user.fullName}
+                userName={user.username}
+                profilePic={user.profilePic}
+                time={item.created_at}
               />
               <View style={styles.activity}>
-                {item.status == `${strings.profile.upvoted}` ? (
+                {item.activityDetails == 'upvoted this' ? (
                   <Icon
                     icon={faCircleUp}
                     size={ms(15)}
@@ -55,7 +58,7 @@ export default function MyActivity({ navigation }) {
                     ]}
                   />
                 ) : null}
-                {item.status == `${strings.profile.downVoted}` ? (
+                {item.activityDetails == 'downvoted this' ? (
                   <Icon
                     icon={faCircleDown}
                     size={ms(15)}
@@ -67,7 +70,7 @@ export default function MyActivity({ navigation }) {
                     ]}
                   />
                 ) : null}
-                {item.status == `${strings.profile.commented}` ? (
+                {item.activityDetails == "commented on this" ? (
                   <Icon
                     icon={faComment}
                     size={ms(15)}
@@ -80,10 +83,10 @@ export default function MyActivity({ navigation }) {
                   />
                 ) : null}
                 <View style={styles.textContainer}>
-                  <Text style={styles.statsTxt}> {item.status} </Text>
+                  <Text style={styles.statsTxt}> {item.activityDetails} </Text>
                   <Text style={styles.reactOnTxt}>
-                    {' '}
-                    {`${item.reactOn}'s post`}{' '}
+
+                    {`post`}{' '}
                   </Text>
                 </View>
               </View>

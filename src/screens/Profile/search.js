@@ -60,7 +60,7 @@ export default function Search({ navigation }) {
           </Text>
         </View>
         <View style={styles.right}>
-          <Icon onPress={() => { SearchHandlePress() }}
+          <Icon onPress={SearchHandlePress}
             icon={faSearch}
             color={theme.light.colors.primary}
             size={ms(20)}

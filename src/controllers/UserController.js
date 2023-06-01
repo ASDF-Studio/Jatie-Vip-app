@@ -1,8 +1,10 @@
 import { API_BASE_URL, API_END_POINTS } from '@/constants';
 import { strings } from '@/localization';
 import { HttpClient } from './HttpClient';
+import { showMessage } from 'react-native-flash-message';
 
 export class UserController {
+
 
   static async login(number) {
     return new Promise((resolve, reject) => {
@@ -149,15 +151,18 @@ export class UserController {
 
 
   // get User profile by user id API
-  static async getUserProfileByUseridAPI(userId) {
+  static async getUserProfileByUseridAPI(userId, loggedInID) {
+
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.GET_USER_PROFILE_BY_USER_ID;
       var data = {
-        id: userId
+        id: userId,
+        loggedInUserId: loggedInID
       }
       HttpClient.post(endpoint, data)
         .then((response) => {
-          resolve(response);
+          resolve(response)
+          console.log('response of every single user', JSON.stringify(response));
         })
         .catch((error) => {
           reject(error);
@@ -176,7 +181,7 @@ export class UserController {
       let data = new FormData()
       if (mimeType !== null) {
         let obj = [];
-        imageArray.map(item => {
+        imageArray && imageArray.map(item => {
           let filename = item.image.split("/").pop();
           obj = {
             uri: item.image,
@@ -199,6 +204,7 @@ export class UserController {
       await HttpClient.post(endpoint, data, { headers })
         .then((response) => {
           resolve(response);
+          console.log('response of create post', response)
         })
         .catch((error) => {
           reject(error);
@@ -411,6 +417,7 @@ export class UserController {
       HttpClient.post(endpoint, data)
         .then((response) => {
           resolve(response);
+          console.log('resonse of posts id   ', response)
         })
         .catch((error) => {
           reject(new Error(error.message));
@@ -547,7 +554,7 @@ export class UserController {
         .then((response) => {
 
           resolve(response);
-
+          console.log('response of search user users', response)
         })
         .catch((error) => {
           reject(new Error(error.message));
@@ -560,4 +567,131 @@ export class UserController {
       setTimeout(resolve, 500);
     });
   }
+
+  static async getAllActivityRequestApi(id) {
+
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.GET_ALL_ACTIVITY;
+      var data = JSON.stringify({
+        "loggedInUserId": id
+      });
+      HttpClient.post(endpoint, data)
+        .then((response) => {
+          resolve(response)
+          console.log('response of all activity', response)
+        })
+        .catch((error) => {
+          reject(new Error(error.message))
+          console.log('error of all activity', error)
+        });
+    });
+  }
+
+  static async manageAllreportsRequestApi() {
+
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.MANAGE_ALL_REPORTS;
+
+      HttpClient.post(endpoint)
+        .then((response) => {
+          resolve(response)
+          // console.log('response of all managereports', response.data)
+        })
+        .catch((error) => {
+          reject(new Error(error.message))
+          console.log('error of all manage Reports', error)
+        });
+    });
+  }
+
+  static async getAllBannedUsersRequest() {
+
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.GET_ALL_BANNED_USERS;
+
+      HttpClient.post(endpoint)
+        .then((response) => {
+          resolve(response)
+          console.log('response of all banned Users', response)
+
+        })
+        .catch((error) => {
+          reject(new Error(error.message))
+          console.log('error of all banned users', error)
+        });
+    });
+  }
+
+
+  static async unBannedUserRequest(id) {
+
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.UNBANNED_USER_BY_ID;
+      var data = JSON.stringify({
+        "userId": id
+      });
+      HttpClient.post(endpoint, data)
+        .then((response) => {
+          resolve(response)
+          console.log('response of unBanned User', response)
+          showMessage({
+            message: 'User Unbanned',
+            type: 'success'
+          })
+        })
+        .catch((error) => {
+          reject(new Error(error.message))
+          console.log('error of  UnBanned user', error)
+        });
+    });
+  }
+
+
+  static async bannedUserRequest(id) {
+
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.BANNED_USER_BY_ID;
+      var data = JSON.stringify({
+        "userId": id
+      });
+      HttpClient.post(endpoint, data)
+        .then((response) => {
+          resolve(response)
+          console.log('response of banned User', response)
+          showMessage({
+            message: 'User Banned',
+            type: 'success'
+          })
+        })
+        .catch((error) => {
+          reject(new Error(error.message))
+          console.log('error of  banned user', error)
+        });
+    });
+  }
+
+
+  static async AllNotificationsRequest(id, read) {
+
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.GET_ALL_NOTIFICATIONS;
+
+      //  console.log("endPoint", endpoint)
+      var data = JSON.stringify({
+        "loggedInUserId": id,
+        "viewStatus": read == true ? "unread" : "all"
+      });
+      HttpClient.post(endpoint, data)
+        .then((response) => {
+          resolve(response)
+          console.log('response of All Notifications', JSON.stringify(response))
+
+        })
+        .catch((error) => {
+          reject(new Error(error.message))
+          console.log('error of All notifications', error)
+        });
+    });
+  }
 }
+

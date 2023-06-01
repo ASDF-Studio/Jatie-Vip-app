@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   FlatList,
   SafeAreaView,
+  Alert,
 } from 'react-native';
 import { theme, TextStyles } from '@/theme';
 import { FontFamily } from '@/theme/Fonts';
@@ -23,8 +24,10 @@ import {
   CardFooter,
   PopUp,
   Button,
+  CustomLoader,
+  AppImageViewer,
 } from '@/components';
-import { ms, vs } from 'react-native-size-matters';
+import { moderateScale, ms, vs } from 'react-native-size-matters';
 import {
   faCrown,
   faMessage,
@@ -41,14 +44,116 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { strings } from '@/localization';
 import { Data, demo, User } from './ProfileData/manageReportOnProfileData';
 import { faSearch } from '@fortawesome/pro-regular-svg-icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { bannedUserById, getUserProfileByUserId, TYPES, unBannedUserById } from '@/actions/UserActions';
+import { getUser } from '@/selectors/UserSelectors';
+import { UserController } from '@/controllers';
+import { UserData } from './ProfileData/manageReportOnMessageData';
+import { isLoadingSelector } from '@/selectors/StatusSelectors';
+import { SwiperViewer } from '@/components/SwiperComponent';
+import { POST_TYPE } from '@/constants/enums';
+import { NAVIGATION } from '@/constants';
+import { useIsFocused } from '@react-navigation/native';
+import { followUser } from '@/actions/PostActions';
+import { unFollowUser } from '@/actions/PostActions';
 
-export default function ManageReportOnMessage({ navigation }) {
+export default function ManageReportOnMessage({ navigation, route }) {
+  let counter = 1;
+
+  const isLoading = useSelector(state =>
+    isLoadingSelector([TYPES.GET_USER_PROFILE_BY_USER_ID], state)
+  );
+  const [showImageView, setShowImageView] = useState(false);
+  const [feedImages, setFeedImages] = useState([]);
   const [openMore, setOpenMore] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openBan, setOpenBan] = useState(false);
+  const [user, setUser] = useState(null)
+  const [userPosts, setuserPosts] = useState([])
+  const [postIndex, setPostIndex] = useState(0);
+  const { item } = route.params
+  //console.log("item", item)
+  const { reportedByUserDetails } = route.params
+  // console.log('data of card ', JSON.stringify(reportedByUserDetails))
+  const dispatch = useDispatch()
+
+  const getUserProfile = useSelector(getUser)
+
+  //console.log('userDataaaaaaaaa', user)
+
+  const focus = useIsFocused()
+  //console.log('userPosts', user)
+  const userr = useSelector(getUser)
+  useEffect(() => {
+    dispatch(getUserProfileByUserId(item, userr.id))
+
+    setTimeout(() => {
+      getUserPostById(item)
+    }, 100);
+
+
+  }, [focus])
+  useEffect(() => {
+    setUser(getUserProfile?.getUserByUserId)
+  }, [getUserProfile, focus])
+
+  const getUserPostById = async (id) => {
+    const data = await UserController.postByUserId(id);
+    if (data) {
+      //setLoader(false);
+      setuserPosts(data.data);
+    }
+
+  }
+
+
+  const banUnBanHandlePress = () => {
+    if (user?.isBanned == true) {
+      dispatch(unBannedUserById(item))
+      setOpenBan(false)
+      setTimeout(() => {
+        dispatch(getUserProfileByUserId(item))
+
+      }, 100);
+    }
+    else {
+      dispatch(bannedUserById(item))
+      setOpenBan(false)
+      setTimeout(() => {
+        dispatch(getUserProfileByUserId(item))
+
+      }, 100);
+    }
+  }
+
+  const onFollow = () => {
+
+
+    if (user?.is_following == true) {
+      dispatch(unFollowUser(userr?.id, item))
+
+      //setOpen(false)
+      setTimeout(() => {
+        dispatch(getUserProfileByUserId(item, userr.id))
+      }, 100);
+
+    }
+    else {
+      dispatch(followUser(userr?.id, item))
+      // setOpen(false)
+      console.log("follower log", userr?.id, item)
+
+      setTimeout(() => {
+        dispatch(getUserProfileByUserId(item, userr.id))
+      }, 100);
+    }
+
+  }
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* <CustomLoader open={isLoading} /> */}
       <TopBackButton
         onPress={() => navigation.goBack()}
         style={styles.TopBackButton}
@@ -58,18 +163,19 @@ export default function ManageReportOnMessage({ navigation }) {
       </Text>
       <HorizontalLine color={theme.light.colors.infoBgLight} paddingTop={10} />
       <CardHeader
-        fullName={User.fullName}
-        userName={User.userName}
-        profilePic={User.profilePic}
-        time={User.time}
+        fullName={reportedByUserDetails.userByReportedby.fullName}
+        userName={reportedByUserDetails.userByReportedby.username}
+        profilePic={reportedByUserDetails.userByReportedby.profilePic}
+        time={reportedByUserDetails.created_at}
+        userId={reportedByUserDetails.userByReportedby.id}
       />
       <View style={styles.activity}>
         <View style={styles.textContainer}>
           <Text style={styles.statsTxt}> {strings.profile.reported} </Text>
-          <Text style={styles.reactOnTxt}> {`this Profile`} </Text>
+          <Text style={styles.reactOnTxt}>{`this Profile`}</Text>
         </View>
         <View style={styles.reasonContainer}>
-          <Text style={styles.reasonTxt}>{strings.profile.reason} </Text>
+          <Text style={styles.reasonTxt}>{strings.profile.reason}{reportedByUserDetails.reportTitle} </Text>
         </View>
       </View>
       <View style={styles.body}>
@@ -79,7 +185,7 @@ export default function ManageReportOnMessage({ navigation }) {
               <Image
                 style={styles.headerImage}
                 source={{
-                  uri: demo.headerImage,
+                  uri: user?.profilePic || null,
                 }}
               />
               <View style={styles.profileLogoContainer}>
@@ -90,8 +196,8 @@ export default function ManageReportOnMessage({ navigation }) {
                 />
               </View>
               <View>
-                <Text style={styles.fullNameTxt}> {User.fullName}</Text>
-                <Text style={styles.userNameTxt}> {User.userName} </Text>
+                <Text style={styles.fullNameTxt}>{user?.fullName}</Text>
+                <Text style={styles.userNameTxt}>{user?.username} </Text>
               </View>
             </View>
             <View style={styles.iconContiner}>
@@ -100,12 +206,13 @@ export default function ManageReportOnMessage({ navigation }) {
             </View>
           </View>
           <HeaderTab
+            onPress1={() => navigation.navigate(NAVIGATION.followers, { id: item, screenName: 'userProfile' })}
             title1={strings.profile.followers}
-            count1={10}
+            count1={user?.followerListsByFollowinguserid?.length}
             // onPress1 = {()=>Alert.alert('press 1')}
             title2={strings.profile.following}
-            count2={20}
-            // onPress2 = {()=>Alert.alert('press 2')}
+            count2={user?.follower_lists?.length}
+            onPress2={() => navigation.navigate(NAVIGATION.following, { id: item, screenName: 'userProfile' })}
           />
           <HorizontalLine
             color={theme.light.colors.infoBgLight}
@@ -126,15 +233,15 @@ export default function ManageReportOnMessage({ navigation }) {
                   {strings.profile.message}{' '}
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.IconBox, styles.IconBoxDesign]}>
+              <TouchableOpacity onPress={onFollow} style={[styles.IconBox, styles.IconBoxDesign]}>
                 <FontAwesomeIcon
                   icon={faUserPlus}
                   size={ms(13)}
                   color={theme.light.colors.primary}
                 />
                 <Text style={styles.followersBtnTxt}>
-                  {' '}
-                  {strings.profile.follow}{' '}
+
+                  {user?.is_following == true ? strings.operations.unFollow : strings.operations.follow}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -148,27 +255,122 @@ export default function ManageReportOnMessage({ navigation }) {
           <HorizontalLine />
         </View>
         <FlatList
-          data={Data}
+          data={userPosts || []}
           key={props => props.id}
-          renderItem={({ item }) => (
+          renderItem={({ item, index }) => (
             <View style={styles.cardContainer}>
               <Card>
                 <CardHeader
-                  fullName={item.fullName}
-                  userName={item.userName}
-                  profilePic={item.profilePic}
-                  time={item.time}
+                  fullName={user?.fullName}
+                  userName={user?.username}
+                  profilePic={user?.profilePic}
+                  time={item.created_at}
                 />
-                <CardBody text={item.text} />
+                <CardBody text={item?.postBody} />
+
+
+                {item?.postImg?.length <= 2 ? (
+                  <View style={styles.imageContainer}>
+                    {item?.postImg?.map(data => (
+                      counter = counter + 1,
+                      <TouchableOpacity
+                        key={counter}
+                        style={styles.touchContainer}
+                        onPress={() => {
+                          setShowImageView(true),
+                            setFeedImages(item?.postImg)
+                        }}
+                      >
+                        <Image
+                          source={{
+                            uri: data,
+                          }}
+                          style={styles.image}
+                        />
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                ) : item?.postImg?.length > 2 ? (
+                  counter = 1,
+                  <View style={styles.imageContainer}>
+                    {item?.postImg?.map(data =>
+                      counter == 1 ? (
+                        counter = counter + 1,
+                        <TouchableOpacity
+                          key={counter}
+                          style={styles.touchContainer}
+                          onPress={() => {
+                            setShowImageView(true),
+                              setFeedImages(item?.postImg);
+                            // console.log(feedImages)
+                          }}
+                        >
+                          <Image
+                            source={{
+                              uri: data,
+                            }}
+                            key={counter}
+                            style={styles.image}
+                          />
+                        </TouchableOpacity>
+                      ) : counter == 2 ? (
+                        counter = counter + 1,
+                        <TouchableOpacity
+                          key={counter}
+                          style={styles.touchContainer}
+                          onPress={() => {
+                            setShowImageView(true),
+                              setFeedImages(item?.postImg);
+                          }}
+                        >
+                          <ImageBackground
+                            source={{
+                              uri: data,
+                            }}
+                            key={counter}
+                            style={[styles.image, styles.moreImage]}
+                          >
+                            <TouchableOpacity
+                              onPress={() => {
+                                setShowImageView(true),
+                                  setFeedImages(item?.postImg);
+                              }}
+                            >
+                              <Text style={styles.extraImage}>
+                                {strings.message.plus}
+                                {item?.postImg?.length - 1}
+                              </Text>
+                            </TouchableOpacity>
+                          </ImageBackground>
+                        </TouchableOpacity>
+                      ) : null
+                    )}
+                  </View>
+                ) : null}
                 <CardFooter
-                  likeCount={item.like}
-                  // likePress = {()=> Alert.alert("like")}
-                  disLikeCount={item.disLike}
-                  // disLikePress = {()=> Alert.alert("dislike")}
-                  commentCount={item.comment}
-                  // commentPress = {()=> Alert.alert("Comment")}
+                  likeCount={item?.upVote}
+                  disLikeCount={item?.downVote}
+                  postID={user.id}
+                  userID={userr?.id}
+                  postType={POST_TYPE.REGULAR}
+                  postData={item}
+                  postIndex={index}
+
+
+                  commentCount={item?.comments_aggregate?.aggregate?.count ?? 0}
+                  commentPress={() => navigation.navigate(NAVIGATION.comments, { DATA: item, "POST_INDEX": index })}
                   // sharePress = {()=> Alert.alert("share")}
-                  morePress={() => setOpenEdit(true)}
+                  morePress={() => {
+                    setPostIndex(index)
+                    // setIsAdminPost(item?.isAdminPost),
+                    //setPostUserName(item?.user?.username)
+                    //   setOpen(true);
+                    // setPostUserId(item?.userId);
+                    // setpostId(item?.id);
+                    //setPostTitle(item?.postTitle)
+                    //   setPostBody(item?.postBody);
+                    //  setPostImg(item?.postImg);
+                  }}
                 />
               </Card>
             </View>
@@ -177,7 +379,9 @@ export default function ManageReportOnMessage({ navigation }) {
         {openMore && (
           <ModalDown open={openMore} setOpen={setOpenMore}>
             <ModalList
-              title={strings.operations.follow + strings.home.DummyUser}
+
+              onPress={onFollow}
+              title={user?.is_following == true ? strings.operations.unFollow + ' @' + user?.username : strings.operations.follow + ' @' + user?.username}
               icon={faUserPlus}
               iconColor={theme.light.colors.primary}
               iconBg={theme.light.colors.primaryBgLight}
@@ -187,7 +391,7 @@ export default function ManageReportOnMessage({ navigation }) {
               icon={faMessage}
               iconColor={theme.light.colors.success}
               iconBg={theme.light.colors.successBgLight}
-              // onPress = {()=> Alert.alert("working")}
+            // onPress = {()=> Alert.alert("working")}
             />
             <HorizontalLine
               color={theme.light.colors.infoBgLight}
@@ -199,14 +403,14 @@ export default function ManageReportOnMessage({ navigation }) {
               iconColor={theme.light.colors.secondary}
               iconBg={theme.light.colors.infoBgLight}
             />
-            <ModalList
-              title={strings.operations.block + strings.home.DummyUser}
+            {/* <ModalList
+              title={strings.operations.block + ' @' + user?.username}
               icon={faXmark}
               iconColor={theme.light.colors.secondary}
               iconBg={theme.light.colors.infoBgLight}
-            />
+            /> */}
             <ModalList
-              title={strings.operations.ban + strings.home.DummyUser}
+              title={user?.isBanned == true ? strings.operations.unBan + ' @' + user?.username : strings.operations.ban + ' @' + user?.username}
               icon={faFlag}
               iconColor={theme.light.colors.secondary}
               iconBg={theme.light.colors.infoBgLight}
@@ -241,15 +445,15 @@ export default function ManageReportOnMessage({ navigation }) {
             <View style={styles.imageViewContainer}>
               <Image
                 source={{
-                  uri: demo.popUpImage,
+                  uri: user?.profilePic
                 }}
                 style={styles.imageDesign}
               />
               <View>
                 <Text style={[TextStyles.header, styles.headerFullname]}>
-                  {User.fullName}{' '}
+                  {user?.fullName}
                 </Text>
-                <Text>{User.userName}</Text>
+                <Text> {user?.username}</Text>
                 <Text style={styles.freeMemberText}>
                   {' '}
                   {strings.profile.freeMember}{' '}
@@ -257,14 +461,14 @@ export default function ManageReportOnMessage({ navigation }) {
               </View>
             </View>
             <View>
-              <Button
+              <Button onPress={banUnBanHandlePress}
                 title={strings.profile.yesBan}
                 style={styles.yesBanButton}
                 textStyle={{
                   color: theme.light.colors.primary,
                 }}
               />
-              <Button
+              <Button onPress={() => setOpenBan(false)}
                 title={strings.profile.DoNotBan}
                 style={styles.DoNotBanButton}
               />
@@ -272,6 +476,16 @@ export default function ManageReportOnMessage({ navigation }) {
           </View>
         </PopUp>
       </View>
+
+      {/*  image view modal */}
+      {showImageView && (
+        <AppImageViewer
+          visible={showImageView}
+          setVisible={() => setShowImageView(false)}
+          images={feedImages}
+        />
+
+      )}
     </SafeAreaView>
   );
 }
@@ -376,13 +590,15 @@ const styles = StyleSheet.create({
     {
       color: theme.light.colors.text,
       fontSize: ms(24),
+      marginLeft: moderateScale(10)
     },
   ],
   userNameTxt: {
     fontFamily: FontFamily.Recoleta_regular,
     fontSize: ms(14, 0.3),
-    position: 'absolute',
+    // position: 'absolute',
     bottom: ms(5),
+    marginLeft: moderateScale(10)
   },
   iconContiner: {
     flexDirection: 'row',
@@ -456,5 +672,32 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: theme.light.colors.primaryBgLight,
     margin: ms(12),
+  },
+  imageContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginRight: ms(-5),
+  },
+  touchContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginRight: ms(-5),
+  },
+  image: {
+    flex: 1,
+    width: '85%',
+    height: ms(200),
+    marginRight: ms(10),
+  },
+  moreImage: {
+    height: ms(200),
+    backgroundColor: theme.light.colors.hyperlink,
+    opacity: 0.7,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    width: '100%',
   },
 });

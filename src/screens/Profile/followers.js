@@ -32,11 +32,15 @@ import { useIsFocused } from '@react-navigation/native';
 import { followUser } from '@/actions/PostActions';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { getAllPostData } from '@/selectors/PostSelectors';
+import { navigate } from '@/navigation/RootNavigation';
 export default function Followers({ navigation, route }) {
   const dispatch = useDispatch()
   const focus = useIsFocused()
   const { id } = route.params
-
+  const { screenName } = route.params
+  console.log("id in followers", id)
+  console.log(screenName)
+  const { active } = route.params
 
   const [open, setOpen] = useState(false);
   const [followId, setfollowId] = useState('')
@@ -50,6 +54,7 @@ export default function Followers({ navigation, route }) {
 
   useEffect(() => {
     dispatch(followers(user?.id, id))
+    console.log('followers list', user?.id, id)
 
   }, [focus]);
 
@@ -108,7 +113,7 @@ export default function Followers({ navigation, route }) {
               <View style={styles.listContainer}>
                 <TouchableOpacity
                   style={styles.list}
-                  onPress={() => navigation.navigate(NAVIGATION.userProfile, { userId: item?.userByFollowinguserid?.id })}
+                  onPress={() => navigate(NAVIGATION.userProfile, { userId: item?.user?.id, }, console.log('check issue', item?.user?.id))}
 
                 >
                   <Image
@@ -120,12 +125,13 @@ export default function Followers({ navigation, route }) {
                     <Text> {item.user.username} </Text>
                   </View>
                 </TouchableOpacity>
-                <Icon
+                {screenName == "userProfile" ? null : <Icon
                   icon={faEllipsis}
                   size={ms(15)}
                   color={theme.light.colors.secondary}
                   onPress={() => { setfollowId(item.user.id), SetfollowUnfollowId(item.is_following), setOpen(true) }}
-                />
+                />}
+
               </View>
             );
           }}

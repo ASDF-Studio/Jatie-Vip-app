@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Icon } from '@/components';
 import { theme, TextStyles } from '@/theme';
 import { FontFamily } from '@/theme/Fonts';
@@ -47,6 +47,7 @@ export const CardFooter = ({
   const upVoteHandel = () => {
 
     onUpVote(postID, userID)
+
   }
   const downVoteHandel = () => {
 
@@ -54,15 +55,16 @@ export const CardFooter = ({
   }
 
   const onUpVote = async (postID, userID,) => {
+
     var arr = []
     arr = postArray;
-    var upVotenumber = parseInt(arr[postIndex].upVote)
-    var downVoteNumber = parseInt(arr[postIndex].downVote)
+    var upVotenumber = parseInt(arr[postIndex]?.upVote)
+    var downVoteNumber = parseInt(arr[postIndex]?.downVote)
     if (!arr[postIndex].has_upvoted) {
       setUpVote(upVotenumber + 1)
       arr[postIndex].has_upvoted = true;
       arr[postIndex].upVote = upVotenumber + 1;
-      if (arr[postIndex].has_downvoted) {
+      if (arr[postIndex]?.has_downvoted) {
         arr[postIndex].has_downvoted = false;
         arr[postIndex].downVote = downVoteNumber - 1;
         setDownVote(downVoteNumber - 1)
@@ -82,13 +84,13 @@ export const CardFooter = ({
   const onDownVote = async (postID, userID) => {
     var arr = []
     arr = postArray;
-    var upVotenumber = parseInt(arr[postIndex].upVote)
-    var downVoteNumber = parseInt(arr[postIndex].downVote)
+    var upVotenumber = parseInt(arr[postIndex]?.upVote)
+    var downVoteNumber = parseInt(arr[postIndex]?.downVote)
     if (!arr[postIndex].has_downvoted) {
       setDownVote(downVoteNumber + 1)
       arr[postIndex].has_downvoted = true;
       arr[postIndex].downVote = downVoteNumber + 1;
-      if (arr[postIndex].has_upvoted) {
+      if (arr[postIndex]?.has_upvoted) {
         arr[postIndex].has_upvoted = false;
         arr[postIndex].upVote = upVotenumber - 1;
         setUpVote(upVotenumber - 1)
@@ -191,6 +193,7 @@ export const CardFooter = ({
           style={styles.ShareNodeIcon}
         />
         {showMore == undefined &&
+
           <Icon
             icon={faEllipsis}
             size={ms(13)}
@@ -198,6 +201,7 @@ export const CardFooter = ({
             onPress={morePress}
             style={styles.EllipsisIcon}
           />
+
         }
 
       </View>

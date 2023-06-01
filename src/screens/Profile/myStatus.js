@@ -81,23 +81,6 @@ export default function MyStatus({ navigation }) {
       // setFeedImages(item.postImg)
       setFeedImages(data.postMediaContent)
   }
-  const onLoadMorePost = () => {
-    const post = user.getAllPostsByLoggedInUser.slice(-1)
-    const page = post[0].created_at
-    dispatch(getAllPostsByLogInUserPagination(user?.id, page))
-
-  }
-  const renderFooterPost = () => {
-    return (
-      <View style={{}}>
-        {isLoadingMore &&
-          <ActivityIndicator size={"large"} color="orange" />
-
-        }
-
-      </View>
-    );
-  };
   return (
     <SafeAreaView>
       {isLoading ?
@@ -159,7 +142,7 @@ export default function MyStatus({ navigation }) {
           </View> */}
                 {/* {item?.postImg?.length <= 2 ? (
                   <View style={styles.imageContainer}>
-                    {item?.postImg?.map(data => (
+                    {item.postImg?.map(data => (
                       counter = counter + 1,
                       <TouchableOpacity
                         key={counter}
@@ -247,7 +230,7 @@ export default function MyStatus({ navigation }) {
                           onViewImageVideo(item)
                         }}
                       >
-                        {data?.mimetype.split("/")[0] == "image" ? <Image
+                        {data?.mimetype?.split("/")[0] == "image" ? <Image
                           source={{
                             uri: data.url,
                           }}

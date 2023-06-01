@@ -24,7 +24,7 @@ export const AppImageViewer = ({ visible, setVisible, images }) => {
         images?.map(image => (
             imageView.push(
                 {
-                    url: image.mimetype.split("/")[0] == "image" ? image.url : image.cover,
+                    url: image?.mimetype?.split("/")[0] == "image" ? image.url : image.cover,
                 }
             )
         ))

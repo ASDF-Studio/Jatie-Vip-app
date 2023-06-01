@@ -286,6 +286,7 @@ export class PostController {
                 .then((response) => {
                     console.log("POST_ADATA=-=-=-=-=New-=-=-", JSON.stringify(response.data));
                     resolve(response);
+                    console.log('response of all posts', response);
                 })
                 .catch((error) => {
                     console.log("ERPOPOPo", error);
@@ -408,6 +409,7 @@ export class PostController {
 
 
                     resolve(response)
+
                 }).catch((error) => {
 
                     reject(error)
@@ -477,6 +479,7 @@ export class PostController {
             HttpClient.post(endpoint, data, { headers })
                 .then((response) => {
                     resolve(response);
+                    console.log('reponse of report post', response)
                 })
                 .catch((error) => {
                     reject(error);

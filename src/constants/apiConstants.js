@@ -107,5 +107,23 @@ export const API_END_POINTS = {
 
 
     //SEARCH_USER_ENDPOINT
-    SEARCH_USER: 'user/search'
+    SEARCH_USER: 'user/search',
+
+    //GET ALL ACTIVITY
+    GET_ALL_ACTIVITY: 'user/all_activity_by_user_id',
+
+    //Manage All Reports
+    MANAGE_ALL_REPORTS: 'post/all_report',
+
+    //GET All Banned Users
+    GET_ALL_BANNED_USERS: 'user/all_banned',
+
+    //UnBanned user By ID
+    UNBANNED_USER_BY_ID: 'user/unban_user',
+
+    //baned User By ID
+    BANNED_USER_BY_ID: 'user/ban_user',
+
+    //GET ALL NOTIFICATIONS
+    GET_ALL_NOTIFICATIONS: 'user/all_notification_by_user_id'
 };
