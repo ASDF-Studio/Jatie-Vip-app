@@ -8,7 +8,7 @@ import { ms } from 'react-native-size-matters';
 import { FontFamily } from '@/theme/Fonts';
 import { NAVIGATION } from '@/constants';
 
-export const SeeSchedulePost = ({ title, navigation }) => {
+export const SeeSchedulePost = ({ title, navigation, count }) => {
   return (
     <TouchableOpacity
       onPress={() => navigation.navigate(NAVIGATION.scheduledPost)}
@@ -22,7 +22,7 @@ export const SeeSchedulePost = ({ title, navigation }) => {
             size={ms(15)}
             color={theme.light.colors.white}
           />
-          <Text style={styles.clockTxt}> 2 </Text>
+          <Text style={styles.clockTxt}> {count} </Text>
         </View>
       </View>
       <View>

@@ -14,6 +14,11 @@ export const userReducer = (state = {}, { payload, type }) => {
       return { ...state, getUserByUserId: payload.user };
     case TYPES.GET_ALL_POST_BY_LOGGED_IN_USER_SUCCESS:
       return { ...state, getAllPostsByLoggedInUser: payload.post };
+    case TYPES.GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION_SUCCESS:
+      return {
+        ...state,
+        getAllPostsByLoggedInUser: [...state.getAllPostsByLoggedInUser, ...payload.post]
+      };
     case TYPES.FOLLOWERS_SUCCESS:
       return { ...state, followersDatainReducer: payload.user };
     case TYPES.BLOCK_LIST_SUCCESSS:

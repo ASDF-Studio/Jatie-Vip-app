@@ -43,7 +43,7 @@ export const postReducer = (state = {}, { payload, type }) => {
       if (payload.post.data.length == 0) {
         return {
           ...state,
-          feedData: [...state.feedData],
+          ...state.feedData,
         }
       } else {
         return {
@@ -51,6 +51,9 @@ export const postReducer = (state = {}, { payload, type }) => {
           feedData: [...state.feedData, ...payload.post.data],
         }
       }
+
+
+
     case TYPES.SEARCH_ALL_POST_SUCCESS:
       return {
         ...state,
@@ -142,25 +145,69 @@ export const postReducer = (state = {}, { payload, type }) => {
 
       return {
         ...state,
-        ...payload.user
+        ActiveGiveaway: payload.user.data
 
+      }
+    case TYPES.GET_ACTIVE_GIVEAWAY_PAGINATION_SUCCESS:
+      if (payload.user.data.length == 0) {
+        return {
+          ...state,
+          ActiveGiveaway: [...state.ActiveGiveaway],
+        }
+      } else {
+        return {
+          ...state,
+          ActiveGiveaway: [...state.ActiveGiveaway, ...payload.user.data],
+        }
+      }
+
+    case TYPES.GET_PAST_GIVEAWAY_PAGINATION_SUCCESS:
+      if (payload.user.data.length == 0) {
+        return {
+          ...state,
+          PastGiveaway: [...state.PastGiveaway],
+        }
+      } else {
+        return {
+          ...state,
+          PastGiveaway: [...state.PastGiveaway, ...payload.user.data],
+        }
       }
     case TYPES.GET_PAST_GIVEAWAY_SUCCESS:
       return {
         ...state,
-        ...payload.user
+        PastGiveaway: payload.user.data
       }
     case TYPES.GET_ALL_EXCLUSIVE_POST_SUCCESS:
       return {
         ...state,
-        exclusivePost: payload.post
+        exclusivePost: payload.post.data
       }
+
+    case TYPES.GET_ALL_EXCLUSIVE_POST_PAGINATION_SUCCESS:
+      if (payload.post.data.length == 0) {
+        return {
+          ...state,
+          exclusivePost: [...state.exclusivePost],
+        }
+      } else {
+        return {
+          ...state,
+          exclusivePost: [...state.exclusivePost, ...payload.post.data],
+        }
+      }
+
+
     case TYPES.GET_ALL_EXCLUSIVE_POST_BY_ID_SUCCESS:
       return {
         ...state,
         exclusiveSinglePost: payload.post.data
       }
-
+    case TYPES.GET_SCHEDULE_POST_SUCCESS:
+      return {
+        ...state,
+        schedulePost: payload.post.data
+      }
 
 
 

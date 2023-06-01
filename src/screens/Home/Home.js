@@ -65,8 +65,8 @@ import { Logo } from '@/assets';
 import { faBell, faSearch } from '@fortawesome/pro-regular-svg-icons';
 import { getUser } from '@/selectors/UserSelectors';
 import { navigationRef } from '@/navigation/RootNavigation';
-import { getAllPost, TYPES, deletePost, reportPost, followUser, blockUser, unFollowUser, getAllPostPagination } from '@/actions/PostActions';
-import { getAllPostData } from '@/selectors/PostSelectors';
+import { getAllPost, TYPES, deletePost, reportPost, followUser, blockUser, unFollowUser, getAllPostPagination, getSchedulePost } from '@/actions/PostActions';
+import { getAllPostData, getSchedulePostData } from '@/selectors/PostSelectors';
 import { isLoadingSelector, successSelector } from '@/selectors/StatusSelectors';
 import ImagePicker from 'react-native-image-crop-picker';
 import { globalReset } from '@/actions/GlobalActions';
@@ -83,6 +83,7 @@ export function Home({ navigation }) {
   const flatListRef = useRef()
   const userType = useSelector(state => state.userType);
   const user = useSelector(getUser);
+  const scheduledPostData = useSelector(getSchedulePostData)
   // console.log("USERRR", user);
   const dispatch = useDispatch()
   const [vipArea, setVipArea] = useState(strings.home.newFeed);
@@ -135,8 +136,13 @@ export function Home({ navigation }) {
 
 
   useEffect(() => {
+    dispatch(getSchedulePost())
     const page = ""
     dispatch(getAllPost(user?.id, sortBy, follwingSwitch, vipArea == `${strings.home.newFeed}` ? false : true, page))
+    if (vipArea == strings.home.vipArea && userType.user == `${strings.userType.free}`) {
+      setVipArea(strings.home.newFeed)
+      navigation.navigate(NAVIGATION.upgradeMembership)
+    }
   }, [sortBy, follwingSwitch, vipArea]);
 
 
@@ -346,6 +352,7 @@ export function Home({ navigation }) {
                   <SeeSchedulePost
                     title={strings.home.seeSchedulePost}
                     navigation={navigation}
+                    count={scheduledPostData ? scheduledPostData.length : 0}
                   // path={SeeSchedulePost}
                   />
                 )}
@@ -357,14 +364,15 @@ export function Home({ navigation }) {
             // onEndReached={onLoadMorePost}
             // onEndReachedThreshold={0.5}
             onEndReached={() => {
-              // if (!fetchFeedPost) {
-              // console.log(onEndReachedCalledDuringMomentum)
-              onLoadMorePost();
-              setFetchFeedPost(true);
-              // onEndReachedCalledDuringMomentum = true;
-              // }
+              if (!fetchFeedPost) {
+                console.log("END===REACHED=========>", fetchFeedPost)
+                onLoadMorePost();
+                setFetchFeedPost(true);
+
+              }
             }}
             onMomentumScrollBegin={() => {
+              console.log("LOAD_MORE============>", fetchFeedPost)
               setFetchFeedPost(false);
               // onEndReachedCalledDuringMomentum = false;
             }}

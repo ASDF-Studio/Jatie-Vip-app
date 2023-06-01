@@ -92,7 +92,8 @@ export class GiveAwayController {
         return new Promise((resolve, reject) => {
             const endpoint = API_BASE_URL + API_END_POINTS.GET_ACTIVE_GIVEAWAY;
             const body = JSON.stringify({
-                "loggedInUserId": data.userId,
+                "loggedInUserId": data?.userId,
+                "dateCursor": data?.page
 
             })
             HttpClient.post(endpoint, body)
@@ -114,7 +115,8 @@ export class GiveAwayController {
             console.log('check data', data)
             const endpoint = API_BASE_URL + API_END_POINTS.GET_PAST_GIVEAWAY;
             const body = JSON.stringify({
-                "loggedInUserId": data.userId,
+                "loggedInUserId": data?.userId,
+                "dateCursor": data?.page
 
             })
 

@@ -407,11 +407,12 @@ export class UserController {
 
   // // post by user id
 
-  static async postByUserId(id) {
+  static async postByUserId(id, page) {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.POST_BY_USERID;
       var data = JSON.stringify({
-        "userId": id
+        "userId": id,
+        "dateCursor": page
       });
       HttpClient.post(endpoint, data)
         .then((response) => {

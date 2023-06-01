@@ -11,11 +11,11 @@ export const getPostByIdData = state => {
 };
 
 export const geAllActiveGiveAwayData = state => {
-    return Object.keys(state.post).length > 0 ? state.post : null;
+    return Object.keys(state.post).length > 0 ? state.post.ActiveGiveaway : null;
 };
 
 export const geAllPastGiveAwayData = state => {
-    return Object.keys(state.post).length > 0 ? state.post : null;
+    return Object.keys(state.post).length > 0 ? state.post.PastGiveaway : null;
 };
 
 export const getAllExclusiveData = state => {
@@ -26,4 +26,7 @@ export const getSingleExclusiveData = state => {
 };
 export const getSingleGiveAwayData = state => {
     return Object.keys(state.post).length > 0 ? state.post?.giveAwaySinglePost : null;
+};
+export const getSchedulePostData = state => {
+    return Object.keys(state.post).length > 0 ? state.post?.schedulePost : null;
 };
