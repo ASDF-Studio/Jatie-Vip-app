@@ -65,7 +65,6 @@ export default function Past({ navigation, userType }) {
     const page = post[0].created_at
     const data = {
       userId: user?.id,
-      postFilter: sortBy.toLowerCase(),
       page: page
     }
     dispatch(getAllPastGiveawayPagination(data))
