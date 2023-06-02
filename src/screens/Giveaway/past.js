@@ -24,7 +24,7 @@ import { getUser } from '@/selectors/UserSelectors';
 import { useIsFocused } from '@react-navigation/native';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-
+import { ActivityIndicator } from 'react-native';
 export default function Past({ navigation, userType }) {
 
   const getdataOfPast = useSelector(geAllPastGiveAwayData)

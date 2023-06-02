@@ -93,7 +93,7 @@ export default function Active({ navigation, userType }) {
     const currentTime = new Date();
     const timeDifference = dateObj.getTime() - currentTime.getTime();
     const secondsLeft = Math.floor(timeDifference / 1000);
-    console.log("Seconds left:=-=-=-", secondsLeft);
+    //   console.log("Seconds left:=-=-=-", secondsLeft);
     return secondsLeft
   }
   return (
@@ -163,7 +163,7 @@ export default function Active({ navigation, userType }) {
                   </Text>
                   <CountDown
                     running={true}
-                    until={getSeconds(item.postExpires)}
+                    until={item?.remainingTime ?? getSeconds(item.postExpires)}
                     separatorStyle={{ color: 'black', fontSize: 20 }}
 
                     size={20}
