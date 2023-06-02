@@ -163,7 +163,7 @@ export default function Active({ navigation, userType }) {
                   </Text>
                   <CountDown
                     running={true}
-                    until={getSeconds(item.postExpires)}
+                    until={item?.remainingTime ?? getSeconds(item.postExpires)}
                     separatorStyle={{ color: 'black', fontSize: 20 }}
 
                     size={20}
