@@ -55,6 +55,7 @@ import { navigationRef } from '@/navigation/RootNavigation';
 import { TYPES, followUser, unFollowUser } from '@/actions/PostActions';
 import { showMessage } from 'react-native-flash-message';
 import { useIsFocused } from '@react-navigation/native';
+import { POST_TYPE } from '@/constants/enums';
 
 export default function UserProfile({ navigation, route }) {
   const [postIndex, setPostIndex] = useState(0);
@@ -377,6 +378,7 @@ export default function UserProfile({ navigation, route }) {
                 </View>
               ) : null}
               <CardFooter
+                postType={POST_TYPE.REGULAR}
                 postIndex={index}
                 postID={item?.id}
                 postUserID={item?.userId}
@@ -389,7 +391,7 @@ export default function UserProfile({ navigation, route }) {
                 commentPress={() => console.log("Comment")}
                 sharePress={() => console.log("share")}
                 morePress={() => {
-                  setPostIndex(index)
+                  // setPostIndex(index)
                   setOpenMore(true)
 
                   setpostId(item?.id);

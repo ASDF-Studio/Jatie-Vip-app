@@ -26,6 +26,7 @@ import { getUser } from '@/selectors/UserSelectors';
 import { strings } from '@/localization';
 import { faFlag, faPen, faTrash, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { log } from 'react-native-reanimated';
+import { POST_TYPE } from '@/constants/enums';
 
 
 export default function SinglePost({ navigation, route }) {
@@ -230,12 +231,13 @@ export default function SinglePost({ navigation, route }) {
                         ) : null}
 
                         <CardFooter
+                            postType={POST_TYPE.REGULAR}
                             index={0}
                             postIndex={0}
                             // likePress={() => onUpVote(item.id, item.userId, user?.id, item)}
                             // disLikePress={() => onDownVote(item.id, item.userId, user?.id, item)}
                             postID={item?.id}
-                            postType="Regular"
+                            //postType="Regular"
                             //  postUserID={item?.userId}
                             userID={user?.id}
                             //  showMore={false}
