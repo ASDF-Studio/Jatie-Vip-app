@@ -29,6 +29,7 @@ import { useEffect } from 'react';
 import { useIsFocused } from '@react-navigation/native';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { SwiperViewer } from '@/components/SwiperComponent';
+import CountDown from 'react-native-countdown-component';
 
 export default function Active({ navigation, userType }) {
   const user = useSelector(getUser);
@@ -45,6 +46,7 @@ export default function Active({ navigation, userType }) {
   const focus = useIsFocused()
 
   useEffect(() => {
+    getSeconds()
     getactiveData()
 
   }, [])
@@ -85,6 +87,15 @@ export default function Active({ navigation, userType }) {
       </View>
     );
   };
+  function getSeconds(date) {
+    const dateString = date;
+    const dateObj = new Date(dateString);
+    const currentTime = new Date();
+    const timeDifference = dateObj.getTime() - currentTime.getTime();
+    const secondsLeft = Math.floor(timeDifference / 1000);
+    console.log("Seconds left:=-=-=-", secondsLeft);
+    return secondsLeft
+  }
   return (
     <>
       {/*  image view modal */}
@@ -143,13 +154,23 @@ export default function Active({ navigation, userType }) {
                 <View>
                   <Text style={styles.title}>{item.postTitle}</Text>
                 </View>
-                <View>
-                  <Text style={styles.officialTxt}>
+                <View style={[styles.officialTxt, { backgroundColor: theme.light.colors.primaryBg, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }]}>
+                  <Text >
                     {strings.giveaway.EndsIn + " "}
-                    <Text style={styles.EndTimeTxt}>{Moment.utc(item.postExpires).format('hh:mm A  MMM D, YYYY')}{' '}
+                    <Text style={styles.EndTimeTxt}>{Moment.utc(item.postExpires).format('D/M/YY  hh:mm')}{' '}
                       {/* {item.postExpires} */}
                     </Text>
                   </Text>
+                  <CountDown
+                    running={true}
+                    until={getSeconds(item.postExpires)}
+                    separatorStyle={{ color: 'black', fontSize: 20 }}
+
+                    size={20}
+                    showSeparator={true}
+                    timeToShow={['D', 'H', 'S']}
+                    digitTxtStyle={{ fontSize: ms(11, 0.3), color: "black", fontFamily: FontFamily.Recoleta_medium, }}
+                  />
                 </View>
                 <CardBody text={item.postBody} />
 
@@ -436,7 +457,7 @@ export default function Active({ navigation, userType }) {
 
                         })
                       }
-                      style={[item?.postImg?.length <= 0 ? [styles.btn, { top: '0%', position: 'relative', marginBottom: 20 }] : styles.btn]}
+                      style={[item?.postImg?.length <= 0 ? [styles.btn, { top: '2%', position: 'relative', marginBottom: 20 }] : styles.btn]}
                     >
                       <Text style={[styles.btnTxt, styles.btnTxtColor]}>
                         {strings.giveaway.learnMore}

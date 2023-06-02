@@ -45,6 +45,7 @@
     "react-native-calendars": "^1.1292.0",
     "react-native-config": "^1.4.6",
     "react-native-controlled-mentions": "^3.0.0-alpha.4",
+    "react-native-countdown-component": "^2.7.1",
     "react-native-country-codes-picker": "^2.2.2",
     "react-native-create-thumbnail": "^1.6.4",
     "react-native-date-picker": "^4.2.9",
