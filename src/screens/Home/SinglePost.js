@@ -25,6 +25,7 @@ import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { getUser } from '@/selectors/UserSelectors';
 import { strings } from '@/localization';
 import { faFlag, faPen, faTrash, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { log } from 'react-native-reanimated';
 
 
 export default function SinglePost({ navigation, route }) {
@@ -52,11 +53,12 @@ export default function SinglePost({ navigation, route }) {
     const [downCount, setDownCount] = useState(item?.downVote)
     const [commentCount, setCommentCount] = useState(item?.comments_aggregate?.aggregate?.count)
 
-    // console.log("AllPost=-=-=-Newwww", JSON.stringify(item));
+    console.log("AllPost=-=-=-Newwww", JSON.stringify(item));
     const isLoading = useSelector(state =>
         isLoadingSelector([TYPES.GET_POST_BY_ID], state)
     );
     useEffect(() => {
+        console.log(postId, user?.id);
         dispatch(getPostById(postId, user?.id))
         setLikeCount(item?.upVote)
         setDownCount(item?.downVote)
@@ -228,26 +230,28 @@ export default function SinglePost({ navigation, route }) {
                         ) : null}
 
                         <CardFooter
+                            index={0}
+                            postIndex={0}
                             // likePress={() => onUpVote(item.id, item.userId, user?.id, item)}
                             // disLikePress={() => onDownVote(item.id, item.userId, user?.id, item)}
                             postID={item?.id}
                             postType="Regular"
-                            postUserID={item?.userId}
+                            //  postUserID={item?.userId}
                             userID={user?.id}
-                            showMore={false}
-                            likeCount={likeCount}
-                            disLikeCount={downCount}
-                            commentCount={commentCount}
+                            //  showMore={false}
+                            likeCount={item?.upVote}
+                            disLikeCount={item?.downVote}
+                            // commentCount={commentCount}
                             postData={item}
-                            postIndex={postIndex}
+                            //  postIndex={postIndex}
                             commentPress={() => navigation.navigate(NAVIGATION.comments, { DATA: item, "POST_INDEX": postIndex })}
                         // morePress={() => {
-                        //     //   setPostIndex(index)
+                        //     setPostIndex(0)
                         //     setIsAdminPost(item?.isAdminPost),
                         //         setPostUserName(item?.user?.username)
                         //     setOpen(true);
                         //     setPostUserId(item?.userId);
-                        //     //   setpostId(item?.id);
+                        //     setpostId(item?.id);
                         //     setPostTitle(item?.postTitle)
                         //     setPostBody(item?.postBody);
                         //     setPostImg(item?.postImg);

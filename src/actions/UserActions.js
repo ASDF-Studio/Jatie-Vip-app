@@ -155,7 +155,13 @@ export const TYPES = {
   GET_ALL_NOTIFICATIONS: "GET_ALL_NOTIFICATIONS",
   GET_ALL_NOTIFICATIONS_REQUEST: "GET_ALL_NOTIFICATIONS_REQUEST",
   GET_ALL_NOTIFICATIONS_SUCCESS: "GET_ALL_NOTIFICATIONS_SUCCESS",
-  GET_ALL_NOTIFICATIONS_ERROR: "GET_ALL_NOTIFICATIONS_ERROR"
+  GET_ALL_NOTIFICATIONS_ERROR: "GET_ALL_NOTIFICATIONS_ERROR",
+
+  //MARK_ALL_READ_NOTIFICATIONS
+  MARK_ALL_READ_NOTIFICATIONS: "MARK_ALL_READ_NOTIFICATIONS",
+  MARK_ALL_READ_NOTIFICATIONS_REQUEST: "MARK_ALL_READ_NOTIFICATIONS_REQUEST",
+  MARK_ALL_READ_NOTIFICATIONS_SUCCESS: "MARK_ALL_READ_NOTIFICATIONS_SUCCESS",
+  MARK_ALL_READ_NOTIFICATIONS_ERROR: "MARK_ALL_READ_NOTIFICATIONS_ERROR"
 };
 
 const loginRequest = () => ({
@@ -571,6 +577,22 @@ const getAllNotificationsRequest = () => ({
 
 const getAllNotificationsError = error => ({
   type: TYPES.GET_ALL_NOTIFICATIONS_ERROR,
+  payload: { error },
+});
+
+//mark All read Notifications
+export const markAllReadNotificationsSuccess = user => ({
+  type: TYPES.MARK_ALL_READ_NOTIFICATIONS_SUCCESS,
+  payload: { user },
+});
+
+const markAllReadNotificationsRequest = () => ({
+  type: TYPES.MARK_ALL_READ_NOTIFICATIONS_REQUEST,
+  payload: null,
+});
+
+const markAllReadNotificationsError = error => ({
+  type: TYPES.MARK_ALL_READ_NOTIFICATIONS_ERROR,
   payload: { error },
 });
 
@@ -1078,3 +1100,20 @@ export const fetchAllNotifications = (id, read) => async dispatch => {
   }
 
 };
+
+
+//Mark All read Response
+export const markAllRead = (id) => async dispatch => {
+
+
+  dispatch(markAllReadNotificationsRequest());
+
+  try {
+    const user = await UserController.markAllNotificationsRequest(id);
+    dispatch(markAllReadNotificationsSuccess(user))
+
+  } catch (error) {
+    dispatch(markAllReadNotificationsError(error))
+  }
+
+}

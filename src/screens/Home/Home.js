@@ -583,7 +583,7 @@ export function Home({ navigation }) {
 
                       // likePress={() => onUpVote(item.id, item.userId, user?.id, item)}
                       // disLikePress={() => onDownVote(item.id, item.userId, user?.id, item)}
-                      postID={item.id}
+                      postID={item?.id}
                       postType={POST_TYPE.REGULAR}
                       postUserID={item?.userId}
                       userID={user?.id}

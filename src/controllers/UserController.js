@@ -693,5 +693,33 @@ export class UserController {
         });
     });
   }
+
+
+  static async markAllNotificationsRequest(id) {
+
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.MARK_ALL_READ_NOTIFICATIONS;
+
+      //  console.log("endPoint", endpoint)
+      var data = JSON.stringify({
+        "loggedInUserId": id,
+
+      });
+      HttpClient.post(endpoint, data)
+        .then((response) => {
+          resolve(response)
+          console.log('response of mark read Notifications', JSON.stringify(response))
+          showMessage({
+            message: 'All Notifications are read',
+            type: 'success'
+          })
+
+        })
+        .catch((error) => {
+          reject(new Error(error.message))
+          console.log('error of All notifications', error)
+        });
+    });
+  }
 }
 

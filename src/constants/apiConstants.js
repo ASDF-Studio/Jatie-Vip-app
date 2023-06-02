@@ -125,5 +125,8 @@ export const API_END_POINTS = {
     BANNED_USER_BY_ID: 'user/ban_user',
 
     //GET ALL NOTIFICATIONS
-    GET_ALL_NOTIFICATIONS: 'user/all_notification_by_user_id'
+    GET_ALL_NOTIFICATIONS: 'user/all_notification_by_user_id',
+
+    //MARK_ALL_READ_NOTIFICATIONS
+    MARK_ALL_READ_NOTIFICATIONS: 'user/notification_mark_as_read'
 };

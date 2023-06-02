@@ -364,12 +364,25 @@
 
 import { View, Text } from 'react-native'
 import React from 'react'
-import { moderateScale } from 'react-native-size-matters'
+import { moderateScale, ms } from 'react-native-size-matters'
+import { FontFamily } from '@/theme/Fonts'
+import { theme } from '@/theme'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import { Icon, TabBarIcon } from '@/components'
+import { NAVIGATION } from '@/constants'
+import { faBell, faMessage } from '@fortawesome/free-solid-svg-icons'
 
 const Message = () => {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text style={{ fontSize: moderateScale(30) }}>Coming Soon</Text>
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.light.colors.primaryBgLight }}>
+      <Icon
+        icon={faMessage}
+        size={ms(22)}
+        color={'#F5B041'}
+      //style={{ backgroundColor: 're' }}
+      //  onPress={() => navigation.navigate(NAVIGATION.notification)}
+      />
+      <Text style={{ fontSize: moderateScale(20), fontFamily: FontFamily.BrandonGrotesque_bold }}>  Mesage Feature is Coming Soon</Text>
     </View>
   )
 }

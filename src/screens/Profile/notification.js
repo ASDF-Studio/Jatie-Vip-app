@@ -233,12 +233,12 @@ import {
   faMessage,
 } from '@fortawesome/free-solid-svg-icons';
 import { AppSwitch, HorizontalLine, Icon, CardHeader, CustomLoader } from '@/components';
-import { ms } from 'react-native-size-matters';
+import { ms, verticalScale } from 'react-native-size-matters';
 import { NAVIGATION } from '@/constants/navigation';
 import { strings } from '@/localization';
 import { Data, profilePic } from '@/screens/CommonData/notoficationData';
 import { faSearch } from '@fortawesome/pro-regular-svg-icons';
-import { TYPES, fetchAllNotifications } from '@/actions/UserActions';
+import { TYPES, fetchAllNotifications, markAllRead } from '@/actions/UserActions';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
@@ -264,6 +264,12 @@ export default function Notification({ navigation }) {
   const singelPostHnadlePress = () => {
     dispatch(getPostById(item.objectId, loggedInUser?.id))
     console.log(item.objectId, user?.id)
+  }
+  const markAllAsReadNotifications = () => {
+    dispatch(markAllRead(loggedInUser?.id))
+    setTimeout(() => {
+      dispatch(fetchAllNotifications(loggedInUser.id, read))
+    }, 100);
   }
 
 
@@ -310,6 +316,9 @@ export default function Notification({ navigation }) {
         </View>
       </View>
       <HorizontalLine paddingTop={10} />
+      <TouchableOpacity onPress={markAllAsReadNotifications}>
+        <Text style={styles.markAllAsReadTextStyle}>Mark all as read</Text>
+      </TouchableOpacity>
       <View style={styles.notifyContainer}>
         <FlatList
           data={notificationData?.data}
@@ -318,7 +327,7 @@ export default function Notification({ navigation }) {
             <View
               //    style={styles.notificationCard}
               style={
-                item.new == false
+                item.seenByUser == true
                   ? [
                     styles.notificationCard,
                     { backgroundColor: theme.light.colors.white },
@@ -458,4 +467,10 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.BrandonGrotesque_medium,
     fontSize: ms(15, 0.3),
   },
+  markAllAsReadTextStyle: {
+    fontSize: 20,
+    textAlign: 'right',
+    marginRight: 20, marginTop: verticalScale(10),
+    color: theme.light.colors.info
+  }
 });
