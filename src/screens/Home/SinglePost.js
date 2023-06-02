@@ -244,7 +244,10 @@ export default function SinglePost({ navigation, route }) {
                             // commentCount={commentCount}
                             postData={item}
                             //  postIndex={postIndex}
-                            commentPress={() => navigation.navigate(NAVIGATION.comments, { DATA: item, "POST_INDEX": postIndex })}
+                            commentPress={() =>
+                                //navigation.navigate(NAVIGATION.comments, { DATA: item, "POST_INDEX": postIndex })
+                                console.log('Comment')
+                            }
                         // morePress={() => {
                         //     setPostIndex(0)
                         //     setIsAdminPost(item?.isAdminPost),

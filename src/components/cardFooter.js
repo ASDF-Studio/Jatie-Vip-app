@@ -145,7 +145,7 @@ export const CardFooter = ({
       <View style={styles.reactionContainer}>
         <TouchableOpacity
           style={[styles.iconContainer, styles.likeIconContainer,
-          postArray[postIndex].has_upvoted && { backgroundColor: theme.light.colors.infoBgLight }
+          postArray[postIndex]?.has_upvoted && { backgroundColor: theme.light.colors.infoBgLight }
           ]}
           onPress={() => upVoteHandel()}
         >

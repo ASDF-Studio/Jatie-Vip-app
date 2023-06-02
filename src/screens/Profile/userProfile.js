@@ -378,7 +378,7 @@ export default function UserProfile({ navigation, route }) {
               ) : null}
               <CardFooter
                 postIndex={index}
-                postID={user?.id}
+                postID={item?.id}
                 postUserID={item?.userId}
                 userID={loggedInId?.id}
                 likeCount={item?.upVote}
