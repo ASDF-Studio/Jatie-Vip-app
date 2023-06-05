@@ -351,7 +351,8 @@ export class UserController {
 
   // create post by admin
 
-  static async createPostByAdmin(id, postTitle, postBody, file, mimeType, imageArray, isImage) {
+  static async createPostByAdmin(id, postTitle, postBody, file, mimeType, imageArray, screen, vipOnly, schedulePost, postDate, goingLIve, ad, publishingDate, expiringDate) {
+    console.log('log in controller', "vip only-", id, postTitle, postBody, file, mimeType, imageArray, vipOnly, schedulePost, postDate, goingLIve, ad, publishingDate, expiringDate)
     return new Promise(async (resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.CREATE_POST_ADMIN;
       let data = new FormData()
@@ -391,16 +392,32 @@ export class UserController {
       data.append('postTitle', postTitle);
       data.append('postBody', postBody);
       data.append('postImg', mimeType == null && file);
+      data.append('isVIPonly', vipOnly);
+      {
+        schedulePost && data.append('isScheduled', schedulePost);
+        data.append('scheduleDetails', "2023-06-25T08:31:42.300487+00:00");
+      }
+
+      data.append('goingLive', goingLIve);
+      {
+        ad && data.append('isAdvertisement', ad);
+        data.append('publishDate', "2023-06-25T08:31:42.300487+00:00");
+        data.append('expiryDate', "2023-06-25T08:31:42.300487+00:00");
+      }
+
       const headers = {
         'Content-Type': 'multipart/form-data'
       }
       await HttpClient.post(endpoint, data, { headers })
         .then((response) => {
-          resolve(response);
+          resolve(response)
+          console.log('response of create post', JSON.stringify(response))
         })
         .catch((error) => {
 
+
           reject(error);
+          console.log('error in create post', error)
         });
     });
   }
