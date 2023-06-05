@@ -22,10 +22,11 @@ import { getUser } from '@/selectors/UserSelectors';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { faEllipsis, faFlag, faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { NAVIGATION } from '@/constants';
+import moment from 'moment';
+import CountDown from 'react-native-countdown-component';
 
 export default function PostDetails({ navigation, route }) {
   const dispatch = useDispatch()
-
   const data = route.params.key
   const giveAwayId = data.id
   const user = useSelector(getUser)
@@ -73,6 +74,15 @@ export default function PostDetails({ navigation, route }) {
     }
     dispatch(deleteGiveaway(DATA))
   }
+  function getSeconds(date) {
+    const dateString = date;
+    const dateObj = new Date(dateString);
+    const currentTime = new Date();
+    const timeDifference = dateObj.getTime() - currentTime.getTime();
+    const secondsLeft = Math.floor(timeDifference / 1000);
+    console.log("Seconds left:=-=-=-", secondsLeft);
+    return secondsLeft
+  }
   return (
     <SafeAreaView style={styles.contianer}>
       <CustomLoader open={active ? withdrawGiveAwayLoading : joinGiveAwayLoading} />
@@ -116,11 +126,25 @@ export default function PostDetails({ navigation, route }) {
               <View>
                 <Text style={styles.title}> {data.postTitle} </Text>
               </View>
-              <View>
-                <Text style={styles.timeLable}>
-                  {strings.giveaway.expires}
-                  <Text style={styles.EndTimeTxt}> {data.postExpires}</Text>
+              <View style={[styles.officialTxt, { backgroundColor: theme.light.colors.primaryBg, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }]}>
+                <Text >
+                  {strings.giveaway.EndsIn + " "}
+                  <Text style={styles.EndTimeTxt}>{moment.utc(data.postExpires).format('D/M/YY  hh:mm')}{' '}
+                    {/* {item.postExpires} */}
+                  </Text>
                 </Text>
+
+
+                <CountDown
+                  running={true}
+                  until={item?.remainingTime ?? getSeconds(data.postExpires)}
+                  separatorStyle={{ color: 'black', fontSize: 20 }}
+
+                  size={20}
+                  showSeparator={true}
+                  timeToShow={['D', 'H', 'S']}
+                  digitTxtStyle={{ fontSize: ms(11, 0.3), color: "black", fontFamily: FontFamily.Recoleta_medium, }}
+                />
               </View>
               <CardBody text={data.postBody} />
               {link(item.link)}
@@ -409,5 +433,20 @@ const styles = StyleSheet.create({
   },
   iconDasign: {
     color: theme.light.colors.black,
+  },
+  officialTxt: {
+    fontFamily: FontFamily.Recoleta_medium,
+    textAlign: 'justify',
+    backgroundColor: theme.light.colors.primaryBg,
+    borderColor: theme.light.colors.primaryBg,
+    // borderRadius: 20,
+    overflow: 'hidden',
+    padding: ms(8),
+    fontSize: ms(11, 0.3),
+    marginLeft: ms(15),
+    marginRight: ms(15),
+    marginBottom: ms(10),
+    marginTop: ms(-5),
+    paddingLeft: ms(15),
   },
 });

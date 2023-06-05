@@ -5,7 +5,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  Image, ImageBackground
+  Image, ImageBackground, ActivityIndicator
 } from 'react-native';
 import { theme } from '@/theme';
 import { faEllipsis, faLock, faPlay } from '@fortawesome/free-solid-svg-icons';

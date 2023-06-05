@@ -61,7 +61,7 @@ export default function UserProfile({ navigation, route }) {
   const [postIndex, setPostIndex] = useState(0);
   const dispatch = useDispatch()
   const { userId } = route?.params
-  console.log('otherpersoId', userId)
+  // console.log('otherpersoId', userId)
   const userr = useSelector(getUser)
   // console.log('MyId', userr.id)
 

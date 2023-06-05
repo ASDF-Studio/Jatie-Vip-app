@@ -66,7 +66,7 @@ import { faBell, faSearch } from '@fortawesome/pro-regular-svg-icons';
 import { getUser } from '@/selectors/UserSelectors';
 import { navigationRef } from '@/navigation/RootNavigation';
 import { getAllPost, TYPES, deletePost, reportPost, followUser, blockUser, unFollowUser, getAllPostPagination, getSchedulePost } from '@/actions/PostActions';
-import { getAllPostData, getSchedulePostData } from '@/selectors/PostSelectors';
+import { getAllPostData, getSchedulePostData, getSearchData } from '@/selectors/PostSelectors';
 import { isLoadingSelector, successSelector } from '@/selectors/StatusSelectors';
 import ImagePicker from 'react-native-image-crop-picker';
 import { globalReset } from '@/actions/GlobalActions';
@@ -80,6 +80,7 @@ import { useRef } from 'react';
 
 export function Home({ navigation }) {
   const ALLPOST = useSelector(getAllPostData)
+  const SEARCH_DATA = useSelector(getSearchData)
   const flatListRef = useRef()
   const userType = useSelector(state => state.userType);
   const user = useSelector(getUser);
@@ -347,7 +348,12 @@ export function Home({ navigation }) {
             ListHeaderComponent={
               <View>
 
-                {userType.user !== `${strings.userType.free}` && (<ShareFeed onPress={() => navigation.navigate(NAVIGATION.post)} />)}
+                {/* {userType.user == `${strings.userType.free}` && (
+                
+                )} */}
+                <ShareFeed onPress={() => navigation.navigate(NAVIGATION.post)} />
+
+
                 {userType.user == `${strings.userType.admin}` && (
                   <SeeSchedulePost
                     title={strings.home.seeSchedulePost}
@@ -365,20 +371,20 @@ export function Home({ navigation }) {
             // onEndReachedThreshold={0.5}
             onEndReached={() => {
               if (!fetchFeedPost) {
-                console.log("END===REACHED=========>", fetchFeedPost)
+                // console.log("END===REACHED=========>", fetchFeedPost)
                 onLoadMorePost();
                 setFetchFeedPost(true);
 
               }
             }}
             onMomentumScrollBegin={() => {
-              console.log("LOAD_MORE============>", fetchFeedPost)
+              // console.log("LOAD_MORE============>", fetchFeedPost)
               setFetchFeedPost(false);
               // onEndReachedCalledDuringMomentum = false;
             }}
-            extraData={searchEnabled ? ALLPOST?.searchedPosts : ALLPOST}
+            extraData={searchEnabled ? SEARCH_DATA : ALLPOST}
             onEndReachedThreshold={0.5}
-            data={searchEnabled ? ALLPOST?.searchedPosts : ALLPOST}
+            data={searchEnabled ? SEARCH_DATA : ALLPOST}
             keyExtractor={item => item.id}
             contentContainerStyle={{ flexGrow: 1 }}
             renderItem={({ item, index }) => (
