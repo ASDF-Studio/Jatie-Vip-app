@@ -741,7 +741,7 @@ export const createPost = (id, postTitle, postBody, file, mimeType, imageArray, 
   dispatch(globalReset())
   dispatch(createPostRequest());
   try {
-    const user = await UserController.createPost(id, postTitle, postBody, file, mimeType, imageArray, isImage);
+    const user = await UserController.createPost(id, postTitle, postBody, file, mimeType, imageArray, isImage,);
     dispatch(createPostSuccess(user))
     if (screen == NAVIGATION.home) {
       showMessage({
