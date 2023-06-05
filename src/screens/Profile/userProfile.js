@@ -59,7 +59,7 @@ import { useIsFocused } from '@react-navigation/native';
 export default function UserProfile({ navigation, route }) {
   const dispatch = useDispatch()
   const { userId } = route?.params
-  console.log('otherpersoId', userId)
+  // console.log('otherpersoId', userId)
   const userr = useSelector(getUser)
   // console.log('MyId', userr.id)
 
