@@ -43,6 +43,8 @@ let nextId = 0;
 
 export default function Post({ navigation }) {
   const userType = useSelector(state => state.userType);
+
+  console.log('usertype', userType)
   const dispatch = useDispatch()
   const user = useSelector(getUser);
   const [imageArray, setImageArray] = useState([]);
@@ -215,12 +217,22 @@ export default function Post({ navigation }) {
       // navigationRef.navigate(NAVIGATION.postOptions, {
       //   prevData: DATA
       // })
+
+      {
+        userType.user == strings.userType.vip && (
+          dispatch(createPost(user?.id, postTitle, postBody, postImg, mimeType, imageArray, NAVIGATION.profile
+          ),
+
+          )
+
+        )
+      }
     }
 
   }
   const onSave = () => {
     validation()
-    // console.log(userType.user, strings.userType.admin);
+    //console.log(userType.user, strings.userType.admin);
 
   }
   return (
@@ -308,8 +320,9 @@ export default function Post({ navigation }) {
               <Button
                 title={strings.home.post}
                 style={styles.vipButton}
-                disabled={postBody.length == 0 ? false : true}
+                disabled={postBody.length ? false : true}
                 opacity={postBody.length ? 1 : 0.4}
+                onPress={onSave}
               />
             )}
             {userType.user == strings.userType.free && (

@@ -20,6 +20,7 @@ import DatePicker from 'react-native-date-picker';
 import { ms } from 'react-native-size-matters';
 import { getUser } from '@/selectors/UserSelectors';
 import { createPostByAdmin, updatePost } from '@/actions/UserActions';
+import moment from 'moment';
 
 export default function PostOptions({ route, navigation }) {
   const { prevData } = route.params;
@@ -45,7 +46,28 @@ export default function PostOptions({ route, navigation }) {
     if (prevData?.actionType === "Update") {
       dispatch(updatePost(prevData?.postId, prevData?.userId, prevData?.postTitle, prevData?.postBody, prevData?.postImg, prevData?.preImageArray, prevData?.mimeType, prevData?.preMimeType, prevData?.imageArray, prevData?.user_Type, NAVIGATION.profile))
     } else {
-      dispatch(createPostByAdmin(user?.id, prevData?.postTitle, prevData?.postBody, prevData?.postImg, prevData?.mimeType, prevData?.imageArray, NAVIGATION.profile))
+      dispatch(createPostByAdmin(user?.id, prevData?.postTitle,
+        prevData?.postBody,
+        prevData?.postImg,
+        prevData?.mimeType,
+        prevData?.imageArray,
+        NAVIGATION.profile,
+        vipOnly,
+        schedulePost,
+        postDate, goingLIve, ad, publishingDate, expiringDate,
+
+
+
+      ))
+      console.log(user?.id, prevData?.postTitle,
+        prevData?.postBody,
+        prevData?.postImg,
+        prevData?.mimeType,
+        prevData?.imageArray,
+        vipOnly,
+        schedulePost,
+        postDate, goingLIve, ad, publishingDate, expiringDate,
+      )
     }
   };
 
@@ -72,38 +94,40 @@ export default function PostOptions({ route, navigation }) {
             </View>
             <View style={styles.right}>
               {/* Date picker  */}
-              <View>
-                <TextField
-                  style={styles.rightContainerTextField}
-                  editable={false}
-                  // value = {Moment(postDate).format('DD-MM-YYYY')}
-                  placeholder={strings.home.selectTimeAndDate}
-                />
-                <TouchableOpacity
-                  style={styles.datePickerIcon}
-                  onPress={() => setOpenPostDatePicker(true)}
-                >
-                  <FontAwesomeIcon
-                    icon={faCalendar}
-                    size={ms(13)}
-                    color={theme.light.colors.info}
+              {schedulePost &&
+                <View>
+                  <TextField
+                    style={styles.rightContainerTextField}
+                    editable={false}
+                    value={postDate ? moment(postDate).format('DD-MM-YYYY') : null}
+                    placeholder={strings.home.selectTimeAndDate}
                   />
-                </TouchableOpacity>
-                <DatePicker
-                  modal
-                  mode="date"
-                  open={openPostDatePicker}
-                  // locale = "fr"
-                  date={postDate}
-                  onConfirm={date => {
-                    setOpenPostDatePicker(false);
-                    setPostDate(date);
-                  }}
-                  onCancel={() => {
-                    setOpenPostDatePicker(false);
-                  }}
-                />
-              </View>
+                  <TouchableOpacity
+                    style={styles.datePickerIcon}
+                    onPress={() => setOpenPostDatePicker(true)}
+                  >
+                    <FontAwesomeIcon
+                      icon={faCalendar}
+                      size={ms(13)}
+                      color={theme.light.colors.info}
+                    />
+                  </TouchableOpacity>
+                  <DatePicker
+                    modal
+                    mode="date"
+                    open={openPostDatePicker}
+                    // locale = "fr"
+                    date={postDate}
+                    onConfirm={date => {
+                      setOpenPostDatePicker(false);
+                      setPostDate(date);
+                    }}
+                    onCancel={() => {
+                      setOpenPostDatePicker(false);
+                    }}
+                  />
+                </View>}
+
             </View>
           </View>
           <View style={styles.list}>
@@ -250,7 +274,7 @@ export default function PostOptions({ route, navigation }) {
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </SafeAreaView >
   );
 }
 
