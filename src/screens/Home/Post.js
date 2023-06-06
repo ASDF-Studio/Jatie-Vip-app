@@ -218,7 +218,7 @@ export default function AdminPost({ navigation }) {
 
       {
         userType.user === strings.userType.free && (
-          dispatch(createPost(user?.id, postTitle, postBody, postImg, mimeType, imageArray, NAVIGATION.home))
+          dispatch(createPost(user?.id, postTitle, postBody, postImg, mimeType, imageArray, NAVIGATION.home, vipOnly))
         )
       }
       {
@@ -226,6 +226,15 @@ export default function AdminPost({ navigation }) {
           navigationRef.navigate(NAVIGATION.postOptions, {
             prevData: DATA,
           })
+        )
+      }
+      {
+        userType.user == strings.userType.vip && (
+          dispatch(createPost(user?.id, postTitle, postBody, postImg, mimeType, imageArray, NAVIGATION.home, vipOnly
+          ),
+
+          )
+
         )
       }
     }
@@ -329,6 +338,7 @@ export default function AdminPost({ navigation }) {
                 opacity={postBody.length ? 1 : 0.4}
                 style={styles.postButton}
                 disabled={postBody.length ? false : true}
+                onPress={onSave}
               />
             )}
             {userType.user == strings.userType.free && (

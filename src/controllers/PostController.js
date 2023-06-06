@@ -280,13 +280,13 @@ export class PostController {
                 "postsFilter": filterBy.toLowerCase(),
                 "dateCursor": page
             })
-            console.log("POST_ADATA=-=-=-=-=New-=-=body", body);
+            // console.log("POST_ADATA=-=-=-=-=New-=-=body", body);
 
             HttpClient.post(endpoint, body)
                 .then((response) => {
-                    console.log("POST_ADATA=-=-=-=-=New-=-=-", JSON.stringify(response.data));
+                    // console.log("POST_ADATA=-=-=-=-=New-=-=-", JSON.stringify(response.data));
                     resolve(response);
-                    console.log('response of all posts', response);
+                    // console.log('response of all posts', response);
                 })
                 .catch((error) => {
                     console.log("ERPOPOPo", error);
@@ -328,10 +328,10 @@ export class PostController {
             console.log("COMMENT_BODY", body)
             HttpClient.post(endpoint, body)
                 .then((response) => {
-                    console.log("COMMENT_Response", JSON.stringify(response))
+                    // console.log("COMMENT_Response", JSON.stringify(response))
                     resolve(response)
                 }).catch((error) => {
-                    console.log("COMMENT_Response_ERRR", JSON.stringify(error))
+                    // console.log("COMMENT_Response_ERRR", JSON.stringify(error))
                     reject(error)
                 });
         })

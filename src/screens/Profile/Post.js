@@ -198,7 +198,7 @@ export default function Post({ navigation }) {
 
       {
         userType.user == strings.userType.free && (
-          dispatch(createPost(user?.id, postTitle, postBody, postImg, mimeType, imageArray, NAVIGATION.profile))
+          dispatch(createPost(user?.id, postTitle, postBody, postImg, mimeType, imageArray, NAVIGATION.profile, vipOnly))
         )
       }
       {
@@ -220,7 +220,7 @@ export default function Post({ navigation }) {
 
       {
         userType.user == strings.userType.vip && (
-          dispatch(createPost(user?.id, postTitle, postBody, postImg, mimeType, imageArray, NAVIGATION.profile
+          dispatch(createPost(user?.id, postTitle, postBody, postImg, mimeType, imageArray, NAVIGATION.profile, vipOnly
           ),
 
           )
