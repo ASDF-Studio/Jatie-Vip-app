@@ -1,6 +1,9 @@
 export const getAllPostData = state => {
     return Object.keys(state.post).length > 0 ? state.post.feedData : null;
 };
+export const getSearchData = state => {
+    return Object.keys(state.post).length > 0 ? state.post.searchedPosts : null;
+};
 
 export const getCommentsByPostIdData = state => {
     return Object.keys(state.post).length > 0 ? state.post : null;

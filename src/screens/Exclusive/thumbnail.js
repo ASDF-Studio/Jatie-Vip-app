@@ -124,7 +124,7 @@ export default function Thubmnail({ navigation, route }) {
             </Text>
           </View>
 
-          <View style={styles.movefit}>
+          {/* <View style={styles.movefit}>
             {infoBox(Info.movefit, Info.movefitLink)}
           </View>
           <View style={styles.jatie}>
@@ -139,7 +139,7 @@ export default function Thubmnail({ navigation, route }) {
           </View>
           <View style={styles.jatieBeauty}>
             {infoBox(Info.jatieBeauty, Info.jatieBeautyLink)}
-          </View>
+          </View> */}
         </View>
       </ScrollView>
     </SafeAreaView>

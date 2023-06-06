@@ -8,7 +8,8 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { faSliders } from '@fortawesome/free-solid-svg-icons';
-import { faBell } from '@fortawesome/free-regular-svg-icons';
+// import { faBell } from '@fortawesome/free-regular-svg-icons';
+import { faBell } from '@fortawesome/pro-regular-svg-icons';
 import { ms } from 'react-native-size-matters';
 import { TextStyles, theme } from '@/theme';
 import { NAVIGATION } from '@/constants';
@@ -84,7 +85,7 @@ export function Profile({ navigation }) {
             onPress={() => navigation.navigate(NAVIGATION.notification)}
             style={styles.bellIcon}
           />
-          <View style={styles.bellAlert} />
+          {/* <View style={styles.bellAlert} /> */}
         </View>
       </View>
       <HeaderTab
