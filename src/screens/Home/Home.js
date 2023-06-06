@@ -327,7 +327,7 @@ export function Home({ navigation }) {
         key2={strings.home.vipArea}
         status={vipArea}
         setStatus={setVipArea}
-        showLock={userType.user == `${strings.userType.free}` ? true : false}
+        showLock={userType?.user == `${strings.userType.free}` ? true : false}
       />
       <HorizontalLine />
       {/* <Text onPress={() => onSinglePost()}>Mukul</Text> */}

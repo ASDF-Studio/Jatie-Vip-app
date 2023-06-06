@@ -38,7 +38,7 @@ export default function Followers({ navigation, route }) {
   const focus = useIsFocused()
   const { id } = route.params
   const { screenName } = route.params
-  console.log("id in followers", id)
+  //console.log("id in followers", id)
   console.log(screenName)
   const { active } = route.params
 
@@ -54,7 +54,7 @@ export default function Followers({ navigation, route }) {
 
   useEffect(() => {
     dispatch(followers(user?.id, id))
-    console.log('followers list', user?.id, id)
+    // console.log('followers list', user?.id, id)
 
   }, [focus]);
 
