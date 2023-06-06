@@ -42,6 +42,11 @@ export default function PostOptions({ route, navigation }) {
   const [expiringDate, setExpiringDate] = useState(new Date());
   const [openExpiringDatePicker, setOpenExpiringDatePicker] = useState(false);
 
+  //convert date into required format
+  const scheduleDetails = moment(postDate).format()
+  const publishDate = moment(publishingDate).format()
+  const expireDate = moment(expiringDate).format()
+
   const handleSubmit = () => {
     if (prevData?.actionType === "Update") {
       dispatch(updatePost(prevData?.postId, prevData?.userId, prevData?.postTitle, prevData?.postBody, prevData?.postImg, prevData?.preImageArray, prevData?.mimeType, prevData?.preMimeType, prevData?.imageArray, prevData?.user_Type, NAVIGATION.profile))
@@ -54,20 +59,12 @@ export default function PostOptions({ route, navigation }) {
         NAVIGATION.profile,
         vipOnly,
         schedulePost,
-        postDate, goingLIve, ad, publishingDate, expiringDate,
+        scheduleDetails, goingLIve, ad, publishDate, expireDate,
 
 
 
       ))
-      console.log(user?.id, prevData?.postTitle,
-        prevData?.postBody,
-        prevData?.postImg,
-        prevData?.mimeType,
-        prevData?.imageArray,
-        vipOnly,
-        schedulePost,
-        postDate, goingLIve, ad, publishingDate, expiringDate,
-      )
+
     }
   };
 
@@ -189,7 +186,7 @@ export default function PostOptions({ route, navigation }) {
                     <TextField
                       style={styles.datePicketTextField}
                       editable={false}
-                      // value = { publishingDate?Moment(publishingDate).format('DD-MM-YYYY'): null}
+                      value={publishingDate ? moment(publishingDate).format('DD-MM-YYYY') : null}
                       placeholder={strings.home.publishingDate}
                     />
                     <TouchableOpacity
@@ -231,7 +228,7 @@ export default function PostOptions({ route, navigation }) {
                     <TextField
                       style={styles.datePicketTextField}
                       editable={false}
-                      // value = {Moment(expiringDate).format('DD-MM-YYYY')}
+                      value={moment(expiringDate).format('DD-MM-YYYY')}
                       placeholder={strings.home.ExpirationDate}
                     />
 

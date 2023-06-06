@@ -44,7 +44,7 @@ let nextId = 0;
 export default function Post({ navigation }) {
   const userType = useSelector(state => state.userType);
 
-  console.log('usertype', userType)
+  // console.log('usertype', userType)
   const dispatch = useDispatch()
   const user = useSelector(getUser);
   const [imageArray, setImageArray] = useState([]);
@@ -199,6 +199,7 @@ export default function Post({ navigation }) {
       {
         userType.user == strings.userType.free && (
           dispatch(createPost(user?.id, postTitle, postBody, postImg, mimeType, imageArray, NAVIGATION.profile))
+
         )
       }
       {
@@ -220,10 +221,13 @@ export default function Post({ navigation }) {
 
       {
         userType.user == strings.userType.vip && (
-          dispatch(createPost(user?.id, postTitle, postBody, postImg, mimeType, imageArray, NAVIGATION.profile
-          ),
+          dispatch(createPost(user?.id, postTitle, postBody, postImg, mimeType, imageArray,
+            NAVIGATION.profile
+          )
 
           )
+
+
 
         )
       }

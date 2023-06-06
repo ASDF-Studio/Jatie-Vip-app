@@ -181,7 +181,7 @@ export class UserController {
       let data = new FormData()
       if (mimeType !== null) {
         let obj = [];
-        imageArray && imageArray.map(item => {
+        imageArray && imageArray?.map(item => {
           let filename = item.image.split("/").pop();
           obj = {
             uri: item.image,
@@ -196,6 +196,7 @@ export class UserController {
       data.append('postTitle', postTitle);
       data.append('postBody', postBody);
       data.append('postImg', mimeType == null && file);
+
       const headers = {
         'Content-Type': 'multipart/form-data'
       }
@@ -351,8 +352,8 @@ export class UserController {
 
   // create post by admin
 
-  static async createPostByAdmin(id, postTitle, postBody, file, mimeType, imageArray, screen, vipOnly, schedulePost, postDate, goingLIve, ad, publishingDate, expiringDate) {
-    console.log('log in controller', "vip only-", id, postTitle, postBody, file, mimeType, imageArray, vipOnly, schedulePost, postDate, goingLIve, ad, publishingDate, expiringDate)
+  static async createPostByAdmin(id, postTitle, postBody, file, mimeType, imageArray, screen, vipOnly, schedulePost, scheduleDetails, goingLIve, ad, publishDate, expireDate) {
+    console.log('log in controller', "vip only-", id, postTitle, postBody, file, mimeType, imageArray, vipOnly, schedulePost, scheduleDetails, goingLIve, ad, publishDate, expireDate)
     return new Promise(async (resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.CREATE_POST_ADMIN;
       let data = new FormData()
@@ -395,14 +396,14 @@ export class UserController {
       data.append('isVIPonly', vipOnly);
       {
         schedulePost && data.append('isScheduled', schedulePost);
-        data.append('scheduleDetails', "2023-06-25T08:31:42.300487+00:00");
+        data.append('scheduleDetails', scheduleDetails);
       }
 
       data.append('goingLive', goingLIve);
       {
         ad && data.append('isAdvertisement', ad);
-        data.append('publishDate', "2023-06-25T08:31:42.300487+00:00");
-        data.append('expiryDate', "2023-06-25T08:31:42.300487+00:00");
+        data.append('publishDate', publishDate);
+        data.append('expiryDate', expireDate);
       }
 
       const headers = {

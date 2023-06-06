@@ -22,7 +22,7 @@ export default function UpgradeMembership({ navigation }) {
           />
 
 
-        </View>
+        </View>Updated create post option of VIP users on newsfeed and myProfile section (In progress).
 
       </View>
       <View style={styles.logo}>

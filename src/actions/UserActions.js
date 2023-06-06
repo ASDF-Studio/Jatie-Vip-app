@@ -741,7 +741,7 @@ export const createPost = (id, postTitle, postBody, file, mimeType, imageArray, 
   dispatch(globalReset())
   dispatch(createPostRequest());
   try {
-    const user = await UserController.createPost(id, postTitle, postBody, file, mimeType, imageArray, isImage,);
+    const user = await UserController.createPost(id, postTitle, postBody, file, mimeType, imageArray, isImage);
     dispatch(createPostSuccess(user))
     if (screen == NAVIGATION.home) {
       showMessage({
@@ -770,14 +770,14 @@ export const createPost = (id, postTitle, postBody, file, mimeType, imageArray, 
 
 // create_post_by_admin action
 
-export const createPostByAdmin = (id, postTitle, postBody, postImg, mimeType, imageArray, screen, vipOnly, schedulePost, postDate, goingLIve, ad, publishingDate, expiringDate,) => async dispatch => {
-  console.log('log in actions', id, postTitle, postBody, postImg, mimeType, imageArray, vipOnly, schedulePost, postDate, goingLIve, ad, publishingDate, expiringDate
+export const createPostByAdmin = (id, postTitle, postBody, postImg, mimeType, imageArray, screen, vipOnly, schedulePost, scheduleDetails, goingLIve, ad, publishDate, expireDate,) => async dispatch => {
+  console.log('log in actions', id, postTitle, postBody, postImg, mimeType, imageArray, vipOnly, schedulePost, scheduleDetails, goingLIve, ad, publishDate, expireDate
 
   )
   dispatch(globalReset())
   dispatch(createPostRequest());
   try {
-    const user = await UserController.createPostByAdmin(id, postTitle, postBody, postImg, mimeType, imageArray, screen, vipOnly, schedulePost, postDate, goingLIve, ad, publishingDate, expiringDate);
+    const user = await UserController.createPostByAdmin(id, postTitle, postBody, postImg, mimeType, imageArray, screen, vipOnly, schedulePost, scheduleDetails, goingLIve, ad, publishDate, expireDate);
     dispatch(createPostSuccess(user))
     if (screen == NAVIGATION.home) {
       showMessage({
