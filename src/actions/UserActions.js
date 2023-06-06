@@ -737,11 +737,11 @@ export const logout = () => async dispatch => {
 
 // create_post action
 
-export const createPost = (id, postTitle, postBody, file, mimeType, imageArray, screen, isImage) => async dispatch => {
+export const createPost = (id, postTitle, postBody, file, mimeType, imageArray, screen, isVipOnly) => async dispatch => {
   dispatch(globalReset())
   dispatch(createPostRequest());
   try {
-    const user = await UserController.createPost(id, postTitle, postBody, file, mimeType, imageArray, isImage);
+    const user = await UserController.createPost(id, postTitle, postBody, file, mimeType, imageArray, isVipOnly);
     dispatch(createPostSuccess(user))
     if (screen == NAVIGATION.home) {
       showMessage({

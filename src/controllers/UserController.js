@@ -175,7 +175,8 @@ export class UserController {
 
   // create post
 
-  static async createPost(id, postTitle, postBody, postTxt, postImg, mimeType, imageArray) {
+  static async createPost(id, postTitle, postBody, file, mimeType, imageArray, isVip) {
+    console.log("first", imageArray)
     return new Promise(async (resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.CREATE_POST;
       let data = new FormData()
@@ -195,7 +196,10 @@ export class UserController {
       data.append('userId', id);
       data.append('postTitle', postTitle);
       data.append('postBody', postBody);
+      data.append('isVIPonly', isVip)
+
       data.append('postImg', mimeType == null && file);
+      console.log("CREATE__POST", data)
 
       const headers = {
         'Content-Type': 'multipart/form-data'
