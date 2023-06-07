@@ -71,6 +71,7 @@
     "react-native-size-matters": "^0.4.0",
     "react-native-smooth-pincode-input": "^1.0.9",
     "react-native-svg": "^13.6.0",
+    "react-native-swipe-gestures": "^1.0.5",
     "react-native-swiper-flatlist": "^3.2.2",
     "react-native-thumbnail-video": "^0.1.2",
     "react-native-video": "^5.2.1",
