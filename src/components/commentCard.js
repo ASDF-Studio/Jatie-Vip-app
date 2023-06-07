@@ -28,7 +28,8 @@ export const CommentCard = ({
   disLikePress,
   replyPress,
   morePress,
-  userId, commentId, commentIndex, commentData
+  userId, commentId, commentIndex, commentData,
+  commentUserId
 }) => {
   const dispatch = useDispatch()
   const [upVote, setUpVote] = useState(likeCount);
@@ -82,7 +83,7 @@ export const CommentCard = ({
     dispatch(voteDownComment(commentId, userId))
   }
   const navigateToUserProfile = () => {
-    navigationRef.navigate(NAVIGATION.userProfile, { userId: userId })
+    navigationRef.navigate(NAVIGATION.userProfile, { userId: commentUserId })
   }
   return (
 
@@ -110,7 +111,6 @@ export const CommentCard = ({
         <View style={styles.footer}>
           <View style={styles.reacContainer}>
             <TouchableOpacity
-
               onPress={onLikeComment}
               style={[styles.iconContainer, styles.likeContainer,
               COMMENTS[commentIndex].has_upvoted && { backgroundColor: theme.light.colors.infoBgLight }

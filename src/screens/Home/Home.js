@@ -394,10 +394,8 @@ export function Home({ navigation }) {
 
 
                   <TouchableOpacity
-
                     onPress={() => userType.user == `${strings.userType.free}` && navigation.navigate(NAVIGATION.upgradeMembership)}
                   >
-
                     <Card>
                       <CardHeader
                         fullName={item?.user?.fullName}
@@ -447,9 +445,6 @@ export function Home({ navigation }) {
                       showPin={item?.isPinned}
                     />
                     <CardBody text={item.postBody} />
-
-
-
                     {item?.postMediaContent?.length <= 2 ? (
                       <View style={styles.imageContainer}>
                         {item?.postMediaContent?.map(data => (
@@ -586,7 +581,6 @@ export function Home({ navigation }) {
 
 
                     <CardFooter
-
                       // likePress={() => onUpVote(item.id, item.userId, user?.id, item)}
                       // disLikePress={() => onDownVote(item.id, item.userId, user?.id, item)}
                       postID={item?.id}

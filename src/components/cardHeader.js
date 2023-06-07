@@ -18,7 +18,8 @@ export const CardHeader = ({
   time,
   isOfficial,
   showPin,
-  userId
+  userId,
+  isProfile
 }) => {
 
   const getTime = (t2) => {
@@ -66,7 +67,7 @@ export const CardHeader = ({
           }}
         />
         <TouchableOpacity
-          onPress={() => navigateToUserProfile()}
+          onPress={() => !isProfile && navigateToUserProfile()}
           style={{ paddingLeft: ms(5) }}>
           <Text style={styles.fullNameTxt}> {fullName} </Text>
           <Text style={styles.userNameTxt}> {userName} </Text>

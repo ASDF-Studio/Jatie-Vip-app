@@ -123,12 +123,11 @@ export default function Active({ navigation, userType }) {
             open={isLoading}
           /> */}
 
-        <ActivityIndicator
+        {isLoading && <ActivityIndicator
           animating={isLoading}
           size={"large"}
-
           color={theme.light.colors.primary}
-        />
+        />}
         <FlatList
           data={getActiveGiveWayData ?? []}
           key={props => props.id}
@@ -406,18 +405,13 @@ export default function Active({ navigation, userType }) {
                                   key={counter}
                                   style={[styles.image, styles.moreImage]}
                                 >
-                                  <TouchableOpacity
 
-                                    onPress={() => {
-                                      onViewImageVideo(item)
-                                    }}
-                                  >
-                                    <Text style={styles.extraImage}>
-                                      {strings.message.plus}
-                                      {item.postMediaContent?.length - 1}
-                                    </Text>
 
-                                  </TouchableOpacity>
+                                  <Text style={styles.extraImage}>
+                                    {strings.message.plus}
+                                    {item.postMediaContent?.length - 2}
+                                  </Text>
+
                                   {/* {data.mimetype.split("/")[0] == "video" &&
                                 <TouchableOpacity
                                   // activeOpacity={1}
@@ -512,7 +506,7 @@ export const styles = StyleSheet.create({
   },
   moreImage: {
     height: ms(200),
-    // backgroundColor: theme.light.colors.hyperlink,
+    backgroundColor: theme.light.colors.imageOpaicty,
     opacity: 0.7,
     alignItems: 'center',
     justifyContent: 'center',

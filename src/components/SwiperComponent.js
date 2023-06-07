@@ -92,8 +92,6 @@ export const SwiperViewer = ({ visible, setVisible, images }) => {
                         </View>
                     )}
                 />
-
-
             </Modal>
         </GestureRecognizer >
     )

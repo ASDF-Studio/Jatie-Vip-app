@@ -1,143 +1,132 @@
 import React, { useEffect, useState } from 'react';
 import {
     View,
-    Modal,
-    TouchableWithoutFeedback,
     StyleSheet,
     ImageBackground,
     TouchableOpacity,
-    Image
+    Image,
+    Text,
+    DropDownPicker,
+    TextInput,
 } from 'react-native';
-import PropTypes from 'prop-types';
 import { theme } from '@/theme';
 import { ms, vs } from 'react-native-size-matters';
-import { Card, CardBody, CardFooter, CardHeader, HorizontalLine, ModalDown, ModalList, TopBackButton } from '@/components';
+import {
+    Card,
+    CardBody,
+    CardFooter,
+    CardHeader,
+    HorizontalLine,
+    ModalDown,
+    ModalList,
+    TopBackButton,
+    ReportOnPostModal,
+    Toast,
+    Button,
+    Icon,
+    PopUp,
+} from '@/components';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NAVIGATION } from '@/constants';
 import { FontFamily } from '@/theme/Fonts';
 import { navigationRef } from '@/navigation/RootNavigation';
 import { useDispatch, useSelector } from 'react-redux';
-import { useFocusEffect } from '@react-navigation/native';
-import { getPostById, TYPES } from '@/actions/PostActions';
+import { getPostById, TYPES, deletePost, reportPost } from '@/actions/PostActions';
 import { getAllPostData, getPostByIdData } from '@/selectors/PostSelectors';
 import { CustomLoader } from '@/components';
-import { isLoadingSelector } from '@/selectors/StatusSelectors';
+import {
+    isLoadingSelector,
+    successSelector,
+} from '@/selectors/StatusSelectors';
 import { getUser } from '@/selectors/UserSelectors';
 import { strings } from '@/localization';
-import { faFlag, faPen, faTrash, faXmark } from '@fortawesome/free-solid-svg-icons';
-import { log } from 'react-native-reanimated';
+import {
+    faFlag,
+    faImage,
+    faPen,
+    faThumbsUp,
+    faTrash,
+    faXmark,
+} from '@fortawesome/free-solid-svg-icons';
+import { SwiperViewer } from '@/components/SwiperComponent';
 import { POST_TYPE } from '@/constants/enums';
-
+import { globalReset } from '@/actions/GlobalActions';
 
 export default function SinglePost({ navigation, route }) {
-    const { postId, postIndex } = route.params || {}
-    const dispatch = useDispatch()
-    const ALLPOST = useSelector(getAllPostData)
+    const { postId, postIndex } = route.params || {};
+    const userType = useSelector(state => state.userType);
+    const dispatch = useDispatch();
+    const ALLPOST = useSelector(getAllPostData);
     const user = useSelector(getUser);
-    const postData = useSelector(getPostByIdData)
-
+    const postData = useSelector(getPostByIdData);
+    const [showImageView, setShowImageView] = useState(false);
     const [postUserName, setPostUserName] = useState('');
     const [open, setOpen] = useState(false);
+    const [openReport, setOpenReport] = useState(false);
+    const [reportOption, setReportOption] = useState([
+        { label: 'Explicit Content', value: 'Explicit Content' },
+        { label: 'Bullying or Harassment', value: 'Bullying or Harassment' },
+        { label: 'Spam', value: 'Spam' },
+        {
+            label: 'Misleading Information or Fake News',
+            value: 'Misleading Information or Fake News',
+        },
+    ]);
     const [reportOptionValue, setReportOptionValue] = useState('');
+    const [reportListOpen, setReportListOpen] = useState(false);
+    const [feedImages, setFeedImages] = useState([]);
+    const [editData, setEditdata] = useState({});
     const [reportComment, setReportCommnet] = useState('');
-    const [allPinnedPost, setAllPinnedPost] = useState([]);
-    const [allPost, setAllPost] = useState(ALLPOST ? ALLPOST : []);
     const [postUserId, setPostUserId] = useState(null);
     const [postTitle, setPostTitle] = useState('');
     const [postBody, setPostBody] = useState('');
     const [postImg, setPostImg] = useState([]);
-    const [isAdminPost, setIsAdminPost] = useState(false)
+    const [isAdminPost, setIsAdminPost] = useState(false);
     const [openReplace, setReplace] = useState(false);
-    var item = postData
+    const [reportImage, setreportImage] = useState(null);
+    const [item, setItem] = useState(postData)
 
-    const [likeCount, setLikeCount] = useState(item?.upVote)
-    const [downCount, setDownCount] = useState(item?.downVote)
-    const [commentCount, setCommentCount] = useState(item?.comments_aggregate?.aggregate?.count)
-
-    console.log("AllPost=-=-=-Newwww", JSON.stringify(item));
     const isLoading = useSelector(state =>
         isLoadingSelector([TYPES.GET_POST_BY_ID], state)
     );
-    useEffect(() => {
-        console.log(postId, user?.id);
-        dispatch(getPostById(postId, user?.id))
-        setLikeCount(item?.upVote)
-        setDownCount(item?.downVote)
-        setCommentCount(item?.comments_aggregate?.aggregate?.count)
+    const isShowReportToast = useSelector(state =>
+        successSelector([TYPES.REPORT_POST], state)
+    );
 
-    }, [])
+    const onDelete = () => {
+        dispatch(deletePost(postId, postUserId, user?.id, userType.user, NAVIGATION.home));
+    }
+
+    useEffect(() => {
+        dispatch(getPostById(postId, user?.id));
+    }, [postId]);
+
+    useEffect(() => {
+        if (postData) {
+            setItem(postData)
+        } else {
+            navigationRef.goBack()
+        }
+    }, [postData])
+
     let counter = 1;
-    // const item = {
-    //     "id": "5efc76cb-6749-4b46-a60e-0870ef4b8c95",
-    //     "userId": "6aae7065-5341-45b1-b717-0c3e3256dc2f",
-    //     "postTitle": "",
-    //     "postBody": "I was a child and she was a child,\n",
-    //     "postImg": [
-    //         "https://d2wwqw32p0xkid.cloudfront.net/photo-1680337684341"
-    //     ],
-    //     "postExpires": null,
-    //     "isExclusive": false,
-    //     "isGiveaway": false,
-    //     "isPinned": true,
-    //     "isReported": false,
-    //     "isUSAonly": false,
-    //     "isVIPonly": false,
-    //     "isAdminPost": true,
-    //     "upVote": 3,
-    //     "upVoteUserId": [
-    //         "9c20a34e-43ec-4d5b-8487-9a4eb1cf936d",
-    //         "f6851e56-9bf3-464f-9a33-f31d8f2a7d02",
-    //         "ce656365-b90f-4b5f-aab6-b436051171f5"
-    //     ],
-    //     "downVote": 0,
-    //     "downVoteUserId": [
-    //     ],
-    //     "shared": 0,
-    //     "sharedUserId": [
-    //     ],
-    //     "created_at": "2023-03-01T08:28:04.405+00:00",
-    //     "updated_at": "2023-04-01T08:28:04.405+00:00",
-    //     "user": {
-    //         "fullName": "JatieVIP",
-    //         "username": "jatieVIP",
-    //         "profilePic": "https://d2wwqw32p0xkid.cloudfront.net/photo-1679288548479.jpg",
-    //         "followers": [
-    //         ],
-    //         "following": [
-    //             "ce656365-b90f-4b5f-aab6-b436051171f5"
-    //         ]
-    //     },
-    //     "comments_aggregate": {
-    //         "aggregate": {
-    //             "count": 32
-    //         }
-    //     },
-    //     "has_upvoted": true,
-    //     "has_downvoted": false,
-    //     "is_following": false
-    // }
 
     return (
         <SafeAreaView style={styles.container}>
-            <CustomLoader
-                open={isLoading}
-            />
-            {!isLoading &&
+            <CustomLoader open={isLoading} />
+            {!isLoading && (
                 <View style={styles.header}>
                     <View style={styles.left}>
                         <TopBackButton
                             onPress={() => navigationRef.goBack()}
                             style={styles.TopBackButton}
                         />
-
-
                     </View>
-
                 </View>
-            }
+            )}
 
             {/* <HorizontalLine /> */}
-            {!isLoading &&
+            {!isLoading && (
                 <View style={styles.cardContainer}>
                     <Card>
                         <CardHeader
@@ -151,78 +140,131 @@ export default function SinglePost({ navigation, route }) {
                         />
                         <CardBody text={item?.postBody} />
 
-                        {item?.postImg?.length <= 2 ? (
+                        {item?.postMediaContent?.length <= 2 ? (
                             <View style={styles.imageContainer}>
-                                {item?.postImg?.map(data => (
+                                {item?.postMediaContent?.map(data => (
                                     counter = counter + 1,
                                     <TouchableOpacity
                                         key={counter}
                                         style={styles.touchContainer}
-                                    // onPress={() => {
-                                    //     setShowImageView(true),
-                                    //         setFeedImages(item.postImg)
-                                    // }}
+                                        onPress={() => {
+                                            onViewImageVideo(item)
+                                        }}
                                     >
-                                        <Image
+                                        {data?.mimetype?.split("/")[0] == "image" ? <Image
                                             source={{
-                                                uri: data,
+                                                uri: data.url,
                                             }}
                                             style={styles.image}
-                                        />
+                                        /> : <ImageBackground
+                                            source={{
+                                                uri: data?.cover,
+                                            }}
+                                            key={counter}
+                                            style={[styles.image, styles.playButtonBg]}
+                                        >
+
+                                            <TouchableOpacity
+                                                // activeOpacity={1}
+                                                style={styles.playButton}
+                                                onPress={() => {
+                                                    onViewImageVideo(item)
+                                                }}
+                                            >
+                                                <FontAwesomeIcon
+                                                    icon={faPlay}
+                                                    size={ms(15)}
+                                                    style={styles.Play}
+                                                />
+
+                                            </TouchableOpacity>
+                                        </ImageBackground>}
                                     </TouchableOpacity>
                                 ))}
                             </View>
-                        ) : item?.postImg?.length > 2 ? (
+                        ) : item?.postMediaContent?.length > 2 ? (
                             counter = 1,
                             <View style={styles.imageContainer}>
-                                {item?.postImg?.map(data =>
+                                {item?.postMediaContent?.map(data =>
                                     counter == 1 ? (
                                         counter = counter + 1,
                                         <TouchableOpacity
                                             key={counter}
                                             style={styles.touchContainer}
-                                        // onPress={() => {
-                                        //   setShowImageView(true),
-                                        //     setFeedImages(item.postImg);
-                                        //   // console.log(feedImages)
-                                        // }}
+                                            onPress={() => {
+                                                onViewImageVideo(item)
+                                            }}
                                         >
-                                            <Image
+                                            {data?.mimetype?.split("/")[0] == "image" ? <Image
                                                 source={{
-                                                    uri: data,
+                                                    uri: data.url,
+                                                }}
+                                                style={styles.image}
+                                            /> : <ImageBackground
+                                                source={{
+                                                    uri: data?.cover,
                                                 }}
                                                 key={counter}
-                                                style={styles.image}
-                                            />
+                                                style={[styles.image, styles.playButtonBg]}
+                                            >
+
+                                                <TouchableOpacity
+                                                    // activeOpacity={1}
+                                                    style={styles.playButton}
+                                                    onPress={() => {
+                                                        onViewImageVideo(item)
+                                                    }}
+                                                >
+                                                    <FontAwesomeIcon
+                                                        icon={faPlay}
+                                                        size={ms(15)}
+                                                        style={styles.Play}
+                                                    />
+
+                                                </TouchableOpacity>
+                                            </ImageBackground>}
                                         </TouchableOpacity>
                                     ) : counter == 2 ? (
                                         counter = counter + 1,
                                         <TouchableOpacity
                                             key={counter}
                                             style={styles.touchContainer}
-                                        // onPress={() => {
-                                        //     setShowImageView(true),
-                                        //         setFeedImages(item.postImg);
-                                        // }}
+                                            onPress={() => {
+                                                onViewImageVideo(item)
+                                            }}
                                         >
                                             <ImageBackground
                                                 source={{
-                                                    uri: data,
+                                                    uri: data?.mimetype?.split("/")[0] == "image" ? data.url : data?.cover,
                                                 }}
                                                 key={counter}
                                                 style={[styles.image, styles.moreImage]}
                                             >
                                                 <TouchableOpacity
-                                                // onPress={() => {
-                                                //     setShowImageView(true),
-                                                //         setFeedImages(item.postImg);
-                                                // }}
+                                                    onPress={() => {
+                                                        onViewImageVideo(item)
+                                                    }}
                                                 >
                                                     <Text style={styles.extraImage}>
                                                         {strings.message.plus}
-                                                        {item?.postImg?.length - 1}
+                                                        {item.postMediaContent?.length - 1}
                                                     </Text>
+
                                                 </TouchableOpacity>
+                                                {/* {data.mimetype.split("/")[0] == "video" &&
+              <TouchableOpacity
+                // activeOpacity={1}
+                style={styles.playButton}
+              >
+                <FontAwesomeIcon
+                  icon={faPlay}
+                  size={ms(15)}
+                  style={styles.Play}
+                />
+
+              </TouchableOpacity>
+            } */}
+
                                             </ImageBackground>
                                         </TouchableOpacity>
                                     ) : null
@@ -230,43 +272,44 @@ export default function SinglePost({ navigation, route }) {
                             </View>
                         ) : null}
 
+
                         <CardFooter
                             postType={POST_TYPE.REGULAR}
                             index={0}
                             postIndex={0}
-                            // likePress={() => onUpVote(item.id, item.userId, user?.id, item)}
-                            // disLikePress={() => onDownVote(item.id, item.userId, user?.id, item)}
                             postID={item?.id}
-                            //postType="Regular"
-                            //  postUserID={item?.userId}
+                            postUserID={item?.userId}
                             userID={user?.id}
-                            //  showMore={false}
                             likeCount={item?.upVote}
                             disLikeCount={item?.downVote}
-                            // commentCount={commentCount}
+                            commentCount={item?.comments_aggregate?.aggregate?.count}
                             postData={item}
-                            //  postIndex={postIndex}
                             commentPress={() =>
-                                //navigation.navigate(NAVIGATION.comments, { DATA: item, "POST_INDEX": postIndex })
-                                console.log('Comment')
+                                navigation.navigate(NAVIGATION.comments, {
+                                    DATA: item,
+                                    POST_INDEX: postIndex,
+                                })
                             }
-                        // morePress={() => {
-                        //     setPostIndex(0)
-                        //     setIsAdminPost(item?.isAdminPost),
-                        //         setPostUserName(item?.user?.username)
-                        //     setOpen(true);
-                        //     setPostUserId(item?.userId);
-                        //     setpostId(item?.id);
-                        //     setPostTitle(item?.postTitle)
-                        //     setPostBody(item?.postBody);
-                        //     setPostImg(item?.postImg);
-                        // }}
+                            morePress={() => {
+                                setIsAdminPost(item?.isAdminPost),
+                                    setPostUserName(item?.user?.username);
+                                setOpen(true);
+                                setPostUserId(item?.userId);
+                                setPostTitle(item?.postTitle);
+                                setPostBody(item?.postBody);
+                                setPostImg(item?.postImg);
+                                setEditdata(item);
+                            }}
                         />
-
                     </Card>
-
-
-                    {open && (
+                    {showImageView && (
+                        <SwiperViewer
+                            visible={showImageView}
+                            setVisible={() => setShowImageView(false)}
+                            images={feedImages}
+                        />
+                    )}
+                    {open &&
                         (postUserId == user?.id ? (
                             <ModalDown open={open} setOpen={setOpen}>
                                 <ModalList
@@ -274,11 +317,12 @@ export default function SinglePost({ navigation, route }) {
                                     icon={faPen}
                                     iconBg={theme.light.colors.infoBgLight}
                                     iconColor={theme.light.colors.info}
-                                // onPress={() => {
-                                //     navigationRef.navigate(NAVIGATION.updatePost, {
-                                //         prevData: { DATA },
-                                //     }), setOpen(false);
-                                // }}
+                                    onPress={() => {
+                                        navigationRef.navigate(NAVIGATION.updatePost, {
+                                            prevData: editData,
+                                        }),
+                                            setOpen(false);
+                                    }}
                                 />
                                 <HorizontalLine
                                     color={theme.light.colors.infoBgLight}
@@ -290,14 +334,22 @@ export default function SinglePost({ navigation, route }) {
                                     icon={faTrash}
                                     iconBg={theme.light.colors.infoBgLight}
                                     iconColor={theme.light.colors.secondary}
-                                    onPress={() => { setReplace(true), setOpen(false) }}
+                                    onPress={() => {
+                                        setReplace(true), setOpen(false);
+                                    }}
                                 />
                             </ModalDown>
-                        ) :
+                        ) : (
                             <ModalDown open={open} setOpen={setOpen}>
                                 <ModalList
                                     //   onPress={() => { onFollow() }}
-                                    title={(!ALLPOST[postIndex]?.is_following ? strings.operations.follow : strings.operations.unFollow) + " @" + postUserName}
+                                    title={
+                                        (!item.is_following
+                                            ? strings.operations.follow
+                                            : strings.operations.unFollow) +
+                                        ' @' +
+                                        postUserName
+                                    }
                                     icon={faUserPlus}
                                     iconColor={theme.light.colors.primary}
                                     iconBg={theme.light.colors.primaryBgLight}
@@ -316,35 +368,33 @@ export default function SinglePost({ navigation, route }) {
                                 {(userType.user == `${strings.userType.free}`) |
                                     (userType.user == `${strings.userType.vip}`) ? (
                                     <>
-                                        {
-                                            isAdminPost == false &&
+                                        {isAdminPost == false && (
                                             <ModalList
                                                 title={strings.home.report}
                                                 icon={faFlag}
                                                 iconColor={theme.light.colors.secondary}
                                                 iconBg={theme.light.colors.infoBgLight}
                                                 onPress={() => {
-                                                    setReportOptionValue('')
+                                                    setReportOptionValue('');
                                                     setOpenReport(true);
                                                     setOpen(false);
-                                                    setreportImage(null)
+                                                    setreportImage(null);
                                                 }}
                                             />
-                                        }
+                                        )}
 
-                                        {isAdminPost == false &&
+                                        {isAdminPost == false && (
                                             <ModalList
-                                                onPress={() => { onBlock() }}
-                                                title={strings.operations.block + " @" + postUserName}
+                                                onPress={() => {
+                                                    onBlock();
+                                                }}
+                                                title={strings.operations.block + ' @' + postUserName}
                                                 // title={(ALLPOST?.data[pos] ? strings.operations.block : strings.operations.unBlock) + " @" + postUserName}
                                                 icon={faXmark}
                                                 iconColor={theme.light.colors.secondary}
                                                 iconBg={theme.light.colors.infoBgLight}
                                             />
-                                        }
-
-
-
+                                        )}
                                     </>
                                 ) : userType.user == `${strings.userType.admin}` ? (
                                     <>
@@ -353,7 +403,9 @@ export default function SinglePost({ navigation, route }) {
                                             icon={faTrash}
                                             iconColor={theme.light.colors.secondary}
                                             iconBg={theme.light.colors.infoBgLight}
-                                            onPress={() => { setReplace(true), setOpen(false) }}
+                                            onPress={() => {
+                                                setReplace(true), setOpen(false);
+                                            }}
                                         />
                                         <ModalList
                                             title={strings.operations.block + strings.home.DummyUser}
@@ -368,31 +420,135 @@ export default function SinglePost({ navigation, route }) {
                                             iconBg={theme.light.colors.infoBgLight}
                                         />
                                     </>
-                                ) :
-                                    null
-                                }
+                                ) : null}
                             </ModalDown>
-                        )
+                        ))}
+                    {/* Replace Popup */}
+                    {openReplace && (
+                        <PopUp open={openReplace} setOpen={setReplace}>
+                            <View style={styles.ConfirmationTextContainer}>
+                                <Text style={styles.ConfirmationText}>
+                                    {strings.alert.delete}
+                                </Text>
+                            </View>
+                            <Button
+                                title={strings.operations.yes}
+                                style={styles.confirmButton}
+                                onPress={() => {
+                                    onDelete(), setReplace(false);
+                                }}
+                            />
+                            <Button
+                                title={strings.operations.no}
+                                style={styles.cancelButton}
+                                onPress={() => setReplace(false)}
+                            />
+                        </PopUp>
                     )}
+                    <ReportOnPostModal open={openReport} setOpen={setOpenReport}>
+                        <View style={styles.reportPostContainer}>
+                            <TopBackButton
+                                onPress={() => setOpenReport(false)}
+                                style={styles.reportPostBackButton}
+                            />
+                            <Text style={styles.reportTxt}> {strings.home.reportPost} </Text>
+                            <HorizontalLine
+                                color={theme.light.colors.infoBgLight}
+                                paddingBottom={12}
+                            />
+                            <View style={styles.reportPostTopContainer}>
+                                <DropDownPicker
+                                    placeholder={strings.home.selectReason}
+                                    open={reportListOpen}
+                                    value={reportOptionValue}
+                                    items={reportOption}
+                                    setOpen={setReportListOpen}
+                                    setValue={setReportOptionValue}
+                                    setItems={setReportOption}
+                                    style={styles.dropDownPicker}
+                                    textStyle={styles.dropListTxt}
+                                    dropDownContainerStyle={styles.dropDownContainerStyle}
+                                    arrowIconStyle={styles.arrowIconStyle}
+                                />
+                                <TextInput
+                                    multiline
+                                    editable
+                                    onChangeText={val => setReportCommnet(val)}
+                                    placeholder={strings.operations.addComments}
+                                    numberOfLines={4}
+                                    style={styles.txtInput}
+                                />
+                            </View>
+                            <HorizontalLine
+                                color={theme.light.colors.infoBgLight}
+                                paddingTop={15}
+                            />
+                            <View style={styles.reportPostBottomContainer}>
+                                <TouchableOpacity onPress={() => SelectFromGallery()}>
+                                    {reportImage ? (
+                                        <Image
+                                            style={{
+                                                height: ms(35),
+                                                width: ms(35),
+                                                borderRadius: ms(5),
+                                            }}
+                                            source={{ uri: reportImage.path }}
+                                        />
+                                    ) : (
+                                        <View pointerEvents="none">
+                                            <Icon
+                                                icon={faImage}
+                                                size={ms(22)}
+                                                color={theme.light.colors.secondary}
+                                            />
+                                        </View>
+                                    )}
+                                </TouchableOpacity>
 
+                                <Button
+                                    title={strings.operations.submit}
+                                    disabled={!reportOptionValue}
+                                    opacity={reportOptionValue ? 1 : 0.4}
+                                    style={styles.reportPostButton}
+                                    onPress={() => {
+                                        const reportData = {
+                                            objectId: postId,
+                                            reportedBy: user?.id,
+                                            reportTitle: reportOptionValue,
+                                            reportBody: reportComment,
+                                            reportImg: reportImage,
+                                        };
+                                        dispatch(reportPost(reportData));
+                                        setOpenReport(false);
+                                    }}
+                                />
+                            </View>
+                        </View>
+                    </ReportOnPostModal>
+                    {isShowReportToast && (
+                        <Toast
+                            open={isShowReportToast}
+                            icon={faThumbsUp}
+                            message={strings.home.reportMessage}
+                            onPressOk={() => dispatch(globalReset())}
+                        />
+                    )}
                 </View>
-            }
-
+            )}
         </SafeAreaView>
-
     );
 }
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: theme.light.colors.primaryBgLight,
-        justifyContent: "center"
+        justifyContent: 'center',
     },
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         padding: ms(10),
-        margin: ms(5),
+        // margin: ms(5),
         flex: 0.1,
     },
     headerText: { color: theme.light.colors.black },
@@ -425,15 +581,15 @@ const styles = StyleSheet.create({
         marginTop: vs(-10),
         margin: ms(10),
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     searchBoxTextFirld: {
         paddingRight: ms(45),
         backgroundColor: theme.light.colors.white,
-        borderWidth: 2
+        borderWidth: 2,
     },
     searchButton: {
-        marginLeft: ms(-30)
+        marginLeft: ms(-30),
     },
     left: {
         flexDirection: 'row',
@@ -451,7 +607,7 @@ const styles = StyleSheet.create({
     cardContainer: {
         margin: ms(8),
         borderRadius: 10,
-        flex: 0.9
+        flex: 0.9,
     },
     nameTxt: [
         {
@@ -555,7 +711,6 @@ const styles = StyleSheet.create({
         marginRight: ms(-5),
     },
     imageContainer: {
-
         flexDirection: 'row',
         // paddingRight: ms(40),
         justifyContent: 'space-between',
@@ -695,6 +850,8 @@ const styles = StyleSheet.create({
         color: theme.light.colors.text,
     },
     loaderStyle: {
-        alignSelf: "center", justifyContent: "center", marginTop: ms(50)
-    }
+        alignSelf: 'center',
+        justifyContent: 'center',
+        marginTop: ms(50),
+    },
 });
