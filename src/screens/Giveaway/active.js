@@ -23,7 +23,11 @@ import { faLock, faPlay } from '@fortawesome/free-solid-svg-icons';
 import { Data } from './giveawayData/activeData';
 import { geAllActiveGiveAwayData } from '@/selectors/PostSelectors';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllActiveGiveaway, getAllActiveGiveawayPagination, TYPES } from '@/actions/PostActions';
+import {
+  getAllActiveGiveaway,
+  getAllActiveGiveawayPagination,
+  TYPES,
+} from '@/actions/PostActions';
 import { getUser } from '@/selectors/UserSelectors';
 import { useEffect } from 'react';
 import { useIsFocused } from '@react-navigation/native';
@@ -37,56 +41,49 @@ export default function Active({ navigation, userType }) {
   const [showImageView, setShowImageView] = useState(false);
   const [feedImages, setFeedImages] = useState([]);
   const [fetchActiveGiveaway, setFetchActiveGiveaway] = useState(true);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   let counter = 1;
-  const getActiveGiveWayData = useSelector(geAllActiveGiveAwayData)
+  const getActiveGiveWayData = useSelector(geAllActiveGiveAwayData);
   const isLoading = useSelector(state =>
-    isLoadingSelector([TYPES.GET_ACTIVE_GIVEAWAY,], state)
+    isLoadingSelector([TYPES.GET_ACTIVE_GIVEAWAY], state)
   );
-  const focus = useIsFocused()
+  const focus = useIsFocused();
 
   useEffect(() => {
-    getSeconds()
-    getactiveData()
-
-  }, [])
+    getSeconds();
+    getactiveData();
+  }, []);
 
   const getactiveData = () => {
     const data = {
       userId: user?.id,
-    }
-    dispatch(getAllActiveGiveaway(data))
-  }
-  const onViewImageVideo = (data) => {
-
-    setShowImageView(true),
-
-      setFeedImages(data.postMediaContent)
-  }
+    };
+    dispatch(getAllActiveGiveaway(data));
+  };
+  const onViewImageVideo = data => {
+    setShowImageView(true), setFeedImages(data.postMediaContent);
+  };
   const isLoadingMore = useSelector(state =>
     isLoadingSelector([TYPES.GET_ACTIVE_GIVEAWAY_PAGINATION], state)
   );
   const onLoadMorePost = () => {
-    const post = getActiveGiveWayData.slice(-1)
-    const page = post[0].created_at
+    const post = getActiveGiveWayData.slice(-1);
+    const page = post[0].created_at;
     const data = {
       userId: user?.id,
-      page: page
-    }
-    dispatch(getAllActiveGiveawayPagination(data))
-
-  }
+      page: page,
+    };
+    dispatch(getAllActiveGiveawayPagination(data));
+  };
   const renderFooterPost = () => {
     return (
       <View style={{}}>
-        {isLoadingMore &&
-          <ActivityIndicator size={"large"} color="orange" />
-
-        }
-
+        {isLoadingMore && <ActivityIndicator size={'large'} color="orange" />}
       </View>
     );
   };
+
+  console.log(getActiveGiveWayData);
   function getSeconds(date) {
     const dateString = date;
     const dateObj = new Date(dateString);
@@ -94,7 +91,7 @@ export default function Active({ navigation, userType }) {
     const timeDifference = dateObj.getTime() - currentTime.getTime();
     const secondsLeft = Math.floor(timeDifference / 1000);
     //   console.log("Seconds left:=-=-=-", secondsLeft);
-    return secondsLeft
+    return secondsLeft;
   }
   return (
     <>
@@ -117,22 +114,21 @@ export default function Active({ navigation, userType }) {
           marginBottom: Platform.OS === 'ios' ? -38 : 0,
         }}
       >
-
-
         {/* <CustomLoader
             open={isLoading}
           /> */}
 
-        {isLoading && <ActivityIndicator
-          animating={isLoading}
-          size={"large"}
-          color={theme.light.colors.primary}
-        />}
+        {isLoading && (
+          <ActivityIndicator
+            animating={isLoading}
+            size={'large'}
+            color={theme.light.colors.primary}
+          />
+        )}
         <FlatList
           data={getActiveGiveWayData ?? []}
           key={props => props.id}
           ListFooterComponent={renderFooterPost}
-
           // onEndReached={onLoadMorePost}
           onEndReachedThreshold={0.1}
           onEndReached={() => {
@@ -153,10 +149,21 @@ export default function Active({ navigation, userType }) {
                 <View>
                   <Text style={styles.title}>{item.postTitle}</Text>
                 </View>
-                <View style={[styles.officialTxt, { backgroundColor: theme.light.colors.primaryBg, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }]}>
-                  <Text >
-                    {strings.giveaway.EndsIn + " "}
-                    <Text style={styles.EndTimeTxt}>{Moment.utc(item.postExpires).format('D/M/YY  hh:mm')}{' '}
+                <View
+                  style={[
+                    styles.officialTxt,
+                    {
+                      backgroundColor: theme.light.colors.primaryBg,
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    },
+                  ]}
+                >
+                  <Text>
+                    {strings.giveaway.EndsIn + ' '}
+                    <Text style={styles.EndTimeTxt}>
+                      {Moment.utc(item.postExpires).format('D/M/YY  hh:mm')}{' '}
                       {/* {item.postExpires} */}
                     </Text>
                   </Text>
@@ -164,28 +171,38 @@ export default function Active({ navigation, userType }) {
                     running={true}
                     until={item?.remainingTime ?? getSeconds(item.postExpires)}
                     separatorStyle={{ color: 'black', fontSize: 20 }}
-
                     size={20}
                     showSeparator={true}
                     timeToShow={['D', 'H', 'S']}
-                    digitTxtStyle={{ fontSize: ms(11, 0.3), color: "black", fontFamily: FontFamily.Recoleta_medium, }}
+                    digitTxtStyle={{
+                      fontSize: ms(11, 0.3),
+                      color: 'black',
+                      fontFamily: FontFamily.Recoleta_medium,
+                    }}
                   />
                 </View>
                 <CardBody text={item.postBody} />
 
                 {/* VIP only */}
 
-                {(userType.user == `${strings.userType.free}` &&
-                  item.isVIPonly) ? (
+                {userType.user == `${strings.userType.free}` &&
+                item.isVIPonly ? (
                   <TouchableOpacity
-                    onPress={() => userType.user == `${strings.userType.free}` && navigation.navigate(NAVIGATION.upgradeMembership)}
-
-                    style={styles.thumbnailContainer}>
+                    onPress={() =>
+                      userType.user == `${strings.userType.free}` &&
+                      navigation.navigate(NAVIGATION.upgradeMembership)
+                    }
+                    style={styles.thumbnailContainer}
+                  >
                     <Image
                       blurRadius={15}
                       style={styles.thumbnailImage}
                       source={{
-                        uri: item?.postMediaContent[0]?.mimetype?.split("/")[0] == "image" ? item?.postMediaContent[0]?.url : item?.postMediaContent[0]?.cover,
+                        uri:
+                          item?.postMediaContent[0]?.mimetype?.split('/')[0] ==
+                          'image'
+                            ? item?.postMediaContent[0]?.url
+                            : item?.postMediaContent[0]?.cover,
                       }}
                     />
                     <View style={styles.vipOnlyContainer}>
@@ -200,9 +217,6 @@ export default function Active({ navigation, userType }) {
                     </View>
                   </TouchableOpacity>
                 ) : (
-
-
-
                   <View style={styles.thumbnailContainer}>
                     {/* {item?.postImg?.map(url => (
                       <>
@@ -305,114 +319,133 @@ export default function Active({ navigation, userType }) {
                       ) : null} */}
                       {item?.postMediaContent?.length <= 2 ? (
                         <View style={styles.imageContainer}>
-                          {item?.postMediaContent?.map(data => (
-                            counter = counter + 1,
-                            <TouchableOpacity
-                              key={counter}
-                              style={styles.touchContainer}
-                              onPress={() => {
-                                onViewImageVideo(item)
-                              }}
-                            >
-                              {data?.mimetype?.split("/")[0] == "image" ? <Image
-                                source={{
-                                  uri: data.url,
-                                }}
-                                style={styles.image}
-                              /> : <ImageBackground
-                                source={{
-                                  uri: data?.cover,
-                                }}
-                                key={counter}
-                                style={[styles.image, styles.playButtonBg]}
-                              >
-
+                          {item?.postMediaContent?.map(
+                            data => (
+                              (counter = counter + 1),
+                              (
                                 <TouchableOpacity
-                                  // activeOpacity={1}
-                                  style={styles.playButton}
+                                  key={counter}
+                                  style={styles.touchContainer}
                                   onPress={() => {
-                                    onViewImageVideo(item)
+                                    onViewImageVideo(item);
                                   }}
                                 >
-                                  <FontAwesomeIcon
-                                    icon={faPlay}
-                                    size={ms(15)}
-                                    style={styles.Play}
-                                  />
-
+                                  {data?.mimetype?.split('/')[0] == 'image' ? (
+                                    <Image
+                                      source={{
+                                        uri: data.url,
+                                      }}
+                                      style={styles.image}
+                                    />
+                                  ) : (
+                                    <ImageBackground
+                                      source={{
+                                        uri: data?.cover,
+                                      }}
+                                      key={counter}
+                                      style={[
+                                        styles.image,
+                                        styles.playButtonBg,
+                                      ]}
+                                    >
+                                      <TouchableOpacity
+                                        // activeOpacity={1}
+                                        style={styles.playButton}
+                                        onPress={() => {
+                                          onViewImageVideo(item);
+                                        }}
+                                      >
+                                        <FontAwesomeIcon
+                                          icon={faPlay}
+                                          size={ms(15)}
+                                          style={styles.Play}
+                                        />
+                                      </TouchableOpacity>
+                                    </ImageBackground>
+                                  )}
                                 </TouchableOpacity>
-                              </ImageBackground>}
-
-
-                            </TouchableOpacity>
-                          ))}
+                              )
+                            )
+                          )}
                         </View>
                       ) : item?.postMediaContent?.length > 2 ? (
-                        counter = 1,
-                        <View style={styles.imageContainer}>
-                          {item?.postMediaContent?.map(data =>
-                            counter == 1 ? (
-                              counter = counter + 1,
-                              <TouchableOpacity
-                                key={counter}
-                                style={styles.touchContainer}
-                                onPress={() => {
-                                  onViewImageVideo(item)
-                                }}
-                              >
-                                {data?.mimetype?.split("/")[0] == "image" ? <Image
-                                  source={{
-                                    uri: data.url,
-                                  }}
-                                  style={styles.image}
-                                /> : <ImageBackground
-                                  source={{
-                                    uri: data?.cover,
-                                  }}
-                                  key={counter}
-                                  style={[styles.image, styles.playButtonBg]}
-                                >
+                        ((counter = 1),
+                        (
+                          <View style={styles.imageContainer}>
+                            {item?.postMediaContent?.map(data =>
+                              counter == 1
+                                ? ((counter = counter + 1),
+                                  (
+                                    <TouchableOpacity
+                                      key={counter}
+                                      style={styles.touchContainer}
+                                      onPress={() => {
+                                        onViewImageVideo(item);
+                                      }}
+                                    >
+                                      {data?.mimetype?.split('/')[0] ==
+                                      'image' ? (
+                                        <Image
+                                          source={{
+                                            uri: data.url,
+                                          }}
+                                          style={styles.image}
+                                        />
+                                      ) : (
+                                        <ImageBackground
+                                          source={{
+                                            uri: data?.cover,
+                                          }}
+                                          key={counter}
+                                          style={[
+                                            styles.image,
+                                            styles.playButtonBg,
+                                          ]}
+                                        >
+                                          <TouchableOpacity
+                                            // activeOpacity={1}
+                                            style={styles.playButton}
+                                            onPress={() => {
+                                              onViewImageVideo(item);
+                                            }}
+                                          >
+                                            <FontAwesomeIcon
+                                              icon={faPlay}
+                                              size={ms(15)}
+                                              style={styles.Play}
+                                            />
+                                          </TouchableOpacity>
+                                        </ImageBackground>
+                                      )}
+                                    </TouchableOpacity>
+                                  ))
+                                : counter == 2
+                                ? ((counter = counter + 1),
+                                  (
+                                    <TouchableOpacity
+                                      key={counter}
+                                      style={styles.touchContainer}
+                                      onPress={() => {
+                                        onViewImageVideo(item);
+                                      }}
+                                    >
+                                      <ImageBackground
+                                        source={{
+                                          uri:
+                                            data?.mimetype?.split('/')[0] ==
+                                            'image'
+                                              ? data.url
+                                              : data?.cover,
+                                        }}
+                                        key={counter}
+                                        style={[styles.image, styles.moreImage]}
+                                      >
+                                        <Text style={styles.extraImage}>
+                                          {strings.message.plus}
+                                          {item.postMediaContent?.length - 2}
+                                        </Text>
 
-                                  <TouchableOpacity
-                                    // activeOpacity={1}
-                                    style={styles.playButton}
-                                    onPress={() => {
-                                      onViewImageVideo(item)
-                                    }}
-                                  >
-                                    <FontAwesomeIcon
-                                      icon={faPlay}
-                                      size={ms(15)}
-                                      style={styles.Play}
-                                    />
-
-                                  </TouchableOpacity>
-                                </ImageBackground>}
-                              </TouchableOpacity>
-                            ) : counter == 2 ? (
-                              counter = counter + 1,
-                              <TouchableOpacity
-                                key={counter}
-                                style={styles.touchContainer}
-                                onPress={() => {
-                                  onViewImageVideo(item)
-                                }}
-                              >
-                                <ImageBackground
-                                  source={{
-                                    uri: data?.mimetype?.split("/")[0] == "image" ? data.url : data?.cover,
-                                  }}
-                                  key={counter}
-                                  style={[styles.image, styles.moreImage]}
-                                >
-
-
-                                  <Text style={styles.extraImage}>
-                                    {strings.message.plus}
-                                    {item.postMediaContent?.length - 2}
-                                  </Text>
-
-                                  {/* {data.mimetype.split("/")[0] == "video" &&
+                                        {/* {data.mimetype.split("/")[0] == "video" &&
                                 <TouchableOpacity
                                   // activeOpacity={1}
                                   style={styles.playButton}
@@ -425,15 +458,15 @@ export default function Active({ navigation, userType }) {
 
                                 </TouchableOpacity>
                               } */}
-
-                                </ImageBackground>
-                              </TouchableOpacity>
-                            ) : null
-                          )}
-                        </View>
+                                      </ImageBackground>
+                                    </TouchableOpacity>
+                                  ))
+                                : null
+                            )}
+                          </View>
+                        ))
                       ) : null}
                     </>
-
 
                     <TouchableOpacity
                       onPress={() =>
@@ -445,23 +478,29 @@ export default function Active({ navigation, userType }) {
                             postExpires: item.postExpires,
                             postImg: item.postImg,
                             has_Joined: item.has_Joined,
-                            postMediaContent: item.postMediaContent
+                            postMediaContent: item.postMediaContent,
                           },
-                          DATA: item
-
+                          DATA: item,
                         })
                       }
-                      style={[item?.postImg?.length <= 0 ? [styles.btn, { top: '2%', position: 'relative', marginBottom: 20 }] : styles.btn]}
+                      style={[
+                        item?.postImg?.length <= 0
+                          ? [
+                              styles.btn,
+                              {
+                                top: '2%',
+                                position: 'relative',
+                                marginBottom: 20,
+                              },
+                            ]
+                          : styles.btn,
+                      ]}
                     >
                       <Text style={[styles.btnTxt, styles.btnTxtColor]}>
                         {strings.giveaway.learnMore}
                       </Text>
                     </TouchableOpacity>
-
-
-
                   </View>
-
                 )}
               </Card>
             </View>
@@ -519,7 +558,7 @@ export const styles = StyleSheet.create({
     fontSize: ms(24, 0.3),
     width: '100%',
     padding: 35,
-    textAlign: "center"
+    textAlign: 'center',
   },
   image: {
     flex: 1,
@@ -528,7 +567,12 @@ export const styles = StyleSheet.create({
     marginRight: ms(10),
   },
   playButton: {
-    backgroundColor: theme.light.colors.primary, width: 50, height: 50, borderRadius: 100, justifyContent: "center", alignItems: "center"
+    backgroundColor: theme.light.colors.primary,
+    width: 50,
+    height: 50,
+    borderRadius: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   EndTimeTxt: {
     color: theme.light.colors.black,
@@ -596,7 +640,6 @@ export const styles = StyleSheet.create({
     // paddingRight: ms(40),
     justifyContent: 'space-between',
     marginRight: ms(-5),
-
   },
   touchContainer: {
     flex: 1,
@@ -615,5 +658,4 @@ export const styles = StyleSheet.create({
     width: '100%',
     minHeight: vs(180),
   },
-
 });

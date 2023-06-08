@@ -66,7 +66,7 @@ export const CommentInput = React.forwardRef((props, ref,) => {
     return (
       <View style={{ height: 200 }}>
         <ScrollView >
-          {searchUserSelector?.searchedUsers.filter(one => one.username.toLocaleLowerCase().includes(keyword.toLocaleLowerCase()))
+          {searchUserSelector?.searchedUsers?.filter(one => one.username.toLocaleLowerCase().includes(keyword.toLocaleLowerCase()))
             .map(one => (
               <Pressable
                 key={one.id}

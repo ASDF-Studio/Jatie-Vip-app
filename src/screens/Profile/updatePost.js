@@ -41,7 +41,7 @@ import { navigationRef } from '@/navigation/RootNavigation';
 import { UserController } from '@/controllers';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { getAllPost } from '@/actions/PostActions';
-import { createThumbnail } from "react-native-create-thumbnail";
+import { createThumbnail } from 'react-native-create-thumbnail';
 
 let nextId = 100;
 let preNextId = 100;
@@ -52,7 +52,7 @@ export default function UpdatePost({ route, navigation }) {
   const { prevData } = route.params;
 
   const userType = useSelector(state => state.userType);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const user = useSelector(getUser);
   const [isModalVisible, setModalVisible] = useState(false);
   const [isImage, setIsImage] = useState();
@@ -78,10 +78,10 @@ export default function UpdatePost({ route, navigation }) {
   // const focus = useIsFocused();
 
   useEffect(() => {
-    getPostById(prevData)
+    getPostById(prevData);
   }, []);
 
-  const getPostById = async (data) => {
+  const getPostById = async data => {
     setPostDetails(data);
     setPostId(data.id);
     setUserId(user?.id);
@@ -106,32 +106,33 @@ export default function UpdatePost({ route, navigation }) {
     // }
 
     {
-      data?.postMediaContent.map(item => (
-        // preImageArray.push({
-        //   id: next--,
-        //   image: item.mimetype.split("/")[0] == "image" ? item.url : null,
-        //   imageMime: null,
-        //   video: item.mimetype.split("/")[0] == "video" ? item.url : null,
-        // }),
+      data?.postMediaContent.map(
+        item => (
+          // preImageArray.push({
+          //   id: next--,
+          //   image: item.mimetype.split("/")[0] == "image" ? item.url : null,
+          //   imageMime: null,
+          //   video: item.mimetype.split("/")[0] == "video" ? item.url : null,
+          // }),
 
-
-        preImageArray.push({
-          id: next--,
-          "url": item.url,
-          "mimetype": item.mimetype,
-          "cover": item.cover
-        }),
-        imageArrayDisplay.push({
-          id: preNext--,
-          image: item.mimetype.split("/")[0] == "image" ? item.url : null,
-          imageMime: null,
-          video: item.mimetype.split("/")[0] == "video" ? item.url : null,
-        })
-      ))
+          preImageArray.push({
+            id: next--,
+            url: item.url,
+            mimetype: item.mimetype,
+            cover: item.cover,
+          }),
+          imageArrayDisplay.push({
+            id: preNext--,
+            image: item.mimetype.split('/')[0] == 'image' ? item.url : null,
+            imageMime: null,
+            video: item.mimetype.split('/')[0] == 'video' ? item.url : null,
+          })
+        )
+      );
       // setPreImageArray(data?.postMediaContent)
-      setPrePostImg(data.postImg)
+      setPrePostImg(data.postImg);
     }
-  }
+  };
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.UPDATE_POST], state)
   );
@@ -154,93 +155,90 @@ export default function UpdatePost({ route, navigation }) {
     {
       isImage == strings.exclusive.image
         ? ImageCropPicker.openPicker({
-          width: 300,
-          height: 400,
-          maxFiles: 3,
-          mediaType: strings.exclusive.image,
-          multiple: true,
-          compressImageQuality: 0.5
-        })
-          .then(images => {
-            images.forEach(item => {
-              imageArray.push({
-                id: nextId++,
-                image: item.path,
-                imageMime: item.mime,
-                video: null,
-              });
-              imageArrayDisplay.push({
-                id: preNextId++,
-                image: item.path,
-                imageMime: item.mime,
-                video: null,
-              });
-              postImg.push(item.path);
-              mimeType.push(item.mime);
-              setModalVisible(!isModalVisible);
-            });
+            width: 300,
+            height: 400,
+            maxFiles: 3,
+            mediaType: strings.exclusive.image,
+            multiple: true,
+            compressImageQuality: 0.5,
           })
-          .catch(e => {
-            console.log('Error: ' + e);
-          })
+            .then(images => {
+              images.forEach(item => {
+                imageArray.push({
+                  id: nextId++,
+                  image: item.path,
+                  imageMime: item.mime,
+                  video: null,
+                });
+                imageArrayDisplay.push({
+                  id: preNextId++,
+                  image: item.path,
+                  imageMime: item.mime,
+                  video: null,
+                });
+                postImg.push(item.path);
+                mimeType.push(item.mime);
+                setModalVisible(!isModalVisible);
+              });
+            })
+            .catch(e => {
+              console.log('Error: ' + e);
+            })
         : ImageCropPicker.openPicker({
-          width: 300,
-          height: 400,
-          mediaType: strings.exclusive.video,
-          multiple: true,
-          maxFiles: 3,
-          compressImageQuality: 0.5,
-          loadingLabelText: 'loading',
-        })
-          .then(video => {
-            // imageArray.push({
-            //   id: nextId++,
-            //   image: null,
-            //   video: video.path,
-            //   videoMime: video.mime,
-            // });
-            // imageArrayDisplay.push({
-            //   id: preNextId++,
-            //   image: null,
-            //   imageMime: video.mime,
-            //   video: null,
-            // });
-            // postImg.push(video.path);
-            // mimeType.push(video.mime);
-            // setModalVisible(!isModalVisible);
-            video.forEach(item => {
-              createThumbnail({
-                url: item.path,
-                timeStamp: 10000,
-              })
-                .then(response => {
-                  imageArray.push({
-                    id: nextId++,
-                    image: null,
-                    video: item.path,
-                    videoMime: item.mime,
-                    videoPoster: response?.path
-                  })
-                  imageArrayDisplay.push({
-                    id: nextId++,
-                    image: null,
-                    video: item.path,
-                    videoMime: item.mime,
-                    videoPoster: response?.path
-                  })
-                }
-
-                )
-                .catch(err => console.log({ err }));
-              setPostImg(video.path);
-              setmimeType(video.mime);
-              setModalVisible(!isModalVisible);
-            });
-
+            width: 300,
+            height: 400,
+            mediaType: strings.exclusive.video,
+            multiple: true,
+            maxFiles: 3,
+            compressImageQuality: 0.5,
+            loadingLabelText: 'loading',
           })
-          .catch(e => {
-            console.log('Error: ' + e);
-          });
+            .then(video => {
+              // imageArray.push({
+              //   id: nextId++,
+              //   image: null,
+              //   video: video.path,
+              //   videoMime: video.mime,
+              // });
+              // imageArrayDisplay.push({
+              //   id: preNextId++,
+              //   image: null,
+              //   imageMime: video.mime,
+              //   video: null,
+              // });
+              // postImg.push(video.path);
+              // mimeType.push(video.mime);
+              // setModalVisible(!isModalVisible);
+              video.forEach(item => {
+                createThumbnail({
+                  url: item.path,
+                  timeStamp: 10000,
+                })
+                  .then(response => {
+                    imageArray.push({
+                      id: nextId++,
+                      image: null,
+                      video: item.path,
+                      videoMime: item.mime,
+                      videoPoster: response?.path,
+                    });
+                    imageArrayDisplay.push({
+                      id: nextId++,
+                      image: null,
+                      video: item.path,
+                      videoMime: item.mime,
+                      videoPoster: response?.path,
+                    });
+                  })
+                  .catch(err => console.log({ err }));
+                setPostImg(video.path);
+                setmimeType(video.mime);
+                setModalVisible(!isModalVisible);
+              });
+            })
+            .catch(e => {
+              console.log('Error: ' + e);
+            });
     }
   };
 
@@ -248,58 +246,58 @@ export default function UpdatePost({ route, navigation }) {
     {
       isImage == strings.exclusive.image
         ? ImageCropPicker.openCamera({
-          width: 300,
-          height: 400,
-          cropping: false,
-          compressImageQuality: 0.5,
-        })
-          .then(image => {
-            imageArray.push({
-              id: nextId++,
-              image: image.path,
-              imageMime: image.mime,
-              video: null,
-            });
-            imageArrayDisplay.push({
-              id: preNextId++,
-              image: image.path,
-              imageMime: image.mime,
-              video: null,
-            });
-            postImg.push(image.path);
-            mimeType.push(image.mime);
-            setModalVisible(!isModalVisible);
+            width: 300,
+            height: 400,
+            cropping: false,
+            compressImageQuality: 0.5,
           })
-          .catch(e => {
-            console.log('Error: ' + e);
-          })
+            .then(image => {
+              imageArray.push({
+                id: nextId++,
+                image: image.path,
+                imageMime: image.mime,
+                video: null,
+              });
+              imageArrayDisplay.push({
+                id: preNextId++,
+                image: image.path,
+                imageMime: image.mime,
+                video: null,
+              });
+              postImg.push(image.path);
+              mimeType.push(image.mime);
+              setModalVisible(!isModalVisible);
+            })
+            .catch(e => {
+              console.log('Error: ' + e);
+            })
         : ImageCropPicker.openCamera({
-          width: 300,
-          height: 400,
-          cropping: false,
-          mediaType: strings.exclusive.video,
-          compressImageQuality: 0.5,
-        })
-          .then(image => {
-            imageArray.push({
-              id: nextId++,
-              image: null,
-              video: image.path,
-              videoMime: image.mime,
-            });
-            imageArrayDisplay.push({
-              id: preNextId++,
-              image: null,
-              video: image.path,
-              videoMime: image.mime,
-            });
-            postImg.push(image.path);
-            mimeType.push(image.mime);
-            setModalVisible(!isModalVisible);
+            width: 300,
+            height: 400,
+            cropping: false,
+            mediaType: strings.exclusive.video,
+            compressImageQuality: 0.5,
           })
-          .catch(e => {
-            console.log('Error: ' + e);
-          });
+            .then(image => {
+              imageArray.push({
+                id: nextId++,
+                image: null,
+                video: image.path,
+                videoMime: image.mime,
+              });
+              imageArrayDisplay.push({
+                id: preNextId++,
+                image: null,
+                video: image.path,
+                videoMime: image.mime,
+              });
+              postImg.push(image.path);
+              mimeType.push(image.mime);
+              setModalVisible(!isModalVisible);
+            })
+            .catch(e => {
+              console.log('Error: ' + e);
+            });
     }
   };
 
@@ -307,15 +305,15 @@ export default function UpdatePost({ route, navigation }) {
     if (postBody == '') {
       showMessage({
         message: strings.home.postBody,
-        type: "danger"
-      })
+        type: 'danger',
+      });
     }
     // else if (postTitle == '') {
     //   showMessage({
     //     message: strings.home.postTitle,
     //     type: "danger"
     //   })
-    // } 
+    // }
     // else if (postImg == "") {
     //   showMessage({
     //     message: strings.SignUp.dobPlaceHolder,
@@ -323,25 +321,64 @@ export default function UpdatePost({ route, navigation }) {
     //   })
     // }
     else {
-
       let DATA = {
-        postId, userId, postTitle, postBody, postImg, preImageArray, mimeType, preMimeType, imageArray, user_Type, actionType
+        postId,
+        userId,
+        postTitle,
+        postBody,
+        postImg,
+        preImageArray,
+        mimeType,
+        preMimeType,
+        imageArray,
+        user_Type,
+        actionType,
+      };
+
+      if (userType.user == strings.userType.free) {
+        dispatch(
+          updatePost(
+            postId,
+            userId,
+            postTitle,
+            postBody,
+            postImg,
+            preImageArray,
+            mimeType,
+            preMimeType,
+            imageArray,
+            user_Type,
+            NAVIGATION.profile
+          )
+        );
+        dispatch(getAllPost(user?.id, null, null, NAVIGATION.profile));
       }
 
-      {
-        userType.user == strings.userType.free && (
-          dispatch(updatePost(postId, userId, postTitle, postBody, postImg, preImageArray, mimeType, preMimeType, imageArray, user_Type, NAVIGATION.home)),
-          dispatch(getAllPost(user?.id, prevData.DATA.sortBy, prevData.DATA.follwingSwitch, NAVIGATION.home))
-          // console.log("DATA", DATA)
-        )
-      }
-      dispatch(getAllPost(user?.id, strings.sortBy.recent, false))
-      {
-        userType.user == strings.userType.admin && (
-          navigationRef.navigate(NAVIGATION.postOptions, {
-            prevData: DATA,
-          })
-        )
+      if (userType.user == strings.userType.vip) {
+        dispatch(
+          updatePost(
+            postId,
+            userId,
+            postTitle,
+            postBody,
+            postImg,
+            preImageArray,
+            mimeType,
+            preMimeType,
+            imageArray,
+            user_Type,
+            NAVIGATION.profile
+          )
+        );
+        dispatch(getAllPost(user?.id, null, null, NAVIGATION.profile));
+      } else {
+        dispatch(getAllPost(user?.id, strings.sortBy.recent, false));
+        {
+          userType.user == strings.userType.admin &&
+            navigationRef.navigate(NAVIGATION.postOptions, {
+              prevData: DATA,
+            });
+        }
       }
 
       // dispatch(createPost(user?.id, postTitle, postBody, postImg, mimeType, imageArray, NAVIGATION.profile))
@@ -353,11 +390,10 @@ export default function UpdatePost({ route, navigation }) {
       //   prevData: DATA
       // })
     }
-
-  }
+  };
   const onSave = () => {
-    validation()
-  }
+    validation();
+  };
   return (
     <SafeAreaView style={styles.contianer}>
       <View style={styles.header}>
@@ -367,9 +403,7 @@ export default function UpdatePost({ route, navigation }) {
         </Text>
       </View>
       <HorizontalLine />
-      <CustomLoader
-        open={isLoading}
-      />
+      <CustomLoader open={isLoading} />
       <ScrollView>
         <View style={styles.postContainer}>
           <View style={styles.TextBoxDEsc}>
@@ -404,7 +438,7 @@ export default function UpdatePost({ route, navigation }) {
             />
 
             {/* show only for VIP user */}
-            {userType.user == strings.userType.vip && (
+            {/* {userType.user == strings.userType.vip && (
               <>
                 <View style={styles.verticalBar} />
                 <View style={styles.vipSwitch}>
@@ -418,7 +452,7 @@ export default function UpdatePost({ route, navigation }) {
                   />
                 </View>
               </>
-            )}
+            )} */}
 
             {/* show only for admin */}
             {userType.user == strings.userType.admin && (
@@ -444,13 +478,16 @@ export default function UpdatePost({ route, navigation }) {
               <Button
                 title={strings.home.post}
                 style={styles.vipButton}
-                disabled={postBody.length == 0 ? false : true}
+                disabled={postBody.length ? false : true}
                 opacity={postBody.length ? 1 : 0.4}
+                onPress={onSave}
               />
             )}
             {userType.user == strings.userType.free && (
               <Button
-                title={prevData?.postId ? strings.home.update : strings.home.post}
+                title={
+                  prevData?.postId ? strings.home.update : strings.home.post
+                }
                 disabled={postBody.length ? false : true}
                 opacity={postBody.length ? 1 : 0.4}
                 style={styles.freeButton}
@@ -759,4 +796,3 @@ const styles = StyleSheet.create({
     marginRight: ms(10),
   },
 });
-

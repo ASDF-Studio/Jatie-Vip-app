@@ -7,20 +7,27 @@ import {
   Image,
   TextInput,
   SafeAreaView,
+  ScrollView,
 } from 'react-native';
 import moment from 'moment';
 import { theme, TextStyles } from '@/theme';
 import { FontFamily } from '@/theme/Fonts';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faCalendar, faClose, faPen } from '@fortawesome/free-solid-svg-icons';
-import { Icon, HorizontalLine, PopUp, Button, CustomLoader } from '@/components';
+import {
+  Icon,
+  HorizontalLine,
+  PopUp,
+  Button,
+  CustomLoader,
+} from '@/components';
 import DatePicker from 'react-native-date-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { TopBackButton } from '@/components';
 import { ms, s, vs } from 'react-native-size-matters';
 import { strings } from '@/localization';
 import ImagePicker from 'react-native-image-crop-picker';
-import { ScrollView } from 'react-native-gesture-handler';
+// import { ScrollView } from 'react-native-gesture-handler';
 import { faCheck } from '@fortawesome/pro-regular-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
@@ -32,7 +39,7 @@ import { TYPES } from '@/actions/UserActions';
 
 export default function EditProfile({ navigation }) {
   const userNameInput_ref = useRef();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const user = useSelector(getUser);
   const [date, setDate] = useState(new Date());
   const [openDatePicker, setOpenDatePicker] = useState(false);
@@ -41,10 +48,12 @@ export default function EditProfile({ navigation }) {
   const [openReplace, setReplace] = useState(false);
   const [genderListOpen, setGenderListOpen] = useState(false);
   const [genderValue, setGenderValue] = useState(user?.gender || '');
-  const [userName, setUserName] = useState(user?.username || '')
+  const [userName, setUserName] = useState(user?.username || '');
   const [birthday, setBirthday] = useState('');
 
-  const [formatedDate, setFormatedDate] = useState(moment(user?.dateOfBirth).format('MMM DD, yyyy') || '');
+  const [formatedDate, setFormatedDate] = useState(
+    moment(user?.dateOfBirth).format('MMM DD, yyyy') || ''
+  );
   const [show, setShow] = useState(false);
   const [gender, setGender] = useState([
     { label: 'Male', value: 'Male' },
@@ -311,8 +320,8 @@ export default function EditProfile({ navigation }) {
   const [name, setName] = useState(user?.fullName || '');
   const [email, setEmail] = useState(user?.primaryEmail || '');
   const [loginPhone, setLoginPhone] = useState(user?.contact?.toString());
-  const [profileImage, setprofileimage] = useState(user?.profilePic || "");
-  const [mimeType, setmimeType] = useState(null)
+  const [profileImage, setprofileimage] = useState(user?.profilePic || '');
+  const [mimeType, setmimeType] = useState(null);
 
   const PickFromCamera = () => {
     ImagePicker.openCamera({
@@ -320,8 +329,8 @@ export default function EditProfile({ navigation }) {
       height: ms(400),
       cropping: true,
     }).then(image => {
-      setmimeType(image.mime)
-      setprofileimage(image.path)
+      setmimeType(image.mime);
+      setprofileimage(image.path);
       setReplace(false);
     });
   };
@@ -334,8 +343,8 @@ export default function EditProfile({ navigation }) {
       freeStyleCropEnabled: true,
       cropperCircleOverlay: true,
     }).then(image => {
-      setprofileimage(image.path)
-      setmimeType(image.mime)
+      setprofileimage(image.path);
+      setmimeType(image.mime);
       setReplace(false);
     });
   };
@@ -344,65 +353,69 @@ export default function EditProfile({ navigation }) {
     isLoadingSelector([TYPES.UPDATE_PROFILE], state)
   );
   const onChange = selectedDate => {
-
     const formattedDate = moment(selectedDate).format('MMM DD, yyyy');
-    const birthDate = moment(selectedDate).format("yyyy/MM/DD");
-    setBirthday(birthDate)
+    const birthDate = moment(selectedDate).format('yyyy/MM/DD');
+    setBirthday(birthDate);
     setShow(false);
     setDate(selectedDate);
-    setFormatedDate(formattedDate)
-
+    setFormatedDate(formattedDate);
   };
   const validation = () => {
     if (name == '') {
       showMessage({
         message: strings.SignUp.name,
-        type: "danger"
-      })
+        type: 'danger',
+      });
     } else if (email == '') {
       showMessage({
         message: strings.SignUp.emailPlaceHolder,
-        type: "danger"
-      })
-    }
-    else if (formatedDate == "") {
+        type: 'danger',
+      });
+    } else if (formatedDate == '') {
       showMessage({
         message: strings.SignUp.dobPlaceHolder,
-        type: "danger"
-      })
-    }
-    else if (genderValue == '') {
+        type: 'danger',
+      });
+    } else if (genderValue == '') {
       showMessage({
         message: strings.SignUp.genderPlaceHolder,
-        type: "danger"
-      })
-    }
-    else if (locationValue == '') {
+        type: 'danger',
+      });
+    } else if (locationValue == '') {
       showMessage({
         message: strings.SignUp.countryPlaceHolder,
-        type: "danger"
-      })
-    }
-    else if (userName == '') {
+        type: 'danger',
+      });
+    } else if (userName == '') {
       showMessage({
         message: strings.setupUserId.subtitle,
-        type: "danger"
-      })
+        type: 'danger',
+      });
+    } else {
+      dispatch(
+        updateProfile(
+          formatedDate,
+          name,
+          genderValue,
+          user?.id,
+          email,
+          locationValue,
+          userName,
+          user?.number,
+          profileImage,
+          mimeType,
+          NAVIGATION.editProfile
+        )
+      );
     }
-    else {
-
-      dispatch(updateProfile(formatedDate, name, genderValue, user?.id, email, locationValue, userName, user?.number, profileImage, mimeType, NAVIGATION.editProfile))
-    }
-
-  }
+  };
   const onSave = () => {
-    validation()
-
-  }
+    validation();
+  };
   const onRemove = () => {
-    setprofileimage("")
-    setmimeType(null)
-  }
+    setprofileimage('');
+    setmimeType(null);
+  };
   return (
     <SafeAreaView style={styles.container}>
       <TopBackButton
@@ -421,12 +434,9 @@ export default function EditProfile({ navigation }) {
         nestedScrollEnabled={true}
         showsVerticalScrollIndicator={true}
       >
-        <CustomLoader
-          open={isLoading}
-        />
-        <Text style={styles.profileTxt}>{strings.profile.profilePic}</Text>
+        <CustomLoader open={isLoading} />
+        {/* <Text style={styles.profileTxt}>{strings.profile.profilePic}</Text>
         <View style={styles.ScrollViewContainer}>
-
           <View>
             <Image
               source={{
@@ -450,7 +460,7 @@ export default function EditProfile({ navigation }) {
               }}
             />
           </View>
-        </View>
+        </View> */}
         <View style={styles.formContainer}>
           <View style={styles.textFiledContainer}>
             <Text style={styles.textFieldLebel}>
@@ -481,7 +491,7 @@ export default function EditProfile({ navigation }) {
               selectTextOnFocus={false}
               editable={false}
               value={formatedDate}
-            // value={Moment(date).format('DD-MM-YYYY')}
+              // value={Moment(date).format('DD-MM-YYYY')}
             />
             <View style={styles.CalendarIcon}>
               <Icon
@@ -497,8 +507,7 @@ export default function EditProfile({ navigation }) {
               open={show}
               date={date}
               onConfirm={date => {
-                onChange(date)
-
+                onChange(date);
               }}
               onCancel={() => {
                 setShow(false);
@@ -510,9 +519,8 @@ export default function EditProfile({ navigation }) {
             <DropDownPicker
               schema={{
                 label: 'label',
-                value: 'value'
+                value: 'value',
               }}
-
               dropDownDirection="TOP"
               placeholder={genderValue}
               open={genderListOpen}
@@ -545,7 +553,7 @@ export default function EditProfile({ navigation }) {
             <DropDownPicker
               schema={{
                 label: 'label',
-                value: 'value'
+                value: 'value',
               }}
               dropDownDirection="TOP"
               placeholder={locationValue}
@@ -585,7 +593,7 @@ export default function EditProfile({ navigation }) {
               style={styles.textFiled}
               selectTextOnFocus={false}
               value={userName}
-              onChangeText={(text) => setUserName(text)}
+              onChangeText={text => setUserName(text)}
             />
             <View style={styles.CalendarIcon}>
               <Icon
@@ -606,12 +614,11 @@ export default function EditProfile({ navigation }) {
               {strings.SignUp.loginPhone}{' '}
             </Text>
             <TextInput
-
               style={styles.textFiled}
               value={loginPhone}
               editable={false}
 
-            // onChangeText={val => setLoginPhone(val)}
+              // onChangeText={val => setLoginPhone(val)}
             />
           </View>
           {/* <View style={styles.marginTop} /> */}
@@ -626,9 +633,7 @@ export default function EditProfile({ navigation }) {
         />
         <View style={styles.buttonContainer}>
           <View>
-            <Button
-              onPress={onSave}
-              title={strings.operations.save} />
+            <Button onPress={onSave} title={strings.operations.save} />
           </View>
           <View style={styles.closeMyAccountButtonContainer}>
             <Button
@@ -819,7 +824,7 @@ const styles = StyleSheet.create({
     fontSize: ms(18, 0.3),
     fontFamily: FontFamily.BrandonGrotesque_regular,
     marginBottom: vs(15),
-    placeholderTextColor: "red"
+    placeholderTextColor: 'red',
   },
   CalendarIcon: {
     position: 'absolute',
