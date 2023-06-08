@@ -15,153 +15,154 @@ export const TYPES = {
   LOGIN_ERROR: 'LOGIN_ERROR',
   LOGIN_SUCCESS: 'LOGIN_SUCCESS',
 
-  VERIFY_OTP: "VERIFY_OTP",
-  VERIFY_OTP_REQUEST: "VERIFY_OTP_REQUEST",
-  VERIFY_OTP_SUCCESS: "VERIFY_OTP_SUCCESS",
-  VERIFY_OTP_ERROR: "VERIFY_OTP_ERROR",
+  VERIFY_OTP: 'VERIFY_OTP',
+  VERIFY_OTP_REQUEST: 'VERIFY_OTP_REQUEST',
+  VERIFY_OTP_SUCCESS: 'VERIFY_OTP_SUCCESS',
+  VERIFY_OTP_ERROR: 'VERIFY_OTP_ERROR',
 
-  CHECK_USERNAME: "CHECK_USERNAME",
-  CHECK_USERNAME_REQUEST: "CHECK_USERNAME_REQUEST",
-  CHECK_USERNAME_SUCCESS: "CHECK_USERNAME_SUCCESS",
-  CHECK_USERNAME_ERROR: "CHECK_USERNAME_ERROR",
+  CHECK_USERNAME: 'CHECK_USERNAME',
+  CHECK_USERNAME_REQUEST: 'CHECK_USERNAME_REQUEST',
+  CHECK_USERNAME_SUCCESS: 'CHECK_USERNAME_SUCCESS',
+  CHECK_USERNAME_ERROR: 'CHECK_USERNAME_ERROR',
 
   UPDATE_PROFILE: 'UPDATE_PROFILE',
-  UPDATE_PROFILE_REQUEST: "UPDATE_PROFILE_REQUEST",
-  UPDATE_PROFILE_SUCCESS: "UPDATE_PROFILE_SUCCESS",
-  UPDATE_PROFILE_ERROR: "UPDATE_PROFILE_ERROR",
+  UPDATE_PROFILE_REQUEST: 'UPDATE_PROFILE_REQUEST',
+  UPDATE_PROFILE_SUCCESS: 'UPDATE_PROFILE_SUCCESS',
+  UPDATE_PROFILE_ERROR: 'UPDATE_PROFILE_ERROR',
 
   UPLOAD_PROFILE: 'UPLOAD_PROFILE',
-  UPLOAD_PROFILE_REQUEST: "UPLOAD_PROFILE_REQUEST",
-  UPLOAD_PROFILE_SUCCESS: "UPLOAD_PROFILE_SUCCESS",
-  UPLOAD_PROFILE_ERROR: "UPLOAD_PROFILE_ERROR",
+  UPLOAD_PROFILE_REQUEST: 'UPLOAD_PROFILE_REQUEST',
+  UPLOAD_PROFILE_SUCCESS: 'UPLOAD_PROFILE_SUCCESS',
+  UPLOAD_PROFILE_ERROR: 'UPLOAD_PROFILE_ERROR',
 
   //FOLLOW USER
 
-  FOLLOW_USER: "FOLLOW_USER",
-  FOLLOW_USER_REQUEST: "FOLLOW_USER_REQUEST",
-  FOLLOW_USER_SUCCESS: "FOLLOW_USER_SUCCESS",
-  FOLLOW_USER_ERROR: "FOLLOW_USER_ERROR",
-
+  FOLLOW_USER: 'FOLLOW_USER',
+  FOLLOW_USER_REQUEST: 'FOLLOW_USER_REQUEST',
+  FOLLOW_USER_SUCCESS: 'FOLLOW_USER_SUCCESS',
+  FOLLOW_USER_ERROR: 'FOLLOW_USER_ERROR',
 
   //UNFOLLOW USER
 
-  UN_FOLLOW_USER: "UN_FOLLOW_USER",
-  UN_FOLLOW_USER_REQUEST: "UN_FOLLOW_USER_REQUEST",
-  UN_FOLLOW_USER_SUCCESS: "UN_FOLLOW_USER_SUCCESS",
-  UN_FOLLOW_USER_ERROR: "UN_FOLLOW_USER_ERROR",
-
+  UN_FOLLOW_USER: 'UN_FOLLOW_USER',
+  UN_FOLLOW_USER_REQUEST: 'UN_FOLLOW_USER_REQUEST',
+  UN_FOLLOW_USER_SUCCESS: 'UN_FOLLOW_USER_SUCCESS',
+  UN_FOLLOW_USER_ERROR: 'UN_FOLLOW_USER_ERROR',
 
   //user create post
   CREATE_POST: 'CREATE_POST',
-  CREATE_POST_REQUEST: "CREATE_POST_REQUEST",
-  CREATE_POST_SUCCESS: "CREATE_POST_SUCCESS",
-  CREATE_POST_ERROR: "CREATE_POST_ERROR",
+  CREATE_POST_REQUEST: 'CREATE_POST_REQUEST',
+  CREATE_POST_SUCCESS: 'CREATE_POST_SUCCESS',
+  CREATE_POST_ERROR: 'CREATE_POST_ERROR',
 
   //user update post
   UPDATE_POST: 'UPDATE_POST',
-  UPDATE_POST_REQUEST: "UPDATE_POST_REQUEST",
-  UPDATE_POST_SUCCESS: "UPDATE_POST_SUCCESS",
-  UPDATE_POST_ERROR: "UPDATE_POST_ERROR",
+  UPDATE_POST_REQUEST: 'UPDATE_POST_REQUEST',
+  UPDATE_POST_SUCCESS: 'UPDATE_POST_SUCCESS',
+  UPDATE_POST_ERROR: 'UPDATE_POST_ERROR',
 
   //user delete post
   DELETE_POST: 'DELETE_POST',
-  DELETE_POST_REQUEST: "DELETE_POST_REQUEST",
-  DELETE_POST_SUCCESS: "DELETE_POST_SUCCESS",
-  DELETE_POST_ERROR: "DELETE_POST_ERROR",
-
+  DELETE_POST_REQUEST: 'DELETE_POST_REQUEST',
+  DELETE_POST_SUCCESS: 'DELETE_POST_SUCCESS',
+  DELETE_POST_ERROR: 'DELETE_POST_ERROR',
 
   //Get user profile by userID
   GET_USER_PROFILE_BY_USER_ID: 'GET_USER_PROFILE_BY_USER_ID',
-  GET_USER_PROFILE_BY_USER_ID_REQUEST: "GET_USER_PROFILE_BY_USER_ID_REQUEST",
-  GET_USER_PROFILE_BY_USER_ID_SUCCESS: "GET_USER_PROFILE_BY_USER_ID_SUCCESS",
-  GET_USER_PROFILE_BY_USER_ID_ERROR: "GET_USER_PROFILE_BY_USER_ID_ERROR",
+  GET_USER_PROFILE_BY_USER_ID_REQUEST: 'GET_USER_PROFILE_BY_USER_ID_REQUEST',
+  GET_USER_PROFILE_BY_USER_ID_SUCCESS: 'GET_USER_PROFILE_BY_USER_ID_SUCCESS',
+  GET_USER_PROFILE_BY_USER_ID_ERROR: 'GET_USER_PROFILE_BY_USER_ID_ERROR',
 
   //get all post by logged in user
-  GET_ALL_POST_BY_LOGGED_IN_USER: "GET_ALL_POST_BY_LOGGED_IN_USER",
-  GET_ALL_POST_BY_LOGGED_IN_USER_REQUEST: "GET_ALL_POST_BY_LOGGED_IN_USER_REQUEST",
-  GET_ALL_POST_BY_LOGGED_IN_USER_SUCCESS: "GET_ALL_POST_BY_LOGGED_IN_USER_SUCCESS",
-  GET_ALL_POST_BY_LOGGED_IN_USER_ERROR: "GET_ALL_POST_BY_LOGGED_IN_USER_ERROR",
+  GET_ALL_POST_BY_LOGGED_IN_USER: 'GET_ALL_POST_BY_LOGGED_IN_USER',
+  GET_ALL_POST_BY_LOGGED_IN_USER_REQUEST:
+    'GET_ALL_POST_BY_LOGGED_IN_USER_REQUEST',
+  GET_ALL_POST_BY_LOGGED_IN_USER_SUCCESS:
+    'GET_ALL_POST_BY_LOGGED_IN_USER_SUCCESS',
+  GET_ALL_POST_BY_LOGGED_IN_USER_ERROR: 'GET_ALL_POST_BY_LOGGED_IN_USER_ERROR',
 
+  GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION:
+    ' GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION',
+  GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION_REQUEST:
+    ' GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION_REQUEST',
+  GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION_SUCCESS:
+    ' GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION_SUCCESS',
+  GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION_ERROR:
+    ' GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION_ERROR',
 
-  GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION: " GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION",
-  GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION_REQUEST: " GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION_REQUEST",
-  GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION_SUCCESS: " GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION_SUCCESS",
-  GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION_ERROR: " GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION_ERROR",
-
-
-
-  GET_ALL_ACTIVITY_BY_LOGGED_IN_USER: "GET_ALL_ACTIVITY_BY_LOGGED_IN_USER",
-  GET_ALL_ACTIVITY_BY_LOGGED_IN_USER_REQUEST: "GET_ALL_ACTIVITY_BY_LOGGED_IN_USER_REQUEST",
-  GET_ALL_ACTIVITY_BY_LOGGED_IN_USER_SUCCESS: "GET_ALL_ACTIVITY_BY_LOGGED_IN_USER_SUCCESS",
-  GET_ALL_ACTIVITY_BY_LOGGED_IN_USER_ERROR: "GET_ALL_ACTIVITY_BY_LOGGED_IN_USER_ERROR",
+  GET_ALL_ACTIVITY_BY_LOGGED_IN_USER: 'GET_ALL_ACTIVITY_BY_LOGGED_IN_USER',
+  GET_ALL_ACTIVITY_BY_LOGGED_IN_USER_REQUEST:
+    'GET_ALL_ACTIVITY_BY_LOGGED_IN_USER_REQUEST',
+  GET_ALL_ACTIVITY_BY_LOGGED_IN_USER_SUCCESS:
+    'GET_ALL_ACTIVITY_BY_LOGGED_IN_USER_SUCCESS',
+  GET_ALL_ACTIVITY_BY_LOGGED_IN_USER_ERROR:
+    'GET_ALL_ACTIVITY_BY_LOGGED_IN_USER_ERROR',
 
   //Followers
-  FOLLOWERS: "FOLLOWERS",
-  FOLLOWERS_REQUEST: "FOLLOWERS_REQUEST",
-  FOLLOWERS_SUCCESS: "FOLLOWERS_SUCCESS",
-  FOLLOWERS_ERROR: "FOLLOWERS_ERROR",
+  FOLLOWERS: 'FOLLOWERS',
+  FOLLOWERS_REQUEST: 'FOLLOWERS_REQUEST',
+  FOLLOWERS_SUCCESS: 'FOLLOWERS_SUCCESS',
+  FOLLOWERS_ERROR: 'FOLLOWERS_ERROR',
 
   //BLOCK_USERS
-  BLOCK_LIST: "BLOCK_LIST",
-  BLOCK_LIST_REQUEST: "BLOCK_LIST_REQUEST",
-  BLOCK_LIST_SUCCESSS: "BLOCK_LIST_SUCCESSS",
-  BLOCK_LIST_ERROR: "BLOCK_LIST_ERROR",
+  BLOCK_LIST: 'BLOCK_LIST',
+  BLOCK_LIST_REQUEST: 'BLOCK_LIST_REQUEST',
+  BLOCK_LIST_SUCCESSS: 'BLOCK_LIST_SUCCESSS',
+  BLOCK_LIST_ERROR: 'BLOCK_LIST_ERROR',
 
   //SEARCH_USER
-  SEARCH_USER: "SEARCH_USER",
-  SEARCH_USER_SUCCESS: "SEARCH_USER_SUCCESS",
-  SEARCH_USER_REQUEST: "SEARCH_USER_REQUEST",
-  SEARCH_USER_ERROR: "SEARCH_USER_ERROR",
+  SEARCH_USER: 'SEARCH_USER',
+  SEARCH_USER_SUCCESS: 'SEARCH_USER_SUCCESS',
+  SEARCH_USER_REQUEST: 'SEARCH_USER_REQUEST',
+  SEARCH_USER_ERROR: 'SEARCH_USER_ERROR',
 
   //UNBLOCK_USER_BY_ID
-  UNBLOCK_USER_BY_ID: "UNBLOCK_USER_BY_ID",
-  UNBLOCK_USER_BY_ID_REQUEST: "UNBLOCK_USER_BY_ID_REQUEST",
-  UNBLOCK_USER_BY_ID_SUCCESS: "UNBLOCK_USER_BY_ID_SUCCESS",
-  UNBLOCK_USER_BY_ID_ERROR: "UNBLOCK_USER_BY_ID_ERROR",
+  UNBLOCK_USER_BY_ID: 'UNBLOCK_USER_BY_ID',
+  UNBLOCK_USER_BY_ID_REQUEST: 'UNBLOCK_USER_BY_ID_REQUEST',
+  UNBLOCK_USER_BY_ID_SUCCESS: 'UNBLOCK_USER_BY_ID_SUCCESS',
+  UNBLOCK_USER_BY_ID_ERROR: 'UNBLOCK_USER_BY_ID_ERROR',
 
   //GET_ALL_ACTIVITY
-  GET_ALL_ACTIVITY: "GET_ALL_ACTIVITY",
-  GET_ALL_ACTIVITY_REQUEST: " GET_ALL_ACTIVITY_REQUEST",
-  GET_ALL_ACTIVITY_SUCCESS: "GET_ALL_ACTIVITY_SUCCESS",
-  GET_ALL_ACTIVITY_ERROR: "GET_ALL_ACTIVITY_ERROR",
-
+  GET_ALL_ACTIVITY: 'GET_ALL_ACTIVITY',
+  GET_ALL_ACTIVITY_REQUEST: ' GET_ALL_ACTIVITY_REQUEST',
+  GET_ALL_ACTIVITY_SUCCESS: 'GET_ALL_ACTIVITY_SUCCESS',
+  GET_ALL_ACTIVITY_ERROR: 'GET_ALL_ACTIVITY_ERROR',
 
   //MANAGE_ALL_REPORTS
-  MANAGE_ALL_REPORTS: "MANAGE_ALL_REPORTS",
-  MANAGE_ALL_REPORTS_REQUEST: "MANAGE_ALL_REPORTS_REQUEST",
-  MANAGE_ALL_REPORTS_SUCCESS: "MANAGE_ALL_REPORTS_SUCCESS",
-  MANAGE_ALL_REPORTS_ERROR: "MANAGE_ALL_REPORTS_ERROR",
+  MANAGE_ALL_REPORTS: 'MANAGE_ALL_REPORTS',
+  MANAGE_ALL_REPORTS_REQUEST: 'MANAGE_ALL_REPORTS_REQUEST',
+  MANAGE_ALL_REPORTS_SUCCESS: 'MANAGE_ALL_REPORTS_SUCCESS',
+  MANAGE_ALL_REPORTS_ERROR: 'MANAGE_ALL_REPORTS_ERROR',
 
   //GET_ALL_BANNED_USERS
-  GET_ALL_BANNED_USERS: "GET_ALL_BANNED_USERS",
-  GET_ALL_BANNED_USERS_REQUEST: "GET_ALL_BANNED_USERS_REQUEST",
-  GET_ALL_BANNED_USERS_SUCCESS: "GET_ALL_BANNED_USERS_SUCCESS",
-  GET_ALL_BANNED_USERS_ERROR: "GET_ALL_BANNED_USERS_ERROR",
+  GET_ALL_BANNED_USERS: 'GET_ALL_BANNED_USERS',
+  GET_ALL_BANNED_USERS_REQUEST: 'GET_ALL_BANNED_USERS_REQUEST',
+  GET_ALL_BANNED_USERS_SUCCESS: 'GET_ALL_BANNED_USERS_SUCCESS',
+  GET_ALL_BANNED_USERS_ERROR: 'GET_ALL_BANNED_USERS_ERROR',
 
   //UNBANNED_USER
-  UNBANNED_USER_BY_ID: "UNBANNED_USER_BY_ID",
-  UNBANNED_USER_BY_ID_REQUEST: "UNBANNED_USER_BY_ID_REQUEST",
-  UNBANNED_USER_BY_ID_SUCCESS: "UNBANNED_USER_BY_ID_SUCCESS",
-  UNBANNED_USER_BY_ID_ERROR: "UNBANNED_USER_BY_ID_ERROR",
+  UNBANNED_USER_BY_ID: 'UNBANNED_USER_BY_ID',
+  UNBANNED_USER_BY_ID_REQUEST: 'UNBANNED_USER_BY_ID_REQUEST',
+  UNBANNED_USER_BY_ID_SUCCESS: 'UNBANNED_USER_BY_ID_SUCCESS',
+  UNBANNED_USER_BY_ID_ERROR: 'UNBANNED_USER_BY_ID_ERROR',
 
   //BANNED_USER
-  BANNED_USER_BY_ID: "BANNED_USER_BY_ID",
-  BANNED_USER_BY_ID_REQUEST: "BANNED_USER_BY_ID_REQUEST",
-  BANNED_USER_BY_ID_SUCCESS: "BANNED_USER_BY_ID_SUCCESS",
-  BANNED_USER_BY_ID_ERROR: "BANNED_USER_BY_ID_ERROR",
-
+  BANNED_USER_BY_ID: 'BANNED_USER_BY_ID',
+  BANNED_USER_BY_ID_REQUEST: 'BANNED_USER_BY_ID_REQUEST',
+  BANNED_USER_BY_ID_SUCCESS: 'BANNED_USER_BY_ID_SUCCESS',
+  BANNED_USER_BY_ID_ERROR: 'BANNED_USER_BY_ID_ERROR',
 
   //GET_ALL_NOTIFICATIONS
-  GET_ALL_NOTIFICATIONS: "GET_ALL_NOTIFICATIONS",
-  GET_ALL_NOTIFICATIONS_REQUEST: "GET_ALL_NOTIFICATIONS_REQUEST",
-  GET_ALL_NOTIFICATIONS_SUCCESS: "GET_ALL_NOTIFICATIONS_SUCCESS",
-  GET_ALL_NOTIFICATIONS_ERROR: "GET_ALL_NOTIFICATIONS_ERROR",
+  GET_ALL_NOTIFICATIONS: 'GET_ALL_NOTIFICATIONS',
+  GET_ALL_NOTIFICATIONS_REQUEST: 'GET_ALL_NOTIFICATIONS_REQUEST',
+  GET_ALL_NOTIFICATIONS_SUCCESS: 'GET_ALL_NOTIFICATIONS_SUCCESS',
+  GET_ALL_NOTIFICATIONS_ERROR: 'GET_ALL_NOTIFICATIONS_ERROR',
 
   //MARK_ALL_READ_NOTIFICATIONS
-  MARK_ALL_READ_NOTIFICATIONS: "MARK_ALL_READ_NOTIFICATIONS",
-  MARK_ALL_READ_NOTIFICATIONS_REQUEST: "MARK_ALL_READ_NOTIFICATIONS_REQUEST",
-  MARK_ALL_READ_NOTIFICATIONS_SUCCESS: "MARK_ALL_READ_NOTIFICATIONS_SUCCESS",
-  MARK_ALL_READ_NOTIFICATIONS_ERROR: "MARK_ALL_READ_NOTIFICATIONS_ERROR"
+  MARK_ALL_READ_NOTIFICATIONS: 'MARK_ALL_READ_NOTIFICATIONS',
+  MARK_ALL_READ_NOTIFICATIONS_REQUEST: 'MARK_ALL_READ_NOTIFICATIONS_REQUEST',
+  MARK_ALL_READ_NOTIFICATIONS_SUCCESS: 'MARK_ALL_READ_NOTIFICATIONS_SUCCESS',
+  MARK_ALL_READ_NOTIFICATIONS_ERROR: 'MARK_ALL_READ_NOTIFICATIONS_ERROR',
 };
 
 const loginRequest = () => ({
@@ -178,8 +179,6 @@ const loginSuccess = user => ({
   type: TYPES.LOGIN_SUCCESS,
   payload: { user },
 });
-
-
 
 const verifyOtpRequest = () => ({
   type: TYPES.VERIFY_OTP_REQUEST,
@@ -228,7 +227,6 @@ export const updateProfileSuccess = user => ({
   payload: { user },
 });
 
-
 const uploadProfileRequest = () => ({
   type: TYPES.UPLOAD_PROFILE_REQUEST,
   payload: null,
@@ -249,12 +247,10 @@ export const followUserSuccess = user => ({
   payload: { user },
 });
 
-
 const followUserRequest = () => ({
   type: TYPES.FOLLOW_USER_REQUEST,
   payload: null,
 });
-
 
 const followUserError = error => ({
   type: TYPES.FOLLOW_USER_ERROR,
@@ -265,7 +261,6 @@ export const unFollowUserSuccess = comment => ({
   type: TYPES.UN_FOLLOW_USER_SUCCESS,
   payload: { comment },
 });
-
 
 const unFollowUserRequest = () => ({
   type: TYPES.UN_FOLLOW_USER_REQUEST,
@@ -326,16 +321,6 @@ const getAllPostByLoggedInUserPaginationError = error => ({
   payload: { error },
 });
 
-
-
-
-
-
-
-
-
-
-
 export const getAllActivityByLoggedInUserSuccess = post => ({
   type: TYPES.GET_ALL_ACTIVITY_BY_LOGGED_IN_USER_SUCCESS,
   payload: { post },
@@ -351,24 +336,11 @@ const getAllActivityByLoggedInUserError = error => ({
   payload: { error },
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
 //create post
 export const createPostSuccess = user => ({
   type: TYPES.CREATE_POST_SUCCESS,
   payload: { user },
 });
-
 
 const createPostRequest = () => ({
   type: TYPES.CREATE_POST_REQUEST,
@@ -386,7 +358,6 @@ export const updatePostSuccess = user => ({
   payload: { user },
 });
 
-
 const updatePostRequest = () => ({
   type: TYPES.UPDATE_POST_REQUEST,
   payload: null,
@@ -403,7 +374,6 @@ export const deletePostSuccess = user => ({
   payload: { user },
 });
 
-
 const deletePostRequest = () => ({
   type: TYPES.DELETE_POST_REQUEST,
   payload: null,
@@ -419,7 +389,6 @@ export const getUserProfileByUserIdSuccess = user => ({
   payload: { user },
 });
 
-
 const getUserProfileByUserIdRequest = () => ({
   type: TYPES.GET_USER_PROFILE_BY_USER_ID_REQUEST,
   payload: null,
@@ -429,7 +398,6 @@ const getUserProfileByUserIdError = error => ({
   type: TYPES.GET_USER_PROFILE_BY_USER_ID_ERROR,
   payload: { error },
 });
-
 
 //FollowersListDAta
 export const followersSuccess = user => ({
@@ -446,7 +414,6 @@ const followersError = error => ({
   type: TYPES.FOLLOWERS_ERROR,
   payload: { error },
 });
-
 
 //Clear store
 const clearStore = () => ({
@@ -596,108 +563,139 @@ const markAllReadNotificationsError = error => ({
   payload: { error },
 });
 
-export const login = (number) => async dispatch => {
-  dispatch(globalReset())
+export const login = number => async dispatch => {
+  dispatch(globalReset());
   dispatch(loginRequest());
   try {
     const user = await UserController.login(number);
     dispatch(loginSuccess());
-    navigationRef.navigate(NAVIGATION.enterOtp, { number, "isRegistered": user?.isregistered })
+    navigationRef.navigate(NAVIGATION.enterOtp, {
+      number,
+      isRegistered: user?.isregistered,
+    });
   } catch (error) {
     dispatch(loginError(error.message));
   }
 };
 
 export const verifyOtp = (number, Otp, isRegistered) => async dispatch => {
-  dispatch(globalReset())
+  dispatch(globalReset());
   dispatch(verifyOtpRequest());
   try {
     // let selectedValue = "";
     const user = await UserController.verifyOtp(number, Otp);
     if (isRegistered == true) {
-      dispatch(verifyOtpSuccess(user))
+      dispatch(verifyOtpSuccess(user));
       if (user?.isAdmin == true) {
-        let selectedValue = "Admin";
-        dispatch(ChooseUser(selectedValue))
+        let selectedValue = 'Admin';
+        dispatch(ChooseUser(selectedValue));
       } else if (user?.isVIP == true) {
-        let selectedValue = "VIP";
-        dispatch(ChooseUser(selectedValue))
+        let selectedValue = 'VIP';
+        dispatch(ChooseUser(selectedValue));
       } else {
-        let selectedValue = "Free";
-        dispatch(ChooseUser(selectedValue))
+        let selectedValue = 'Free';
+        dispatch(ChooseUser(selectedValue));
       }
     } else {
-      navigationRef.navigate(NAVIGATION.setupUserId, { "ID": user?.id, number: number });
+      navigationRef.navigate(NAVIGATION.setupUserId, {
+        ID: user?.id,
+        number: number,
+      });
     }
   } catch (error) {
     dispatch(verifyOtpError(error));
   }
 };
 
-export const checkUserName = (username) => async dispatch => {
-  dispatch(globalReset())
+export const checkUserName = username => async dispatch => {
+  dispatch(globalReset());
   dispatch(checkUserNameRequest());
   try {
     const user = await UserController.checkUserName(username);
     dispatch(checkUserNameSuccess());
     if (user.status == true) {
-    }
-    else {
-      dispatch(checkUserNameError(user))
+    } else {
+      dispatch(checkUserNameError(user));
     }
   } catch (error) {
     dispatch(checkUserNameError(error));
   }
 };
 
-export const updateProfile = (dob, fullname, gender, id, primaryEmail, location, username, number, file, mimeType, screen) => async dispatch => {
-  dispatch(globalReset())
-  dispatch(updateProfileRequest());
-  try {
-    const user = await UserController.updateProfile(dob, fullname, gender, id, primaryEmail, location, username, file, mimeType);
-    dispatch(updateProfileSuccess(user))
-    if (screen == NAVIGATION.editProfile) {
+export const updateProfile =
+  (
+    dob,
+    fullname,
+    gender,
+    id,
+    primaryEmail,
+    location,
+    username,
+    number,
+    file,
+    mimeType,
+    screen
+  ) =>
+  async dispatch => {
+    dispatch(globalReset());
+    dispatch(updateProfileRequest());
+    try {
+      const user = await UserController.updateProfile(
+        dob,
+        fullname,
+        gender,
+        id,
+        primaryEmail,
+        location,
+        username,
+        file,
+        mimeType
+      );
+      dispatch(updateProfileSuccess(user));
+      if (screen == NAVIGATION.editProfile) {
+        showMessage({
+          message: strings.editProfile.updatedSuccess,
+          type: 'success',
+        });
+        navigationRef.navigate(NAVIGATION.profileSetting);
+      }
+    } catch (error) {
       showMessage({
-        message: strings.editProfile.updatedSuccess,
-        type: "success"
-      })
-      navigationRef.navigate(NAVIGATION.profileSetting)
+        message: error?.message,
+        type: 'danger',
+      });
+      dispatch(updateProfileError(error));
     }
-  } catch (error) {
-    showMessage({
-      message: error?.message,
-      type: "danger"
-    })
-    dispatch(updateProfileError(error));
-  }
-};
+  };
 export const uploadProfile = (file, mimeType, USER) => async dispatch => {
-  dispatch(globalReset())
+  dispatch(globalReset());
   dispatch(uploadProfileRequest());
   try {
-    const user = await UserController.upload_Profile_Pic(file, mimeType, USER?.contact);
+    const user = await UserController.upload_Profile_Pic(
+      file,
+      mimeType,
+      USER?.contact
+    );
     // dispatch(uploadProfileSuccess(USER))
   } catch (error) {
     showMessage({
       message: error?.message,
-      type: "danger"
-    })
+      type: 'danger',
+    });
     dispatch(uploadProfileError(error));
   }
 };
 
-
-export const followUser = (followerId, followId, postIndex) => async dispatch => {
-
-  dispatch(followUserRequest());
-  try {
-    const user = await UserController.followUser(followerId, followId);
-    dispatch(followUserSuccess(postIndex));
-  } catch (error) {
-    dispatch(followUserError(error))
-  }
-};
-
+export const followUser =
+  (followerId, followId, postIndex) => async dispatch => {
+    dispatch(followUserRequest());
+    try {
+      const user = await UserController.followUser(followerId, followId);
+      dispatch(followUserSuccess(postIndex));
+    } catch (error) {
+      dispatch(followUserError(error));
+    }
+  };
 
 export const unFollowUser = (unFollowerId, followId) => async dispatch => {
   dispatch(unFollowUserRequest());
@@ -705,26 +703,24 @@ export const unFollowUser = (unFollowerId, followId) => async dispatch => {
     const user = await UserController.unFollowUser(unFollowerId, followId);
     dispatch(unFollowUserSuccess(user));
   } catch (error) {
-
-    dispatch(unFollowUserError(error))
+    dispatch(unFollowUserError(error));
   }
 };
 
-
-export const getUserProfileByUserId = (userId, loggedInID) => async dispatch => {
-  dispatch(globalReset())
-  dispatch(getUserProfileByUserIdRequest());
-  try {
-    const user = await UserController.getUserProfileByUseridAPI(userId, loggedInID);
-    dispatch(getUserProfileByUserIdSuccess(user?.data));
-  } catch (error) {
-
-    dispatch(getUserProfileByUserIdError(error))
-  }
-};
-
-
-
+export const getUserProfileByUserId =
+  (userId, loggedInID) => async dispatch => {
+    dispatch(globalReset());
+    dispatch(getUserProfileByUserIdRequest());
+    try {
+      const user = await UserController.getUserProfileByUseridAPI(
+        userId,
+        loggedInID
+      );
+      dispatch(getUserProfileByUserIdSuccess(user?.data));
+    } catch (error) {
+      dispatch(getUserProfileByUserIdError(error));
+    }
+  };
 
 export const logout = () => async dispatch => {
   dispatch(clearStore());
@@ -737,280 +733,358 @@ export const logout = () => async dispatch => {
 
 // create_post action
 
-export const createPost = (id, postTitle, postBody, file, mimeType, imageArray, screen, isVipOnly) => async dispatch => {
-  dispatch(globalReset())
-  dispatch(createPostRequest());
-  try {
-    const user = await UserController.createPost(id, postTitle, postBody, file, mimeType, imageArray, isVipOnly);
-    dispatch(createPostSuccess(user))
-    if (screen == NAVIGATION.home) {
+export const createPost =
+  (id, postTitle, postBody, file, mimeType, imageArray, screen, isVipOnly) =>
+  async dispatch => {
+    dispatch(globalReset());
+    dispatch(createPostRequest());
+    try {
+      const user = await UserController.createPost(
+        id,
+        postTitle,
+        postBody,
+        file,
+        mimeType,
+        imageArray,
+        isVipOnly
+      );
+      dispatch(createPostSuccess(user));
+      if (screen == NAVIGATION.home) {
+        showMessage({
+          message: strings.createPost.updatedSuccess,
+          type: 'success',
+        });
+        navigationRef.dispatch(StackActions.popToTop());
+        navigationRef.navigate(NAVIGATION.home);
+      }
+      if (screen == NAVIGATION.profile) {
+        showMessage({
+          message: strings.createPost.updatedSuccess,
+          type: 'success',
+        });
+        navigationRef.dispatch(StackActions.popToTop());
+        navigationRef.navigate(NAVIGATION.profile);
+      }
+    } catch (error) {
       showMessage({
-        message: strings.createPost.updatedSuccess,
-        type: "success"
-      })
-      navigationRef.dispatch(StackActions.popToTop())
-      navigationRef.navigate(NAVIGATION.home)
+        message: error?.message,
+        type: 'danger',
+      });
+      dispatch(createPostError(error));
     }
-    if (screen == NAVIGATION.profile) {
-      showMessage({
-        message: strings.createPost.updatedSuccess,
-        type: "success"
-      })
-      navigationRef.dispatch(StackActions.popToTop())
-      navigationRef.navigate(NAVIGATION.profile)
-    }
-  } catch (error) {
-    showMessage({
-      message: error?.message,
-      type: "danger"
-    })
-    dispatch(createPostError(error));
-  }
-};
+  };
 
 // create_post_by_admin action
 
-export const createPostByAdmin = (id, postTitle, postBody, postImg, mimeType, imageArray, screen, vipOnly, schedulePost, scheduleDetails, goingLIve, ad, publishDate, expireDate,) => async dispatch => {
-  console.log('log in actions', id, postTitle, postBody, postImg, mimeType, imageArray, vipOnly, schedulePost, scheduleDetails, goingLIve, ad, publishDate, expireDate
-
-  )
-  dispatch(globalReset())
-  dispatch(createPostRequest());
-  try {
-    const user = await UserController.createPostByAdmin(id, postTitle, postBody, postImg, mimeType, imageArray, screen, vipOnly, schedulePost, scheduleDetails, goingLIve, ad, publishDate, expireDate);
-    dispatch(createPostSuccess(user))
-    if (screen == NAVIGATION.home) {
+export const createPostByAdmin =
+  (
+    id,
+    postTitle,
+    postBody,
+    postImg,
+    mimeType,
+    imageArray,
+    screen,
+    vipOnly,
+    schedulePost,
+    scheduleDetails,
+    goingLIve,
+    ad,
+    publishDate,
+    expireDate
+  ) =>
+  async dispatch => {
+    console.log(
+      'log in actions',
+      id,
+      postTitle,
+      postBody,
+      postImg,
+      mimeType,
+      imageArray,
+      vipOnly,
+      schedulePost,
+      scheduleDetails,
+      goingLIve,
+      ad,
+      publishDate,
+      expireDate
+    );
+    dispatch(globalReset());
+    dispatch(createPostRequest());
+    try {
+      const user = await UserController.createPostByAdmin(
+        id,
+        postTitle,
+        postBody,
+        postImg,
+        mimeType,
+        imageArray,
+        screen,
+        vipOnly,
+        schedulePost,
+        scheduleDetails,
+        goingLIve,
+        ad,
+        publishDate,
+        expireDate
+      );
+      dispatch(createPostSuccess(user));
+      if (screen == NAVIGATION.home) {
+        showMessage({
+          message: strings.createPost.updatedSuccess,
+          type: 'success',
+        });
+        navigationRef.dispatch(StackActions.popToTop());
+        navigationRef.navigate(NAVIGATION.home);
+      }
+      if (screen == NAVIGATION.profile) {
+        showMessage({
+          message: strings.createPost.updatedSuccess,
+          type: 'success',
+        });
+        navigationRef.dispatch(StackActions.popToTop());
+        navigationRef.navigate(NAVIGATION.profile);
+      }
+    } catch (error) {
       showMessage({
-        message: strings.createPost.updatedSuccess,
-        type: "success"
-      })
-      navigationRef.dispatch(StackActions.popToTop())
-      navigationRef.navigate(NAVIGATION.home)
+        message: error?.message,
+        type: 'danger',
+      });
+      dispatch(createPostError(error));
     }
-    if (screen == NAVIGATION.profile) {
-      showMessage({
-        message: strings.createPost.updatedSuccess,
-        type: "success"
-      })
-      navigationRef.dispatch(StackActions.popToTop())
-      navigationRef.navigate(NAVIGATION.profile)
-    }
-  } catch (error) {
-    showMessage({
-      message: error?.message,
-      type: "danger"
-    })
-    dispatch(createPostError(error));
-  }
-};
+  };
 
 // update_post action
 
-export const updatePost = (id, userId, postTitle, postBody, file, preImageArray, mimeType, preMimeType, imageArray, userType, screen) => async dispatch => {
-  dispatch(globalReset())
-  dispatch(updatePostRequest());
-  try {
-    const user = await UserController.updatePost(id, userId, postTitle, postBody, file, preImageArray, mimeType, preMimeType, imageArray, userType);
-    dispatch(updatePostSuccess(user))
-    if (screen == NAVIGATION.home) {
-      showMessage({
-        message: strings.updatePost.updatedSuccess,
-        type: "success"
-      })
-      dispatch(getAllPost(userId, strings.sortBy.recent, false))
-      navigationRef.dispatch(StackActions.popToTop())
-      navigationRef.navigate(NAVIGATION.home)
+export const updatePost =
+  (
+    id,
+    userId,
+    postTitle,
+    postBody,
+    file,
+    preImageArray,
+    mimeType,
+    preMimeType,
+    imageArray,
+    userType,
+    screen
+  ) =>
+  async dispatch => {
+    dispatch(globalReset());
+    dispatch(updatePostRequest());
+    try {
+      const user = await UserController.updatePost(
+        id,
+        userId,
+        postTitle,
+        postBody,
+        file,
+        preImageArray,
+        mimeType,
+        preMimeType,
+        imageArray,
+        userType
+      );
+      dispatch(updatePostSuccess(user));
+      if (screen == NAVIGATION.home) {
+        showMessage({
+          message: strings.updatePost.updatedSuccess,
+          type: 'success',
+        });
+        dispatch(getAllPost(userId, strings.sortBy.recent, false));
+        navigationRef.dispatch(StackActions.popToTop());
+        navigationRef.navigate(NAVIGATION.home);
+      }
+      if (screen == NAVIGATION.profile) {
+        showMessage({
+          message: strings.updatePost.updatedSuccess,
+          type: 'success',
+        });
 
-    }
-    if (screen == NAVIGATION.profile) {
+        navigationRef.dispatch(StackActions.popToTop());
+        navigationRef.navigate(NAVIGATION.profile);
+      }
+    } catch (error) {
       showMessage({
-        message: strings.updatePost.updatedSuccess,
-        type: "success"
-      })
-
-      navigationRef.dispatch(StackActions.popToTop())
-      navigationRef.navigate(NAVIGATION.profile)
+        message: error?.message,
+        type: 'danger',
+      });
+      dispatch(updatePostError(error));
     }
-  } catch (error) {
-    showMessage({
-      message: error?.message,
-      type: "danger"
-    })
-    dispatch(updatePostError(error));
-  }
-};
+  };
 
 // update_post action
 
-export const deletePost = (id, postUserId, userId, userType, screen) => async dispatch => {
-  dispatch(globalReset())
-  dispatch(deletePostRequest());
-  try {
-    const user = await UserController.deletePost(id, postUserId, userId, userType);
-    dispatch(deletePostSuccess(user))
-    if (screen == NAVIGATION.home) {
+export const deletePost =
+  (id, postUserId, userId, userType, screen) => async dispatch => {
+    dispatch(globalReset());
+    dispatch(deletePostRequest());
+    try {
+      const user = await UserController.deletePost(
+        id,
+        postUserId,
+        userId,
+        userType
+      );
+      dispatch(deletePostSuccess(user));
+      if (screen == NAVIGATION.home) {
+        showMessage({
+          message: strings.deletePost.deletedSuccess,
+          type: 'success',
+        });
+        navigationRef.navigate(NAVIGATION.home);
+      }
+      if (screen == NAVIGATION.profile) {
+        showMessage({
+          message: strings.deletePost.deletedSuccess,
+          type: 'success',
+        });
+
+        // Reload the posts on profile screen after deleting the posts
+        dispatch(getAllPostsByLoggedInUser(userId));
+
+        navigationRef.navigate(NAVIGATION.profile);
+      }
+    } catch (error) {
       showMessage({
-        message: strings.deletePost.deletedSuccess,
-        type: "success"
-      })
-      navigationRef.navigate(NAVIGATION.home)
+        message: error?.message,
+        type: 'danger',
+      });
+      dispatch(deletePostError(error));
     }
-    if (screen == NAVIGATION.profile) {
-      showMessage({
-        message: strings.deletePost.deletedSuccess,
-        type: "success"
-      })
-
-      // Reload the posts on profile screen after deleting the posts
-      dispatch(getAllPostsByLoggedInUser(userId))
-
-      navigationRef.navigate(NAVIGATION.profile)
-    }
-  } catch (error) {
-    showMessage({
-      message: error?.message,
-      type: "danger"
-    })
-    dispatch(deletePostError(error));
-  }
-};
-
+  };
 
 // Get all posts by User
-export const getAllPostsByLoggedInUser = (id) => async (dispatch, getState) => {
-  dispatch(globalReset())
+export const getAllPostsByLoggedInUser = id => async (dispatch, getState) => {
+  dispatch(globalReset());
   dispatch(getAllPostByLoggedInUserRequest());
 
-  const userType = getState().userType
-  let allPosts
+  const userType = getState().userType;
+  let allPosts;
   try {
-    if (userType.user === strings.userType.free) {
-      allPosts = await UserController.postByUserId(id);
-    }
     if (userType.user === strings.userType.admin) {
       allPosts = await UserController.getAllPostByAdmin();
-    }
-    dispatch(getAllPostByLoggedInUserSuccess(allPosts?.data))
-  } catch (error) {
-    dispatch(getAllPostByLoggedInUserError(error))
-  }
-};
-
-export const getAllPostsByLogInUserPagination = (id, page) => async (dispatch, getState) => {
-  dispatch(globalReset())
-  dispatch(getAllPostByLoggedInUserPaginationRequest());
-
-  const userType = getState().userType
-  let allPosts
-  try {
-    if (userType.user === strings.userType.free) {
-      allPosts = await UserController.postByUserId(id, page);
-    }
-    if (userType.user === strings.userType.admin) {
-      allPosts = await UserController.getAllPostByAdmin(page);
-    }
-    dispatch(getAllPostByLoggedInUserPaginationSuccess(allPosts?.data))
-  } catch (error) {
-    dispatch(getAllPostByLoggedInUserPaginationError(error))
-  }
-};
-
-export const getAllActivityByLoggedInUser = (id) => async (dispatch, getState) => {
-  dispatch(globalReset())
-  dispatch(getAllActivityByLoggedInUserRequest());
-
-  const userType = getState().userType
-  let allPosts
-  try {
-    if (userType.user === strings.userType.free) {
+    } else {
       allPosts = await UserController.postByUserId(id);
     }
-    if (userType.user === strings.userType.admin) {
-      allPosts = await UserController.getAllPostByAdmin();
-    }
-    dispatch(getAllActivityByLoggedInUserSuccess(allPosts?.data))
+
+    dispatch(getAllPostByLoggedInUserSuccess(allPosts?.data));
   } catch (error) {
-    dispatch(getAllActivityByLoggedInUserError(error))
+    dispatch(getAllPostByLoggedInUserError(error));
   }
 };
 
-// just for development 
-const adminUserRequest = (data) => {
+export const getAllPostsByLogInUserPagination =
+  (id, page) => async (dispatch, getState) => {
+    dispatch(globalReset());
+    dispatch(getAllPostByLoggedInUserPaginationRequest());
+
+    const userType = getState().userType;
+    let allPosts;
+    try {
+      if (userType.user === strings.userType.admin) {
+        allPosts = await UserController.getAllPostByAdmin(page);
+      } else {
+        allPosts = await UserController.postByUserId(id, page);
+      }
+
+      dispatch(getAllPostByLoggedInUserPaginationSuccess(allPosts?.data));
+    } catch (error) {
+      dispatch(getAllPostByLoggedInUserPaginationError(error));
+    }
+  };
+
+export const getAllActivityByLoggedInUser =
+  id => async (dispatch, getState) => {
+    dispatch(globalReset());
+    dispatch(getAllActivityByLoggedInUserRequest());
+
+    const userType = getState().userType;
+    let allPosts;
+    try {
+      if (userType.user === strings.userType.free) {
+        allPosts = await UserController.postByUserId(id);
+      }
+      if (userType.user === strings.userType.admin) {
+        allPosts = await UserController.getAllPostByAdmin();
+      }
+      dispatch(getAllActivityByLoggedInUserSuccess(allPosts?.data));
+    } catch (error) {
+      dispatch(getAllActivityByLoggedInUserError(error));
+    }
+  };
+
+// just for development
+const adminUserRequest = data => {
   return {
     type: 'Admin',
-    payload: data
-  }
-}
-const FreeUserRequest = (data) => {
+    payload: data,
+  };
+};
+const FreeUserRequest = data => {
   return {
     type: 'Free',
-    payload: data
-  }
-}
-const VipUesrRequest = (data) => {
+    payload: data,
+  };
+};
+const VipUesrRequest = data => {
   return {
     type: 'VIP',
-    payload: data
-  }
-}
+    payload: data,
+  };
+};
 
-export const ChooseUser = (data) => {
-  return (dispatch) => {
+export const ChooseUser = data => {
+  return dispatch => {
     if (data == 'Admin') {
-      dispatch(adminUserRequest(data))
+      dispatch(adminUserRequest(data));
     }
     if (data == 'Free') {
-      dispatch(FreeUserRequest(data))
+      dispatch(FreeUserRequest(data));
     }
     if (data == 'VIP') {
-      dispatch(VipUesrRequest(data))
+      dispatch(VipUesrRequest(data));
     }
-  }
-}
+  };
+};
 
-
-//followers 
+//followers
 export const followers = (userId, id) => async dispatch => {
-
   dispatch(followersRequest());
   try {
     const user = await UserController.followersList(userId, id);
-    dispatch(followersSuccess(user))
-
+    dispatch(followersSuccess(user));
   } catch (error) {
-    dispatch(followersError(error))
+    dispatch(followersError(error));
   }
-
 };
 
 //Blocked Users
 
-export const blockUsersList = (userId) => async dispatch => {
+export const blockUsersList = userId => async dispatch => {
   dispatch(blockListRequest());
   try {
     const user = await UserController.BlockListRequest(userId);
-    dispatch(blocklistSuccess(user))
-
+    dispatch(blocklistSuccess(user));
   } catch (error) {
-    dispatch(blockListError(error))
+    dispatch(blockListError(error));
   }
-
 };
 
-//Search User Action 
-export const searchUser = (searchuservalue) => async dispatch => {
+//Search User Action
+export const searchUser = searchuservalue => async dispatch => {
   dispatch(searchUserRequest());
   try {
     const user = await UserController.searchUserRequest(searchuservalue);
-    dispatch(searchUserSuccess(user))
-
+    dispatch(searchUserSuccess(user));
   } catch (error) {
-    dispatch(searchUserError(error))
+    dispatch(searchUserError(error));
   }
-
 };
 
-//Unblock User By id 
+//Unblock User By id
 // export const unblockUserById = (data) => async dispatch => {
 //   dispatch(unblockUserByIdRequest());
 //   try {
@@ -1022,100 +1096,76 @@ export const searchUser = (searchuservalue) => async dispatch => {
 //   }
 
 // };
-export const getAllActivityByUserId = (id) => async dispatch => {
-
+export const getAllActivityByUserId = id => async dispatch => {
   dispatch(getAllActivityRequest());
   try {
     const user = await UserController.getAllActivityRequestApi(id);
-    dispatch(getAllActivitySuccess(user))
-
+    dispatch(getAllActivitySuccess(user));
   } catch (error) {
-    dispatch(getAllActivityError(error))
+    dispatch(getAllActivityError(error));
   }
-
 };
 
 export const manageAllReports = () => async dispatch => {
-
   dispatch(manageAllReportsRequest());
   try {
     const user = await UserController.manageAllreportsRequestApi();
-    dispatch(manageAllReportsSuccess(user))
-
+    dispatch(manageAllReportsSuccess(user));
   } catch (error) {
-    dispatch(manageAllReportsError(error))
+    dispatch(manageAllReportsError(error));
   }
-
 };
 
 export const bannedUsers = () => async dispatch => {
-
   dispatch(getBannedUsersRequest());
   try {
     const user = await UserController.getAllBannedUsersRequest();
-    dispatch(getBannedUsersSuccess(user))
-
+    dispatch(getBannedUsersSuccess(user));
   } catch (error) {
-    dispatch(getAllBannedUsersError(error))
+    dispatch(getAllBannedUsersError(error));
   }
-
 };
 
-export const unBannedUserById = (id) => async dispatch => {
-
+export const unBannedUserById = id => async dispatch => {
   dispatch(unBannedUserByIdRequest());
 
   try {
     const user = await UserController.unBannedUserRequest(id);
-    dispatch(unBannedUserByIdSuccess(user))
-
+    dispatch(unBannedUserByIdSuccess(user));
   } catch (error) {
-    dispatch(unBannedUserByIdError(error))
+    dispatch(unBannedUserByIdError(error));
   }
-
 };
-export const bannedUserById = (id) => async dispatch => {
-
+export const bannedUserById = id => async dispatch => {
   dispatch(bannedUserByIdRequest());
 
   try {
     const user = await UserController.bannedUserRequest(id);
-    dispatch(bannedUserByIdSuccess(user))
-
+    dispatch(bannedUserByIdSuccess(user));
   } catch (error) {
-    dispatch(bannedUserByIdError(error))
+    dispatch(bannedUserByIdError(error));
   }
-
 };
 
 export const fetchAllNotifications = (id, read) => async dispatch => {
-
-
   dispatch(getAllNotificationsRequest());
 
   try {
     const user = await UserController.AllNotificationsRequest(id, read);
-    dispatch(getAllNotificationsSuccess(user))
-
+    dispatch(getAllNotificationsSuccess(user));
   } catch (error) {
-    dispatch(getAllNotificationsError(error))
+    dispatch(getAllNotificationsError(error));
   }
-
 };
 
-
 //Mark All read Response
-export const markAllRead = (id) => async dispatch => {
-
-
+export const markAllRead = id => async dispatch => {
   dispatch(markAllReadNotificationsRequest());
 
   try {
     const user = await UserController.markAllNotificationsRequest(id);
-    dispatch(markAllReadNotificationsSuccess(user))
-
+    dispatch(markAllReadNotificationsSuccess(user));
   } catch (error) {
-    dispatch(markAllReadNotificationsError(error))
+    dispatch(markAllReadNotificationsError(error));
   }
-
-}
+};

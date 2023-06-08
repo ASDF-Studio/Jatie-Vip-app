@@ -19,15 +19,14 @@ export const CardHeader = ({
   isOfficial,
   showPin,
   userId,
-  isProfile
+  isProfile,
 }) => {
-
-  const getTime = (t2) => {
+  const getTime = t2 => {
     const t1 = new Date().getTime();
     const t3 = new Date(t2).getTime();
     let ts = parseInt((t1 - t3) / 60000);
     if (ts < 60) {
-      return ts + " mins ago";
+      return ts + ' mins ago';
     }
     if (ts >= 60) {
       let hour = parseInt(ts / 60);
@@ -39,24 +38,25 @@ export const CardHeader = ({
             let month = parseInt(week / 4);
             if (month > 12) {
               let year = parseInt(month / 12);
-              return year + " years ago"
+              return year + ' years ago';
             } else {
-              return month + " months ago";
+              return month + ' months ago';
             }
           } else {
-            return week + " weeks ago";
+            return week + ' weeks ago';
           }
         } else {
-          return day + " days ago";
+          return day + ' days ago';
         }
       } else {
-        return hour + " hours ago";
+        return hour + ' hours ago';
       }
     }
   };
   const navigateToUserProfile = () => {
-    navigationRef.navigate(NAVIGATION.userProfile, { userId: userId })
-  }
+    navigationRef.navigate(NAVIGATION.userProfile, { userId: userId });
+  };
+
   return (
     <View style={styles.postHeader}>
       <View style={{ flexDirection: 'row' }}>
@@ -68,7 +68,8 @@ export const CardHeader = ({
         />
         <TouchableOpacity
           onPress={() => !isProfile && navigateToUserProfile()}
-          style={{ paddingLeft: ms(5) }}>
+          style={{ paddingLeft: ms(5) }}
+        >
           <Text style={styles.fullNameTxt}> {fullName} </Text>
           <Text style={styles.userNameTxt}> {userName} </Text>
         </TouchableOpacity>
