@@ -96,7 +96,6 @@ export default function UserProfile({ navigation, route }) {
   );
 
 
-
   const isProfileLoading = useSelector(state =>
     isLoadingSelector([TYPES.GET_USER_BY], state)
   );
@@ -393,7 +392,6 @@ export default function UserProfile({ navigation, route }) {
                 morePress={() => {
                   // setPostIndex(index)
                   setOpenMore(true)
-
                   setpostId(item?.id);
                   setPostUserId(item?.userId);
                   setPostTitle(item?.postTitle);

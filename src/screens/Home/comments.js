@@ -231,6 +231,7 @@ export default function Comments({ navigation, route }) {
                 <CommentCard
                   name={item?.user?.fullName}
                   userId={USER?.id}
+                  commentUserId={item?.userId}
                   commentData={item}
                   commentIndex={index}
                   commentId={item?.id}

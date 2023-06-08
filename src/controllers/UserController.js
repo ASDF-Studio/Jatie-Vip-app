@@ -439,7 +439,7 @@ export class UserController {
       HttpClient.post(endpoint, data)
         .then((response) => {
           resolve(response);
-          console.log('resonse of posts id   ', response)
+          // console.log('resonse of posts id   ', response)
         })
         .catch((error) => {
           reject(new Error(error.message));

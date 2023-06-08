@@ -45,18 +45,13 @@ export const CardFooter = ({
   const user = useSelector(getUser);
   const postArray = postType === POST_TYPE.REGULAR ? ALLPOST : user?.getAllPostsByLoggedInUser
   const upVoteHandel = () => {
-
     onUpVote(postID, userID)
-
-
   }
   const downVoteHandel = () => {
-
     onDownVote(postID, userID)
   }
 
   const onUpVote = async (postID, userID,) => {
-
     var arr = []
     arr = postArray;
     var upVotenumber = parseInt(arr[postIndex]?.upVote)
@@ -138,14 +133,14 @@ export const CardFooter = ({
       // message: 'Dummy message',
       url: getLink
     }))
-
   }
+
   return (
     <View style={styles.footer}>
       <View style={styles.reactionContainer}>
         <TouchableOpacity
           style={[styles.iconContainer, styles.likeIconContainer,
-          postArray[postIndex]?.has_upvoted && { backgroundColor: theme.light.colors.infoBgLight }
+          postArray?.[postIndex]?.has_upvoted && { backgroundColor: theme.light.colors.infoBgLight }
           ]}
           onPress={() => upVoteHandel()}
         >
@@ -159,7 +154,7 @@ export const CardFooter = ({
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.iconContainer, styles.disLikeIconContainer,
-          postArray[postIndex]?.has_downvoted && { backgroundColor: theme.light.colors.infoBgLight }
+          postArray?.[postIndex]?.has_downvoted && { backgroundColor: theme.light.colors.infoBgLight }
           ]}
           onPress={() => downVoteHandel()}
         >
@@ -194,7 +189,6 @@ export const CardFooter = ({
           style={styles.ShareNodeIcon}
         />
         {showMore == undefined &&
-
           <Icon
             icon={faEllipsis}
             size={ms(13)}
@@ -202,7 +196,6 @@ export const CardFooter = ({
             onPress={morePress}
             style={styles.EllipsisIcon}
           />
-
         }
 
       </View>
