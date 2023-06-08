@@ -8,6 +8,9 @@ import { ms } from "react-native-size-matters"
 import { AppVideoPlayer } from "./VideoPlayer"
 import { SwiperFlatList } from 'react-native-swiper-flatlist';
 import { FontFamily } from "@/theme/Fonts"
+import GestureRecognizer from 'react-native-swipe-gestures';
+
+
 const { width } = Dimensions.get('window')
 export const SwiperViewer = ({ visible, setVisible, images }) => {
     const [swipeIndex, setWipeIndex] = useState(0)
@@ -18,7 +21,11 @@ export const SwiperViewer = ({ visible, setVisible, images }) => {
 
     }
     return (
-        <View>
+        <GestureRecognizer style={styles.gestureRecognizer} onSwipeRight={swipeIndex == 0 && setVisible}
+            onSwipeUp={setVisible}
+            onSwipeDown={setVisible}
+            onSwipeLeft={swipeIndex == images.length - 1 && setVisible}
+        >
             <Modal
                 visible={visible}
                 transparent={true}
@@ -88,12 +95,15 @@ export const SwiperViewer = ({ visible, setVisible, images }) => {
 
 
             </Modal>
-        </View>
+        </GestureRecognizer >
     )
 }
 
 
 const styles = StyleSheet.create({
+    gestureRecognizer: {
+        flex: 1
+    },
     closeIcon: {
         borderRadius: 50,
         position: 'absolute',
