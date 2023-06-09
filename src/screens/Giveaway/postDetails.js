@@ -8,7 +8,19 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import { AppVideoPlayer, Button, Card, CardBody, CustomLoader, HorizontalLine, Icon, ModalDown, ModalList, TopBackButton } from '@/components';
+import {
+  AppVideoPlayer,
+  Button,
+  Card,
+  CardBody,
+  CustomLoader,
+  Divider,
+  HorizontalLine,
+  Icon,
+  ModalDown,
+  ModalList,
+  TopBackButton,
+} from '@/components';
 import { TextStyles, theme } from '@/theme';
 import { FontFamily } from '@/theme/Fonts';
 import { ms, vs } from 'react-native-size-matters';
@@ -16,24 +28,37 @@ import { strings } from '@/localization';
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { item } from './giveawayData/postDetailsData';
-import { deleteGiveaway, endGiveaway, getAllActiveGiveaway, joinGiveAway, TYPES, WithDrawAway, withDrawGiveAwaySuccess } from '@/actions/PostActions';
+import {
+  deleteGiveaway,
+  endGiveaway,
+  getAllActiveGiveaway,
+  joinGiveAway,
+  TYPES,
+  WithDrawAway,
+  withDrawGiveAwaySuccess,
+} from '@/actions/PostActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
-import { faEllipsis, faFlag, faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
+import {
+  faEllipsis,
+  faFlag,
+  faPen,
+  faTrash,
+} from '@fortawesome/free-solid-svg-icons';
 import { NAVIGATION } from '@/constants';
 import moment from 'moment';
 import CountDown from 'react-native-countdown-component';
 
 export default function PostDetails({ navigation, route }) {
-  const dispatch = useDispatch()
-  const data = route.params.key
-  const giveAwayId = data.id
-  const user = useSelector(getUser)
+  const dispatch = useDispatch();
+  const { key: data } = route.params;
+  const giveAwayId = data.id;
+  const user = useSelector(getUser);
   const userType = useSelector(state => state.userType);
 
   const [active, setActive] = useState(false);
-  const [disabledJoin, setDisabledJoin] = useState(data?.has_Joined)
+  const [disabledJoin, setDisabledJoin] = useState(data?.has_Joined);
   const [open, setOpen] = useState(false);
   const joinGiveAwayLoading = useSelector(state =>
     isLoadingSelector([TYPES.JOIN_GIVEAWAY], state)
@@ -43,49 +68,51 @@ export default function PostDetails({ navigation, route }) {
   );
 
 
-
   const joinGiveAwayhandlePress = () => {
     const data = {
       giveawayId: giveAwayId,
       participantId: user?.id,
-      userId: user?.id
-    }
-    dispatch(joinGiveAway(data))
-  }
+      userId: user?.id,
+    };
+    dispatch(joinGiveAway(data));
+  };
 
   const WithdrawGiveAwayhandlePress = () => {
     const data = {
       giveawayId: giveAwayId,
       participantId: user?.id,
-      userId: user?.id
-    }
-    dispatch(WithDrawAway(data))
-  }
+      userId: user?.id,
+    };
+    dispatch(WithDrawAway(data));
+  };
   const onEndGiveaway = () => {
     const DATA = {
-      giveawayId: data?.id
-    }
-    dispatch(endGiveaway(DATA))
-  }
+      giveawayId: data?.id,
+    };
+    dispatch(endGiveaway(DATA));
+  };
   const onDeleteGiveaway = () => {
     const DATA = {
       id: data?.id,
-      userId: user?.id
-    }
-    dispatch(deleteGiveaway(DATA))
-  }
+      userId: user?.id,
+    };
+    dispatch(deleteGiveaway(DATA));
+  };
   function getSeconds(date) {
     const dateString = date;
     const dateObj = new Date(dateString);
     const currentTime = new Date();
     const timeDifference = dateObj.getTime() - currentTime.getTime();
     const secondsLeft = Math.floor(timeDifference / 1000);
-    console.log("Seconds left:=-=-=-", secondsLeft);
-    return secondsLeft
+    console.log('Seconds left:=-=-=-', secondsLeft);
+    return secondsLeft;
   }
+
   return (
     <SafeAreaView style={styles.contianer}>
-      <CustomLoader open={active ? withdrawGiveAwayLoading : joinGiveAwayLoading} />
+      <CustomLoader
+        open={active ? withdrawGiveAwayLoading : joinGiveAwayLoading}
+      />
       {/* <View style={styles.header}>
         <TopBackButton onPress={() => navigation.goBack()} />
         <Text style={[styles.headerText, TextStyles.header]}>
@@ -101,7 +128,6 @@ export default function PostDetails({ navigation, route }) {
         )}
       </View> */}
       <View style={styles.header}>
-
         <TopBackButton onPress={() => navigation.goBack()} />
         <View style={styles.adminoOption}>
           <Text style={[styles.headerText, TextStyles.header]}>
@@ -126,60 +152,117 @@ export default function PostDetails({ navigation, route }) {
               <View>
                 <Text style={styles.title}> {data.postTitle} </Text>
               </View>
-              <View style={[styles.officialTxt, { backgroundColor: theme.light.colors.primaryBg, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }]}>
-                <Text >
-                  {strings.giveaway.EndsIn + " "}
-                  <Text style={styles.EndTimeTxt}>{moment.utc(data.postExpires).format('D/M/YY  hh:mm')}{' '}
+              <View
+                style={[
+                  styles.officialTxt,
+                  {
+                    backgroundColor: theme.light.colors.primaryBg,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  },
+                ]}
+              >
+                <Text>
+                  {strings.giveaway.EndsIn + ' '}
+                  <Text style={styles.EndTimeTxt}>
+                    {moment.utc(data.postExpires).format('D/M/YY  hh:mm')}{' '}
                     {/* {item.postExpires} */}
                   </Text>
                 </Text>
-
-
                 <CountDown
                   running={true}
                   until={item?.remainingTime ?? getSeconds(data.postExpires)}
                   separatorStyle={{ color: 'black', fontSize: 20 }}
-
                   size={20}
                   showSeparator={true}
                   timeToShow={['D', 'H', 'S']}
-                  digitTxtStyle={{ fontSize: ms(11, 0.3), color: "black", fontFamily: FontFamily.Recoleta_medium, }}
+                  digitTxtStyle={{
+                    fontSize: ms(11, 0.3),
+                    color: 'black',
+                    fontFamily: FontFamily.Recoleta_medium,
+                  }}
                 />
               </View>
               <CardBody text={data.postBody} />
               {link(item.link)}
-              {/* <CardBody text={item.MoreDesc} /> */}
+              <CardBody text={item.MoreDesc} />
+              <Text style={styles.EndTimeTxt}>
+                {/* {item.postExpires} */}
+              </Text>
               <View style={styles.thumbnailContainer}>
-
                 {/* map function for images */}
-                {
-                  data.postMediaContent.map((item) => {
-                    return (
-                      <View>
+                {data.postMediaContent.map(item => {
+                  return (
+                    <View>
+                      {item?.mimetype?.split('/')[0] == 'image' ? (
+                        <Image
+                          style={[styles.thumbnailImage, { marginVertical: 5 }]}
+                          source={{
+                            uri: item.url,
+                          }}
+                        />
+                      ) : (
+                        <AppVideoPlayer url={item.url} poster={item.cover} />
+                      )}
+                    </View>
+                  );
+                })}
 
-                        {item?.mimetype?.split("/")[0] == "image" ?
-                          <Image
-                            style={[styles.thumbnailImage, { marginVertical: 5 }]}
-                            source={{
-                              uri: item.url
-                            }}
-                          /> : <AppVideoPlayer url={item.url} poster={item.cover} />}
-                      </View>
-                    )
-                  })
-                }
                 <View>
-                  {/* <View style={styles.PostButtonContainer}>
-                    <TouchableOpacity
-
-
-                    >
+                  <View>
+                    {/* <View style={styles.PostButtonContainer}>
+                    <TouchableOpacity>
                       <Button onPress={() => { joinGiveAwayhandlePress(), setActive(false) }}
                         title={strings.giveaway.joinThisGiveaway}
                         style={styles.joinBtn} />
 
                     </TouchableOpacity>
                   </View> */}
+
+                  </View>
+                  <View style={styles.PostButtonContainer}>
+                    <TouchableOpacity>
+                      <Button
+                        onPress={() => {
+                          WithdrawGiveAwayhandlePress(),
+                            setActive(true),
+                            setDisabledJoin(false);
+                        }}
+                        title={strings.giveaway.withdrawFromThisGiveaway}
+                        style={styles.withdrawBtn}
+                        textStyle={{
+                          color: theme.light.colors.primary,
+                        }}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                  <View>
+                    <View style={styles.PostButtonContainer}>
+                      <TouchableOpacity disabled={disabledJoin}>
+                        <Button
+                          // disabled={data?.has_Joined}
+                          disabled={disabledJoin}
+                          onPress={() => {
+                            joinGiveAwayhandlePress(),
+                              setActive(false),
+                              setDisabledJoin(true);
+                          }}
+                          title={strings.giveaway.joinThisGiveaway}
+                          style={
+                            disabledJoin ? styles.outOfUS : styles.joinBtn
+                          }
+                          textStyle={{
+                            color: theme.light.colors.background,
+                          }}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                    <View style={styles.termsAndConsition}>
+                      {/* for US users only */}
+                      {/* {termsAndCondition(strings.giveaway.onlyUS)} */}
+                    </View>
+                  </View>
                   <View style={styles.termsAndConsition}>
                     {termsAndCondition(
                       strings.giveaway.byJoining,
@@ -187,53 +270,17 @@ export default function PostDetails({ navigation, route }) {
                     )}
                   </View>
                 </View>
-
-
-                <View style={styles.PostButtonContainer}>
-                  <TouchableOpacity
-
-
-                  >
-                    <Button onPress={() => { WithdrawGiveAwayhandlePress(), setActive(true), setDisabledJoin(false) }}
-                      title={strings.giveaway.withdrawFromThisGiveaway}
-                      style={styles.withdrawBtn}
-                      textStyle={{
-                        color: theme.light.colors.primary,
-                      }}
-                    />
-                  </TouchableOpacity>
-                </View>
-                <View>
-                  <View style={styles.PostButtonContainer}>
-                    <TouchableOpacity
-                      disabled={disabledJoin}
-                    >
-                      <Button
-                        // disabled={data?.has_Joined}
-                        disabled={disabledJoin}
-                        onPress={() => { joinGiveAwayhandlePress(), setActive(false), setDisabledJoin(true) }}
-                        title={strings.giveaway.joinThisGiveaway}
-                        style={disabledJoin ? styles.outOfUS : styles.joinBtn}
-                        textStyle={{
-                          color: theme.light.colors.background,
-                        }}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                  <View style={styles.termsAndConsition}>
-                    {/* for US users only */}
-                    {/* {termsAndCondition(strings.giveaway.onlyUS)} */}
-                  </View>
-                </View>
               </View>
             </Card>
           </View>
         </ScrollView>
-      </View >
+      </View>
       <ModalDown open={open} setOpen={setOpen}>
         <ModalList
-          onPress={() => { navigation.navigate(NAVIGATION.updateGiveawayPost, { "DATA": data }), setOpen(false) }
-          }
+          onPress={() => {
+            navigation.navigate(NAVIGATION.updateGiveawayPost, { DATA: data }),
+              setOpen(false);
+          }}
           title={strings.giveaway.editGiveaway}
           icon={faPen}
           iconBg={theme.light.colors.infoBgLight}
@@ -245,22 +292,25 @@ export default function PostDetails({ navigation, route }) {
           paddingBottom={8}
         />
         <ModalList
-          onPress={() => { onEndGiveaway(), setOpen(false) }}
+          onPress={() => {
+            onEndGiveaway(), setOpen(false);
+          }}
           title={strings.giveaway.endNow}
           icon={faFlag}
           iconBg={theme.light.colors.infoBgLight}
           iconColor={theme.light.colors.secondary}
         />
         <ModalList
-          onPress={() => { onDeleteGiveaway(), setOpen(false) }}
-
+          onPress={() => {
+            onDeleteGiveaway(), setOpen(false);
+          }}
           title={strings.giveaway.removeThisGiveaway}
           icon={faTrash}
           iconBg={theme.light.colors.infoBgLight}
           iconColor={theme.light.colors.secondary}
         />
       </ModalDown>
-    </SafeAreaView >
+    </SafeAreaView>
   );
 }
 
@@ -302,7 +352,6 @@ const styles = StyleSheet.create({
   header: {
     padding: ms(15),
     backgroundColor: theme.light.colors.white,
-
   },
   headerIcon: {
     color: theme.light.colors.info,
@@ -319,7 +368,8 @@ const styles = StyleSheet.create({
     margin: ms(10),
   },
   PostButtonContainer: {
-    margin: ms(10),
+    marginHorizontal: ms(10),
+    marginTop: ms(10)
   },
   termsAndConsition: {
     paddingLeft: ms(20),
@@ -439,7 +489,7 @@ const styles = StyleSheet.create({
     textAlign: 'justify',
     backgroundColor: theme.light.colors.primaryBg,
     borderColor: theme.light.colors.primaryBg,
-    // borderRadius: 20,
+    borderRadius: 20,
     overflow: 'hidden',
     padding: ms(8),
     fontSize: ms(11, 0.3),

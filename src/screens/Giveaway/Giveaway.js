@@ -84,10 +84,7 @@ export function Giveaway({ navigation }) {
         setStatus={setStatus}
 
       />
-
       <HorizontalLine />
-
-
       <View style={styles.feedContainer}>
         {status == strings.giveaway.active
           ? <Active
@@ -99,8 +96,6 @@ export function Giveaway({ navigation }) {
             userType={userType}
             user={user} />}
       </View>
-
-
       {(userType?.user == strings.userType.admin && status == strings.giveaway.active) && (
         <TouchableOpacity
           onPress={() => navigation.navigate(NAVIGATION.adminGiveawayPost)}
