@@ -884,7 +884,7 @@ export const getAllPostsByLoggedInUser = (id) => async (dispatch, getState) => {
   const userType = getState().userType
   let allPosts
   try {
-    if (userType.user === strings.userType.free) {
+    if (userType.user === strings.userType.free || userType.user === strings.userType.vip) {
       allPosts = await UserController.postByUserId(id);
     }
     if (userType.user === strings.userType.admin) {

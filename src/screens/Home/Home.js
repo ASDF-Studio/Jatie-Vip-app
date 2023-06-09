@@ -185,6 +185,12 @@ export function Home({ navigation }) {
 
   const onDelete = () => {
     dispatch(deletePost(postId, postUserId, user?.id, userType.user, NAVIGATION.home));
+    const page = ""
+    dispatch(getAllPost(user?.id, sortBy, follwingSwitch, vipArea == `${strings.home.newFeed}` ? false : true, page))
+    if (vipArea == strings.home.vipArea && userType.user == `${strings.userType.free}`) {
+      setVipArea(strings.home.newFeed)
+      navigation.navigate(NAVIGATION.upgradeMembership)
+    }
   }
 
   const SelectFromGallery = () => {

@@ -65,6 +65,7 @@ export default function PostDetails({ navigation, route }) {
     const DATA = {
       giveawayId: data?.id
     }
+    console.log('participant id', DATA)
     dispatch(endGiveaway(DATA))
   }
   const onDeleteGiveaway = () => {

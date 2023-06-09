@@ -59,7 +59,7 @@ export default function SinglePost({ navigation, route }) {
         isLoadingSelector([TYPES.GET_POST_BY_ID], state)
     );
     useEffect(() => {
-        console.log(postId, user?.id);
+        console.log('single post id', postId, user?.id);
         dispatch(getPostById(postId, user?.id))
         setLikeCount(item?.upVote)
         setDownCount(item?.downVote)

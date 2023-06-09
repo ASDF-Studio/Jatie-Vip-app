@@ -409,6 +409,7 @@ export class PostController {
 
 
                     resolve(response)
+                    console.log('respnse of single post', response)
 
                 }).catch((error) => {
 
@@ -569,6 +570,7 @@ export class PostController {
             HttpClient.post(endpoint, body)
                 .then((response) => {
                     resolve(response);
+                    console.log('check search data ', response)
                 })
                 .catch((error) => {
                     reject(error);

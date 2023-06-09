@@ -47,7 +47,7 @@ export const CardFooter = ({
   const upVoteHandel = () => {
 
     onUpVote(postID, userID)
-
+    console.log("upvote", postID, userID)
 
   }
   const downVoteHandel = () => {

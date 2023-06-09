@@ -8,7 +8,7 @@ import ParsedText from 'react-native-parsed-text';
 import { navigationRef } from '@/navigation/RootNavigation';
 import { NAVIGATION } from '@/constants';
 
-export const CardBody = ({ text }) => {
+export const CardBody = ({ text, VIPKEY }) => {
 
   const mentionToPlainTextRegex = /({([^{^}]*)}\[([^[]*)]\(([^(^)]*)\))/i
 
@@ -38,14 +38,24 @@ export const CardBody = ({ text }) => {
 
   return (
     <View style={styles.container}>
-      <ParsedText style={styles.text}
+
+
+      <ParsedText style={[styles.text, VIPKEY == true ? styles.bluretextStyle : null]}
+
         parse={
           [
             { pattern: mentionToPlainTextRegex, style: styles.username, onPress: onPressUserName, renderText: renderUserNameText },
           ]
         }
         childrenProps={{ allowFontScaling: false }}
-      >{text}</ParsedText>
+      >
+
+        {text}
+
+
+      </ParsedText>
+
+
     </View>
   );
 };
@@ -59,6 +69,7 @@ const styles = StyleSheet.create({
     paddingLeft: ms(15),
     paddingRight: ms(15),
     paddingBottom: ms(15),
+    backgroundColor: '#FFFFFF'
   },
   text: {
     fontFamily: FontFamily.BrandonGrotesque_regular,
@@ -69,5 +80,20 @@ const styles = StyleSheet.create({
   username: {
     color: theme.light.colors.mention,
     fontFamily: FontFamily.BrandonGrotesque_medium
+  },
+
+  bluretextStyle: {
+    color: "#fff0",
+    fontWeight: 'bold',
+    textShadowColor: '#000000',
+    textShadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    textShadowRadius: 12,
+    // fontSize: 24,
+    fontWeight: "600",
+    textTransform: "capitalize",
+
   }
 });

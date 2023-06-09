@@ -19,6 +19,7 @@ import {
   faXmark,
   faPen,
   faTrash,
+  faLock,
 } from '@fortawesome/free-solid-svg-icons';
 import { TextStyles, theme } from '@/theme';
 
@@ -56,7 +57,7 @@ import { TYPES, followUser, unFollowUser } from '@/actions/PostActions';
 import { showMessage } from 'react-native-flash-message';
 import { useIsFocused } from '@react-navigation/native';
 import { POST_TYPE } from '@/constants/enums';
-
+import { BlurView } from "@react-native-community/blur";
 export default function UserProfile({ navigation, route }) {
   const [postIndex, setPostIndex] = useState(0);
   const dispatch = useDispatch()
@@ -94,6 +95,7 @@ export default function UserProfile({ navigation, route }) {
   const isunFollowSuccess = useSelector(state =>
     isLoadingSelector([TYPES.UN_FOLLOW_USER], state)
   );
+  const userType = useSelector(state => state.userType);
 
 
 
@@ -289,15 +291,22 @@ export default function UserProfile({ navigation, route }) {
         data={userPosts || []}
         key={props => props.id}
         renderItem={({ item, index }) => (
-          <View style={styles.cardContainer}>
+          <TouchableOpacity
+            onPress={() => userType?.user == `${strings.userType.free}` && navigation.navigate(NAVIGATION.upgradeMembership)}
+            style={styles.cardContainer}>
+
             <Card>
+
               <CardHeader
                 fullName={user?.fullName}
                 userName={user?.username}
                 profilePic={user?.profilePic}
                 time={item.created_at}
               />
-              <CardBody text={item?.postBody} />
+
+              <CardBody
+                VIPKEY={user?.isVIP}
+                text={item?.postBody} />
 
               {item?.postImg?.length <= 2 ? (
                 <View style={styles.imageContainer}>
@@ -311,12 +320,38 @@ export default function UserProfile({ navigation, route }) {
                           setFeedImages(item?.postImg)
                       }}
                     >
+
+
+                      {user?.isVIP == true ?
+                        <>
+                          <Image
+                            blurRadius={20}
+                            style={styles.thumbnailImage}
+                            source={{
+                              uri: item?.postMediaContent[0]?.mimetype?.split("/")[0] == "image" ? item?.postMediaContent[0]?.url : item?.postMediaContent[0]?.cover,
+                            }}
+                          />
+                          <View style={styles.vipOnlyContainer}>
+                            <FontAwesomeIcon
+                              icon={faLock}
+                              size={ms(10)}
+                              style={styles.lock}
+                            />
+                            <Text style={styles.vipOnlyText}>
+                              {strings.giveaway.vipOnly}
+                            </Text>
+                          </View>
+                        </>
+                        : null}
+
+
                       <Image
                         source={{
                           uri: data,
                         }}
                         style={styles.image}
                       />
+
                     </TouchableOpacity>
                   ))}
                 </View>
@@ -335,6 +370,7 @@ export default function UserProfile({ navigation, route }) {
                           // console.log(feedImages)
                         }}
                       >
+
                         <Image
                           source={{
                             uri: data,
@@ -342,6 +378,7 @@ export default function UserProfile({ navigation, route }) {
                           key={counter}
                           style={styles.image}
                         />
+
                       </TouchableOpacity>
                     ) : counter == 2 ? (
                       counter = counter + 1,
@@ -353,6 +390,7 @@ export default function UserProfile({ navigation, route }) {
                             setFeedImages(item?.postImg);
                         }}
                       >
+
                         <ImageBackground
                           source={{
                             uri: data,
@@ -360,6 +398,7 @@ export default function UserProfile({ navigation, route }) {
                           key={counter}
                           style={[styles.image, styles.moreImage]}
                         >
+
                           <TouchableOpacity
                             onPress={() => {
                               setShowImageView(true),
@@ -385,13 +424,13 @@ export default function UserProfile({ navigation, route }) {
                 userID={loggedInId?.id}
                 likeCount={item?.upVote}
                 disLikeCount={item?.downVote}
-                upVoteUserID={item?.upVoteUserId}
-                downVoteUserID={item?.downVoteUserId}
+                //      upVoteUserID={item?.upVoteUserId}
+                //  downVoteUserID={item?.downVoteUserId}
                 commentCount={item?.comments_aggregate?.aggregate?.count ?? 0}
                 commentPress={() => console.log("Comment")}
                 sharePress={() => console.log("share")}
                 morePress={() => {
-                  // setPostIndex(index)
+                  //      setPostIndex(index)
                   setOpenMore(true)
 
                   setpostId(item?.id);
@@ -402,7 +441,7 @@ export default function UserProfile({ navigation, route }) {
                 }}
               />
             </Card>
-          </View>
+          </TouchableOpacity>
         )}
       />
 
@@ -501,9 +540,10 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 75,
   },
-  cardContainer: { margin: ms(10) },
+  cardContainer: { margin: ms(10), },
   iconContiner: {
     flexDirection: 'row',
+
   },
   icon: {
     margin: ms(10),
@@ -624,5 +664,29 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     overflow: 'hidden',
     width: '100%',
+  },
+  thumbnailImage: {
+    width: '100%',
+    height: vs(180),
+    padding: ms(80),
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+
+    //  marginBottom: 10
+  },
+  vipOnlyContainer: {
+    backgroundColor: theme.light.colors.primary,
+    width: ms(100),
+    height: vs(25),
+    borderRadius: 6,
+    position: 'absolute',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: ms(10),
+    top: '42%',
+    left: '38%',
+
+    // marginLeft: '43%',
+    // marginTop: '22%',
   },
 });

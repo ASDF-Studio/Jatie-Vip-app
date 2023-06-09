@@ -53,6 +53,7 @@ export default function MyStatus({ navigation }) {
   useEffect(() => {
     if (focus) {
       dispatch(getAllPostsByLoggedInUser(user?.id))
+      console.log('useeffect call', user.id)
     }
   }, [focus]);
 

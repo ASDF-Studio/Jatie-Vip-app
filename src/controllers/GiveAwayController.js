@@ -283,15 +283,13 @@ export class GiveAwayController {
         return new Promise(async (resolve, reject) => {
 
             const endpoint = API_BASE_URL + API_END_POINTS.END_GIVEAWAY;
-            let data = new FormData()
 
-            data.append('giveawayId', params.giveawayId);
-            console.log("GIVEATWA__End", data);
-            const headers = {
-                'Content-Type': 'multipart/form-data'
-            }
+            const body = JSON.stringify({
+                "giveawayId": params.giveawayId,
 
-            await HttpClient.post(endpoint, data, { headers })
+            })
+
+            HttpClient.post(endpoint, body)
                 .then((response) => {
                     resolve(response)
                     console.log('giveaway end response', JSON.stringify(response))
@@ -304,6 +302,8 @@ export class GiveAwayController {
 
 
     }
+
+
 
 
 

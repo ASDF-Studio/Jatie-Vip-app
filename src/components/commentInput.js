@@ -14,7 +14,7 @@ import { commentOnPost, editComment, getAllPostSuccess, searchUserbyUserName, TY
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { Loader } from './Loader';
 import { useEffect } from 'react';
-import { ScrollView } from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native';
 import { getAllPostData } from '@/selectors/PostSelectors';
 import { FontFamily } from '@/theme/Fonts';
 
@@ -24,12 +24,15 @@ export const CommentInput = React.forwardRef((props, ref,) => {
   const [comment, setComment] = useState('');
   const [isEdit, setIsEdit] = useState(false);
   const [searchedKeyword, setSearchedKeyword] = useState('')
-  const searchUserSelector = useSelector(getAllPostData)
+  const searchUserSelector = useSelector((state) => state.post)
+
+  console.log('search selector', searchUserSelector)
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.COMMENT_ON_POST], state)
   );
   useEffect(() => {
     dispatch(searchUserbyUserName(searchedKeyword))
+
   }, [searchedKeyword])
   // Create config as static object out of function component
   // Or memoize it inside FC using `useMemo`
@@ -66,7 +69,7 @@ export const CommentInput = React.forwardRef((props, ref,) => {
     return (
       <View style={{ height: 200 }}>
         <ScrollView >
-          {searchUserSelector?.searchedUsers.filter(one => one.username.toLocaleLowerCase().includes(keyword.toLocaleLowerCase()))
+          {searchUserSelector?.searchedUsers?.filter(one => one.username.toLocaleLowerCase().includes(keyword.toLocaleLowerCase()))
             .map(one => (
               <Pressable
                 key={one.id}
