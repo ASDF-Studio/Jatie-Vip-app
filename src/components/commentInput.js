@@ -10,12 +10,12 @@ import { faPaperPlaneTop } from '@fortawesome/pro-regular-svg-icons';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { showMessage } from "react-native-flash-message";
-import { commentOnPost, editComment, getAllPostSuccess, searchUserbyUserName, TYPES } from '@/actions/PostActions';
+import { commentOnPost, editComment, getAllPostSuccess, getPostById, getPostByIdSuccess, searchUserbyUserName, TYPES } from '@/actions/PostActions';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { Loader } from './Loader';
 import { useEffect } from 'react';
 import { ScrollView } from 'react-native-gesture-handler';
-import { getAllPostData } from '@/selectors/PostSelectors';
+import { getAllPostData, getPostByIdData } from '@/selectors/PostSelectors';
 import { FontFamily } from '@/theme/Fonts';
 
 export const CommentInput = React.forwardRef((props, ref,) => {
@@ -25,6 +25,7 @@ export const CommentInput = React.forwardRef((props, ref,) => {
   const [isEdit, setIsEdit] = useState(false);
   const [searchedKeyword, setSearchedKeyword] = useState('')
   const searchUserSelector = useSelector(getAllPostData)
+  const singlePost = useSelector(getPostByIdData)
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.COMMENT_ON_POST], state)
   );
@@ -33,7 +34,7 @@ export const CommentInput = React.forwardRef((props, ref,) => {
   }, [searchedKeyword])
   // Create config as static object out of function component
   // Or memoize it inside FC using `useMemo`
-  const triggersConfig: TriggersConfig<'mention'> = {
+  const triggersConfig = {
     mention: {
       // Symbol that will trigger keyword change
       trigger: '@',
@@ -47,12 +48,11 @@ export const CommentInput = React.forwardRef((props, ref,) => {
   const { textInputProps, triggers, mentionState } = useMentions({
     value: comment,
     onChange: setComment,
-
     // Add the config here
     triggersConfig,
   });
 
-  const Suggestions: FC<SuggestionsProvidedProps> = ({
+  const Suggestions = ({
     keyword,
     onSelect
   }) => {
@@ -85,7 +85,6 @@ export const CommentInput = React.forwardRef((props, ref,) => {
           }
         </ScrollView>
       </View>
-
     );
   };
 
@@ -101,12 +100,20 @@ export const CommentInput = React.forwardRef((props, ref,) => {
         var arr = ALLPOST
         dispatch(commentOnPost(props.postId, props.userId, comment.trim(), props.commentOwnerId))
         props.updateParentState()
-        var count = arr[props.postIndex]?.comments_aggregate?.aggregate?.count
-        arr[props.postIndex].comments_aggregate.aggregate.count = count + 1;
-        const ob = {
-          data: arr
+        if (props.postIndex) {
+          var count = arr[props.postIndex]?.comments_aggregate?.aggregate?.count
+          arr[props.postIndex].comments_aggregate.aggregate.count = count + 1;
+          const ob = {
+            data: arr
+          }
+          dispatch(getAllPostSuccess({
+            data: ob
+          }))
+        } else {
+          count = singlePost.comments_aggregate.aggregate.count
+          singlePost.comments_aggregate.aggregate.count = count + 1
+          dispatch(getPostByIdSuccess({ ...singlePost }))
         }
-        dispatch(getAllPostSuccess(ob))
       } else {
         setIsEdit(false)
         dispatch(editComment(props.commentId, props.userId, comment.trim(), props.commentIndex))
@@ -114,6 +121,10 @@ export const CommentInput = React.forwardRef((props, ref,) => {
       }
     }
   }
+
+  console.log(singlePost)
+
+
   React.useImperativeHandle(ref, () => ({
     childFunction,
     resetValue,

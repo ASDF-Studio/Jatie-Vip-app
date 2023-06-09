@@ -11,8 +11,8 @@ import { faShareNodes } from '@fortawesome/pro-regular-svg-icons';
 import { UserController } from '@/controllers';
 import { strings } from '@/localization';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllPostData } from '@/selectors/PostSelectors';
-import { getAllPostSuccess } from '@/actions/PostActions';
+import { getAllPostData, getPostByIdData } from '@/selectors/PostSelectors';
+import { getAllPostSuccess, getPostById } from '@/actions/PostActions';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import Share from 'react-native-share';
 import { cleanSingle } from 'react-native-image-crop-picker';
@@ -36,111 +36,135 @@ export const CardFooter = ({
   postData,
   postIndex,
   postType,
-  hasVotedUp, hasVotedDown, showMore
+  hasVotedUp,
+  hasVotedDown,
+  showMore,
 }) => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [upVote, setUpVote] = useState(likeCount);
   const [downVote, setDownVote] = useState(disLikeCount);
-  const ALLPOST = useSelector(getAllPostData)
+  const ALLPOST = useSelector(getAllPostData);
   const user = useSelector(getUser);
-  const postArray = postType === POST_TYPE.REGULAR ? ALLPOST : user?.getAllPostsByLoggedInUser
-  const upVoteHandel = () => {
-    onUpVote(postID, userID)
-  }
-  const downVoteHandel = () => {
-    onDownVote(postID, userID)
-  }
+  const singlePost = useSelector(getPostByIdData);
 
-  const onUpVote = async (postID, userID,) => {
-    var arr = []
-    arr = postArray;
-    var upVotenumber = parseInt(arr[postIndex]?.upVote)
-    var downVoteNumber = parseInt(arr[postIndex]?.downVote)
-    if (!arr[postIndex].has_upvoted) {
-      setUpVote(upVotenumber + 1)
-      arr[postIndex].has_upvoted = true;
-      arr[postIndex].upVote = upVotenumber + 1;
-      if (arr[postIndex]?.has_downvoted) {
-        arr[postIndex].has_downvoted = false;
-        arr[postIndex].downVote = downVoteNumber - 1;
-        setDownVote(downVoteNumber - 1)
+  const postArray =
+    postType === POST_TYPE.REGULAR ? ALLPOST : user?.getAllPostsByLoggedInUser;
+  const upVoteHandel = () => {
+    onUpVote(postID, userID);
+  };
+  const downVoteHandel = () => {
+    onDownVote(postID, userID);
+  };
+
+  const onUpVote = async (postID, userID) => {
+    const arr = postArray;
+    const post = postIndex ? arr[postIndex] : singlePost;
+
+    var upVotenumber = parseInt(post?.upVote);
+    var downVoteNumber = parseInt(post?.downVote);
+    if (!post.has_upvoted) {
+      setUpVote(upVotenumber + 1);
+      post.has_upvoted = true;
+      post.upVote = upVotenumber + 1;
+      if (post?.has_downvoted) {
+        post.has_downvoted = false;
+        post.downVote = downVoteNumber - 1;
+        setDownVote(downVoteNumber - 1);
       }
-    }
-    else {
-      setUpVote(upVotenumber - 1)
-      arr[postIndex].has_upvoted = false;
-      arr[postIndex].upVote = upVotenumber - 1;
+    } else {
+      setUpVote(upVotenumber - 1);
+      post.has_upvoted = false;
+      post.upVote = upVotenumber - 1;
     }
     const ob = {
-      data: arr
+      data: arr,
+    };
+
+    if (postIndex) {
+      dispatch(getAllPostSuccess(ob));
+    } else {
+      dispatch(getPostByIdData({ ...singlePost }));
     }
-    dispatch(getAllPostSuccess(ob))
+
     const apiData = await UserController.upVote(postID, userID);
-  }
+  };
+
   const onDownVote = async (postID, userID) => {
-    var arr = []
-    arr = postArray;
-    var upVotenumber = parseInt(arr[postIndex]?.upVote)
-    var downVoteNumber = parseInt(arr[postIndex]?.downVote)
-    if (!arr[postIndex].has_downvoted) {
-      setDownVote(downVoteNumber + 1)
-      arr[postIndex].has_downvoted = true;
-      arr[postIndex].downVote = downVoteNumber + 1;
-      if (arr[postIndex]?.has_upvoted) {
-        arr[postIndex].has_upvoted = false;
-        arr[postIndex].upVote = upVotenumber - 1;
-        setUpVote(upVotenumber - 1)
+    var arr = postArray;
+    const post = postIndex ? arr[postIndex] : singlePost;
+
+    var upVotenumber = parseInt(post?.upVote);
+    var downVoteNumber = parseInt(post?.downVote);
+    if (!post.has_downvoted) {
+      setDownVote(downVoteNumber + 1);
+      post.has_downvoted = true;
+      post.downVote = downVoteNumber + 1;
+      if (post?.has_upvoted) {
+        post.has_upvoted = false;
+        post.upVote = upVotenumber - 1;
+        setUpVote(upVotenumber - 1);
       }
-    }
-    else {
-      setDownVote(downVoteNumber - 1)
-      arr[postIndex].has_downvoted = false;
-      arr[postIndex].downVote = downVoteNumber - 1;
+    } else {
+      setDownVote(downVoteNumber - 1);
+      post.has_downvoted = false;
+      post.downVote = downVoteNumber - 1;
     }
     const ob = {
-      data: arr
+      data: arr,
+    };
+
+    if (postIndex) {
+      dispatch(getAllPostSuccess(ob));
+    } else {
+      dispatch(getPostByIdData({ ...post }));
     }
-    dispatch(getAllPostSuccess(ob))
     const apiData = await UserController.downVote(postID, userID);
-  }
+  };
   const generateLink = async () => {
     try {
-      var link = await dynamicLinks().buildShortLink({
-        link: `https://jatievip.page.link/Eit5?postId=${postID}&postIndex=${postIndex}`,
-        domainUriPrefix: 'https://jatievip.page.link',
-        android: {
-          packageName: 'com.airlystudio.jatievip',
-          minimumVersion: '18'
+      var link = await dynamicLinks().buildShortLink(
+        {
+          link: `https://jatievip.page.link/Eit5?postId=${postID}&postIndex=${postIndex}`,
+          domainUriPrefix: 'https://jatievip.page.link',
+          android: {
+            packageName: 'com.airlystudio.jatievip',
+            minimumVersion: '18',
+          },
+          ios: {
+            appStoreId: '123456789',
+            bundleId: 'com.jatievip.airly',
+            minimumVersion: '18',
+          },
         },
-        ios: {
-          appStoreId: '123456789',
-          bundleId: 'com.jatievip.airly',
-          minimumVersion: '18'
-        },
-      },
         dynamicLinks.ShortLinkType.DEFAULT
-      )
-      return link
+      );
+      return link;
     } catch (error) {
-      console.log("error raised", error)
+      console.log('error raised', error);
     }
-  }
+  };
 
   const shareUser = async () => {
-    const getLink = await generateLink()
+    const getLink = await generateLink();
     // console.log("get linkkk kdjfkdlfdf", getLink)
-    const res = await Share.open(({
+    const res = await Share.open({
       // message: 'Dummy message',
-      url: getLink
-    }))
-  }
+      url: getLink,
+    });
+  };
+
+  console.log(postData);
 
   return (
     <View style={styles.footer}>
       <View style={styles.reactionContainer}>
         <TouchableOpacity
-          style={[styles.iconContainer, styles.likeIconContainer,
-          postArray?.[postIndex]?.has_upvoted && { backgroundColor: theme.light.colors.infoBgLight }
+          style={[
+            styles.iconContainer,
+            styles.likeIconContainer,
+            postArray?.[postIndex]?.has_upvoted && {
+              backgroundColor: theme.light.colors.infoBgLight,
+            },
           ]}
           onPress={() => upVoteHandel()}
         >
@@ -153,8 +177,12 @@ export const CardFooter = ({
           <Text style={styles.likeTxt}>{upVote} </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.iconContainer, styles.disLikeIconContainer,
-          postArray?.[postIndex]?.has_downvoted && { backgroundColor: theme.light.colors.infoBgLight }
+          style={[
+            styles.iconContainer,
+            styles.disLikeIconContainer,
+            postArray?.[postIndex]?.has_downvoted && {
+              backgroundColor: theme.light.colors.infoBgLight,
+            },
           ]}
           onPress={() => downVoteHandel()}
         >
@@ -188,7 +216,7 @@ export const CardFooter = ({
           onPress={() => shareUser()}
           style={styles.ShareNodeIcon}
         />
-        {showMore == undefined &&
+        {showMore == undefined && (
           <Icon
             icon={faEllipsis}
             size={ms(13)}
@@ -196,8 +224,7 @@ export const CardFooter = ({
             onPress={morePress}
             style={styles.EllipsisIcon}
           />
-        }
-
+        )}
       </View>
     </View>
   );
@@ -265,3 +292,42 @@ const styles = StyleSheet.create({
   EllipsisIcon: { margin: ms(10) },
   ShareNodeIcon: { margin: ms(10) },
 });
+
+const a = {
+  comments_aggregate: { aggregate: { count: 11 } },
+  created_at: '2023-06-08T06:43:47.505949+00:00',
+  downVote: 0,
+  downVoteUserId: [],
+  has_downvoted: false,
+  has_upvoted: false,
+  id: 'e6e8ccad-9acf-4325-981d-4b35953cec14',
+  isExclusive: false,
+  isGiveaway: false,
+  isPinned: false,
+  isReported: false,
+  isUSAonly: false,
+  isVIPonly: false,
+  is_following: false,
+  postBody: 'testingupdate123',
+  postExpires: null,
+  postImg: [],
+  postMediaContent: [],
+  postTitle: '',
+  postVideo: '[]',
+  shared: 0,
+  sharedUserId: [],
+  upVote: 0,
+  upVoteUserId: [],
+  updated_at: '2023-06-08T06:43:47.505949+00:00',
+  user: {
+    followers: [],
+    following: [],
+    fullName: 'Chris Holland1',
+    isAdmin: false,
+    isBanned: false,
+    isVIP: true,
+    profilePic: 'https://d2wwqw32p0xkid.cloudfront.net/photo-1685424207848.jpg',
+    username: 'vipUser001',
+  },
+  userId: 'b9902993-ca3f-4a2f-9de8-397bf6f4767e',
+};

@@ -14,7 +14,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     borderColor: theme.light.colors.primaryBg,
-
     //IOS
     shadowOffset: { width: -2, height: 4 },
     shadowColor: theme.light.colors.secondary,
