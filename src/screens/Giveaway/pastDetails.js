@@ -66,7 +66,7 @@ export default function PastDetails({ navigation, route }) {
   const [selectedUser, setSelectedUser] = useState(null);
   const [isFollowing, setIsFollowing] = useState(false)
 
-  const userFollower = useMemo(() => followersDatainReducer.data, [user])
+  const userFollower = useMemo(() => followersDatainReducer?.data, [user])
 
 
   useEffect(() => {
@@ -190,18 +190,21 @@ export default function PastDetails({ navigation, route }) {
                           </View>
                         </TouchableOpacity>
                       </View>
-                      <View>
-                        <Icon
-                          icon={faEllipsis}
-                          size={ms(15)}
-                          color={theme.light.colors.info}
-                          onPress={() => {
-                            setSelectedUser({ ...item })
-                            setIsFollowing(userFollower.following_List.filter(el => el.followingUserId === item?.id).length === 1)
-                            setShowUserModal(true)
-                          }}
-                        />
-                      </View>
+                      {
+                        user?.id !== selectedUser?.id && <View>
+                          <Icon
+                            icon={faEllipsis}
+                            size={ms(15)}
+                            color={theme.light.colors.info}
+                            onPress={() => {
+                              setSelectedUser({ ...item })
+                              setIsFollowing(userFollower?.following_List.filter(el => el.followingUserId === item?.id).length === 1)
+                              setShowUserModal(true)
+                            }}
+                          />
+                        </View>
+                      }
+
                     </View>
                   );
                 }

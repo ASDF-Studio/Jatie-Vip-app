@@ -153,8 +153,6 @@ export const CardFooter = ({
     });
   };
 
-  console.log(postData);
-
   return (
     <View style={styles.footer}>
       <View style={styles.reactionContainer}>

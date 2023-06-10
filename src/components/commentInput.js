@@ -88,6 +88,7 @@ export const CommentInput = React.forwardRef((props, ref,) => {
     );
   };
 
+
   const onComment = () => {
     if (comment == "") {
       showMessage({
@@ -100,16 +101,15 @@ export const CommentInput = React.forwardRef((props, ref,) => {
         var arr = ALLPOST
         dispatch(commentOnPost(props.postId, props.userId, comment.trim(), props.commentOwnerId))
         props.updateParentState()
-        if (props.postIndex) {
+        if (props?.postIndex) {
           var count = arr[props.postIndex]?.comments_aggregate?.aggregate?.count
           arr[props.postIndex].comments_aggregate.aggregate.count = count + 1;
+
           const ob = {
             data: arr
           }
-          dispatch(getAllPostSuccess({
-            data: ob
-          }))
-        } else {
+          dispatch(getAllPostSuccess(ob))
+        } else if (singlePost) {
           count = singlePost.comments_aggregate.aggregate.count
           singlePost.comments_aggregate.aggregate.count = count + 1
           dispatch(getPostByIdSuccess({ ...singlePost }))
