@@ -332,7 +332,7 @@ export default function UpdatePost({ route, navigation }) {
       {
         userType.user == strings.userType.free && (
           dispatch(updatePost(postId, userId, postTitle, postBody, postImg, preImageArray, mimeType, preMimeType, imageArray, user_Type, NAVIGATION.home)),
-          dispatch(getAllPost(user?.id, prevData.DATA.sortBy, prevData.DATA.follwingSwitch, NAVIGATION.home))
+          dispatch(getAllPost(user?.id, prevData?.DATA?.sortBy, prevData?.DATA?.follwingSwitch, NAVIGATION.home))
           // console.log("DATA", DATA)
         )
       }

@@ -262,6 +262,7 @@ export function Home({ navigation }) {
     const page = post[0].created_at
     dispatch(getAllPostPagination(user?.id, sortBy, follwingSwitch, vipArea == `${strings.home.newFeed}` ? false : true, page))
   }
+
   const renderFooterPost = () => {
     return (
       <View style={{}}>
@@ -615,7 +616,13 @@ export function Home({ navigation }) {
                         setPostTitle(item?.postTitle)
                         setPostBody(item?.postBody);
                         setPostImg(item?.postImg);
-                        setEditdata(item)
+                        setEditdata({
+                          ...item,
+                          DATA: {
+                            sortBy,
+                            follwingSwitch
+                          }
+                        })
                       }}
                     />
                   </Card>

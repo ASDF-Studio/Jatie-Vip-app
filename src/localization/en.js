@@ -275,8 +275,12 @@ export const en = {
 
     //search
     search: 'Search',
+    searchPlaceHolder: "Search...",
     searchUser: 'Search Users...',
     searchForUsers: 'Search for users...',
+    searchForUsersAndPosts: "Search for users and posts...",
+    sorryNoResultFound: "Sorry! No result found.",
+    seeMoreusers: "Show more users..."
   },
   giveaway: {
     header: 'Giveaway',

@@ -4,7 +4,7 @@ import { theme } from '@/theme';
 import PropsType from 'prop-types';
 import { ms } from 'react-native-size-matters';
 
-export const HorizontalLine = ({ color, paddingTop, paddingBottom }) => {
+export const HorizontalLine = ({ color, paddingTop, paddingBottom, opacity }) => {
   return (
     <View
       style={{
@@ -12,6 +12,7 @@ export const HorizontalLine = ({ color, paddingTop, paddingBottom }) => {
         borderBottomWidth: ms(1), //2.5
         marginTop: paddingTop ? ms(paddingTop) : 0,
         marginBottom: paddingBottom ? ms(paddingBottom) : 0,
+        opacity: opacity || 1
       }}
     />
   );

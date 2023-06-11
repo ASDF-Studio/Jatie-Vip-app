@@ -6802,10 +6802,10 @@ react-native-country-codes-picker@^2.2.2:
   resolved "https://registry.npmjs.org/react-native-country-codes-picker/-/react-native-country-codes-picker-2.3.3.tgz"
   integrity sha512-ENK7dXcQiAmQoHOImosO27Pf5yMfRi77yK7u+KD4EV5qaNBBK9/2RYYHt0naqd+E20VvHJqpZG7OVwWXptzGuw==
 
-react-native-create-thumbnail@^1.6.4:
-  version "1.6.4"
-  resolved "https://registry.npmjs.org/react-native-create-thumbnail/-/react-native-create-thumbnail-1.6.4.tgz"
-  integrity sha512-JWuKXswDXtqUPfuqh6rjCVMvTSSG3kUtwvSK/YdaNU0i+nZKxeqHmt/CO2+TyI/WSUFynGVmWT1xOHhCZAFsRQ==
+react-native-create-thumbnail@2.0.0-rc.2:
+  version "2.0.0-rc.2"
+  resolved "https://registry.yarnpkg.com/react-native-create-thumbnail/-/react-native-create-thumbnail-2.0.0-rc.2.tgz#1435fc635508102abbf50993a297ae582dcd141f"
+  integrity sha512-ctq/WyggoSqvhIcr8qGd3CDqjCDg3vJo5jH82wuFhwYphUPoVE39jq0IfzclIcpfvZCZ3KePq+5Fr09sgPGmaw==
 
 react-native-date-picker@^4.2.9:
   version "4.2.13"

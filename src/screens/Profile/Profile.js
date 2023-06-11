@@ -35,6 +35,7 @@ import { useIsFocused } from '@react-navigation/native';
 export function Profile({ navigation }) {
   const user = useSelector(getUser)
   const followerDataa = user.followersDatainReducer
+  const [searchData, setSearchData] = useState(null)
 
   const userType = useSelector(state => state.userType);
   const [status, setStatus] = useState(strings.profile.myStatus);

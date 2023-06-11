@@ -28,7 +28,6 @@ export function TextField({ style, value, onChangeText, ...rest }) {
 
   return (
     <TextInput value={value}
-
       onChangeText={onChangeText}
       style={[
         { color: colors.text },

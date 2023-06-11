@@ -28,3 +28,5 @@ export { AppDatePicker } from '@/components/DatePicker';
 export { ReportOnPostModal } from '@/components/ReportOnPostModal';
 export { Toast } from '@/components/toast';
 export { CustomLoader } from '@/components/CustomLoader'
+export * from "@/components/post-card"
+export * from "@/components/user-card"
