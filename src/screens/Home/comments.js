@@ -61,7 +61,7 @@ export default function Comments({ navigation, route }) {
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
   const childRef = useRef(null)
   const flatListRef = useRef(null);
-  const { DATA, POST_INDEX, SEARCH_POST_INDEX } = route.params;
+  const { DATA, POST_INDEX, type } = route.params;
   const USER = useSelector(getUser)
   const COMMENTS = useSelector(getCommentsByPostIdData)
   const ALLPOST = useSelector(getAllPostData)
@@ -301,6 +301,7 @@ export default function Comments({ navigation, route }) {
             updateParentState={updateParentState}
             commentIndex={commentIndex}
             commentOwnerId={DATA?.userId}
+            type={type}
           // scrollRef={handleTextInputFocus}
           />
         }

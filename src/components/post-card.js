@@ -243,7 +243,8 @@ export const PostCard = props => {
                         commentPress={() =>
                             navigationRef.navigate(NAVIGATION.comments, {
                                 DATA: item,
-                                SEARCH_POST_INDEX: index
+                                type: POST_TYPE.SEARCH,
+                                "POST_INDEX": index
                             })
                         }
                         type={POST_TYPE.SEARCH}

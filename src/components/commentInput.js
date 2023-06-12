@@ -10,13 +10,14 @@ import { faPaperPlaneTop } from '@fortawesome/pro-regular-svg-icons';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { showMessage } from "react-native-flash-message";
-import { commentOnPost, editComment, getAllPostSuccess, searchUserbyUserName, TYPES } from '@/actions/PostActions';
+import { commentOnPost, editComment, getAllPostSuccess, searchAllPostSuccess, searchUserbyUserName, TYPES } from '@/actions/PostActions';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { Loader } from './Loader';
 import { useEffect } from 'react';
 import { ScrollView } from 'react-native';
-import { getAllPostData } from '@/selectors/PostSelectors';
+import { getAllPostData, getSearchData } from '@/selectors/PostSelectors';
 import { FontFamily } from '@/theme/Fonts';
+import { POST_TYPE } from '@/constants/enums';
 
 export const CommentInput = React.forwardRef((props, ref,) => {
   const dispatch = useDispatch()
@@ -25,6 +26,7 @@ export const CommentInput = React.forwardRef((props, ref,) => {
   const [isEdit, setIsEdit] = useState(false);
   const [searchedKeyword, setSearchedKeyword] = useState('')
   const searchUserSelector = useSelector((state) => state.post)
+  const SEARCH_DATA = useSelector(getSearchData);
 
   console.log('search selector', searchUserSelector)
   const isLoading = useSelector(state =>
@@ -92,6 +94,30 @@ export const CommentInput = React.forwardRef((props, ref,) => {
     );
   };
 
+  const onCommentSearch = () => {
+    if (comment == "") {
+      showMessage({
+        message: strings.home.commentvalid,
+        backgroundColor: theme.light.colors.activeTabIcon
+      });
+    } else {
+      setComment('')
+      if (!isEdit) {
+        var arr = SEARCH_DATA
+        dispatch(commentOnPost(props.postId, props.userId, comment.trim(), props.commentOwnerId))
+        props.updateParentState()
+        var count = SEARCH_DATA[props.postIndex]?.comments_aggregate?.aggregate?.count
+        arr[props.postIndex].comments_aggregate.aggregate.count = count + 1;
+
+        dispatch(searchAllPostSuccess([...arr]));
+      } else {
+        setIsEdit(false)
+        dispatch(editComment(props.commentId, props.userId, comment.trim(), props.commentIndex))
+        props.updateParentState()
+      }
+    }
+  }
+
   const onComment = () => {
     if (comment == "") {
       showMessage({
@@ -152,7 +178,7 @@ export const CommentInput = React.forwardRef((props, ref,) => {
         :
         (comment == "" ? <></> :
           <TouchableOpacity style={styles.iconContainer}
-            onPress={onComment}
+            onPress={props.type === POST_TYPE.SEARCH ? onCommentSearch : onComment}
           >
             <FontAwesomeIcon
               icon={faPaperPlaneTop}
@@ -161,7 +187,7 @@ export const CommentInput = React.forwardRef((props, ref,) => {
             />
           </TouchableOpacity>)
       }
-    </View>
+    </View >
   );
 })
 
