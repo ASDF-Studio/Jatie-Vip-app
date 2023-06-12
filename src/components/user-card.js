@@ -97,13 +97,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     listContainer: {
-        padding: ms(2),
         paddingLeft: ms(8),
         paddingRight: ms(12),
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginHorizontal: ms(10),
-        marginTop: ms(11),
+        marginTop: ms(15),
         alignItems: 'center',
     },
     list: {

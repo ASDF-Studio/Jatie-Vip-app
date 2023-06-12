@@ -122,7 +122,6 @@ export default function Search({ navigation }) {
     // setLoading(false)
   };
 
-  console.log("Loading --=======>", isLoading, isPostLoading)
   return (
     <SafeAreaView style={styles.container}>
       <CustomLoader open={loading} />
@@ -222,7 +221,7 @@ export default function Search({ navigation }) {
                     )}
                     <HorizontalLine
                       color={theme.light.colors.primaryBgDark}
-                      paddingTop={19}
+                      paddingTop={15}
                       opacity={0.2}
                     />
                   </View>
@@ -497,7 +496,8 @@ const styles = StyleSheet.create({
   },
   moreButton: {
     backgroundColor: theme.light.colors.infoBgLight,
-    marginTop: ms(17),
+    marginTop: ms(15),
+    marginBottom: ms(5),
     width: ms(120),
     paddingVertical: ms(5),
     borderRadius: 8,
