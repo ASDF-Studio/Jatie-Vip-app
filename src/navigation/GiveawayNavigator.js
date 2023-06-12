@@ -10,7 +10,7 @@ import AdminGiveawayOption from '@/screens/Giveaway/AdminGiveawayOption';
 import UpdateGiveawayOption from '@/screens/Giveaway/UpdateGiveawayOption';
 import UpdateGiveawayPost from '@/screens/Giveaway/UpdateGiveawayPost';
 import Notification from '@/screens/Giveaway/notification';
-import Search from '@/screens/Giveaway/search';
+import Search from '@/screens/Profile/search';
 
 const Stack = createNativeStackNavigator();
 

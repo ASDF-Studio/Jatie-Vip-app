@@ -18,6 +18,7 @@ import {
 } from '@/selectors/PostSelectors';
 import {
   getAllPostSuccess,
+  getPostByIdSuccess,
   searchAllPost,
   searchAllPostSuccess,
 } from '@/actions/PostActions';
@@ -75,19 +76,22 @@ export const CardFooter = ({
     const post =
       postType === POST_TYPE.SINGLE_POST ? singlePost : postArray[postIndex];
 
+    const upVoteCount = post.upVote
+    const downVoteCount = post.downVote
+
     if (!post.has_upvoted) {
-      setUpVote(prev => prev + 1);
+      setUpVote(upVoteCount + 1);
       post.has_upvoted = true;
-      post.upVote = upVote + 1;
+      post.upVote = upVoteCount + 1;
       if (post.has_downvoted) {
         post.has_downvoted = false;
-        post.downVote = downVote - 1;
-        setDownVote(prev => prev - 1);
+        post.downVote = downVoteCount - 1;
+        setDownVote(downVoteCount - 1);
       }
     } else {
-      setUpVote(prev => prev - 1);
+      setUpVote(upVoteCount - 1);
       post.has_upvoted = false;
-      data.upVote = upVote - 1;
+      post.upVote = upVoteCount - 1;
     }
 
     switch (postType) {
@@ -95,7 +99,7 @@ export const CardFooter = ({
         dispatch(searchAllPostSuccess([...postArray]));
         break;
       case POST_TYPE.SINGLE_POST:
-        dispatch(getPostByIdData({ ...singlePost }));
+        dispatch(getPostByIdSuccess({ ...singlePost }));
         break;
       default:
         dispatch(
@@ -110,26 +114,30 @@ export const CardFooter = ({
     const post =
       postType === POST_TYPE.SINGLE_POST ? singlePost : postArray[postIndex];
 
+    const upVoteCount = post.upVote
+    const downVoteCount = post.downVote
+
+
     if (!post.has_downvoted) {
-      setDownVote(prev => prev + 1);
+      setDownVote(downVoteCount + 1);
       post.has_downvoted = true;
-      post.downVote = downVote + 1;
+      post.downVote = downVoteCount + 1;
       if (post?.has_upvoted) {
         post.has_upvoted = false;
-        post.upVote = downVote - 1;
-        setUpVote(prev => prev - 1);
+        post.upVote = upVoteCount - 1;
+        setUpVote(upVoteCount - 1);
       }
     } else {
-      setDownVote(prev => prev - 1);
+      setDownVote(downVoteCount - 1);
       post.has_downvoted = false;
-      post.downVote = downVote - 1;
+      post.downVote = downVoteCount - 1;
     }
     switch (postType) {
       case POST_TYPE.SEARCH:
         dispatch(searchAllPostSuccess([...postArray]));
         break;
       case POST_TYPE.SINGLE_POST:
-        dispatch(getPostByIdData({ ...singlePost }));
+        dispatch(getPostByIdSuccess({ ...singlePost }));
         break;
       default:
         dispatch(
@@ -172,6 +180,7 @@ export const CardFooter = ({
       url: getLink,
     });
   };
+
   return (
     <View style={styles.footer}>
       <View style={styles.reactionContainer}>
@@ -182,6 +191,9 @@ export const CardFooter = ({
             postArray?.[postIndex]?.has_upvoted && {
               backgroundColor: theme.light.colors.infoBgLight,
             },
+            singlePost && singlePost.has_upvoted && {
+              backgroundColor: theme.light.colors.infoBgLight,
+            }
           ]}
           onPress={() => upVoteHandel()}
         >
@@ -197,9 +209,12 @@ export const CardFooter = ({
           style={[
             styles.iconContainer,
             styles.disLikeIconContainer,
-            postArray[postIndex]?.has_downvoted && {
+            postArray?.[postIndex]?.has_downvoted && {
               backgroundColor: theme.light.colors.infoBgLight,
             },
+            singlePost && singlePost.has_downvoted && {
+              backgroundColor: theme.light.colors.infoBgLight,
+            }
           ]}
           onPress={() => downVoteHandel()}
         >
