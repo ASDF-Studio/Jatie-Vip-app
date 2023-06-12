@@ -15,9 +15,10 @@ import { faPlay, faLock } from '@fortawesome/free-solid-svg-icons';
 import { ms, vs } from 'react-native-size-matters';
 import { strings } from '@/localization';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { POST_TYPE } from '@/constants/enums';
+import { POST_TYPE, SCREEN_TYPE } from '@/constants/enums';
 import { NAVIGATION } from '@/constants';
 import { navigationRef } from '@/navigation/RootNavigation';
+import { getUser } from '@/selectors/UserSelectors';
 
 export const PostCard = props => {
     const { index, item, setSelectedPost, navigation, vipArea, onImagePress, onMorePress } = props;
@@ -37,8 +38,10 @@ export const PostCard = props => {
         postImg
     } = item;
     const userType = useSelector(state => state.userType);
+    const signedInUser = useSelector(getUser);
 
     let counter = 1;
+
 
     return (
         <View style={styles.cardContainer}>
@@ -229,9 +232,9 @@ export const PostCard = props => {
                     ) : null}
                     <CardFooter
                         postID={id}
-                        postType={POST_TYPE.REGULAR}
+                        postType={POST_TYPE.SEARCH}
                         postUserID={userId}
-                        userID={user?.id}
+                        userID={signedInUser?.id}
                         likeCount={upVote}
                         disLikeCount={downVote}
                         commentCount={comments_aggregate?.aggregate?.count}
@@ -240,9 +243,10 @@ export const PostCard = props => {
                         commentPress={() =>
                             navigationRef.navigate(NAVIGATION.comments, {
                                 DATA: item,
-                                POST_INDEX: index,
+                                SEARCH_POST_INDEX: index
                             })
                         }
+                        type={POST_TYPE.SEARCH}
                         morePress={onMorePress}
                     />
                 </Card>

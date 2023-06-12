@@ -48,7 +48,7 @@ import { useEffect } from 'react';
 import { deleteComment, followUser, getAllPostSuccess, getCommentsByPostId, reportPost, TYPES, unFollowUser } from '@/actions/PostActions';
 import { isLoadingSelector, successSelector } from '@/selectors/StatusSelectors';
 import { Loader } from '@/components/Loader';
-import { getAllPostData, getCommentsByPostIdData } from '@/selectors/PostSelectors';
+import { getAllPostData, getCommentsByPostIdData, getSearchData } from '@/selectors/PostSelectors';
 import { getUser } from '@/selectors/UserSelectors';
 import { useIsFocused } from '@react-navigation/native';
 import moment from 'moment';
@@ -61,10 +61,11 @@ export default function Comments({ navigation, route }) {
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
   const childRef = useRef(null)
   const flatListRef = useRef(null);
-  const { DATA, POST_INDEX } = route.params;
+  const { DATA, POST_INDEX, SEARCH_POST_INDEX } = route.params;
   const USER = useSelector(getUser)
   const COMMENTS = useSelector(getCommentsByPostIdData)
   const ALLPOST = useSelector(getAllPostData)
+  const SEARCH_DATA = useSelector(getSearchData);
   const dispatch = useDispatch()
   const [openReplyTo, setOpenReplyTo] = useState(false);
   //Option and Report

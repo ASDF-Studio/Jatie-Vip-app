@@ -9,10 +9,21 @@ import {
   FlatList,
   TouchableOpacity,
   SafeAreaView,
+  TextInput,
   ScrollView,
 } from 'react-native';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
-import { faEllipsis, faFlag, faImage, faMessage, faPen, faTrash, faUserPlus, faX, faXmark } from '@fortawesome/free-solid-svg-icons';
+import {
+  faEllipsis,
+  faFlag,
+  faImage,
+  faMessage,
+  faPen,
+  faTrash,
+  faUserPlus,
+  faX,
+  faXmark,
+} from '@fortawesome/free-solid-svg-icons';
 import {
   CustomLoader,
   HorizontalLine,
@@ -34,18 +45,31 @@ import { strings } from '@/localization';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { Data } from '@/screens/CommonData/searchData';
 import { faFaceSadSweat, faSearch } from '@fortawesome/pro-regular-svg-icons';
-import { TYPES, searchUser, searchUserSuccess } from '@/actions/UserActions';
+import {
+  TYPES,
+  followers,
+  searchUser,
+  searchUserSuccess,
+} from '@/actions/UserActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
-import { isLoadingSelector, successSelector } from '@/selectors/StatusSelectors';
+import {
+  isLoadingSelector,
+  successSelector,
+} from '@/selectors/StatusSelectors';
 import { debounce, isEmpty, size } from 'lodash';
 import { useEffect, useMemo } from 'react';
 import { getSearchData } from '@/selectors/PostSelectors';
-import { searchAllPost, searchAllPostSuccess } from '@/actions/PostActions';
+import {
+  followUser,
+  reportPost,
+  searchAllPost,
+  searchAllPostSuccess,
+  unFollowUser,
+} from '@/actions/PostActions';
 import { SwiperViewer } from '@/components/SwiperComponent';
 import { navigationRef } from '@/navigation/RootNavigation';
 import DropDownPicker from 'react-native-dropdown-picker';
-import { TextInput } from 'react-native-gesture-handler';
 
 export default function Search({ navigation }) {
   //Use State hooks
@@ -56,7 +80,7 @@ export default function Search({ navigation }) {
   const [selectedPost, setSelectedPost] = useState(null);
   const [imageFeed, setImageFeed] = useState([]);
   const [seeMoreUser, setShowSeeMoreUser] = useState(false);
-  const [showPostOptions, setShowPostOptions] = useState(false)
+  const [showPostOptions, setShowPostOptions] = useState(false);
   const [openReplace, setReplace] = useState(false);
   const [openReport, setOpenReport] = useState(false);
   const [reportListOpen, setReportListOpen] = useState(false);
@@ -64,10 +88,14 @@ export default function Search({ navigation }) {
     { label: 'Explicit Content', value: 'Explicit Content' },
     { label: 'Bullying or Harassment', value: 'Bullying or Harassment' },
     { label: 'Spam', value: 'Spam' },
-    { label: 'Misleading Information or Fake News', value: 'Misleading Information or Fake News' },
+    {
+      label: 'Misleading Information or Fake News',
+      value: 'Misleading Information or Fake News',
+    },
   ]);
   const [reportOptionValue, setReportOptionValue] = useState('');
-  const [reportImage, setreportImage] = useState(null)
+  const [reportImage, setreportImage] = useState(null);
+  const [reportComment, setReportCommnet] = useState('');
 
   const dispatch = useDispatch();
   const user = useSelector(getUser);
@@ -76,14 +104,14 @@ export default function Search({ navigation }) {
   const searchUserData = user.searchUserKey;
   const isShowReportToast = useSelector(state =>
     successSelector([TYPES.REPORT_POST], state)
-  )
+  );
 
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.SEARCH_USER], state)
   );
   const isPostLoading = useSelector(state =>
-    isLoadingSelector([TYPES.SEARCH_USER_SUCCESS,], state))
-
+    isLoadingSelector([TYPES.SEARCH_USER_SUCCESS], state)
+  );
 
   const debouncedSearch = useMemo(() => {
     return debounce(value => {
@@ -103,13 +131,27 @@ export default function Search({ navigation }) {
     if (!isEmpty(searchuservalue)) {
       dispatch(searchAllPost(searchuservalue, user?.id));
       dispatch(searchUser(searchuservalue));
-      setShowSeeMoreUser(false)
+      setShowSeeMoreUser(false);
     } else {
       dispatch(searchAllPostSuccess([]));
       dispatch(searchUserSuccess([]));
     }
-
   }, [searchuservalue, user?.id]);
+
+  const onFollow = () => {
+    setShowPostOptions(false);
+    if (SEARCH_DATA[selectedPost.index].is_following) {
+      dispatch(unFollowUser(user?.id, selectedPost.userId, strings.home.post));
+      dispatch(followers(user?.id));
+    } else {
+      dispatch(followUser(user?.id, selectedPost.userId, strings.home.post));
+    }
+  };
+  const onBlock = () => {
+    dispatch(blockUser(user?.id, postUserId, postIndex));
+    setOpen(false);
+    dispatch(getAllPost(user?.id, sortBy, follwingSwitch));
+  };
 
   const SearchHandlePress = () => {
     // setLoading(true)
@@ -211,7 +253,7 @@ export default function Search({ navigation }) {
                       .map((item, index) => (
                         <UserCard item={item} key={index} />
                       ))}
-                    {!seeMoreUser && (size(searchUserData.data) > 3) && (
+                    {!seeMoreUser && size(searchUserData.data) > 3 && (
                       <Button
                         style={styles.moreButton}
                         textStyle={styles.moreButtonText}
@@ -229,9 +271,13 @@ export default function Search({ navigation }) {
               }
               key={props => props.id}
               initialNumToRender={10}
-              ListFooterComponent={() => <View style={{
-                height: ms(100)
-              }} />}
+              ListFooterComponent={() => (
+                <View
+                  style={{
+                    height: ms(100),
+                  }}
+                />
+              )}
               renderItem={({ item, index }) => (
                 <PostCard
                   onImagePress={() => {
@@ -240,7 +286,7 @@ export default function Search({ navigation }) {
                   }}
                   onMorePress={() => {
                     setSelectedPost({ ...item, index: index });
-                    setShowPostOptions(true)
+                    setShowPostOptions(true);
                   }}
                   key={index}
                   index={index}
@@ -251,14 +297,15 @@ export default function Search({ navigation }) {
           </View>
         )}
 
+      {showImageView && (
+        <SwiperViewer
+          visible={showImageView}
+          setVisible={() => setShowImageView(false)}
+          images={imageFeed}
+        />
+      )}
 
-      {showImageView && <SwiperViewer
-        visible={showImageView}
-        setVisible={() => setShowImageView(false)}
-        images={imageFeed}
-      />}
-
-      {showPostOptions && (
+      {showPostOptions &&
         (selectedPost?.userId === user?.id ? (
           <ModalDown open={showPostOptions} setOpen={setShowPostOptions}>
             <ModalList
@@ -269,7 +316,8 @@ export default function Search({ navigation }) {
               onPress={() => {
                 navigationRef.navigate(NAVIGATION.updatePost, {
                   prevData: selectedPost,
-                }), setShowPostOptions(false);
+                }),
+                  setShowPostOptions(false);
               }}
             />
             <HorizontalLine
@@ -282,14 +330,24 @@ export default function Search({ navigation }) {
               icon={faTrash}
               iconBg={theme.light.colors.infoBgLight}
               iconColor={theme.light.colors.secondary}
-              onPress={() => { setReplace(true), setShowPostOptions(false) }}
+              onPress={() => {
+                setReplace(true), setShowPostOptions(false);
+              }}
             />
           </ModalDown>
-        ) :
+        ) : (
           <ModalDown open={showPostOptions} setOpen={setShowPostOptions}>
             <ModalList
-              onPress={() => { onFollow() }}
-              title={(!SEARCH_DATA[selectedPost.index]?.is_following ? strings.operations.follow : strings.operations.unFollow) + " @" + selectedPost.user.username}
+              onPress={() => {
+                onFollow();
+              }}
+              title={
+                (!SEARCH_DATA[selectedPost.index]?.is_following
+                  ? strings.operations.follow
+                  : strings.operations.unFollow) +
+                ' @' +
+                selectedPost.user.username
+              }
               icon={faUserPlus}
               iconColor={theme.light.colors.primary}
               iconBg={theme.light.colors.primaryBgLight}
@@ -308,35 +366,35 @@ export default function Search({ navigation }) {
             {(userType.user == `${strings.userType.free}`) |
               (userType.user == `${strings.userType.vip}`) ? (
               <>
-                {
-                  selectedPost.isAdminPost == false &&
+                {selectedPost.isAdminPost == false && (
                   <ModalList
                     title={strings.home.report}
                     icon={faFlag}
                     iconColor={theme.light.colors.secondary}
                     iconBg={theme.light.colors.infoBgLight}
                     onPress={() => {
-                      setReportOptionValue('')
+                      setReportOptionValue('');
                       setOpenReport(true);
-                      setShowPostOptions(false)
-                      setreportImage(null)
+                      setShowPostOptions(false);
+                      setreportImage(null);
                     }}
                   />
-                }
+                )}
 
-                {selectedPost.isAdminPost == false &&
+                {selectedPost.isAdminPost == false && (
                   <ModalList
-                    onPress={() => { onBlock() }}
-                    title={strings.operations.block + " @" + selectedPost.username}
+                    onPress={() => {
+                      onBlock();
+                    }}
+                    title={
+                      strings.operations.block + ' @' + selectedPost.username
+                    }
                     // title={(ALLPOST?.data[pos] ? strings.operations.block : strings.operations.unBlock) + " @" + postUserName}
                     icon={faXmark}
                     iconColor={theme.light.colors.secondary}
                     iconBg={theme.light.colors.infoBgLight}
                   />
-                }
-
-
-
+                )}
               </>
             ) : userType.user == `${strings.userType.admin}` ? (
               <>
@@ -345,7 +403,9 @@ export default function Search({ navigation }) {
                   icon={faTrash}
                   iconColor={theme.light.colors.secondary}
                   iconBg={theme.light.colors.infoBgLight}
-                  onPress={() => { setReplace(true), setShowPostOptions(false) }}
+                  onPress={() => {
+                    setReplace(true), setShowPostOptions(false);
+                  }}
                 />
                 <ModalList
                   title={strings.operations.block + strings.home.DummyUser}
@@ -360,12 +420,9 @@ export default function Search({ navigation }) {
                   iconBg={theme.light.colors.infoBgLight}
                 />
               </>
-            ) :
-              null
-            }
+            ) : null}
           </ModalDown>
-        )
-      )}
+        ))}
       {/* Replace Popup */}
       {openReplace && (
         <PopUp open={openReplace} setOpen={setReplace}>
@@ -375,7 +432,9 @@ export default function Search({ navigation }) {
           <Button
             title={strings.operations.yes}
             style={styles.confirmButton}
-            onPress={() => { onDelete(), setReplace(false) }}
+            onPress={() => {
+              onDelete(), setReplace(false);
+            }}
           />
           <Button
             title={strings.operations.no}
@@ -423,19 +482,21 @@ export default function Search({ navigation }) {
             paddingTop={15}
           />
           <View style={styles.reportPostBottomContainer}>
-
             <TouchableOpacity onPress={() => SelectFromGallery()}>
-              {reportImage ?
-                <Image style={{ height: ms(35), width: ms(35), borderRadius: ms(5) }} source={{ uri: reportImage.path }} />
-                :
-                <View pointerEvents='none'>
+              {reportImage ? (
+                <Image
+                  style={{ height: ms(35), width: ms(35), borderRadius: ms(5) }}
+                  source={{ uri: reportImage.path }}
+                />
+              ) : (
+                <View pointerEvents="none">
                   <Icon
                     icon={faImage}
                     size={ms(22)}
                     color={theme.light.colors.secondary}
                   />
                 </View>
-              }
+              )}
             </TouchableOpacity>
 
             <Button
@@ -445,13 +506,13 @@ export default function Search({ navigation }) {
               style={styles.reportPostButton}
               onPress={() => {
                 const reportData = {
-                  objectId: postId,
+                  objectId: selectedPost.id,
                   reportedBy: user?.id,
                   reportTitle: reportOptionValue,
                   reportBody: reportComment,
-                  reportImg: reportImage
-                }
-                dispatch(reportPost(reportData))
+                  reportImg: reportImage,
+                };
+                dispatch(reportPost(reportData));
                 setOpenReport(false);
               }}
             />
@@ -647,7 +708,9 @@ const styles = StyleSheet.create({
     color: theme.light.colors.text,
   },
   loaderStyle: {
-    alignSelf: "center", justifyContent: "center", marginTop: ms(50)
+    alignSelf: 'center',
+    justifyContent: 'center',
+    marginTop: ms(50),
   },
   thumbnailImage: {
     width: '100%',
@@ -685,4 +748,118 @@ const styles = StyleSheet.create({
     width: '100%',
     height: vs(180),
   },
+
+  reportPostContainer: {
+    // backgroundColor: theme.light.colors.white,
+    borderRadius: 10,
+    borderWidth: 0.5,
+    borderColor: theme.light.colors.primary,
+  },
+  reportPostBackButton: {
+    padding: ms(10),
+    paddingBottom: ms(-10),
+  },
+  reportPostTopContainer: {
+    paddingLeft: ms(9),
+    paddingRight: ms(9),
+  },
+  dropDownPicker: {
+    padding: ms(10),
+    marginBottom: ms(10),
+    backgroundColor: theme.light.colors.textFieldBackgroundColor,
+    borderWidth: 0.5,
+    borderColor: theme.light.colors.infoBg,
+    paddingLeft: ms(15),
+  },
+  dropDownContainerStyle: {
+    borderWidth: 1,
+    borderTopStartRadius: 10,
+    borderTopEndRadius: 10,
+    borderColor: theme.light.colors.infoBgLight,
+    shadowOffset: {
+      width: 0,
+      height: ms(2),
+    },
+    padding: ms(10),
+    marginTop: ms(5),
+    //IOS
+    shadowOffset: { width: -2, height: 4 },
+    shadowColor: theme.light.colors.secondary,
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+
+    //android
+    elevation: 5,
+  },
+  reportPostBottomContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: ms(10),
+  },
+  reportPostButton: {
+    width: ms(100),
+  },
+  arrowIconStyle: {
+    color: theme.light.colors.infoBgLight,
+  },
+  playButton: {
+    backgroundColor: theme.light.colors.primary,
+    width: 50,
+    height: 50,
+    borderRadius: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
+
+const a = {
+  comments_aggregate: { aggregate: { count: 1 } },
+  created_at: '2023-06-09T08:06:28.902057+00:00',
+  downVote: 0,
+  downVoteUserId: [],
+  has_downvoted: false,
+  has_upvoted: false,
+  id: 'c20ad3a4-02b8-430b-8a45-56db15601581',
+  index: 3,
+  isAdminPost: false,
+  isExclusive: false,
+  isGiveaway: false,
+  isPinned: false,
+  isReported: false,
+  isUSAonly: false,
+  isVIPonly: false,
+  is_following: false,
+  postBody: 'check blur issue123',
+  postExpires: null,
+  postImg: [],
+  postMediaContent: [
+    {
+      cover: '',
+      id: 10,
+      mimetype: 'image/jpeg',
+      url: 'https://d2wwqw32p0xkid.cloudfront.net/photo-1686297988692',
+    },
+    {
+      cover: '',
+      id: 9,
+      mimetype: 'image/jpeg',
+      url: 'https://d2wwqw32p0xkid.cloudfront.net/photo-1686297988792',
+    },
+  ],
+  postTitle: '',
+  postVideo: '[]',
+  shared: 0,
+  sharedUserId: [],
+  upVote: 0,
+  upVoteUserId: [],
+  updated_at: '2023-06-09T08:06:28.902057+00:00',
+  user: {
+    followers: [],
+    following: [],
+    fullName: 'Chris Holland1',
+    profilePic: 'https://d2wwqw32p0xkid.cloudfront.net/photo-1685424207848.jpg',
+    username: 'vipUser001',
+  },
+  userId: 'b9902993-ca3f-4a2f-9de8-397bf6f4767e',
+};

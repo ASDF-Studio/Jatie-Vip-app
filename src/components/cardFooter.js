@@ -11,12 +11,16 @@ import { faShareNodes } from '@fortawesome/pro-regular-svg-icons';
 import { UserController } from '@/controllers';
 import { strings } from '@/localization';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllPostData } from '@/selectors/PostSelectors';
-import { getAllPostSuccess } from '@/actions/PostActions';
+import { getAllPostData, getSearchData } from '@/selectors/PostSelectors';
+import {
+  getAllPostSuccess,
+  searchAllPost,
+  searchAllPostSuccess,
+} from '@/actions/PostActions';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import Share from 'react-native-share';
 import { cleanSingle } from 'react-native-image-crop-picker';
-import { POST_TYPE } from '@/constants/enums';
+import { POST_TYPE, SCREEN_TYPE } from '@/constants/enums';
 import { getUser } from '@/selectors/UserSelectors';
 
 export const CardFooter = ({
@@ -36,116 +40,169 @@ export const CardFooter = ({
   postData,
   postIndex,
   postType,
-  hasVotedUp, hasVotedDown, showMore
+  hasVotedUp,
+  hasVotedDown,
+  showMore,
+  type,
 }) => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [upVote, setUpVote] = useState(likeCount);
   const [downVote, setDownVote] = useState(disLikeCount);
-  const ALLPOST = useSelector(getAllPostData)
+  const ALLPOST = useSelector(getAllPostData);
   const user = useSelector(getUser);
-  const postArray = postType === POST_TYPE.REGULAR ? ALLPOST : user?.getAllPostsByLoggedInUser
+  const SEARCH_DATA = useSelector(getSearchData);
+  const postArray =
+    postType === POST_TYPE.REGULAR ? ALLPOST : postType === POST_TYPE.SEARCH ? SEARCH_DATA : user?.getAllPostsByLoggedInUser;
   const upVoteHandel = () => {
-
-    onUpVote(postID, userID)
-    console.log("upvote", postID, userID)
-
-  }
+    onUpVote(postID, userID);
+    console.log('upvote', postID, userID);
+  };
   const downVoteHandel = () => {
+    onDownVote(postID, userID);
+  };
 
-    onDownVote(postID, userID)
-  }
 
-  const onUpVote = async (postID, userID,) => {
+  const onUpVote = async (postID, userID) => {
+    switch (type) {
+      case POST_TYPE.SEARCH:
+        const data = SEARCH_DATA[postIndex];
+        const upVoteCount = parseInt(data?.upVote);
+        const downVoteCount = parseInt(data?.downVote);
+        if (!data.has_upvoted) {
+          setUpVote(upVoteCount + 1);
+          data.has_upvoted = true;
+          data.upVote = upVoteCount + 1;
+          if (data?.has_downvoted) {
+            data.has_downvoted = false;
+            data.downVote = downVoteCount - 1;
+            setDownVote(downVoteCount - 1);
+          }
+        } else {
+          setUpVote(upVoteCount - 1);
+          data.has_upvoted = false;
+          data.upVote = upVoteCount - 1;
+        }
+        dispatch(searchAllPostSuccess([...SEARCH_DATA]));
+        await UserController.upVote(postID, userID);
+        break;
 
-    var arr = []
-    arr = postArray;
-    var upVotenumber = parseInt(arr[postIndex]?.upVote)
-    var downVoteNumber = parseInt(arr[postIndex]?.downVote)
-    if (!arr[postIndex].has_upvoted) {
-      setUpVote(upVotenumber + 1)
-      arr[postIndex].has_upvoted = true;
-      arr[postIndex].upVote = upVotenumber + 1;
-      if (arr[postIndex]?.has_downvoted) {
-        arr[postIndex].has_downvoted = false;
-        arr[postIndex].downVote = downVoteNumber - 1;
-        setDownVote(downVoteNumber - 1)
-      }
+      default:
+        var arr = [];
+        arr = postArray;
+        var upVotenumber = parseInt(arr[postIndex]?.upVote);
+        var downVoteNumber = parseInt(arr[postIndex]?.downVote);
+        if (!arr[postIndex].has_upvoted) {
+          setUpVote(upVotenumber + 1);
+          arr[postIndex].has_upvoted = true;
+          arr[postIndex].upVote = upVotenumber + 1;
+          if (arr[postIndex]?.has_downvoted) {
+            arr[postIndex].has_downvoted = false;
+            arr[postIndex].downVote = downVoteNumber - 1;
+            setDownVote(downVoteNumber - 1);
+          }
+        } else {
+          setUpVote(upVotenumber - 1);
+          arr[postIndex].has_upvoted = false;
+          arr[postIndex].upVote = upVotenumber - 1;
+        }
+        const ob = {
+          data: arr,
+        };
+        dispatch(getAllPostSuccess(ob));
+        const apiData = await UserController.upVote(postID, userID);
     }
-    else {
-      setUpVote(upVotenumber - 1)
-      arr[postIndex].has_upvoted = false;
-      arr[postIndex].upVote = upVotenumber - 1;
-    }
-    const ob = {
-      data: arr
-    }
-    dispatch(getAllPostSuccess(ob))
-    const apiData = await UserController.upVote(postID, userID);
-  }
+  };
   const onDownVote = async (postID, userID) => {
-    var arr = []
-    arr = postArray;
-    var upVotenumber = parseInt(arr[postIndex]?.upVote)
-    var downVoteNumber = parseInt(arr[postIndex]?.downVote)
-    if (!arr[postIndex].has_downvoted) {
-      setDownVote(downVoteNumber + 1)
-      arr[postIndex].has_downvoted = true;
-      arr[postIndex].downVote = downVoteNumber + 1;
-      if (arr[postIndex]?.has_upvoted) {
-        arr[postIndex].has_upvoted = false;
-        arr[postIndex].upVote = upVotenumber - 1;
-        setUpVote(upVotenumber - 1)
-      }
+    switch (type) {
+      case POST_TYPE.SEARCH:
+        const data = SEARCH_DATA[postIndex];
+        const upVoteCount = parseInt(data?.upVote);
+        const downVoteCount = parseInt(data?.downVote);
+        if (!data.has_downvoted) {
+          setDownVote(downVoteCount + 1);
+          data.has_downvoted = true;
+          data.downVote = downVoteCount + 1;
+          if (data?.has_upvoted) {
+            data.has_upvoted = false;
+            data.upVote = upVoteCount - 1;
+            setUpVote(upVoteCount - 1);
+          }
+        } else {
+          setDownVote(downVoteCount - 1);
+          data.has_downvoted = false;
+          data.downVote = downVoteNumber - 1;
+        }
+        dispatch(searchAllPostSuccess([...SEARCH_DATA]));
+        await UserController.downVote(postID, userID);
+        break;
+      default:
+        var arr = [];
+        arr = postArray;
+        var upVotenumber = parseInt(arr[postIndex]?.upVote);
+        var downVoteNumber = parseInt(arr[postIndex]?.downVote);
+        if (!arr[postIndex].has_downvoted) {
+          setDownVote(downVoteNumber + 1);
+          arr[postIndex].has_downvoted = true;
+          arr[postIndex].downVote = downVoteNumber + 1;
+          if (arr[postIndex]?.has_upvoted) {
+            arr[postIndex].has_upvoted = false;
+            arr[postIndex].upVote = upVotenumber - 1;
+            setUpVote(upVotenumber - 1);
+          }
+        } else {
+          setDownVote(downVoteNumber - 1);
+          arr[postIndex].has_downvoted = false;
+          arr[postIndex].downVote = downVoteNumber - 1;
+        }
+        const ob = {
+          data: arr,
+        };
+        dispatch(getAllPostSuccess(ob));
+        const apiData = await UserController.downVote(postID, userID);
     }
-    else {
-      setDownVote(downVoteNumber - 1)
-      arr[postIndex].has_downvoted = false;
-      arr[postIndex].downVote = downVoteNumber - 1;
-    }
-    const ob = {
-      data: arr
-    }
-    dispatch(getAllPostSuccess(ob))
-    const apiData = await UserController.downVote(postID, userID);
-  }
+  };
   const generateLink = async () => {
     try {
-      var link = await dynamicLinks().buildShortLink({
-        link: `https://jatievip.page.link/Eit5?postId=${postID}&postIndex=${postIndex}`,
-        domainUriPrefix: 'https://jatievip.page.link',
-        android: {
-          packageName: 'com.airlystudio.jatievip',
-          minimumVersion: '18'
+      var link = await dynamicLinks().buildShortLink(
+        {
+          link: `https://jatievip.page.link/Eit5?postId=${postID}&postIndex=${postIndex}`,
+          domainUriPrefix: 'https://jatievip.page.link',
+          android: {
+            packageName: 'com.airlystudio.jatievip',
+            minimumVersion: '18',
+          },
+          ios: {
+            appStoreId: '123456789',
+            bundleId: 'com.jatievip.airly',
+            minimumVersion: '18',
+          },
         },
-        ios: {
-          appStoreId: '123456789',
-          bundleId: 'com.jatievip.airly',
-          minimumVersion: '18'
-        },
-      },
         dynamicLinks.ShortLinkType.DEFAULT
-      )
-      return link
+      );
+      return link;
     } catch (error) {
-      console.log("error raised", error)
+      console.log('error raised', error);
     }
-  }
+  };
 
   const shareUser = async () => {
-    const getLink = await generateLink()
+    const getLink = await generateLink();
     // console.log("get linkkk kdjfkdlfdf", getLink)
-    const res = await Share.open(({
+    const res = await Share.open({
       // message: 'Dummy message',
-      url: getLink
-    }))
-
-  }
+      url: getLink,
+    });
+  };
   return (
     <View style={styles.footer}>
       <View style={styles.reactionContainer}>
         <TouchableOpacity
-          style={[styles.iconContainer, styles.likeIconContainer,
-          postArray[postIndex]?.has_upvoted && { backgroundColor: theme.light.colors.infoBgLight }
+          style={[
+            styles.iconContainer,
+            styles.likeIconContainer,
+            postArray[postIndex]?.has_upvoted && {
+              backgroundColor: theme.light.colors.infoBgLight,
+            },
           ]}
           onPress={() => upVoteHandel()}
         >
@@ -158,8 +215,12 @@ export const CardFooter = ({
           <Text style={styles.likeTxt}>{upVote} </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.iconContainer, styles.disLikeIconContainer,
-          postArray[postIndex]?.has_downvoted && { backgroundColor: theme.light.colors.infoBgLight }
+          style={[
+            styles.iconContainer,
+            styles.disLikeIconContainer,
+            postArray[postIndex]?.has_downvoted && {
+              backgroundColor: theme.light.colors.infoBgLight,
+            },
           ]}
           onPress={() => downVoteHandel()}
         >
@@ -193,8 +254,7 @@ export const CardFooter = ({
           onPress={() => shareUser()}
           style={styles.ShareNodeIcon}
         />
-        {showMore == undefined &&
-
+        {showMore == undefined && (
           <Icon
             icon={faEllipsis}
             size={ms(13)}
@@ -202,9 +262,7 @@ export const CardFooter = ({
             onPress={morePress}
             style={styles.EllipsisIcon}
           />
-
-        }
-
+        )}
       </View>
     </View>
   );
