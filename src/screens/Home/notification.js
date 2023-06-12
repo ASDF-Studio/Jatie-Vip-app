@@ -124,6 +124,7 @@ export default function Notification({ navigation }) {
                 userName={item?.userByUserwhofiredevent?.username}
                 profilePic={item?.userByUserwhofiredevent?.profilePic}
                 time={item?.created_at}
+                userId={item?.userByUserwhofiredevent?.id}
               />
               <View style={styles.activity}>
                 {item.status == `${strings.profile.upvoted}` ? (

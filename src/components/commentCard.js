@@ -28,7 +28,7 @@ export const CommentCard = ({
   disLikePress,
   replyPress,
   morePress,
-  userId, commentId, commentIndex, commentData
+  userId, commentId, commentIndex, commentData, commentUserId
 }) => {
   const dispatch = useDispatch()
   const [upVote, setUpVote] = useState(likeCount);
@@ -82,7 +82,7 @@ export const CommentCard = ({
     dispatch(voteDownComment(commentId, userId))
   }
   const navigateToUserProfile = () => {
-    navigationRef.navigate(NAVIGATION.userProfile, { userId: userId })
+    navigationRef.navigate(NAVIGATION.userProfile, { userId: commentUserId })
   }
   return (
 

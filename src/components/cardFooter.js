@@ -11,7 +11,11 @@ import { faShareNodes } from '@fortawesome/pro-regular-svg-icons';
 import { UserController } from '@/controllers';
 import { strings } from '@/localization';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllPostData, getSearchData } from '@/selectors/PostSelectors';
+import {
+  getAllPostData,
+  getPostByIdData,
+  getSearchData,
+} from '@/selectors/PostSelectors';
 import {
   getAllPostSuccess,
   searchAllPost,
@@ -51,8 +55,14 @@ export const CardFooter = ({
   const ALLPOST = useSelector(getAllPostData);
   const user = useSelector(getUser);
   const SEARCH_DATA = useSelector(getSearchData);
+  const singlePost = useSelector(getPostByIdData);
   const postArray =
-    postType === POST_TYPE.REGULAR ? ALLPOST : postType === POST_TYPE.SEARCH ? SEARCH_DATA : user?.getAllPostsByLoggedInUser;
+    postType === POST_TYPE.REGULAR
+      ? ALLPOST
+      : POST_TYPE.PROFILE === postType
+        ? user?.getAllPostsByLoggedInUser
+        : SEARCH_DATA;
+
   const upVoteHandel = () => {
     onUpVote(postID, userID);
     console.log('upvote', postID, userID);
@@ -61,105 +71,74 @@ export const CardFooter = ({
     onDownVote(postID, userID);
   };
 
-
   const onUpVote = async (postID, userID) => {
-    switch (type) {
-      case POST_TYPE.SEARCH:
-        const data = SEARCH_DATA[postIndex];
-        const upVoteCount = parseInt(data?.upVote);
-        const downVoteCount = parseInt(data?.downVote);
-        if (!data.has_upvoted) {
-          setUpVote(upVoteCount + 1);
-          data.has_upvoted = true;
-          data.upVote = upVoteCount + 1;
-          if (data?.has_downvoted) {
-            data.has_downvoted = false;
-            data.downVote = downVoteCount - 1;
-            setDownVote(downVoteCount - 1);
-          }
-        } else {
-          setUpVote(upVoteCount - 1);
-          data.has_upvoted = false;
-          data.upVote = upVoteCount - 1;
-        }
-        dispatch(searchAllPostSuccess([...SEARCH_DATA]));
-        await UserController.upVote(postID, userID);
-        break;
+    const post =
+      postType === POST_TYPE.SINGLE_POST ? singlePost : postArray[postIndex];
 
-      default:
-        var arr = [];
-        arr = postArray;
-        var upVotenumber = parseInt(arr[postIndex]?.upVote);
-        var downVoteNumber = parseInt(arr[postIndex]?.downVote);
-        if (!arr[postIndex].has_upvoted) {
-          setUpVote(upVotenumber + 1);
-          arr[postIndex].has_upvoted = true;
-          arr[postIndex].upVote = upVotenumber + 1;
-          if (arr[postIndex]?.has_downvoted) {
-            arr[postIndex].has_downvoted = false;
-            arr[postIndex].downVote = downVoteNumber - 1;
-            setDownVote(downVoteNumber - 1);
-          }
-        } else {
-          setUpVote(upVotenumber - 1);
-          arr[postIndex].has_upvoted = false;
-          arr[postIndex].upVote = upVotenumber - 1;
-        }
-        const ob = {
-          data: arr,
-        };
-        dispatch(getAllPostSuccess(ob));
-        const apiData = await UserController.upVote(postID, userID);
+    if (!post.has_upvoted) {
+      setUpVote(prev => prev + 1);
+      post.has_upvoted = true;
+      post.upVote = upVote + 1;
+      if (post.has_downvoted) {
+        post.has_downvoted = false;
+        post.downVote = downVote - 1;
+        setDownVote(prev => prev - 1);
+      }
+    } else {
+      setUpVote(prev => prev - 1);
+      post.has_upvoted = false;
+      data.upVote = upVote - 1;
     }
+
+    switch (postType) {
+      case POST_TYPE.SEARCH:
+        dispatch(searchAllPostSuccess([...postArray]));
+        break;
+      case POST_TYPE.SINGLE_POST:
+        dispatch(getPostByIdData({ ...singlePost }));
+        break;
+      default:
+        dispatch(
+          getAllPostSuccess({
+            data: postArray,
+          })
+        );
+    }
+    await UserController.upVote(postID, userID);
   };
   const onDownVote = async (postID, userID) => {
-    switch (type) {
+    const post =
+      postType === POST_TYPE.SINGLE_POST ? singlePost : postArray[postIndex];
+
+    if (!post.has_downvoted) {
+      setDownVote(prev => prev + 1);
+      post.has_downvoted = true;
+      post.downVote = downVote + 1;
+      if (post?.has_upvoted) {
+        post.has_upvoted = false;
+        post.upVote = downVote - 1;
+        setUpVote(prev => prev - 1);
+      }
+    } else {
+      setDownVote(prev => prev - 1);
+      post.has_downvoted = false;
+      post.downVote = downVote - 1;
+    }
+    switch (postType) {
       case POST_TYPE.SEARCH:
-        const data = SEARCH_DATA[postIndex];
-        const upVoteCount = parseInt(data?.upVote);
-        const downVoteCount = parseInt(data?.downVote);
-        if (!data.has_downvoted) {
-          setDownVote(downVoteCount + 1);
-          data.has_downvoted = true;
-          data.downVote = downVoteCount + 1;
-          if (data?.has_upvoted) {
-            data.has_upvoted = false;
-            data.upVote = upVoteCount - 1;
-            setUpVote(upVoteCount - 1);
-          }
-        } else {
-          setDownVote(downVoteCount - 1);
-          data.has_downvoted = false;
-          data.downVote = downVoteNumber - 1;
-        }
-        dispatch(searchAllPostSuccess([...SEARCH_DATA]));
-        await UserController.downVote(postID, userID);
+        dispatch(searchAllPostSuccess([...postArray]));
+        break;
+      case POST_TYPE.SINGLE_POST:
+        dispatch(getPostByIdData({ ...singlePost }));
         break;
       default:
-        var arr = [];
-        arr = postArray;
-        var upVotenumber = parseInt(arr[postIndex]?.upVote);
-        var downVoteNumber = parseInt(arr[postIndex]?.downVote);
-        if (!arr[postIndex].has_downvoted) {
-          setDownVote(downVoteNumber + 1);
-          arr[postIndex].has_downvoted = true;
-          arr[postIndex].downVote = downVoteNumber + 1;
-          if (arr[postIndex]?.has_upvoted) {
-            arr[postIndex].has_upvoted = false;
-            arr[postIndex].upVote = upVotenumber - 1;
-            setUpVote(upVotenumber - 1);
-          }
-        } else {
-          setDownVote(downVoteNumber - 1);
-          arr[postIndex].has_downvoted = false;
-          arr[postIndex].downVote = downVoteNumber - 1;
-        }
-        const ob = {
-          data: arr,
-        };
-        dispatch(getAllPostSuccess(ob));
-        const apiData = await UserController.downVote(postID, userID);
+        dispatch(
+          getAllPostSuccess({
+            data: postArray,
+          })
+        );
     }
+    await UserController.downVote(postID, userID);
   };
   const generateLink = async () => {
     try {
@@ -200,7 +179,7 @@ export const CardFooter = ({
           style={[
             styles.iconContainer,
             styles.likeIconContainer,
-            postArray[postIndex]?.has_upvoted && {
+            postArray?.[postIndex]?.has_upvoted && {
               backgroundColor: theme.light.colors.infoBgLight,
             },
           ]}
@@ -330,3 +309,97 @@ const styles = StyleSheet.create({
   EllipsisIcon: { margin: ms(10) },
   ShareNodeIcon: { margin: ms(10) },
 });
+
+const a = {
+  comments_aggregate: { aggregate: { count: 20 } },
+  created_at: '2023-06-01T12:13:02.322373+00:00',
+  downVote: 0,
+  downVoteUserId: [],
+  has_downvoted: false,
+  has_upvoted: true,
+  id: '35cc85ed-6c9e-4150-9e52-6899a4a74b8b',
+  isAdminPost: true,
+  isExclusive: false,
+  isGiveaway: false,
+  isPinned: true,
+  isReported: false,
+  isUSAonly: false,
+  isVIPonly: false,
+  is_following: true,
+  postBody: 'Amazing setup!',
+  postExpires: null,
+  postImg: ['https://d2wwqw32p0xkid.cloudfront.net/photo-1685621562899'],
+  postMediaContent: [
+    {
+      cover: '',
+      mimetype: 'image/jpeg',
+      url: 'https://d2wwqw32p0xkid.cloudfront.net/photo-1685621562899',
+    },
+    {
+      cover: 'https://d2wwqw32p0xkid.cloudfront.net/photo-1685621575698',
+      mimetype: 'video/mp4',
+      url: 'https://d2wwqw32p0xkid.cloudfront.net/photo-1685621565897',
+    },
+  ],
+  postTitle: '',
+  postVideo: [
+    {
+      cover: 'https://d2wwqw32p0xkid.cloudfront.net/photo-1685621579919',
+      url: 'https://d2wwqw32p0xkid.cloudfront.net/photo-1685621565897',
+    },
+  ],
+  shared: 0,
+  sharedUserId: [],
+  upVote: 3,
+  upVoteUserId: [
+    '6aae7065-5341-45b1-b717-0c3e3256dc2f',
+    'b9902993-ca3f-4a2f-9de8-397bf6f4767e',
+    'ce656365-b90f-4b5f-aab6-b436051171f5',
+  ],
+  updated_at: '2023-06-01T12:13:02.322373+00:00',
+  user: {
+    followers: [],
+    following: ['ce656365-b90f-4b5f-aab6-b436051171f5'],
+    fullName: 'JatieVIP',
+    profilePic: 'https://d2wwqw32p0xkid.cloudfront.net/photo-1679288548479.jpg',
+    username: 'jatieVIP',
+  },
+  userId: '6aae7065-5341-45b1-b717-0c3e3256dc2f',
+};
+
+const c = {
+  comments_aggregate: { aggregate: { count: 11 } },
+  created_at: '2023-06-06T10:58:27.052617+00:00',
+  downVote: 1,
+  downVoteUserId: [],
+  has_downvoted: true,
+  has_upvoted: true,
+  id: 'f370b7f4-0efb-478d-b87b-fb42be18cf17',
+  isAdminPost: true,
+  isExclusive: false,
+  isGiveaway: false,
+  isPinned: false,
+  isReported: false,
+  isUSAonly: false,
+  isVIPonly: false,
+  is_following: true,
+  postBody: 'helooooooooooooooooooooooooo',
+  postExpires: null,
+  postImg: [],
+  postMediaContent: [],
+  postTitle: '',
+  postVideo: [],
+  shared: 0,
+  sharedUserId: [],
+  upVote: 2,
+  upVoteUserId: ['6aae7065-5341-45b1-b717-0c3e3256dc2f'],
+  updated_at: '2023-06-06T10:58:27.052617+00:00',
+  user: {
+    followers: [],
+    following: ['ce656365-b90f-4b5f-aab6-b436051171f5'],
+    fullName: 'JatieVIP',
+    profilePic: 'https://d2wwqw32p0xkid.cloudfront.net/photo-1679288548479.jpg',
+    username: 'jatieVIP',
+  },
+  userId: '6aae7065-5341-45b1-b717-0c3e3256dc2f',
+};

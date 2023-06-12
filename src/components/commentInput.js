@@ -1,41 +1,59 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity, Pressable, Text, Platform } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Pressable,
+  Text,
+  Platform,
+} from 'react-native';
 import { TextField } from '@/components';
 import { theme } from '@/theme';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { useMentions, TriggersConfig } from 'react-native-controlled-mentions'
+import { useMentions, TriggersConfig } from 'react-native-controlled-mentions';
 import { ms, vs } from 'react-native-size-matters';
 import { strings } from '@/localization';
 import { faPaperPlaneTop } from '@fortawesome/pro-regular-svg-icons';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { showMessage } from "react-native-flash-message";
-import { commentOnPost, editComment, getAllPostSuccess, searchAllPostSuccess, searchUserbyUserName, TYPES } from '@/actions/PostActions';
+import { showMessage } from 'react-native-flash-message';
+import {
+  commentOnPost,
+  editComment,
+  getAllPostSuccess,
+  getPostByIdSuccess,
+  searchAllPostSuccess,
+  searchUserbyUserName,
+  TYPES,
+} from '@/actions/PostActions';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { Loader } from './Loader';
 import { useEffect } from 'react';
 import { ScrollView } from 'react-native';
-import { getAllPostData, getSearchData } from '@/selectors/PostSelectors';
+import {
+  getAllPostData,
+  getPostByIdData,
+  getSearchData,
+} from '@/selectors/PostSelectors';
 import { FontFamily } from '@/theme/Fonts';
 import { POST_TYPE } from '@/constants/enums';
 
-export const CommentInput = React.forwardRef((props, ref,) => {
-  const dispatch = useDispatch()
-  const ALLPOST = useSelector(getAllPostData)
+export const CommentInput = React.forwardRef((props, ref) => {
+  const dispatch = useDispatch();
+  const ALLPOST = useSelector(getAllPostData);
   const [comment, setComment] = useState('');
   const [isEdit, setIsEdit] = useState(false);
-  const [searchedKeyword, setSearchedKeyword] = useState('')
-  const searchUserSelector = useSelector((state) => state.post)
+  const [searchedKeyword, setSearchedKeyword] = useState('');
+  const searchUserSelector = useSelector(state => state.post);
   const SEARCH_DATA = useSelector(getSearchData);
+  const singlePost = useSelector(getPostByIdData);
 
-  console.log('search selector', searchUserSelector)
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.COMMENT_ON_POST], state)
   );
   useEffect(() => {
-    dispatch(searchUserbyUserName(searchedKeyword))
-
-  }, [searchedKeyword])
+    dispatch(searchUserbyUserName(searchedKeyword));
+  }, [searchedKeyword]);
   // Create config as static object out of function component
   // Or memoize it inside FC using `useMemo`
   const triggersConfig: TriggersConfig<'mention'> = {
@@ -44,8 +62,10 @@ export const CommentInput = React.forwardRef((props, ref,) => {
       trigger: '@',
 
       // Style which mention will be highlighted in the `TextInput`
-      textStyle: { fontFamily: FontFamily.BrandonGrotesque_medium, color: theme.light.colors.mention, },
-
+      textStyle: {
+        fontFamily: FontFamily.BrandonGrotesque_medium,
+        color: theme.light.colors.mention,
+      },
     },
   };
 
@@ -57,11 +77,7 @@ export const CommentInput = React.forwardRef((props, ref,) => {
     triggersConfig,
   });
 
-  const Suggestions: FC<SuggestionsProvidedProps> = ({
-    keyword,
-    onSelect
-  }) => {
-
+  const Suggestions: FC<SuggestionsProvidedProps> = ({ keyword, onSelect }) => {
     if (keyword == null) {
       return null;
     }
@@ -70,8 +86,13 @@ export const CommentInput = React.forwardRef((props, ref,) => {
 
     return (
       <View style={{ height: 200 }}>
-        <ScrollView >
-          {searchUserSelector?.searchedUsers?.filter(one => one.username.toLocaleLowerCase().includes(keyword.toLocaleLowerCase()))
+        <ScrollView>
+          {searchUserSelector?.searchedUsers
+            ?.filter(one =>
+              one.username
+                .toLocaleLowerCase()
+                .includes(keyword.toLocaleLowerCase())
+            )
             .map(one => (
               <Pressable
                 key={one.id}
@@ -79,117 +100,185 @@ export const CommentInput = React.forwardRef((props, ref,) => {
                   const finalData = {
                     id: one.id,
                     name: one.username,
-                  }
-                  onSelect(finalData)
+                  };
+                  onSelect(finalData);
                 }}
                 style={{ padding: 12 }}
               >
                 <Text>{one.username}</Text>
               </Pressable>
-            ))
-          }
+            ))}
         </ScrollView>
       </View>
-
     );
   };
 
   const onCommentSearch = () => {
-    if (comment == "") {
+    if (comment == '') {
       showMessage({
         message: strings.home.commentvalid,
-        backgroundColor: theme.light.colors.activeTabIcon
+        backgroundColor: theme.light.colors.activeTabIcon,
       });
     } else {
-      setComment('')
+      setComment('');
       if (!isEdit) {
-        var arr = SEARCH_DATA
-        dispatch(commentOnPost(props.postId, props.userId, comment.trim(), props.commentOwnerId))
-        props.updateParentState()
-        var count = SEARCH_DATA[props.postIndex]?.comments_aggregate?.aggregate?.count
+        var arr = SEARCH_DATA;
+        dispatch(
+          commentOnPost(
+            props.postId,
+            props.userId,
+            comment.trim(),
+            props.commentOwnerId
+          )
+        );
+        props.updateParentState();
+        var count =
+          SEARCH_DATA[props.postIndex]?.comments_aggregate?.aggregate?.count;
         arr[props.postIndex].comments_aggregate.aggregate.count = count + 1;
 
         dispatch(searchAllPostSuccess([...arr]));
       } else {
-        setIsEdit(false)
-        dispatch(editComment(props.commentId, props.userId, comment.trim(), props.commentIndex))
-        props.updateParentState()
+        setIsEdit(false);
+        dispatch(
+          editComment(
+            props.commentId,
+            props.userId,
+            comment.trim(),
+            props.commentIndex
+          )
+        );
+        props.updateParentState();
       }
     }
-  }
+  };
 
-  const onComment = () => {
-    if (comment == "") {
+  const onSinglepostComment = () => {
+    if (comment == '') {
       showMessage({
         message: strings.home.commentvalid,
-        backgroundColor: theme.light.colors.activeTabIcon
+        backgroundColor: theme.light.colors.activeTabIcon,
       });
     } else {
-      setComment('')
+      setComment('');
       if (!isEdit) {
-        var arr = ALLPOST
-        dispatch(commentOnPost(props.postId, props.userId, comment.trim(), props.commentOwnerId))
-        props.updateParentState()
-        var count = arr[props.postIndex]?.comments_aggregate?.aggregate?.count
-        arr[props.postIndex].comments_aggregate.aggregate.count = count + 1;
-        const ob = {
-          data: arr
-        }
-        dispatch(getAllPostSuccess(ob))
+        dispatch(
+          commentOnPost(
+            props.postId,
+            props.userId,
+            comment.trim(),
+            props.commentOwnerId
+          )
+        );
+        props.updateParentState();
+        const count = singlePost.comments_aggregate.aggregate.count;
+        singlePost.comments_aggregate.aggregate.count = count + 1;
+        dispatch(getPostByIdSuccess({ ...singlePost }));
       } else {
-        setIsEdit(false)
-        dispatch(editComment(props.commentId, props.userId, comment.trim(), props.commentIndex))
-        props.updateParentState()
+        setIsEdit(false);
+        dispatch(
+          editComment(
+            props.commentId,
+            props.userId,
+            comment.trim(),
+            props.commentIndex
+          )
+        );
+        props.updateParentState();
       }
     }
-  }
+  };
+
+  const onComment = () => {
+    if (comment == '') {
+      showMessage({
+        message: strings.home.commentvalid,
+        backgroundColor: theme.light.colors.activeTabIcon,
+      });
+    } else {
+      setComment('');
+      if (!isEdit) {
+        var arr = ALLPOST;
+        dispatch(
+          commentOnPost(
+            props.postId,
+            props.userId,
+            comment.trim(),
+            props.commentOwnerId
+          )
+        );
+        props.updateParentState();
+        var count = arr[props.postIndex]?.comments_aggregate?.aggregate?.count;
+        arr[props.postIndex].comments_aggregate.aggregate.count = count + 1;
+        const ob = {
+          data: arr,
+        };
+        dispatch(getAllPostSuccess(ob));
+      } else {
+        setIsEdit(false);
+        dispatch(
+          editComment(
+            props.commentId,
+            props.userId,
+            comment.trim(),
+            props.commentIndex
+          )
+        );
+        props.updateParentState();
+      }
+    }
+  };
   React.useImperativeHandle(ref, () => ({
     childFunction,
     resetValue,
-    childReplyFunction
+    childReplyFunction,
   }));
   const childFunction = () => {
-    setIsEdit(true)
-    setComment(props.commentData)
-  }
-  const childReplyFunction = (value) => {
-    setComment('')
-    setComment(value)
-  }
+    setIsEdit(true);
+    setComment(props.commentData);
+  };
+  const childReplyFunction = value => {
+    setComment('');
+    setComment(value);
+  };
   const resetValue = () => {
-    setIsEdit(false)
-    setComment('')
-  }
+    setIsEdit(false);
+    setComment('');
+  };
   return (
     <View style={styles.container}>
       <Suggestions {...triggers.mention} />
       <TextField
         // onFocus={props.scrollRef}
-        multiline={Platform.OS == "ios" ? true : true}
+        multiline={Platform.OS == 'ios' ? true : true}
         style={styles.textFiled}
         placeholder={strings.home.typeComment}
         {...textInputProps}
       />
-      {isLoading ? (<Loader
-        visible={true}
-        size={"small"}
-        style={styles.iconContainer}
-      />)
-        :
-        (comment == "" ? <></> :
-          <TouchableOpacity style={styles.iconContainer}
-            onPress={props.type === POST_TYPE.SEARCH ? onCommentSearch : onComment}
-          >
-            <FontAwesomeIcon
-              icon={faPaperPlaneTop}
-              size={18}
-              color={theme.light.colors.primary}
-            />
-          </TouchableOpacity>)
-      }
-    </View >
+      {isLoading ? (
+        <Loader visible={true} size={'small'} style={styles.iconContainer} />
+      ) : comment == '' ? (
+        <></>
+      ) : (
+        <TouchableOpacity
+          style={styles.iconContainer}
+          onPress={
+            props.type === POST_TYPE.SEARCH
+              ? onCommentSearch
+              : props.type === POST_TYPE.SINGLE_POST
+                ? onSinglepostComment
+                : onComment
+          }
+        >
+          <FontAwesomeIcon
+            icon={faPaperPlaneTop}
+            size={18}
+            color={theme.light.colors.primary}
+          />
+        </TouchableOpacity>
+      )}
+    </View>
   );
-})
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -201,7 +290,6 @@ const styles = StyleSheet.create({
     backgroundColor: theme.light.colors.white,
     paddingRight: ms(80),
     padding: ms(50),
-
   },
   iconContainer: {
     backgroundColor: theme.light.colors.primaryBgLight,

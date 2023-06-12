@@ -8,6 +8,7 @@ import {
   ScrollView,
   TouchableOpacity,
   SafeAreaView,
+  Alert,
 } from 'react-native';
 import {
   Button,
@@ -23,8 +24,11 @@ import {
 import {
   faEllipsis,
   faFlag,
+  faMessage,
   faPen,
   faTrash,
+  faUserPlus,
+  faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import { TextStyles, theme } from '@/theme';
 import { FontFamily } from '@/theme/Fonts';
@@ -34,49 +38,89 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 import { NAVIGATION } from '@/constants';
 import { item } from './giveawayData/pastDetailsData';
-import { deleteGiveaway, endGiveaway, getSingleGiveAwayById, TYPES } from '@/actions/PostActions';
+import {
+  deleteGiveaway,
+  endGiveaway,
+  followUser,
+  getSingleGiveAwayById,
+  unFollowUser,
+} from '@/actions/PostActions';
 import { getUser } from '@/selectors/UserSelectors';
 import { getSingleGiveAwayData } from '@/selectors/PostSelectors';
+import { followers } from '@/actions/UserActions';
+import { navigationRef } from '@/navigation/RootNavigation';
+import { showMessage } from 'react-native-flash-message';
+import { useMemo } from 'react';
 
 export default function PastDetails({ navigation, route }) {
-  const dispatch = useDispatch()
-  const { DATA } = route.params
+  const dispatch = useDispatch();
+  const { DATA } = route.params;
   const userType = useSelector(state => state.userType);
-  const user = useSelector(getUser)
-  const giveawayData = useSelector(getSingleGiveAwayData)
+  const user = useSelector(getUser);
+  const { followersDatainReducer } = user
+
+
+  const giveawayData = useSelector(getSingleGiveAwayData);
   const [open, setOpen] = useState(false);
+  const [showUserModal, setShowUserModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [isFollowing, setIsFollowing] = useState(false)
+
+  const userFollower = useMemo(() => followersDatainReducer?.data, [user])
+
 
   useEffect(() => {
     const data = {
       userId: user?.id,
-      giveawayId: DATA?.id
-    }
-    dispatch(getSingleGiveAwayById(data))
-  }, [])
+      giveawayId: DATA?.id,
+    };
+    dispatch(getSingleGiveAwayById(data));
+  }, []);
   const onEndGiveaway = () => {
     const data = {
-      giveawayId: DATA?.id
-    }
-    dispatch(endGiveaway(data))
-  }
+      giveawayId: DATA?.id,
+    };
+    dispatch(endGiveaway(data));
+  };
   const onDeleteGiveaway = () => {
     const data = {
       id: DATA?.id,
-      userId: user?.id
+      userId: user?.id,
+    };
+    dispatch(deleteGiveaway(data));
+  };
+
+  const onFollow = () => {
+    if (isFollowing) {
+      dispatch(unFollowUser(user.id, selectedUser.id));
+      setShowUserModal(false)
+    } else {
+      dispatch(followUser(user.id, selectedUser.id));
+      setShowUserModal(false)
     }
-    dispatch(deleteGiveaway(data))
-  }
+    setTimeout(() => {
+      dispatch(followers(user?.id, user.id))
+    }, 100);
+  };
+
+  const onMessageClick = () => {
+    showMessage({
+      message: 'Coming Soon',
+      type: 'info',
+    });
+  };
+
+
+
   return (
     <SafeAreaView style={styles.contianer}>
       <View style={styles.header}>
-
         <TopBackButton onPress={() => navigation.goBack()} />
         <View style={styles.adminoOption}>
           <Text style={[styles.headerText, TextStyles.header]}>
             {DATA?.postTitle}
           </Text>
           {/* Admin */}
-
           {userType.user == `${strings.userType.admin}` && (
             <Icon
               icon={faEllipsis}
@@ -92,36 +136,32 @@ export default function PastDetails({ navigation, route }) {
           <View style={styles.feedContainer}>
             <Card>
               <View>
-                <Text style={styles.title}>{giveawayData?.all_giveaway?.postTitle} </Text>
+                <Text style={styles.title}>
+                  {giveawayData?.all_giveaway?.postTitle}{' '}
+                </Text>
               </View>
               <CardBody text={giveawayData?.all_giveaway?.postBody} />
-              {/* {link(item.link)}
-
-              <CardBody text={item.MoreDesc} /> */}
-
+              {link(item.link)}
+              <CardBody text={item.MoreDesc} />
               <View style={styles.thumbnailContainer}>
-                {
-                  giveawayData?.all_giveaway?.postImg.map((url) => {
-                    return (
-
-                      <Image
-                        style={styles.thumbnailImage}
-                        source={{
-                          uri: url
-                        }}
-                      />
-
-                    )
-                  })
-                }
-
+                {giveawayData?.all_giveaway?.postImg.map(url => {
+                  return (
+                    <Image
+                      style={styles.thumbnailImage}
+                      source={{
+                        uri: url,
+                      }}
+                    />
+                  );
+                })}
               </View>
-              {giveawayData?.winners?.length > 0 &&
+              {giveawayData?.winners?.length > 0 && (
                 <View>
-                  <Text style={styles.winners}>{strings.giveaway.winners} </Text>
+                  <Text style={styles.winners}>
+                    {strings.giveaway.winners}{' '}
+                  </Text>
                 </View>
-              }
-
+              )}
               {/* winners */}
               {giveawayData?.winners?.map(item => {
                 if (item == null) {
@@ -130,27 +170,41 @@ export default function PastDetails({ navigation, route }) {
                   return (
                     <View style={styles.listContainer} key={item.id}>
                       <View style={styles.leftContainer}>
-
-
-
                         <Image
                           source={{ uri: item?.profilePic }}
-
                           style={styles.profileImage}
                         />
-                        <View style={styles.nameContainer}>
-                          <Text style={styles.nameTxt}> {item?.fullName} </Text>
-                          <Text> {"@" + item?.username} </Text>
+                        <TouchableOpacity
+                          onPress={() =>
+                            navigationRef.navigate(NAVIGATION.userProfile, {
+                              userId: item.id,
+                            })
+                          }
+                        >
+                          <View style={styles.nameContainer}>
+                            <Text style={styles.nameTxt}>
+                              {' '}
+                              {item?.fullName}{' '}
+                            </Text>
+                            <Text> {'@' + item?.username} </Text>
+                          </View>
+                        </TouchableOpacity>
+                      </View>
+                      {
+                        user?.id !== selectedUser?.id && <View>
+                          <Icon
+                            icon={faEllipsis}
+                            size={ms(15)}
+                            color={theme.light.colors.info}
+                            onPress={() => {
+                              setSelectedUser({ ...item })
+                              setIsFollowing(userFollower?.following_List.filter(el => el.followingUserId === item?.id).length === 1)
+                              setShowUserModal(true)
+                            }}
+                          />
                         </View>
-                      </View>
-                      <View>
-                        <Icon
-                          icon={faEllipsis}
-                          size={ms(15)}
-                          color={theme.light.colors.info}
-                          onPress={() => setOpen(true)}
-                        />
-                      </View>
+                      }
+
                     </View>
                   );
                 }
@@ -158,11 +212,14 @@ export default function PastDetails({ navigation, route }) {
               {/* Admin */}
               {userType.user == `${strings.userType.admin}` && (
                 <View style={styles.PostButtonContainer}>
-                  {DATA?.giveaway_participants.length > 0 &&
+                  {DATA?.giveaway_participants.length > 0 && (
                     <TouchableOpacity>
                       <Button
                         onPress={() =>
-                          navigation.navigate(NAVIGATION.seeAllParticipants, { "DATA": giveawayData?.all_giveaway.giveaway_participants })
+                          navigation.navigate(NAVIGATION.seeAllParticipants, {
+                            DATA: giveawayData?.all_giveaway
+                              .giveaway_participants,
+                          })
                         }
                         title={strings.giveaway.seeAllParticipants}
                         style={styles.withdrawBtn}
@@ -171,23 +228,67 @@ export default function PastDetails({ navigation, route }) {
                         }}
                       />
                     </TouchableOpacity>
-                  }
-
+                  )}
                 </View>
               )}
-
-
             </Card>
           </View>
         </ScrollView>
       </View>
 
+      <ModalDown open={showUserModal} setOpen={setShowUserModal}>
+        <ModalList
+          title={
+            isFollowing
+              ? strings.operations.unFollow + ' @' + selectedUser?.username
+              : strings.operations.follow + ' @' + selectedUser?.username
+          }
+          icon={faUserPlus}
+          iconColor={theme.light.colors.primary}
+          iconBg={theme.light.colors.primaryBgLight}
+          onPress={onFollow}
+        />
+        <ModalList
+          title={strings.profile.sendPrivateMessage}
+          icon={faMessage}
+          iconColor={theme.light.colors.success}
+          iconBg={theme.light.colors.successBgLight}
+          onPress={onMessageClick}
+        />
+        <HorizontalLine
+          color={theme.light.colors.infoBgLight}
+          paddingTop={15}
+          paddingBottom={8}
+        />
+        <ModalList
+          title={strings.giveaway.deletePost}
+          icon={faTrash}
+          iconColor={theme.light.colors.secondary}
+          iconBg={theme.light.colors.infoBgLight}
+          onPress={() => Alert.alert(strings.giveaway.report)}
+        />
+        <ModalList
+          title={strings.profile.block}
+          icon={faXmark}
+          iconColor={theme.light.colors.secondary}
+          iconBg={theme.light.colors.infoBgLight}
+          onPress={() => Alert.alert(strings.giveaway.blocked)}
+        />
+        <ModalList
+          title={strings.giveaway.ban}
+          icon={faFlag}
+          iconColor={theme.light.colors.secondary}
+          iconBg={theme.light.colors.infoBgLight}
+          onPress={() => Alert.alert(strings.giveaway.report)}
+        />
+      </ModalDown>
       {/* Admin */}
-
       <ModalDown open={open} setOpen={setOpen}>
         <ModalList
-          onPress={() => { navigation.navigate(NAVIGATION.updateGiveawayPost, { "DATA": DATA }), setOpen(false) }
-          }
+          onPress={() => {
+            navigation.navigate(NAVIGATION.updateGiveawayPost, { DATA: DATA }),
+              setOpen(false);
+          }}
           title={strings.giveaway.editGiveaway}
           icon={faPen}
           iconBg={theme.light.colors.infoBgLight}
@@ -199,15 +300,18 @@ export default function PastDetails({ navigation, route }) {
           paddingBottom={8}
         />
         <ModalList
-          onPress={() => { onEndGiveaway(), setOpen(false) }}
+          onPress={() => {
+            onEndGiveaway(), setOpen(false);
+          }}
           title={strings.giveaway.endNow}
           icon={faFlag}
           iconBg={theme.light.colors.infoBgLight}
           iconColor={theme.light.colors.secondary}
         />
         <ModalList
-          onPress={() => { onDeleteGiveaway(), setOpen(false) }}
-
+          onPress={() => {
+            onDeleteGiveaway(), setOpen(false);
+          }}
           title={strings.giveaway.removeThisGiveaway}
           icon={faTrash}
           iconBg={theme.light.colors.infoBgLight}
@@ -266,8 +370,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: vs(180),
     padding: ms(80),
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
   },
   linkText: {
     color: theme.light.colors.hyperlink,

@@ -132,6 +132,7 @@ export default function MyStatus({ navigation }) {
             <View style={styles.cardContainer}>
               <Card>
                 <CardHeader
+                  isProfile={true}
                   fullName={user?.fullName}
                   userName={user?.username}
                   profilePic={user?.profilePic}

@@ -251,6 +251,7 @@ export default function Comments({ navigation, route }) {
                   userId={USER?.id}
                   commentData={item}
                   commentIndex={index}
+                  commentUserId={item?.userId}
                   commentId={item?.id}
                   userName={item?.user?.username}
                   imageUrl={item?.user?.profilePic}

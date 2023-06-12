@@ -5,11 +5,13 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  Image, ImageBackground
+  Image,
+  ImageBackground,
+  Alert,
 } from 'react-native';
 import { theme } from '@/theme';
-import { faEllipsis, faLock, faPlay } from '@fortawesome/free-solid-svg-icons';
-import { Card, CardBody, CustomLoader, Icon } from '@/components';
+import { faEllipsis, faFlag, faLock, faMessage, faPlay, faTrash, faUserPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { Card, CardBody, CustomLoader, HorizontalLine, Icon, ModalDown, ModalList } from '@/components';
 import { ms, vs } from 'react-native-size-matters';
 import { FontFamily } from '@/theme/Fonts';
 import { strings } from '@/localization';
@@ -19,79 +21,73 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { geAllPastGiveAwayData } from '@/selectors/PostSelectors';
 import { useEffect } from 'react';
-import { getAllPastGiveaway, getAllPastGiveawayPagination, TYPES } from '@/actions/PostActions';
+import {
+  getAllPastGiveaway,
+  getAllPastGiveawayPagination,
+  TYPES,
+} from '@/actions/PostActions';
 import { getUser } from '@/selectors/UserSelectors';
 import { useIsFocused } from '@react-navigation/native';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { ActivityIndicator } from 'react-native';
+import { getUserProfileByUserId } from '@/actions/UserActions';
 export default function Past({ navigation, userType }) {
-
-  const getdataOfPast = useSelector(geAllPastGiveAwayData)
+  const getdataOfPast = useSelector(geAllPastGiveAwayData);
   // console.log('selector data', getdataOfPast)
   const [showImageView, setShowImageView] = useState(false);
   const [feedImages, setFeedImages] = useState([]);
   const [fetchPastGiveaway, setFetchPastGiveaway] = useState(true);
+  const [showUserModal, setShowUserModal] = useState(false)
   const user = useSelector(getUser);
-  const focus = useIsFocused()
+  const focus = useIsFocused();
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const isLoading = useSelector(state =>
-    isLoadingSelector([TYPES.GET_PAST_GIVEAWAY,], state)
+    isLoadingSelector([TYPES.GET_PAST_GIVEAWAY], state)
   );
   useEffect(() => {
-    getPastData()
-
-  }, [])
-
+    getPastData();
+  }, []);
 
   const getPastData = () => {
     const data = {
       userId: user?.id,
-    }
-    dispatch(getAllPastGiveaway(data))
-  }
-  const onViewImageVideo = (data) => {
-
+    };
+    dispatch(getAllPastGiveaway(data));
+  };
+  const onViewImageVideo = data => {
     // setShowImageView(true),
-
     //   setFeedImages(data.postMediaContent)
-  }
+  };
   const isLoadingMore = useSelector(state =>
     isLoadingSelector([TYPES.GET_PAST_GIVEAWAY_PAGINATION], state)
   );
   const onLoadMorePost = () => {
-    const post = getdataOfPast.slice(-1)
-    const page = post[0].created_at
+    const post = getdataOfPast.slice(-1);
+    const page = post[0].created_at;
     const data = {
       userId: user?.id,
-      page: page
-    }
-    dispatch(getAllPastGiveawayPagination(data))
-
-  }
+      page: page,
+    };
+    dispatch(getAllPastGiveawayPagination(data));
+  };
   const renderFooterPost = () => {
     return (
       <View style={{}}>
-        {isLoadingMore &&
-          <ActivityIndicator size={"large"} color="orange" />
-
-        }
-
+        {isLoadingMore && <ActivityIndicator size={'large'} color="orange" />}
       </View>
     );
   };
+  console.log("------->", getdataOfPast)
   let counter = 1;
   return (
     <SafeAreaView>
-      <CustomLoader
-        open={isLoading}
-      />
+      <CustomLoader open={isLoading} />
       <FlatList
         data={getdataOfPast ?? []}
         key={props => props?.id}
         ListFooterComponent={renderFooterPost}
-
         // onEndReached={onLoadMorePost}
         onEndReachedThreshold={0.1}
         onEndReached={() => {
@@ -113,10 +109,16 @@ export default function Past({ navigation, userType }) {
                 <Text style={styles.title}>{item?.postTitle} </Text>
               </View>
               <CardBody text={item?.postBody} />
+              {/* {item?.winner_lists?.length > 0 && (
+                <View>
+                  <Text style={styles.winners}>
+                    {strings.giveaway.winners}{' '}
+                  </Text>
+                </View>
+              )}
+              {item?.winner_lists?.map(winnerID => {
 
-
-              {/* {item.winner.map(item => {
-                if (item == null) {
+                if (winnerID == null) {
                   return;
                 } else {
                   return (
@@ -136,7 +138,7 @@ export default function Past({ navigation, userType }) {
                           icon={faEllipsis}
                           size={ms(15)}
                           color={theme.light.colors.info}
-                          onPress={() => setOpen(true)}
+                          onPress={() => setShowUserModal(true)}
                         />
                       </View>
                     </View>
@@ -144,17 +146,23 @@ export default function Past({ navigation, userType }) {
                 }
               })} */}
               {/* endWinners */}
-              {(userType.user == `${strings.userType.free}` &&
-                item.isVIPonly) ? (
+              {userType.user == `${strings.userType.free}` && item.isVIPonly ? (
                 <TouchableOpacity
-                  onPress={() => userType.user == `${strings.userType.free}` && navigation.navigate(NAVIGATION.upgradeMembership)}
-
-                  style={styles.thumbnailContainer}>
+                  onPress={() =>
+                    userType.user == `${strings.userType.free}` &&
+                    navigation.navigate(NAVIGATION.upgradeMembership)
+                  }
+                  style={styles.thumbnailContainer}
+                >
                   <Image
                     blurRadius={15}
                     style={styles.thumbnailImage}
                     source={{
-                      uri: item?.postMediaContent[0]?.mimetype?.split("/")[0] == "image" ? item?.postMediaContent[0]?.url : item?.postMediaContent[0]?.cover,
+                      uri:
+                        item?.postMediaContent[0]?.mimetype?.split('/')[0] ==
+                          'image'
+                          ? item?.postMediaContent[0]?.url
+                          : item?.postMediaContent[0]?.cover,
                     }}
                   />
                   <View style={styles.vipOnlyContainer}>
@@ -169,7 +177,6 @@ export default function Past({ navigation, userType }) {
                   </View>
                 </TouchableOpacity>
               ) : (
-
                 <View style={styles.thumbnailContainer}>
                   {/* {item?.postImg?.map(url => (
                       <>
@@ -272,127 +279,138 @@ export default function Past({ navigation, userType }) {
                       ) : null} */}
                     {item?.postMediaContent?.length <= 2 ? (
                       <View style={styles.imageContainer}>
-                        {item?.postMediaContent?.map(data => (
-                          counter = counter + 1,
-                          <TouchableOpacity
-                            activeOpacity={1}
-                            key={counter}
-                            style={styles.touchContainer}
-                            onPress={() => {
-                              onViewImageVideo(item)
-                            }}
-                          >
-                            {data?.mimetype?.split("/")[0] == "image" ? <Image
-                              source={{
-                                uri: data.url,
-                              }}
-                              style={styles.image}
-                            /> : <ImageBackground
-                              source={{
-                                uri: data?.cover,
-                              }}
-                              key={counter}
-                              style={[styles.image, styles.playButtonBg]}
-                            >
-
+                        {item?.postMediaContent?.map(
+                          data => (
+                            (counter = counter + 1),
+                            (
                               <TouchableOpacity
-                                // activeOpacity={1}
-                                style={styles.playButton}
+                                activeOpacity={1}
+                                key={counter}
+                                style={styles.touchContainer}
                                 onPress={() => {
-                                  onViewImageVideo(item)
+                                  onViewImageVideo(item);
                                 }}
                               >
-                                <FontAwesomeIcon
-                                  icon={faPlay}
-                                  size={ms(15)}
-                                  style={styles.Play}
-                                />
-
+                                {data?.mimetype?.split('/')[0] == 'image' ? (
+                                  <Image
+                                    source={{
+                                      uri: data.url,
+                                    }}
+                                    style={styles.image}
+                                  />
+                                ) : (
+                                  <ImageBackground
+                                    source={{
+                                      uri: data?.cover,
+                                    }}
+                                    key={counter}
+                                    style={[styles.image, styles.playButtonBg]}
+                                  >
+                                    <TouchableOpacity
+                                      style={styles.playButton}
+                                      onPress={() => {
+                                        onViewImageVideo(item);
+                                      }}
+                                    >
+                                      <FontAwesomeIcon
+                                        icon={faPlay}
+                                        size={ms(15)}
+                                        style={styles.Play}
+                                      />
+                                    </TouchableOpacity>
+                                  </ImageBackground>
+                                )}
                               </TouchableOpacity>
-                            </ImageBackground>}
-
-
-                          </TouchableOpacity>
-                        ))}
+                            )
+                          )
+                        )}
                       </View>
                     ) : item?.postMediaContent?.length > 2 ? (
-                      counter = 1,
-                      <View style={styles.imageContainer}>
-                        {item?.postMediaContent?.map(data =>
-                          counter == 1 ? (
-                            counter = counter + 1,
-                            <TouchableOpacity
-                              activeOpacity={1}
-
-                              key={counter}
-                              style={styles.touchContainer}
-                              onPress={() => {
-                                onViewImageVideo(item)
-                              }}
-                            >
-                              {data?.mimetype?.split("/")[0] == "image" ? <Image
-                                source={{
-                                  uri: data.url,
-                                }}
-                                style={styles.image}
-                              /> : <ImageBackground
-                                source={{
-                                  uri: data?.cover,
-                                }}
-                                key={counter}
-                                style={[styles.image, styles.playButtonBg]}
-                              >
-
-                                <TouchableOpacity
-                                  activeOpacity={1}
-
-                                  // activeOpacity={1}
-                                  style={styles.playButton}
-                                  onPress={() => {
-                                    onViewImageVideo(item)
-                                  }}
-                                >
-                                  <FontAwesomeIcon
-                                    icon={faPlay}
-                                    size={ms(15)}
-                                    style={styles.Play}
-                                  />
-
-                                </TouchableOpacity>
-                              </ImageBackground>}
-                            </TouchableOpacity>
-                          ) : counter == 2 ? (
-                            counter = counter + 1,
-                            <TouchableOpacity
-                              key={counter}
-                              activeOpacity={1}
-
-                              style={styles.touchContainer}
-                              onPress={() => {
-                                onViewImageVideo(item)
-                              }}
-                            >
-                              <ImageBackground
-                                source={{
-                                  uri: data?.mimetype?.split("/")[0] == "image" ? data.url : data?.cover,
-                                }}
-                                key={counter}
-                                style={[styles.image, styles.moreImage]}
-                              >
-                                <TouchableOpacity
-                                  activeOpacity={1}
-
-                                  onPress={() => {
-                                    onViewImageVideo(item)
-                                  }}
-                                >
-                                  <Text style={styles.extraImage}>
-                                    {strings.message.plus}
-                                    {item.postMediaContent?.length - 1}
-                                  </Text>
-
-                                </TouchableOpacity>
-                                {/* {data.mimetype.split("/")[0] == "video" &&
+                      ((counter = 1),
+                        (
+                          <View style={styles.imageContainer}>
+                            {item?.postMediaContent?.map(data =>
+                              counter == 1
+                                ? ((counter = counter + 1),
+                                  (
+                                    <TouchableOpacity
+                                      activeOpacity={1}
+                                      key={counter}
+                                      style={styles.touchContainer}
+                                      onPress={() => {
+                                        onViewImageVideo(item);
+                                      }}
+                                    >
+                                      {data?.mimetype?.split('/')[0] ==
+                                        'image' ? (
+                                        <Image
+                                          source={{
+                                            uri: data.url,
+                                          }}
+                                          style={styles.image}
+                                        />
+                                      ) : (
+                                        <ImageBackground
+                                          source={{
+                                            uri: data?.cover,
+                                          }}
+                                          key={counter}
+                                          style={[
+                                            styles.image,
+                                            styles.playButtonBg,
+                                          ]}
+                                        >
+                                          <TouchableOpacity
+                                            activeOpacity={1}
+                                            style={styles.playButton}
+                                            onPress={() => {
+                                              onViewImageVideo(item);
+                                            }}
+                                          >
+                                            <FontAwesomeIcon
+                                              icon={faPlay}
+                                              size={ms(15)}
+                                              style={styles.Play}
+                                            />
+                                          </TouchableOpacity>
+                                        </ImageBackground>
+                                      )}
+                                    </TouchableOpacity>
+                                  ))
+                                : counter == 2
+                                  ? ((counter = counter + 1),
+                                    (
+                                      <TouchableOpacity
+                                        key={counter}
+                                        activeOpacity={1}
+                                        style={styles.touchContainer}
+                                        onPress={() => {
+                                          onViewImageVideo(item);
+                                        }}
+                                      >
+                                        <ImageBackground
+                                          source={{
+                                            uri:
+                                              data?.mimetype?.split('/')[0] ==
+                                                'image'
+                                                ? data.url
+                                                : data?.cover,
+                                          }}
+                                          key={counter}
+                                          style={[styles.image, styles.moreImage]}
+                                        >
+                                          <TouchableOpacity
+                                            activeOpacity={1}
+                                            onPress={() => {
+                                              onViewImageVideo(item);
+                                            }}
+                                          >
+                                            <Text style={styles.extraImage}>
+                                              {strings.message.plus}
+                                              {item.postMediaContent?.length - 1}
+                                            </Text>
+                                          </TouchableOpacity>
+                                          {/* {data.mimetype.split("/")[0] == "video" &&
                                 <TouchableOpacity
                                   // activeOpacity={1}
                                   style={styles.playButton}
@@ -405,19 +423,19 @@ export default function Past({ navigation, userType }) {
 
                                 </TouchableOpacity>
                               } */}
-
-                              </ImageBackground>
-                            </TouchableOpacity>
-                          ) : null
-                        )}
-                      </View>
+                                        </ImageBackground>
+                                      </TouchableOpacity>
+                                    ))
+                                  : null
+                            )}
+                          </View>
+                        ))
                     ) : null}
                   </>
 
-
                   <TouchableOpacity
                     onPress={() =>
-                      navigation.navigate(NAVIGATION.giveawayPostDetails, {
+                      navigation.navigate(NAVIGATION.giveawayPastDetails, {
                         key: {
                           id: item.id,
                           postTitle: item.postTitle,
@@ -425,33 +443,91 @@ export default function Past({ navigation, userType }) {
                           postExpires: item.postExpires,
                           postImg: item.postImg,
                           has_Joined: item.has_Joined,
-                          postMediaContent: item.postMediaContent
+                          postMediaContent: item.postMediaContent,
+                          isActive: item.isGiveawayActive
                         },
-                        DATA: item
-
+                        DATA: item,
                       })
                     }
-                    style={[item?.postImg?.length <= 0 ? [styles.btn, { top: '0%', position: 'relative', marginBottom: 20 }] : styles.btn]}
+                    style={[
+                      item?.postMediaContent?.length <= 0
+                        ? [
+                          styles.btn,
+                          {
+                            top: '0%',
+                            position: 'relative',
+                            marginBottom: 20,
+                          },
+                        ]
+                        : styles.btn,
+                    ]}
                   >
                     <Text style={[styles.btnTxt, styles.btnTxtColor]}>
                       {strings.giveaway.learnMore}
                     </Text>
                   </TouchableOpacity>
-
-
-
                 </View>
-
-
-
               )}
             </Card>
           </View>
         )}
       />
+      <ModalDown open={showUserModal} setOpen={setShowUserModal}>
+        <ModalList
+          title={
+            user.is_following == true
+              ? strings.operations.unFollow + ' @' + user?.username
+              : strings.operations.follow + ' @' + user?.username
+          }
+          icon={faUserPlus}
+          iconColor={theme.light.colors.primary}
+          iconBg={theme.light.colors.primaryBgLight}
+          onPress={() => Alert.alert(strings.giveaway.follow)}
+        />
+        <ModalList
+          title={strings.profile.sendPrivateMessage}
+          icon={faMessage}
+          iconColor={theme.light.colors.success}
+          iconBg={theme.light.colors.successBgLight}
+          onPress={() => Alert.alert(strings.giveaway.message)}
+        />
+        <HorizontalLine
+          color={theme.light.colors.infoBgLight}
+          paddingTop={15}
+          paddingBottom={8}
+        />
+        {/* show only for admin */}
+        {userType.user == strings.userType.admin && (
+          <ModalList
+            title={strings.giveaway.deletePost}
+            icon={faTrash}
+            iconColor={theme.light.colors.secondary}
+            iconBg={theme.light.colors.infoBgLight}
+            onPress={() => Alert.alert(strings.giveaway.report)}
+          />
+        )}
 
+        <ModalList
+          title={strings.profile.block}
+          icon={faXmark}
+          iconColor={theme.light.colors.secondary}
+          iconBg={theme.light.colors.infoBgLight}
+          onPress={() => Alert.alert(strings.giveaway.blocked)}
+        />
+        {userType.user == strings.userType.admin && (
+          <ModalList
+            title={strings.giveaway.ban}
+            icon={faFlag}
+            iconColor={theme.light.colors.secondary}
+            iconBg={theme.light.colors.infoBgLight}
+            onPress={() => Alert.alert(strings.giveaway.report)}
+          />
+        )}
+
+      </ModalDown>
+
+      {/* Admin */}
     </SafeAreaView>
-
   );
 }
 
@@ -482,8 +558,8 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: theme.light.colors.primary,
     position: 'absolute',
-    top: '70%',
-    left: '5%',
+    bottom: '3%',
+    left: '3%',
     backgroundColor: theme.light.colors.primary,
     width: ms(130),
   },
@@ -546,7 +622,6 @@ const styles = StyleSheet.create({
     // paddingRight: ms(40),
     justifyContent: 'space-between',
     marginRight: ms(-5),
-
   },
   touchContainer: {
     flex: 1,
@@ -575,5 +650,22 @@ const styles = StyleSheet.create({
 
     // marginLeft: '43%',
     // marginTop: '22%',
+  },
+  thumbnailContainer: {
+    width: '100%',
+    // minHeight: vs(180),
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+    overflow: "hidden",
+    position: "relative"
+  },
+  winners: {
+    padding: ms(15),
+    fontFamily: FontFamily.Recoleta_bold,
+    textAlign: 'justify',
+    color: theme.light.colors.primary,
+    fontSize: ms(14, 0.3),
+    borderTopWidth: 1,
+    borderColor: theme.light.colors.infoBgLight,
   },
 });

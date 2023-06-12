@@ -1,5 +1,6 @@
 export const POST_TYPE = {
     REGULAR: 'REGULAR',
     PROFILE: 'PROFILE',
-    SEARCH: "SEARCH"
+    SEARCH: "SEARCH",
+    SINGLE_POST: "SINGLE_POST"
 }
