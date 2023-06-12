@@ -12,7 +12,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
-import { faEllipsis, faImage, faMessage, faPen, faTrash, faUserPlus, faX, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faEllipsis, faFlag, faImage, faMessage, faPen, faTrash, faUserPlus, faX, faXmark } from '@fortawesome/free-solid-svg-icons';
 import {
   CustomLoader,
   HorizontalLine,
@@ -240,7 +240,7 @@ export default function Search({ navigation }) {
                     setShowImageView(true);
                   }}
                   onMorePress={() => {
-                    setSelectedPost(item);
+                    setSelectedPost({ ...item, index: index });
                     setShowPostOptions(true)
                   }}
                   key={index}
@@ -290,7 +290,7 @@ export default function Search({ navigation }) {
           <ModalDown open={showPostOptions} setOpen={setShowPostOptions}>
             <ModalList
               onPress={() => { onFollow() }}
-              title={(!ALLPOST[postIndex]?.is_following ? strings.operations.follow : strings.operations.unFollow) + " @" + postUserName}
+              title={(!SEARCH_DATA[selectedPost.index]?.is_following ? strings.operations.follow : strings.operations.unFollow) + " @" + selectedPost.user.username}
               icon={faUserPlus}
               iconColor={theme.light.colors.primary}
               iconBg={theme.light.colors.primaryBgLight}
@@ -310,7 +310,7 @@ export default function Search({ navigation }) {
               (userType.user == `${strings.userType.vip}`) ? (
               <>
                 {
-                  isAdminPost == false &&
+                  selectedPost.isAdminPost == false &&
                   <ModalList
                     title={strings.home.report}
                     icon={faFlag}
@@ -325,10 +325,10 @@ export default function Search({ navigation }) {
                   />
                 }
 
-                {isAdminPost == false &&
+                {selectedPost.isAdminPost == false &&
                   <ModalList
                     onPress={() => { onBlock() }}
-                    title={strings.operations.block + " @" + postUserName}
+                    title={strings.operations.block + " @" + selectedPost.username}
                     // title={(ALLPOST?.data[pos] ? strings.operations.block : strings.operations.unBlock) + " @" + postUserName}
                     icon={faXmark}
                     iconColor={theme.light.colors.secondary}
@@ -443,10 +443,8 @@ export default function Search({ navigation }) {
               title={strings.operations.submit}
               disabled={!reportOptionValue}
               opacity={reportOptionValue ? 1 : 0.4}
-
               style={styles.reportPostButton}
               onPress={() => {
-
                 const reportData = {
                   objectId: postId,
                   reportedBy: user?.id,
