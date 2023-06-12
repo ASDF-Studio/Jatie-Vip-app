@@ -316,7 +316,7 @@ export function Home({ navigation }) {
           <Icon
             icon={faSearch}
             size={ms(22)}
-            onPress={() => setSearchEnabled(true)}
+            onPress={() => navigation.navigate(NAVIGATION.search)}
             style={styles.searchIcon}
           />
           <Icon

@@ -140,6 +140,7 @@ export default function Search({ navigation }) {
 
   const onFollow = () => {
     setShowPostOptions(false);
+    console.log('=========>', SEARCH_DATA[selectedPost.index]);
     if (SEARCH_DATA[selectedPost.index].is_following) {
       dispatch(unFollowUser(user?.id, selectedPost.userId, strings.home.post));
       dispatch(followers(user?.id));
@@ -387,7 +388,9 @@ export default function Search({ navigation }) {
                       onBlock();
                     }}
                     title={
-                      strings.operations.block + ' @' + selectedPost.username
+                      strings.operations.block +
+                      ' @' +
+                      selectedPost.user.username
                     }
                     // title={(ALLPOST?.data[pos] ? strings.operations.block : strings.operations.unBlock) + " @" + postUserName}
                     icon={faXmark}
@@ -543,6 +546,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: ms(10),
+  },
+  headerText: {
+    marginLeft: ms(10),
+    color: theme.light.colors.black,
   },
   left: {
     flexDirection: 'row',

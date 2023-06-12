@@ -7,7 +7,7 @@ import Post from '@/screens/Home/Post';
 import PostOptions from '@/screens/Home/PostOptions';
 import SchedulePost from '@/screens/Home/scheduledPost';
 import Notification from '@/screens/Home/notification';
-import Search from '@/screens/Home/search';
+import Search from '@/screens/Profile/search';
 import UpdatePost from '@/screens/Home/updatePost';
 import UserProfile from '@/screens/Profile/userProfile';
 import SinglePost from '@/screens/Home/SinglePost';

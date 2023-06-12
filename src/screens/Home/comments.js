@@ -38,47 +38,67 @@ import {
   Image,
   Platform,
   Dimensions,
-  Keyboard
+  Keyboard,
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ms } from 'react-native-size-matters';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { deleteComment, followUser, getAllPostSuccess, getCommentsByPostId, reportPost, TYPES, unFollowUser } from '@/actions/PostActions';
-import { isLoadingSelector, successSelector } from '@/selectors/StatusSelectors';
+import {
+  deleteComment,
+  followUser,
+  getAllPostSuccess,
+  getCommentsByPostId,
+  reportPost,
+  searchAllPostSuccess,
+  TYPES,
+  unFollowUser,
+} from '@/actions/PostActions';
+import {
+  isLoadingSelector,
+  successSelector,
+} from '@/selectors/StatusSelectors';
 import { Loader } from '@/components/Loader';
-import { getAllPostData, getCommentsByPostIdData, getSearchData } from '@/selectors/PostSelectors';
+import {
+  getAllPostData,
+  getCommentsByPostIdData,
+  getSearchData,
+} from '@/selectors/PostSelectors';
 import { getUser } from '@/selectors/UserSelectors';
 import { useIsFocused } from '@react-navigation/native';
 import moment from 'moment';
 import { useRef } from 'react';
 import ImagePicker from 'react-native-image-crop-picker';
 import { globalReset } from '@/actions/GlobalActions';
+import { POST_TYPE } from '@/constants/enums';
 export default function Comments({ navigation, route }) {
   const keyboardScroll = useRef(null);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
-  const childRef = useRef(null)
+  const childRef = useRef(null);
   const flatListRef = useRef(null);
   const { DATA, POST_INDEX, type } = route.params;
-  const USER = useSelector(getUser)
-  const COMMENTS = useSelector(getCommentsByPostIdData)
-  const ALLPOST = useSelector(getAllPostData)
+  const USER = useSelector(getUser);
+  const COMMENTS = useSelector(getCommentsByPostIdData);
+  const ALLPOST = useSelector(getAllPostData);
   const SEARCH_DATA = useSelector(getSearchData);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [openReplyTo, setOpenReplyTo] = useState(false);
   //Option and Report
   const [open, setOpen] = useState(false);
   const [openToast, setOpenToast] = useState(false);
   const [openReport, setOpenReport] = useState(false);
   const [reportListOpen, setReportListOpen] = useState(false);
-  const [reportImage, setreportImage] = useState(null)
+  const [reportImage, setreportImage] = useState(null);
   const [reportOption, setReportOption] = useState([
     { label: 'Explicit Content', value: 'Explicit Content' },
     { label: 'Bullying or Harassment', value: 'Bullying or Harassment' },
     { label: 'Spam', value: 'Spam' },
-    { label: 'Misleading Information or Fake News', value: 'Misleading Information or Fake News' },
+    {
+      label: 'Misleading Information or Fake News',
+      value: 'Misleading Information or Fake News',
+    },
   ]);
   const [reportOptionValue, setReportOptionValue] = useState('');
   const [reportComment, setReportCommnet] = useState('');
@@ -89,7 +109,6 @@ export default function Comments({ navigation, route }) {
   const [isEdit, setIsEdit] = useState(false);
   const [commentIndex, setCommentIndex] = useState('');
   const [commentUserName, setCommentUserName] = useState('');
-
 
   const [replyUserName, setReplyUserName] = useState('');
   const [replyUserId, setReplyUserId] = useState('');
@@ -106,44 +125,46 @@ export default function Comments({ navigation, route }) {
 
   const isShowReportToast = useSelector(state =>
     successSelector([TYPES.REPORT_POST], state)
-  )
+  );
 
   useEffect(() => {
-    dispatch(getCommentsByPostId(DATA?.id, USER?.id))
-
-  }, [focus])
+    dispatch(getCommentsByPostId(DATA?.id, USER?.id));
+  }, [focus]);
 
   const scrollToBottom = () => {
     flatListRef.current.scrollToEnd({ animated: true });
   };
 
   const onDeleteComment = () => {
-    dispatch(deleteComment(commentId, USER?.id))
-    childRef.current.resetValue()
-    updateParentState()
-    var arr = ALLPOST
-    var count = arr[POST_INDEX]?.comments_aggregate?.aggregate?.count
+    dispatch(deleteComment(commentId, USER?.id));
+    childRef.current.resetValue();
+    updateParentState();
+    var arr = type === POST_TYPE.SEARCH ? SEARCH_DATA : ALLPOST;
+    var count = arr[POST_INDEX]?.comments_aggregate?.aggregate?.count;
     arr[POST_INDEX].comments_aggregate.aggregate.count = count - 1;
     const ob = {
-      data: arr
+      data: arr,
+    };
+    if (type === POST_TYPE.SEARCH) {
+      dispatch(searchAllPostSuccess([...arr]));
+    } else {
+      dispatch(getAllPostSuccess(ob));
     }
-    dispatch(getAllPostSuccess(ob))
-  }
+  };
   const onEditComment = () => {
-    setIsEdit(true)
+    setIsEdit(true);
     setOpen(false);
-    childRef.current.childFunction()
-
-  }
+    childRef.current.childFunction();
+  };
   const updateParentState = () => {
-    setIsEdit(false)
-    setCommentUserId('')
-    setComment('')
-    setCommentId('')
-    setCommentIndex('')
-    setOpenReplyTo(false)
-    setReplyFormatedString('')
-  }
+    setIsEdit(false);
+    setCommentUserId('');
+    setComment('');
+    setCommentId('');
+    setCommentIndex('');
+    setOpenReplyTo(false);
+    setReplyFormatedString('');
+  };
   const SelectFromGallery = () => {
     ImagePicker.openPicker({
       width: ms(300),
@@ -151,33 +172,33 @@ export default function Comments({ navigation, route }) {
       cropping: true,
       freeStyleCropEnabled: true,
       cropperCircleOverlay: true,
-    }).then(image => {
-      setreportImage(image)
-    }).catch(error => console.log('report image picker error', error));
+    })
+      .then(image => {
+        setreportImage(image);
+      })
+      .catch(error => console.log('report image picker error', error));
   };
   const onFollow = () => {
-    setOpen(false)
+    setOpen(false);
     if (COMMENTS?.postComments[commentIndex]?.is_following) {
-      dispatch(unFollowUser(USER?.id, commentUserId, strings.home.comment))
+      dispatch(unFollowUser(USER?.id, commentUserId, strings.home.comment));
+    } else {
+      dispatch(followUser(USER?.id, commentUserId, strings.home.comment));
     }
-    else {
-      dispatch(followUser(USER?.id, commentUserId, strings.home.comment))
-    }
-    setCommentUserId(''), setCommentIndex(0)
-  }
-  const handleTextInputFocus = (event) => {
+    setCommentUserId(''), setCommentIndex(0);
+  };
+  const handleTextInputFocus = event => {
     keyboardScroll.current.props.scrollToFocusedInput(event.target);
   };
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
-      (event) => {
+      event => {
         const { height } = Dimensions.get('window');
         const keyboardHeight = event.endCoordinates.screenY - height;
         setKeyboardHeight(keyboardHeight);
         setIsKeyboardOpen(true);
-        scrollToBottom()
-
+        scrollToBottom();
       }
     );
     const keyboardDidHideListener = Keyboard.addListener(
@@ -194,14 +215,13 @@ export default function Comments({ navigation, route }) {
     };
   }, []);
   const commentReplyFormat = (id, username) => {
-    childRef.current.resetValue()
-    setReplyUserId(id),
-      setReplyUserName(username)
+    childRef.current.resetValue();
+    setReplyUserId(id), setReplyUserName(username);
     var link = `{${'@'}}[${username}](${id})`;
-    setReplyFormatedString(link)
-    childRef.current.childReplyFunction(link)
-    setOpenReplyTo(true)
-  }
+    setReplyFormatedString(link);
+    childRef.current.childReplyFunction(link);
+    setOpenReplyTo(true);
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
@@ -213,16 +233,13 @@ export default function Comments({ navigation, route }) {
       </View>
       <HorizontalLine color={theme.light.colors.infoBgLight} paddingTop={15} />
       <KeyboardAvoidingView
-        behavior={Platform.OS == "ios" ? 'padding' : null}
+        behavior={Platform.OS == 'ios' ? 'padding' : null}
         style={{ flex: 1 }}
       >
         <View style={styles.commentContainer}>
-          {isLoading == true ?
-            <Loader
-              visible={true}
-              size={"large"}
-            />
-            :
+          {isLoading == true ? (
+            <Loader visible={true} size={'large'} />
+          ) : (
             <FlatList
               data={COMMENTS?.postComments}
               ref={flatListRef}
@@ -244,23 +261,21 @@ export default function Comments({ navigation, route }) {
                   hasVotedUp={item?.has_upvoted}
                   hasVotedDown={item?.has_downvoted}
                   replyPress={() => {
-                    commentReplyFormat(item?.user?.id, item?.user?.username)
-                  }
-                  }
+                    commentReplyFormat(item?.user?.id, item?.user?.username);
+                  }}
                   morePress={() => {
                     setOpen(true);
                     setCommentId(item?.id);
                     setCommentUserId(item?.userId);
-                    setComment(item?.commentBody)
-                    setCommentIndex(index)
-                    setCommentUserName(item?.user?.username)
-                    setIsAdminComment(item?.isAdminComment)
+                    setComment(item?.commentBody);
+                    setCommentIndex(index);
+                    setCommentUserName(item?.user?.username);
+                    setIsAdminComment(item?.isAdminComment);
                   }}
                 />
               )}
             />
-          }
-
+          )}
         </View>
         {openReplyTo && (
           <View style={styles.replyToContainer}>
@@ -270,11 +285,9 @@ export default function Comments({ navigation, route }) {
             </View>
             <TouchableOpacity
               onPress={() => {
-                setOpenReplyTo(false),
-                  setReplyUserName(''),
-                  setReplyUserId('')
+                setOpenReplyTo(false), setReplyUserName(''), setReplyUserId('');
 
-                childRef.current.resetValue()
+                childRef.current.resetValue();
               }}
               style={styles.closeIconContainer}
             >
@@ -286,8 +299,7 @@ export default function Comments({ navigation, route }) {
             </TouchableOpacity>
           </View>
         )}
-        {
-          !isLoading &&
+        {!isLoading && (
           <CommentInput
             ref={childRef}
             commentData={comment}
@@ -304,9 +316,9 @@ export default function Comments({ navigation, route }) {
             type={type}
           // scrollRef={handleTextInputFocus}
           />
-        }
+        )}
         {/*  Slide up for follow, edit , review  */}
-        {open && (
+        {open &&
           (commentUserId == USER?.id ? (
             <ModalDown open={open} setOpen={setOpen}>
               <ModalList
@@ -315,9 +327,8 @@ export default function Comments({ navigation, route }) {
                 iconBg={theme.light.colors.infoBgLight}
                 iconColor={theme.light.colors.info}
                 onPress={() => {
-                  setIsEdit(true)
-                  onEditComment()
-
+                  setIsEdit(true);
+                  onEditComment();
                 }}
               />
               <HorizontalLine
@@ -331,16 +342,23 @@ export default function Comments({ navigation, route }) {
                 iconBg={theme.light.colors.infoBgLight}
                 iconColor={theme.light.colors.secondary}
                 onPress={() => {
-                  setOpen(false),
-                    onDeleteComment()
+                  setOpen(false), onDeleteComment();
                 }}
               />
             </ModalDown>
-          ) :
+          ) : (
             <ModalDown open={open} setOpen={setOpen}>
               <ModalList
-                onPress={() => { onFollow() }}
-                title={(!COMMENTS?.postComments[commentIndex]?.is_following ? strings.operations.follow : strings.operations.unFollow) + " @" + commentUserName}
+                onPress={() => {
+                  onFollow();
+                }}
+                title={
+                  (!COMMENTS?.postComments[commentIndex]?.is_following
+                    ? strings.operations.follow
+                    : strings.operations.unFollow) +
+                  ' @' +
+                  commentUserName
+                }
                 icon={faUserPlus}
                 iconColor={theme.light.colors.primary}
                 iconBg={theme.light.colors.primaryBgLight}
@@ -356,30 +374,30 @@ export default function Comments({ navigation, route }) {
                 paddingTop={15}
                 paddingBottom={8}
               />
-              {isAdminComment == false &&
+              {isAdminComment == false && (
                 <ModalList
                   title={strings.home.report}
                   icon={faFlag}
                   iconColor={theme.light.colors.secondary}
                   iconBg={theme.light.colors.infoBgLight}
                   onPress={() => {
-                    setReportOptionValue('')
+                    setReportOptionValue('');
                     setOpenReport(true);
                     setOpen(false);
-                    setreportImage(null)
+                    setreportImage(null);
                   }}
                 />
-              }
-              {isAdminComment == false &&
+              )}
+              {isAdminComment == false && (
                 <ModalList
-                  title={strings.operations.block + " @" + commentUserName}
+                  title={strings.operations.block + ' @' + commentUserName}
                   icon={faXmark}
                   iconColor={theme.light.colors.secondary}
                   iconBg={theme.light.colors.infoBgLight}
-                />}
+                />
+              )}
             </ModalDown>
-          )
-        )}
+          ))}
 
         <ReportOnPostModal open={openReport} setOpen={setOpenReport}>
           <View style={styles.reportPostContainer}>
@@ -415,17 +433,24 @@ export default function Comments({ navigation, route }) {
             />
             <View style={styles.reportPostBottomContainer}>
               <TouchableOpacity onPress={() => SelectFromGallery()}>
-                {reportImage ?
-                  <Image style={{ height: ms(35), width: ms(35), borderRadius: ms(5) }} source={{ uri: reportImage.path }} />
-                  :
-                  <View pointerEvents='none'>
+                {reportImage ? (
+                  <Image
+                    style={{
+                      height: ms(35),
+                      width: ms(35),
+                      borderRadius: ms(5),
+                    }}
+                    source={{ uri: reportImage.path }}
+                  />
+                ) : (
+                  <View pointerEvents="none">
                     <Icon
                       icon={faImage}
                       size={ms(22)}
                       color={theme.light.colors.secondary}
                     />
                   </View>
-                }
+                )}
               </TouchableOpacity>
               <Button
                 title={strings.operations.submit}
@@ -438,9 +463,9 @@ export default function Comments({ navigation, route }) {
                     reportedBy: USER?.id,
                     reportTitle: reportOptionValue,
                     reportBody: reportComment,
-                    reportImg: reportImage
-                  }
-                  dispatch(reportPost(reportData))
+                    reportImg: reportImage,
+                  };
+                  dispatch(reportPost(reportData));
                   setOpenReport(false);
                 }}
               />
