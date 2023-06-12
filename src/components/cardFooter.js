@@ -27,6 +27,7 @@ import Share from 'react-native-share';
 import { cleanSingle } from 'react-native-image-crop-picker';
 import { POST_TYPE, SCREEN_TYPE } from '@/constants/enums';
 import { getUser } from '@/selectors/UserSelectors';
+import { find } from 'lodash';
 
 export const CardFooter = ({
   postID,
@@ -76,8 +77,8 @@ export const CardFooter = ({
     const post =
       postType === POST_TYPE.SINGLE_POST ? singlePost : postArray[postIndex];
 
-    const upVoteCount = post.upVote
-    const downVoteCount = post.downVote
+    const upVoteCount = post.upVote;
+    const downVoteCount = post.downVote;
 
     if (!post.has_upvoted) {
       setUpVote(upVoteCount + 1);
@@ -114,9 +115,8 @@ export const CardFooter = ({
     const post =
       postType === POST_TYPE.SINGLE_POST ? singlePost : postArray[postIndex];
 
-    const upVoteCount = post.upVote
-    const downVoteCount = post.downVote
-
+    const upVoteCount = post.upVote;
+    const downVoteCount = post.downVote;
 
     if (!post.has_downvoted) {
       setDownVote(downVoteCount + 1);
@@ -180,7 +180,7 @@ export const CardFooter = ({
       url: getLink,
     });
   };
-
+  console.log();
   return (
     <View style={styles.footer}>
       <View style={styles.reactionContainer}>
@@ -188,12 +188,14 @@ export const CardFooter = ({
           style={[
             styles.iconContainer,
             styles.likeIconContainer,
+            POST_TYPE.SINGLE_POST !== postType &&
             postArray?.[postIndex]?.has_upvoted && {
               backgroundColor: theme.light.colors.infoBgLight,
             },
-            // singlePost && singlePost.has_upvoted && {
-            //   backgroundColor: theme.light.colors.infoBgLight,
-            // }
+            POST_TYPE.SINGLE_POST === postType &&
+            singlePost?.has_upvoted && {
+              backgroundColor: theme.light.colors.infoBgLight,
+            },
           ]}
           onPress={() => upVoteHandel()}
         >
@@ -209,12 +211,15 @@ export const CardFooter = ({
           style={[
             styles.iconContainer,
             styles.disLikeIconContainer,
+            POST_TYPE.SINGLE_POST !== postType &&
             postArray?.[postIndex]?.has_downvoted && {
               backgroundColor: theme.light.colors.infoBgLight,
             },
-            POST_TYPE.SINGLE_POST && singlePost && singlePost.has_downvoted && {
+            POST_TYPE.SINGLE_POST === postType &&
+            singlePost &&
+            singlePost.has_downvoted && {
               backgroundColor: theme.light.colors.infoBgLight,
-            }
+            },
           ]}
           onPress={() => downVoteHandel()}
         >
