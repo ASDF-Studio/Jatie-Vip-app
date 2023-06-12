@@ -17,11 +17,23 @@ import {
   faInstagram,
 } from '@fortawesome/free-brands-svg-icons';
 import { ms } from 'react-native-size-matters';
-
+import { useEffect } from 'react';
+import { getFCMToken, requestUserPermission } from '@/helper/utils/pushNotifications';
+import messaging from "@react-native-firebase/messaging";
 export function Welcome() {
   const { colors } = useTheme();
   const styles = useMemo(() => customStyles(colors), [colors]);
+  useEffect(() => {
 
+    getToken()
+  }, [])
+
+  const getToken = async () => {
+    const fcmToken = await messaging().getToken();
+    if (fcmToken) {
+      console.log('fcm token', fcmToken);
+    }
+  }
   return (
     <ImageBackground style={styles.container}>
       <View style={styles.subContainer}>

@@ -3,23 +3,24 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>788742196224-mnij2kpdu2pig5sl6n44g16r8ht707vq.apps.googleusercontent.com</string>
+	<string>901601336384-ddiohnickvtra0pbps3qod2s17lc2kid.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.788742196224-mnij2kpdu2pig5sl6n44g16r8ht707vq</string>
-	<key>ANDROID_CLIENT_ID</key>
-	<string>788742196224-1d22ulubnepehgufttu4hfc1dlha31o0.apps.googleusercontent.com</string>
+	<string>com.googleusercontent.apps.901601336384-ddiohnickvtra0pbps3qod2s17lc2kid</string>
 	<key>API_KEY</key>
-	<string>AIzaSyCcwEaMwCcRkXvalXzDkX1ax6ljNQvx_Jk</string>
+	<string>AIzaSyBEqHQA9Fo07oFJiBJfPrvyyRiqtq5z7X4</string>
 	<key>GCM_SENDER_ID</key>
-	<string>788742196224</string>
+	<string>901601336384</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
+
+
+	
 	<key>BUNDLE_ID</key>
 	<string>com.jatievip.air</string>
 	<key>PROJECT_ID</key>
-	<string>jatievip-c5d9c</string>
+	<string>push-notifications-53a52</string>
 	<key>STORAGE_BUCKET</key>
-	<string>jatievip-c5d9c.appspot.com</string>
+	<string>push-notifications-53a52.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -31,6 +32,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:788742196224:ios:a74791d5712ebe0112dce5</string>
+	<string>1:901601336384:ios:da53a6bae7f7f6810193a5</string>
 </dict>
 </plist>
