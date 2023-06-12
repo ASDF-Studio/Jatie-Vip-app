@@ -6,9 +6,9 @@ import {
     TouchableOpacity,
     Image,
     Text,
-    DropDownPicker,
     TextInput,
 } from 'react-native';
+import DropDownPicker from 'react-native-dropdown-picker';
 import { theme } from '@/theme';
 import { ms, vs } from 'react-native-size-matters';
 import {
