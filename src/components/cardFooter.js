@@ -191,9 +191,9 @@ export const CardFooter = ({
             postArray?.[postIndex]?.has_upvoted && {
               backgroundColor: theme.light.colors.infoBgLight,
             },
-            singlePost && singlePost.has_upvoted && {
-              backgroundColor: theme.light.colors.infoBgLight,
-            }
+            // singlePost && singlePost.has_upvoted && {
+            //   backgroundColor: theme.light.colors.infoBgLight,
+            // }
           ]}
           onPress={() => upVoteHandel()}
         >
@@ -212,7 +212,7 @@ export const CardFooter = ({
             postArray?.[postIndex]?.has_downvoted && {
               backgroundColor: theme.light.colors.infoBgLight,
             },
-            singlePost && singlePost.has_downvoted && {
+            POST_TYPE.SINGLE_POST && singlePost && singlePost.has_downvoted && {
               backgroundColor: theme.light.colors.infoBgLight,
             }
           ]}
