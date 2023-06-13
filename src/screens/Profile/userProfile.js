@@ -42,41 +42,43 @@ import { strings } from '@/localization';
 import { HorizontalLine } from '@/components';
 import { ms, vs } from 'react-native-size-matters';
 import { NAVIGATION } from '@/constants';
-import { Data, demo } from './ProfileData/userProfileData';
 import { faSearch } from '@fortawesome/pro-regular-svg-icons';
 import { FontFamily } from '@/theme/Fonts';
 import { useDispatch, useSelector } from 'react-redux';
-import { followers, getUserProfileByUserId } from '@/actions/UserActions';
+import {
+  getAllPostsByUserid,
+  getUserProfileByUserId,
+  getUserProfileByUserIdSuccess,
+} from '@/actions/UserActions';
 import { useEffect } from 'react';
 import { getUser } from '@/selectors/UserSelectors';
-import { isLoadingSelector, successSelector } from '@/selectors/StatusSelectors';
+import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { Loader } from '@/components/Loader';
-import { UserController } from '@/controllers';
 import { navigationRef } from '@/navigation/RootNavigation';
 import { TYPES, followUser, unFollowUser } from '@/actions/PostActions';
+import { TYPES as UserActionTypes } from '@/actions/UserActions';
 import { showMessage } from 'react-native-flash-message';
 import { useIsFocused } from '@react-navigation/native';
 import { POST_TYPE } from '@/constants/enums';
-import { BlurView } from "@react-native-community/blur";
+import { getAllPostByUserIdSuccess } from '@/actions/UserActions';
+
 export default function UserProfile({ navigation, route }) {
   const [postIndex, setPostIndex] = useState(0);
-  const dispatch = useDispatch()
-  const { userId } = route?.params
+  const dispatch = useDispatch();
+  const { userId } = route?.params;
   // console.log('otherpersoId', userId)
-  const userr = useSelector(getUser)
+  const userr = useSelector(getUser);
   // console.log('MyId', userr.id)
-
-  const getUserProfile = useSelector(getUser)
-  const [active, setActive] = useState(false)
+  const [active, setActive] = useState(false);
 
   const [openMore, setOpenMore] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
-  const [user, setUser] = useState(null)
-  const [userPosts, setuserPosts] = useState([])
-  const [loader, setLoader] = useState(true)
-
+  const [user, setUser] = useState(null);
+  const [userPosts, setuserPosts] = useState([]);
+  const [loader, setLoader] = useState(false);
   const [showImageView, setShowImageView] = useState(false);
   const [feedImages, setFeedImages] = useState([]);
+
   const [postId, setpostId] = useState(null);
   const [postUserId, setPostUserId] = useState(null);
   const [postTitle, setPostTitle] = useState('');
@@ -84,10 +86,7 @@ export default function UserProfile({ navigation, route }) {
   const [postImg, setPostImg] = useState([]);
   let counter = 1;
 
-
-  const focus = useIsFocused()
-  console.log('other person details', JSON.stringify(user))
-
+  const focus = useIsFocused();
 
   const isFollowSuccess = useSelector(state =>
     isLoadingSelector([TYPES.FOLLOW_USER], state)
@@ -97,426 +96,426 @@ export default function UserProfile({ navigation, route }) {
   );
   const userType = useSelector(state => state.userType);
 
-
-
   const isProfileLoading = useSelector(state =>
-    isLoadingSelector([TYPES.GET_USER_BY], state)
+    isLoadingSelector([UserActionTypes.GET_ALL_POST_BY_USERID], state)
   );
 
-  const loggedInId = useSelector(getUser)
+  useEffect(() => {
+    dispatch(getUserProfileByUserId(userId, userr.id));
+  }, [isFollowSuccess, isunFollowSuccess, focus]);
 
   useEffect(() => {
-    dispatch(getUserProfileByUserId(userId, userr.id))
-    // console.log("id", userId, userr.id)
-    setTimeout(() => {
-      getUserPostById(userId)
-    }, 100);
-
-    // dispatch(followers(user?.id, userId))
-  }, [isFollowSuccess, isunFollowSuccess, focus])
+    return () => {
+      dispatch(getUserProfileByUserIdSuccess(null));
+      dispatch(getAllPostByUserIdSuccess(null));
+    };
+  }, []);
 
   useEffect(() => {
-    setUser(getUserProfile?.getUserByUserId)
-  }, [getUserProfile])
+    dispatch(getAllPostsByUserid(userId, userr.id));
+  }, [userId]);
 
-  const getUserPostById = async (id) => {
-    const data = await UserController.postByUserId(id);
-    if (data) {
-      setLoader(false);
-      setuserPosts(data.data);
-    }
-
-  }
-
-  // const onFollow = () => {
-  //   const loggedInUserID = getUserProfile?.id
-  //   if (user) {
-  //     const isLoggedInUserAFollower = user.followers.includes(loggedInUserID)
-
-  //     if (isLoggedInUserAFollower) {
-  //       // Hit unfollow API
-  //       dispatch(unFollowUser(loggedInUserID, user?.id))
-  //     } else {
-  //       // Hit follow API
-  //       dispatch(followUser(loggedInUserID, user?.id))
-  //     }
-
-  //   }
-  // }
+  useEffect(() => {
+    if (!userr) return;
+    setUser(userr?.getUserByUserId);
+  }, [userr]);
 
   const onFollow = () => {
-
-
     if (user?.is_following == true) {
-      dispatch(unFollowUser(loggedInId.id, user.id))
-      setOpenMore(false)
-      console.log("check", loggedInId.id, user.id)
+      dispatch(unFollowUser(loggedInId.id, user.id));
+      setOpenMore(false);
+      console.log('check', loggedInId.id, user.id);
       //setOpen(false)
       setTimeout(() => {
-        dispatch(getUserProfileByUserId(userId, userr.id))
+        dispatch(getUserProfileByUserId(userId, userr.id));
       }, 100);
-
-    }
-    else {
-      dispatch(followUser(loggedInId.id, user.id))
-      setOpenMore(false)
+    } else {
+      dispatch(followUser(loggedInId.id, user.id));
+      setOpenMore(false);
 
       // setOpen(false)
-      console.log("follower log", loggedInId.id, user.id)
+      console.log('follower log', loggedInId.id, user.id);
 
       setTimeout(() => {
-        dispatch(getUserProfileByUserId(userId, userr.id))
+        dispatch(getUserProfileByUserId(userId, userr.id));
       }, 100);
     }
-
-  }
+  };
   const onMessageClick = () => {
     showMessage({
       message: 'Coming Soon',
-      type: 'info'
-    })
-  }
+      type: 'info',
+    });
+  };
   const renderFollowTitle = () => {
-    const loggedInUserID = getUserProfile?.id
+    const loggedInUserID = getUserProfile?.id;
     if (user) {
-      const isLoggedInUserAFollower = user?.followers?.includes(loggedInUserID)
-      return isLoggedInUserAFollower ? strings.profile.unfollow : strings.profile.follow
+      const isLoggedInUserAFollower = user?.followers?.includes(loggedInUserID);
+      return isLoggedInUserAFollower
+        ? strings.profile.unfollow
+        : strings.profile.follow;
     }
-  }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <CustomLoader open={isProfileLoading} />
-      <View style={styles.header}>
-        <View style={styles.left}>
-          <TopBackButton
-            onPress={() => navigationRef.goBack()}
-            style={styles.TopBackButton}
-          />
 
-        </View>
-
-      </View>
-      <View style={styles.headerContainer}>
-
-        <View style={styles.headerImageContainer}>
-
-          <Image
-            style={styles.headerImage}
-            source={{
-              uri: user?.profilePic || null,
-            }}
-          />
-          {user?.isVIP && user?.isAdmin &&
-            <View style={styles.profileLogoContainer}>
-              <FontAwesomeIcon
-                icon={faCrown}
-                color={theme.light.colors.primaryBgDark}
-                size={20}
-              />
-            </View>}
-
-          <View style={styles.profileTitleContainer}>
-            <Text style={[TextStyles.header, styles.headerDesign]}>
-              {' '}
-              {user?.fullName}
-            </Text>
-            <Text style={styles.userNameDesign}> {user?.username}</Text>
+      <View>
+        <View style={styles.header}>
+          <View style={styles.left}>
+            <TopBackButton
+              onPress={() => navigationRef.goBack()}
+              style={styles.TopBackButton}
+            />
           </View>
         </View>
-        <View style={styles.iconContiner}>
-          <Icon
-            icon={faSearch}
-            size={22}
-            style={styles.icon}
-            onPress={() => navigation.navigate(NAVIGATION.search)}
-          />
-          <Icon
-            icon={faBell}
-            size={22}
-            style={styles.icon}
-            onPress={() => navigation.navigate(NAVIGATION.notification)}
-          />
-        </View>
-      </View>
-      <HeaderTab
-        title1={strings.profile.followers}
-        count1={user?.followerListsByFollowinguserid?.length}
-        onPress1={() => navigation.navigate(NAVIGATION.followers, { id: userId, screenName: 'userProfile' })}
-        title2={strings.profile.following}
-        count2={user?.follower_lists?.length}
-        onPress2={() => navigation.navigate(NAVIGATION.following, { id: userId, screenName: 'userProfile' })}
-      />
-      <HorizontalLine
-        color={theme.light.colors.infoBgLight}
-        paddingTop={8}
-        paddingBottom={4}
-      />
-
-      <View style={styles.messageHeader}>
-        <View style={styles.messageLeft}>
-          <TouchableOpacity
-            onPress={() => { onMessageClick() }}
-            style={[styles.IconBox, styles.IconBoxDesign]}>
-            <FontAwesomeIcon
-              icon={faMessage}
-              color={theme.light.colors.success}
+        <View style={styles.headerContainer}>
+          <View style={styles.headerImageContainer}>
+            <Image
+              style={styles.headerImage}
+              source={{
+                uri: user?.profilePic || null,
+              }}
             />
-            <Text style={[styles.IconBoxColor]}>
-              {' '}
-              {strings.profile.message}{' '}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={onFollow} style={styles.IconBox}>
-            <FontAwesomeIcon
-              icon={faUserPlus}
-              color={theme.light.colors.primary}
+            {user?.isVIP && user?.isAdmin && (
+              <View style={styles.profileLogoContainer}>
+                <FontAwesomeIcon
+                  icon={faCrown}
+                  color={theme.light.colors.primaryBgDark}
+                  size={20}
+                />
+              </View>
+            )}
+
+            <View style={styles.profileTitleContainer}>
+              <Text style={[TextStyles.header, styles.headerDesign]}>
+                {' '}
+                {user?.fullName}
+              </Text>
+              <Text style={styles.userNameDesign}> {user?.username}</Text>
+            </View>
+          </View>
+          <View style={styles.iconContiner}>
+            <Icon
+              icon={faSearch}
+              size={22}
+              style={styles.icon}
+              onPress={() => navigation.navigate(NAVIGATION.search)}
             />
-            {/* <Text style={[styles.labelColor]}> {renderFollowTitle()} </Text> */}
-            <Text style={[styles.labelColor]}> {user?.is_following == true ? "Unfollow" : "Follow"} </Text>
-          </TouchableOpacity>
+            <Icon
+              icon={faBell}
+              size={22}
+              style={styles.icon}
+              onPress={() => navigation.navigate(NAVIGATION.notification)}
+            />
+          </View>
         </View>
-        <TouchableOpacity
-          onPress={() => setOpenMore(true)}
-          style={styles.moreIconContainer}
-        >
-          <FontAwesomeIcon
-            icon={faEllipsis}
-            color={theme.light.colors.secondary}
-          />
-        </TouchableOpacity>
-      </View>
-      <HorizontalLine />
-      <FlatList
-        data={userPosts || []}
-        key={props => props.id}
-        renderItem={({ item, index }) => (
-          <TouchableOpacity
-            onPress={() => userType?.user == `${strings.userType.free}` && navigation.navigate(NAVIGATION.upgradeMembership)}
-            style={styles.cardContainer}>
+        <HeaderTab
+          title1={strings.profile.followers}
+          count1={user?.followerListsByFollowinguserid?.length}
+          onPress1={() =>
+            navigation.navigate(NAVIGATION.followers, {
+              id: userId,
+              screenName: 'userProfile',
+            })
+          }
+          title2={strings.profile.following}
+          count2={user?.follower_lists?.length}
+          onPress2={() =>
+            navigation.navigate(NAVIGATION.following, {
+              id: userId,
+              screenName: 'userProfile',
+            })
+          }
+        />
+        <HorizontalLine
+          color={theme.light.colors.infoBgLight}
+          paddingTop={8}
+          paddingBottom={4}
+        />
 
-            <Card>
-
-              <CardHeader
-                fullName={user?.fullName}
-                userName={user?.username}
-                profilePic={user?.profilePic}
-                time={item.created_at}
+        <View style={styles.messageHeader}>
+          <View style={styles.messageLeft}>
+            <TouchableOpacity
+              onPress={() => {
+                onMessageClick();
+              }}
+              style={[styles.IconBox, styles.IconBoxDesign]}
+            >
+              <FontAwesomeIcon
+                icon={faMessage}
+                color={theme.light.colors.success}
               />
+              <Text style={[styles.IconBoxColor]}>
+                {' '}
+                {strings.profile.message}{' '}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={onFollow} style={styles.IconBox}>
+              <FontAwesomeIcon
+                icon={faUserPlus}
+                color={theme.light.colors.primary}
+              />
+              {/* <Text style={[styles.labelColor]}> {renderFollowTitle()} </Text> */}
+              <Text style={[styles.labelColor]}>
+                {' '}
+                {user?.is_following == true ? 'Unfollow' : 'Follow'}{' '}
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity
+            onPress={() => setOpenMore(true)}
+            style={styles.moreIconContainer}
+          >
+            <FontAwesomeIcon
+              icon={faEllipsis}
+              color={theme.light.colors.secondary}
+            />
+          </TouchableOpacity>
+        </View>
+        <HorizontalLine />
+        <FlatList
+          data={userr?.getAllPostsByUserId || []}
+          key={props => props.id}
+          renderItem={({ item, index }) => (
+            <TouchableOpacity
+              onPress={() =>
+                userType?.user == `${strings.userType.free}` &&
+                navigation.navigate(NAVIGATION.upgradeMembership)
+              }
+              style={styles.cardContainer}
+            >
+              <Card>
+                <CardHeader
+                  fullName={user?.fullName}
+                  userName={user?.username}
+                  profilePic={user?.profilePic}
+                  time={item.created_at}
+                />
 
-              <CardBody
-                VIPKEY={user?.isVIP}
-                text={item?.postBody} />
+                <CardBody VIPKEY={user?.isVIP} text={item?.postBody} />
 
-              {item?.postImg?.length <= 2 ? (
-                <View style={styles.imageContainer}>
-                  {item?.postImg?.map(data => (
-                    counter = counter + 1,
-                    <TouchableOpacity
-                      key={counter}
-                      style={styles.touchContainer}
-                      onPress={() => {
-                        setShowImageView(true),
-                          setFeedImages(item?.postImg)
-                      }}
-                    >
-
-
-                      {user?.isVIP == true ?
-                        <>
-                          <Image
-                            blurRadius={20}
-                            style={styles.thumbnailImage}
-                            source={{
-                              uri: item?.postMediaContent[0]?.mimetype?.split("/")[0] == "image" ? item?.postMediaContent[0]?.url : item?.postMediaContent[0]?.cover,
-                            }}
-                          />
-                          <View style={styles.vipOnlyContainer}>
-                            <FontAwesomeIcon
-                              icon={faLock}
-                              size={ms(10)}
-                              style={styles.lock}
-                            />
-                            <Text style={styles.vipOnlyText}>
-                              {strings.giveaway.vipOnly}
-                            </Text>
-                          </View>
-                        </>
-                        : null}
-
-
-                      <Image
-                        source={{
-                          uri: data,
-                        }}
-                        style={styles.image}
-                      />
-
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              ) : item?.postImg?.length > 2 ? (
-                counter = 1,
-                <View style={styles.imageContainer}>
-                  {item?.postImg?.map(data =>
-                    counter == 1 ? (
-                      counter = counter + 1,
-                      <TouchableOpacity
-                        key={counter}
-                        style={styles.touchContainer}
-                        onPress={() => {
-                          setShowImageView(true),
-                            setFeedImages(item?.postImg);
-                          // console.log(feedImages)
-                        }}
-                      >
-
-                        <Image
-                          source={{
-                            uri: data,
-                          }}
-                          key={counter}
-                          style={styles.image}
-                        />
-
-                      </TouchableOpacity>
-                    ) : counter == 2 ? (
-                      counter = counter + 1,
-                      <TouchableOpacity
-                        key={counter}
-                        style={styles.touchContainer}
-                        onPress={() => {
-                          setShowImageView(true),
-                            setFeedImages(item?.postImg);
-                        }}
-                      >
-
-                        <ImageBackground
-                          source={{
-                            uri: data,
-                          }}
-                          key={counter}
-                          style={[styles.image, styles.moreImage]}
-                        >
-
+                {item?.postImg?.length <= 2 ? (
+                  <View style={styles.imageContainer}>
+                    {item?.postImg?.map(
+                      data => (
+                        (counter = counter + 1),
+                        (
                           <TouchableOpacity
+                            key={counter}
+                            style={styles.touchContainer}
                             onPress={() => {
                               setShowImageView(true),
                                 setFeedImages(item?.postImg);
                             }}
                           >
-                            <Text style={styles.extraImage}>
-                              {strings.message.plus}
-                              {item?.postImg?.length - 1}
-                            </Text>
+                            {user?.isVIP == true ? (
+                              <>
+                                <Image
+                                  blurRadius={20}
+                                  style={styles.thumbnailImage}
+                                  source={{
+                                    uri:
+                                      item?.postMediaContent[0]?.mimetype?.split(
+                                        '/'
+                                      )[0] == 'image'
+                                        ? item?.postMediaContent[0]?.url
+                                        : item?.postMediaContent[0]?.cover,
+                                  }}
+                                />
+                                <View style={styles.vipOnlyContainer}>
+                                  <FontAwesomeIcon
+                                    icon={faLock}
+                                    size={ms(10)}
+                                    style={styles.lock}
+                                  />
+                                  <Text style={styles.vipOnlyText}>
+                                    {strings.giveaway.vipOnly}
+                                  </Text>
+                                </View>
+                              </>
+                            ) : null}
+
+                            <Image
+                              source={{
+                                uri: data,
+                              }}
+                              style={styles.image}
+                            />
                           </TouchableOpacity>
-                        </ImageBackground>
-                      </TouchableOpacity>
-                    ) : null
-                  )}
-                </View>
-              ) : null}
-              <CardFooter
-                postType={POST_TYPE.REGULAR}
-                postIndex={index}
-                postID={item?.id}
-                postUserID={item?.userId}
-                userID={loggedInId?.id}
-                likeCount={item?.upVote}
-                disLikeCount={item?.downVote}
-                //      upVoteUserID={item?.upVoteUserId}
-                //  downVoteUserID={item?.downVoteUserId}
-                commentCount={item?.comments_aggregate?.aggregate?.count ?? 0}
-                commentPress={() => console.log("Comment")}
-                sharePress={() => console.log("share")}
-                morePress={() => {
-                  //      setPostIndex(index)
-                  setOpenMore(true)
+                        )
+                      )
+                    )}
+                  </View>
+                ) : item?.postImg?.length > 2 ? (
+                  ((counter = 1),
+                    (
+                      <View style={styles.imageContainer}>
+                        {item?.postImg?.map(data =>
+                          counter == 1
+                            ? ((counter = counter + 1),
+                              (
+                                <TouchableOpacity
+                                  key={counter}
+                                  style={styles.touchContainer}
+                                  onPress={() => {
+                                    setShowImageView(true),
+                                      setFeedImages(item?.postImg);
+                                    // console.log(feedImages)
+                                  }}
+                                >
+                                  <Image
+                                    source={{
+                                      uri: data,
+                                    }}
+                                    key={counter}
+                                    style={styles.image}
+                                  />
+                                </TouchableOpacity>
+                              ))
+                            : counter == 2
+                              ? ((counter = counter + 1),
+                                (
+                                  <TouchableOpacity
+                                    key={counter}
+                                    style={styles.touchContainer}
+                                    onPress={() => {
+                                      setShowImageView(true),
+                                        setFeedImages(item?.postImg);
+                                    }}
+                                  >
+                                    <ImageBackground
+                                      source={{
+                                        uri: data,
+                                      }}
+                                      key={counter}
+                                      style={[styles.image, styles.moreImage]}
+                                    >
+                                      <TouchableOpacity
+                                        onPress={() => {
+                                          setShowImageView(true),
+                                            setFeedImages(item?.postImg);
+                                        }}
+                                      >
+                                        <Text style={styles.extraImage}>
+                                          {strings.message.plus}
+                                          {item?.postImg?.length - 1}
+                                        </Text>
+                                      </TouchableOpacity>
+                                    </ImageBackground>
+                                  </TouchableOpacity>
+                                ))
+                              : null
+                        )}
+                      </View>
+                    ))
+                ) : null}
+                <CardFooter
+                  postType={POST_TYPE.USER_PROFILE}
+                  postIndex={index}
+                  postID={item?.id}
+                  postUserID={item?.userId}
+                  userID={userr?.id}
+                  likeCount={item?.upVote}
+                  disLikeCount={item?.downVote}
+                  commentCount={item.comments_aggregate?.aggregate.count || 0}
+                  commentPress={() =>
+                    navigation.navigate(NAVIGATION.comments, {
+                      DATA: item,
+                      POST_INDEX: index,
+                      type: POST_TYPE.USER_PROFILE,
+                    })
+                  }
+                  sharePress={() => console.log('share')}
+                  morePress={() => {
+                    setOpenMore(true);
+                    setpostId(item?.id);
+                    setPostUserId(item?.userId);
+                    setPostTitle(item?.postTitle);
+                    setPostBody(item?.postBody);
+                    setPostImg(item?.postImg);
+                  }}
+                />
+              </Card>
+            </TouchableOpacity>
+          )}
+        />
+      </View>
 
-                  setpostId(item?.id);
-                  setPostUserId(item?.userId);
-                  setPostTitle(item?.postTitle);
-                  setPostBody(item?.postBody);
-                  setPostImg(item?.postImg);
-                }}
-              />
-            </Card>
-          </TouchableOpacity>
-        )}
-      />
-
-      {
-        showImageView && (
-          <AppImageViewer
-            visible={showImageView}
-            setVisible={() => setShowImageView(false)}
-            images={feedImages}
+      {showImageView && (
+        <AppImageViewer
+          visible={showImageView}
+          setVisible={() => setShowImageView(false)}
+          images={feedImages}
+        />
+      )}
+      {openMore && (
+        <ModalDown open={openMore} setOpen={setOpenMore}>
+          <ModalList
+            onPress={onFollow}
+            title={
+              user.is_following == true
+                ? strings.operations.unFollow + ' @' + user?.username
+                : strings.operations.follow + ' @' + user?.username
+            }
+            icon={faUserPlus}
+            iconColor={theme.light.colors.primary}
+            iconBg={theme.light.colors.primaryBgLight}
           />
-        )
-      }
-      {
-        openMore && (
-          <ModalDown open={openMore} setOpen={setOpenMore}>
-            <ModalList
-              onPress={onFollow}
-              title={user.is_following == true ? strings.operations.unFollow + ' @' + user?.username : strings.operations.follow + ' @' + user?.username}
-              icon={faUserPlus}
-              iconColor={theme.light.colors.primary}
-              iconBg={theme.light.colors.primaryBgLight}
-            />
-            <ModalList
-              title={strings.operations.sendPrivateMessage}
-              icon={faMessage}
-              iconColor={theme.light.colors.success}
-              iconBg={theme.light.colors.successBgLight}
-            // onPress = {()=> Alert.alert("working")}
-            />
-            <HorizontalLine
-              color={theme.light.colors.infoBgLight}
-              paddingTop={15}
-              paddingBottom={8}
-            />
-            <ModalList
-              title={strings.operations.report}
-              icon={faFlag}
-              iconColor={theme.light.colors.secondary}
-              iconBg={theme.light.colors.infoBgLight}
-            />
-            <ModalList
-              title={strings.operations.block}
-              icon={faXmark}
-              iconColor={theme.light.colors.secondary}
-              iconBg={theme.light.colors.infoBgLight}
-            />
-          </ModalDown>
-        )
-      }
-      {
-        openEdit && (
-          <ModalDown open={openEdit} setOpen={setOpenEdit}>
-            <ModalList
-              title={strings.operations.edit}
-              icon={faPen}
-              iconBg={theme.light.colors.infoBgLight}
-              iconColor={theme.light.colors.info}
-            />
-            <HorizontalLine
-              color={theme.light.colors.infoBgLight}
-              paddingTop={15}
-              paddingBottom={8}
-            />
-            <ModalList
-              title={strings.operations.remove}
-              icon={faTrash}
-              iconBg={theme.light.colors.infoBgLight}
-              iconColor={theme.light.colors.secondary}
-            />
-          </ModalDown>
-        )
-      }
-      <Loader visible={loader} style={{ backgroundColor: 'white' }} size="large" />
-
-    </SafeAreaView >
+          <ModalList
+            title={strings.operations.sendPrivateMessage}
+            icon={faMessage}
+            iconColor={theme.light.colors.success}
+            iconBg={theme.light.colors.successBgLight}
+          // onPress = {()=> Alert.alert("working")}
+          />
+          <HorizontalLine
+            color={theme.light.colors.infoBgLight}
+            paddingTop={15}
+            paddingBottom={8}
+          />
+          <ModalList
+            title={strings.operations.report}
+            icon={faFlag}
+            iconColor={theme.light.colors.secondary}
+            iconBg={theme.light.colors.infoBgLight}
+          />
+          <ModalList
+            title={strings.operations.block}
+            icon={faXmark}
+            iconColor={theme.light.colors.secondary}
+            iconBg={theme.light.colors.infoBgLight}
+          />
+        </ModalDown>
+      )}
+      {openEdit && (
+        <ModalDown open={openEdit} setOpen={setOpenEdit}>
+          <ModalList
+            title={strings.operations.edit}
+            icon={faPen}
+            iconBg={theme.light.colors.infoBgLight}
+            iconColor={theme.light.colors.info}
+          />
+          <HorizontalLine
+            color={theme.light.colors.infoBgLight}
+            paddingTop={15}
+            paddingBottom={8}
+          />
+          <ModalList
+            title={strings.operations.remove}
+            icon={faTrash}
+            iconBg={theme.light.colors.infoBgLight}
+            iconColor={theme.light.colors.secondary}
+          />
+        </ModalDown>
+      )}
+      <Loader
+        visible={loader}
+        style={{ backgroundColor: 'white' }}
+        size="large"
+      />
+    </SafeAreaView>
   );
 }
 
@@ -540,10 +539,9 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 75,
   },
-  cardContainer: { margin: ms(10), },
+  cardContainer: { margin: ms(10) },
   iconContiner: {
     flexDirection: 'row',
-
   },
   icon: {
     margin: ms(10),

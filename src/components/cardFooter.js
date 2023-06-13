@@ -28,6 +28,11 @@ import { cleanSingle } from 'react-native-image-crop-picker';
 import { POST_TYPE, SCREEN_TYPE } from '@/constants/enums';
 import { getUser } from '@/selectors/UserSelectors';
 import { find } from 'lodash';
+import {
+  getAllPostByLoggedInUserSuccess,
+  getAllPostByUserIdSuccess,
+} from '@/actions/UserActions';
+import { memo } from 'react';
 
 export const CardFooter = ({
   postID,
@@ -58,16 +63,19 @@ export const CardFooter = ({
   const user = useSelector(getUser);
   const SEARCH_DATA = useSelector(getSearchData);
   const singlePost = useSelector(getPostByIdData);
+
+  // const profileFeed = useSelector()
   const postArray =
     postType === POST_TYPE.REGULAR
       ? ALLPOST
       : POST_TYPE.PROFILE === postType
         ? user?.getAllPostsByLoggedInUser
-        : SEARCH_DATA;
+        : POST_TYPE.USER_PROFILE === postType
+          ? user?.getAllPostsByUserId
+          : SEARCH_DATA;
 
   const upVoteHandel = () => {
     onUpVote(postID, userID);
-    console.log('upvote', postID, userID);
   };
   const downVoteHandel = () => {
     onDownVote(postID, userID);
@@ -100,7 +108,13 @@ export const CardFooter = ({
         dispatch(searchAllPostSuccess([...postArray]));
         break;
       case POST_TYPE.SINGLE_POST:
-        dispatch(getPostByIdSuccess({ ...singlePost }));
+        dispatch(getPostByIdSuccess(post));
+        break;
+      case POST_TYPE.PROFILE:
+        dispatch(getAllPostByLoggedInUserSuccess([...postArray]));
+        break;
+      case POST_TYPE.USER_PROFILE:
+        dispatch(getAllPostByUserIdSuccess([...postArray]));
         break;
       default:
         dispatch(
@@ -109,7 +123,8 @@ export const CardFooter = ({
           })
         );
     }
-    await UserController.upVote(postID, userID);
+    const a = await UserController.upVote(postID, userID);
+    console.log('============>adadada', a, postID, userID);
   };
   const onDownVote = async (postID, userID) => {
     const post =
@@ -137,7 +152,13 @@ export const CardFooter = ({
         dispatch(searchAllPostSuccess([...postArray]));
         break;
       case POST_TYPE.SINGLE_POST:
-        dispatch(getPostByIdSuccess({ ...singlePost }));
+        dispatch(getPostByIdSuccess(post));
+        break;
+      case POST_TYPE.PROFILE:
+        dispatch(getAllPostByLoggedInUserSuccess([...postArray]));
+        break;
+      case POST_TYPE.USER_PROFILE:
+        dispatch(getAllPostByUserIdSuccess([...postArray]));
         break;
       default:
         dispatch(
@@ -146,7 +167,8 @@ export const CardFooter = ({
           })
         );
     }
-    await UserController.downVote(postID, userID);
+    const a = await UserController.downVote(postID, userID);
+    console.log("Downvote ======", userID, "   ", postID);
   };
   const generateLink = async () => {
     try {
@@ -180,7 +202,7 @@ export const CardFooter = ({
       url: getLink,
     });
   };
-  console.log();
+
   return (
     <View style={styles.footer}>
       <View style={styles.reactionContainer}>
@@ -193,6 +215,7 @@ export const CardFooter = ({
               backgroundColor: theme.light.colors.infoBgLight,
             },
             POST_TYPE.SINGLE_POST === postType &&
+            singlePost &&
             singlePost?.has_upvoted && {
               backgroundColor: theme.light.colors.infoBgLight,
             },
@@ -329,97 +352,3 @@ const styles = StyleSheet.create({
   EllipsisIcon: { margin: ms(10) },
   ShareNodeIcon: { margin: ms(10) },
 });
-
-const a = {
-  comments_aggregate: { aggregate: { count: 20 } },
-  created_at: '2023-06-01T12:13:02.322373+00:00',
-  downVote: 0,
-  downVoteUserId: [],
-  has_downvoted: false,
-  has_upvoted: true,
-  id: '35cc85ed-6c9e-4150-9e52-6899a4a74b8b',
-  isAdminPost: true,
-  isExclusive: false,
-  isGiveaway: false,
-  isPinned: true,
-  isReported: false,
-  isUSAonly: false,
-  isVIPonly: false,
-  is_following: true,
-  postBody: 'Amazing setup!',
-  postExpires: null,
-  postImg: ['https://d2wwqw32p0xkid.cloudfront.net/photo-1685621562899'],
-  postMediaContent: [
-    {
-      cover: '',
-      mimetype: 'image/jpeg',
-      url: 'https://d2wwqw32p0xkid.cloudfront.net/photo-1685621562899',
-    },
-    {
-      cover: 'https://d2wwqw32p0xkid.cloudfront.net/photo-1685621575698',
-      mimetype: 'video/mp4',
-      url: 'https://d2wwqw32p0xkid.cloudfront.net/photo-1685621565897',
-    },
-  ],
-  postTitle: '',
-  postVideo: [
-    {
-      cover: 'https://d2wwqw32p0xkid.cloudfront.net/photo-1685621579919',
-      url: 'https://d2wwqw32p0xkid.cloudfront.net/photo-1685621565897',
-    },
-  ],
-  shared: 0,
-  sharedUserId: [],
-  upVote: 3,
-  upVoteUserId: [
-    '6aae7065-5341-45b1-b717-0c3e3256dc2f',
-    'b9902993-ca3f-4a2f-9de8-397bf6f4767e',
-    'ce656365-b90f-4b5f-aab6-b436051171f5',
-  ],
-  updated_at: '2023-06-01T12:13:02.322373+00:00',
-  user: {
-    followers: [],
-    following: ['ce656365-b90f-4b5f-aab6-b436051171f5'],
-    fullName: 'JatieVIP',
-    profilePic: 'https://d2wwqw32p0xkid.cloudfront.net/photo-1679288548479.jpg',
-    username: 'jatieVIP',
-  },
-  userId: '6aae7065-5341-45b1-b717-0c3e3256dc2f',
-};
-
-const c = {
-  comments_aggregate: { aggregate: { count: 11 } },
-  created_at: '2023-06-06T10:58:27.052617+00:00',
-  downVote: 1,
-  downVoteUserId: [],
-  has_downvoted: true,
-  has_upvoted: true,
-  id: 'f370b7f4-0efb-478d-b87b-fb42be18cf17',
-  isAdminPost: true,
-  isExclusive: false,
-  isGiveaway: false,
-  isPinned: false,
-  isReported: false,
-  isUSAonly: false,
-  isVIPonly: false,
-  is_following: true,
-  postBody: 'helooooooooooooooooooooooooo',
-  postExpires: null,
-  postImg: [],
-  postMediaContent: [],
-  postTitle: '',
-  postVideo: [],
-  shared: 0,
-  sharedUserId: [],
-  upVote: 2,
-  upVoteUserId: ['6aae7065-5341-45b1-b717-0c3e3256dc2f'],
-  updated_at: '2023-06-06T10:58:27.052617+00:00',
-  user: {
-    followers: [],
-    following: ['ce656365-b90f-4b5f-aab6-b436051171f5'],
-    fullName: 'JatieVIP',
-    profilePic: 'https://d2wwqw32p0xkid.cloudfront.net/photo-1679288548479.jpg',
-    username: 'jatieVIP',
-  },
-  userId: '6aae7065-5341-45b1-b717-0c3e3256dc2f',
-};

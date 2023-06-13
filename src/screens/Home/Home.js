@@ -13,8 +13,6 @@ import {
   faUserPlus,
   faXmark,
   faPen,
-  faCircle,
-  faVideoCamera,
   faPlay,
   faLock,
 } from '@fortawesome/free-solid-svg-icons';
@@ -65,9 +63,26 @@ import { Logo } from '@/assets';
 import { faBell, faSearch } from '@fortawesome/pro-regular-svg-icons';
 import { getUser } from '@/selectors/UserSelectors';
 import { navigationRef } from '@/navigation/RootNavigation';
-import { getAllPost, TYPES, deletePost, reportPost, followUser, blockUser, unFollowUser, getAllPostPagination, getSchedulePost } from '@/actions/PostActions';
-import { getAllPostData, getSchedulePostData, getSearchData } from '@/selectors/PostSelectors';
-import { isLoadingSelector, successSelector } from '@/selectors/StatusSelectors';
+import {
+  getAllPost,
+  TYPES,
+  deletePost,
+  reportPost,
+  followUser,
+  blockUser,
+  unFollowUser,
+  getAllPostPagination,
+  getSchedulePost,
+} from '@/actions/PostActions';
+import {
+  getAllPostData,
+  getSchedulePostData,
+  getSearchData,
+} from '@/selectors/PostSelectors';
+import {
+  isLoadingSelector,
+  successSelector,
+} from '@/selectors/StatusSelectors';
 import ImagePicker from 'react-native-image-crop-picker';
 import { globalReset } from '@/actions/GlobalActions';
 import SearchPost from './SearchPost';
@@ -79,14 +94,14 @@ import { SwiperViewer } from '@/components/SwiperComponent';
 import { useRef } from 'react';
 
 export function Home({ navigation }) {
-  const ALLPOST = useSelector(getAllPostData)
-  const SEARCH_DATA = useSelector(getSearchData)
-  const flatListRef = useRef()
+  const ALLPOST = useSelector(getAllPostData);
+  const SEARCH_DATA = useSelector(getSearchData);
+  const flatListRef = useRef();
   const userType = useSelector(state => state.userType);
   const user = useSelector(getUser);
-  const scheduledPostData = useSelector(getSchedulePostData)
+  const scheduledPostData = useSelector(getSchedulePostData);
   // console.log("USERRR", user);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [vipArea, setVipArea] = useState(strings.home.newFeed);
   const [open, setOpen] = useState(false);
   const [openReport, setOpenReport] = useState(false);
@@ -95,7 +110,7 @@ export function Home({ navigation }) {
   const [follwingSwitch, setFollowingSwtich] = useState(false);
   const [showImageView, setShowImageView] = useState(false);
   const [feedImages, setFeedImages] = useState([]);
-  const [editData, setEditdata] = useState({})
+  const [editData, setEditdata] = useState({});
   const [reportListOpen, setReportListOpen] = useState(false);
   const [fetchFeedPost, setFetchFeedPost] = useState(true);
   const [loadMoreRundownLoader, setLoadMoreRundownLoader] = useState(false);
@@ -103,7 +118,10 @@ export function Home({ navigation }) {
     { label: 'Explicit Content', value: 'Explicit Content' },
     { label: 'Bullying or Harassment', value: 'Bullying or Harassment' },
     { label: 'Spam', value: 'Spam' },
-    { label: 'Misleading Information or Fake News', value: 'Misleading Information or Fake News' },
+    {
+      label: 'Misleading Information or Fake News',
+      value: 'Misleading Information or Fake News',
+    },
   ]);
 
   const [reportOptionValue, setReportOptionValue] = useState('');
@@ -113,67 +131,78 @@ export function Home({ navigation }) {
   const [postTitle, setPostTitle] = useState('');
   const [postBody, setPostBody] = useState('');
   const [postImg, setPostImg] = useState([]);
-  const [isAdminPost, setIsAdminPost] = useState(false)
+  const [isAdminPost, setIsAdminPost] = useState(false);
 
   const FILTER_DATA = [
     { title: strings.home.recent, value: strings.sortBy.recent },
     { title: strings.home.popularToday, value: strings.sortBy.today },
     { title: strings.home.popularThisWeek, value: strings.sortBy.week },
     { title: strings.home.popularThisMonth, value: strings.sortBy.month },
-
-  ]
+  ];
   // click on more
   const [postUserName, setPostUserName] = useState('');
   const [postUserFollowed, setPostUserFollowed] = useState(false);
   const [postIndex, setPostIndex] = useState(0);
-  const [reportImage, setreportImage] = useState(null)
+  const [reportImage, setreportImage] = useState(null);
 
-  //Search Post 
-  const [searchEnabled, setSearchEnabled] = useState(false)
-  const [searchText, setsearchText] = useState('')
+  //Search Post
+  const [searchEnabled, setSearchEnabled] = useState(false);
+  const [searchText, setsearchText] = useState('');
 
   // for delete
   const [openReplace, setReplace] = useState(false);
 
-
   useEffect(() => {
-    dispatch(getSchedulePost())
-    const page = ""
-    dispatch(getAllPost(user?.id, sortBy, follwingSwitch, vipArea == `${strings.home.newFeed}` ? false : true, page))
-    if (vipArea == strings.home.vipArea && userType.user == `${strings.userType.free}`) {
-      setVipArea(strings.home.newFeed)
-      navigation.navigate(NAVIGATION.upgradeMembership)
+    dispatch(getSchedulePost());
+    const page = '';
+    dispatch(
+      getAllPost(
+        user?.id,
+        sortBy,
+        follwingSwitch,
+        vipArea == `${strings.home.newFeed}` ? false : true,
+        page
+      )
+    );
+    if (
+      vipArea == strings.home.vipArea &&
+      userType.user == `${strings.userType.free}`
+    ) {
+      setVipArea(strings.home.newFeed);
+      navigation.navigate(NAVIGATION.upgradeMembership);
     }
   }, [sortBy, follwingSwitch, vipArea]);
 
-
   useEffect(() => {
-    dynamicLinks().getInitialLink().then((link) => {
-      handleDynamicLink(link)
-
-    })
+    dynamicLinks()
+      .getInitialLink()
+      .then(link => {
+        handleDynamicLink(link);
+      });
     const linkingListener = dynamicLinks().onLink(handleDynamicLink);
     return () => {
       linkingListener();
-    }
-  }, [])
+    };
+  }, []);
 
-
-  const handleDynamicLink = (link) => {
+  const handleDynamicLink = link => {
     if (!!link?.url) {
       const params = queryString.parse(link.url.split('?')[1]);
       const postId = params.postId;
       const postIndex = params.postIndex;
       setTimeout(() => {
         if (postId && postIndex !== undefined) {
-          navigationRef.navigate(NAVIGATION.singlePost, { postId: postId, postIndex: postIndex })
+          navigationRef.navigate(NAVIGATION.singlePost, {
+            postId: postId,
+            postIndex: postIndex,
+          });
         }
       }, 500);
     }
-  }
+  };
 
   const isLoading = useSelector(state =>
-    isLoadingSelector([TYPES.GET_ALL_POST, TYPES.SEARCH_ALL_POST,], state)
+    isLoadingSelector([TYPES.GET_ALL_POST, TYPES.SEARCH_ALL_POST], state)
   );
   const isLoadingMore = useSelector(state =>
     isLoadingSelector([TYPES.GET_ALL_POST_PAGINATION], state)
@@ -181,17 +210,30 @@ export function Home({ navigation }) {
 
   const isShowReportToast = useSelector(state =>
     successSelector([TYPES.REPORT_POST], state)
-  )
+  );
 
   const onDelete = () => {
-    dispatch(deletePost(postId, postUserId, user?.id, userType.user, NAVIGATION.home));
-    const page = ""
-    dispatch(getAllPost(user?.id, sortBy, follwingSwitch, vipArea == `${strings.home.newFeed}` ? false : true, page))
-    if (vipArea == strings.home.vipArea && userType.user == `${strings.userType.free}`) {
-      setVipArea(strings.home.newFeed)
-      navigation.navigate(NAVIGATION.upgradeMembership)
+    dispatch(
+      deletePost(postId, postUserId, user?.id, userType.user, NAVIGATION.home)
+    );
+    const page = '';
+    dispatch(
+      getAllPost(
+        user?.id,
+        sortBy,
+        follwingSwitch,
+        vipArea == `${strings.home.newFeed}` ? false : true,
+        page
+      )
+    );
+    if (
+      vipArea == strings.home.vipArea &&
+      userType.user == `${strings.userType.free}`
+    ) {
+      setVipArea(strings.home.newFeed);
+      navigation.navigate(NAVIGATION.upgradeMembership);
     }
-  }
+  };
 
   const SelectFromGallery = () => {
     ImagePicker.openPicker({
@@ -200,46 +242,48 @@ export function Home({ navigation }) {
       cropping: true,
       freeStyleCropEnabled: true,
       cropperCircleOverlay: true,
-    }).then(image => {
-      console.log('check uploaded image', image);
-      setreportImage(image)
-    }).catch(error => console.log('report image picker error', error));
+    })
+      .then(image => {
+        console.log('check uploaded image', image);
+        setreportImage(image);
+      })
+      .catch(error => console.log('report image picker error', error));
   };
-
 
   let counter = 1;
   let DATA = {
-    postId, postTitle, postBody, postImg, sortBy, follwingSwitch
-  }
+    postId,
+    postTitle,
+    postBody,
+    postImg,
+    sortBy,
+    follwingSwitch,
+  };
   const onFollow = () => {
     // setPostUserFollowed(true)
-    setOpen(false)
+    setOpen(false);
     if (ALLPOST[postIndex].is_following) {
-      dispatch(unFollowUser(user?.id, postUserId, strings.home.post))
-      dispatch(followers(user?.id))
+      dispatch(unFollowUser(user?.id, postUserId, strings.home.post));
+      dispatch(followers(user?.id));
+    } else {
+      dispatch(followUser(user?.id, postUserId, strings.home.post));
     }
-    else {
-      dispatch(followUser(user?.id, postUserId, strings.home.post))
-    }
-    setPostUserName(''),
-      setPostUserId(''),
-      setPostIndex()
-  }
+    setPostUserName(''), setPostUserId(''), setPostIndex();
+  };
   const onBlock = () => {
-    dispatch(blockUser(user?.id, postUserId, postIndex))
-    setOpen(false)
-    dispatch(getAllPost(user?.id, sortBy, follwingSwitch))
-  }
-  const onViewImageVideo = (data) => {
-
+    dispatch(blockUser(user?.id, postUserId, postIndex));
+    setOpen(false);
+    dispatch(getAllPost(user?.id, sortBy, follwingSwitch));
+  };
+  const onViewImageVideo = data => {
     //   let arr=[]
     // for (i=0;i<data.postImg.length;i++){
 
     // }
     setShowImageView(true),
       // setFeedImages(item.postImg)
-      setFeedImages(data.postMediaContent)
-  }
+      setFeedImages(data.postMediaContent);
+  };
 
   const handleScroll = ({ nativeEvent }) => {
     const { layoutMeasurement, contentOffset, contentSize } = nativeEvent;
@@ -247,7 +291,7 @@ export function Home({ navigation }) {
       layoutMeasurement.height + contentOffset.y >= contentSize.height - 50;
 
     if (isEndReached) {
-      onLoadMorePost()
+      onLoadMorePost();
       // fetchMoreData();
     }
   };
@@ -255,22 +299,25 @@ export function Home({ navigation }) {
   // Add the event listener when the component mounts
   // and remove it when the component unmounts
 
-
   const onLoadMorePost = () => {
-    const post = ALLPOST.slice(-1)
-    console.log("LAST_POST===", post[0].created_at);
-    const page = post[0].created_at
-    dispatch(getAllPostPagination(user?.id, sortBy, follwingSwitch, vipArea == `${strings.home.newFeed}` ? false : true, page))
-  }
+    const post = ALLPOST.slice(-1);
+    console.log('LAST_POST===', post[0].created_at);
+    const page = post[0].created_at;
+    dispatch(
+      getAllPostPagination(
+        user?.id,
+        sortBy,
+        follwingSwitch,
+        vipArea == `${strings.home.newFeed}` ? false : true,
+        page
+      )
+    );
+  };
 
   const renderFooterPost = () => {
     return (
       <View style={{}}>
-        {isLoadingMore &&
-          <ActivityIndicator size={"large"} color="orange" />
-
-        }
-
+        {isLoadingMore && <ActivityIndicator size={'large'} color="orange" />}
       </View>
     );
   };
@@ -283,8 +330,7 @@ export function Home({ navigation }) {
             <Logo />
           </View>
           <View>
-            <Text
-              style={styles.nameTxt}> {strings.home.newFeed}</Text>
+            <Text style={styles.nameTxt}> {strings.home.newFeed}</Text>
             <View style={styles.filterContainer}>
               <TouchableOpacity
                 style={styles.recent}
@@ -342,38 +388,36 @@ export function Home({ navigation }) {
       {/* feed list */}
 
       <View style={styles.feedContainer}>
-        {isLoading ?
-
+        {isLoading ? (
           <ActivityIndicator
             animating={isLoading}
             color={theme.light.colors.activeTabIcon}
-            size={"large"}
+            size={'large'}
             style={styles.loaderStyle}
-          /> :
+          />
+        ) : (
           <FlatList
             ref={flatListRef}
             ListHeaderComponent={
               <View>
-
                 {/* {userType.user == `${strings.userType.free}` && (
                 
                 )} */}
-                <ShareFeed onPress={() => navigation.navigate(NAVIGATION.post)} />
-
+                <ShareFeed
+                  onPress={() => navigation.navigate(NAVIGATION.post)}
+                />
 
                 {userType.user == `${strings.userType.admin}` && (
                   <SeeSchedulePost
                     title={strings.home.seeSchedulePost}
                     navigation={navigation}
                     count={scheduledPostData ? scheduledPostData.length : 0}
-                  // path={SeeSchedulePost}
+                    // path={SeeSchedulePost}
                   />
                 )}
-
               </View>
             }
             ListFooterComponent={renderFooterPost}
-
             // onEndReached={onLoadMorePost}
             // onEndReachedThreshold={0.5}
             onEndReached={() => {
@@ -381,7 +425,6 @@ export function Home({ navigation }) {
                 // console.log("END===REACHED=========>", fetchFeedPost)
                 onLoadMorePost();
                 setFetchFeedPost(true);
-
               }
             }}
             onMomentumScrollBegin={() => {
@@ -396,15 +439,14 @@ export function Home({ navigation }) {
             contentContainerStyle={{ flexGrow: 1 }}
             renderItem={({ item, index }) => (
               <View style={styles.cardContainer}>
-
-                {(userType.user == `${strings.userType.free}` && vipArea == `${strings.home.vipArea}`) ?
-
-
+                {userType.user == `${strings.userType.free}` &&
+                vipArea == `${strings.home.vipArea}` ? (
                   <TouchableOpacity
-
-                    onPress={() => userType.user == `${strings.userType.free}` && navigation.navigate(NAVIGATION.upgradeMembership)}
+                    onPress={() =>
+                      userType.user == `${strings.userType.free}` &&
+                      navigation.navigate(NAVIGATION.upgradeMembership)
+                    }
                   >
-
                     <Card>
                       <CardHeader
                         fullName={item?.user?.fullName}
@@ -423,7 +465,12 @@ export function Home({ navigation }) {
                             blurRadius={4}
                             style={styles.thumbnailImage}
                             source={{
-                              uri: item?.postMediaContent[0]?.mimetype?.split("/")[0] == "image" ? item?.postMediaContent[0]?.url : item?.postMediaContent[0]?.cover,
+                              uri:
+                                item?.postMediaContent[0]?.mimetype?.split(
+                                  '/'
+                                )[0] == 'image'
+                                  ? item?.postMediaContent[0]?.url
+                                  : item?.postMediaContent[0]?.cover,
                             }}
                           />
                           <View style={styles.vipOnlyContainer}>
@@ -436,13 +483,11 @@ export function Home({ navigation }) {
                               {strings.giveaway.vipOnly}
                             </Text>
                           </View>
-
                         </View>
                       ) : null}
-
                     </Card>
                   </TouchableOpacity>
-                  :
+                ) : (
                   <Card>
                     <CardHeader
                       fullName={item?.user?.fullName}
@@ -455,122 +500,137 @@ export function Home({ navigation }) {
                     />
                     <CardBody text={item.postBody} />
 
-
-
                     {item?.postMediaContent?.length <= 2 ? (
                       <View style={styles.imageContainer}>
-                        {item?.postMediaContent?.map(data => (
-                          counter = counter + 1,
-                          <TouchableOpacity
-                            key={counter}
-                            style={styles.touchContainer}
-                            onPress={() => {
-                              onViewImageVideo(item)
-                            }}
-                          >
-                            {data?.mimetype?.split("/")[0] == "image" ? <Image
-                              source={{
-                                uri: data.url,
-                              }}
-                              style={styles.image}
-                            /> : <ImageBackground
-                              source={{
-                                uri: data?.cover,
-                              }}
-                              key={counter}
-                              style={[styles.image, styles.playButtonBg]}
-                            >
-
+                        {item?.postMediaContent?.map(
+                          data => (
+                            (counter = counter + 1),
+                            (
                               <TouchableOpacity
-                                // activeOpacity={1}
-                                style={styles.playButton}
+                                key={counter}
+                                style={styles.touchContainer}
                                 onPress={() => {
-                                  onViewImageVideo(item)
+                                  onViewImageVideo(item);
                                 }}
                               >
-                                <FontAwesomeIcon
-                                  icon={faPlay}
-                                  size={ms(15)}
-                                  style={styles.Play}
-                                />
-
+                                {data?.mimetype?.split('/')[0] == 'image' ? (
+                                  <Image
+                                    source={{
+                                      uri: data.url,
+                                    }}
+                                    style={styles.image}
+                                  />
+                                ) : (
+                                  <ImageBackground
+                                    source={{
+                                      uri: data?.cover,
+                                    }}
+                                    key={counter}
+                                    style={[styles.image, styles.playButtonBg]}
+                                  >
+                                    <TouchableOpacity
+                                      // activeOpacity={1}
+                                      style={styles.playButton}
+                                      onPress={() => {
+                                        onViewImageVideo(item);
+                                      }}
+                                    >
+                                      <FontAwesomeIcon
+                                        icon={faPlay}
+                                        size={ms(15)}
+                                        style={styles.Play}
+                                      />
+                                    </TouchableOpacity>
+                                  </ImageBackground>
+                                )}
                               </TouchableOpacity>
-                            </ImageBackground>}
-
-
-                          </TouchableOpacity>
-                        ))}
+                            )
+                          )
+                        )}
                       </View>
                     ) : item?.postMediaContent?.length > 2 ? (
-                      counter = 1,
-                      <View style={styles.imageContainer}>
-                        {item?.postMediaContent?.map(data =>
-                          counter == 1 ? (
-                            counter = counter + 1,
-                            <TouchableOpacity
-                              key={counter}
-                              style={styles.touchContainer}
-                              onPress={() => {
-                                onViewImageVideo(item)
-                              }}
-                            >
-                              {data?.mimetype?.split("/")[0] == "image" ? <Image
-                                source={{
-                                  uri: data.url,
-                                }}
-                                style={styles.image}
-                              /> : <ImageBackground
-                                source={{
-                                  uri: data?.cover,
-                                }}
-                                key={counter}
-                                style={[styles.image, styles.playButtonBg]}
-                              >
-
-                                <TouchableOpacity
-                                  // activeOpacity={1}
-                                  style={styles.playButton}
-                                  onPress={() => {
-                                    onViewImageVideo(item)
-                                  }}
-                                >
-                                  <FontAwesomeIcon
-                                    icon={faPlay}
-                                    size={ms(15)}
-                                    style={styles.Play}
-                                  />
-
-                                </TouchableOpacity>
-                              </ImageBackground>}
-                            </TouchableOpacity>
-                          ) : counter == 2 ? (
-                            counter = counter + 1,
-                            <TouchableOpacity
-                              key={counter}
-                              style={styles.touchContainer}
-                              onPress={() => {
-                                onViewImageVideo(item)
-                              }}
-                            >
-                              <ImageBackground
-                                source={{
-                                  uri: data?.mimetype?.split("/")[0] == "image" ? data.url : data?.cover,
-                                }}
-                                key={counter}
-                                style={[styles.image, styles.moreImage]}
-                              >
-                                <TouchableOpacity
-                                  onPress={() => {
-                                    onViewImageVideo(item)
-                                  }}
-                                >
-                                  <Text style={styles.extraImage}>
-                                    {strings.message.plus}
-                                    {item.postMediaContent?.length - 1}
-                                  </Text>
-
-                                </TouchableOpacity>
-                                {/* {data.mimetype.split("/")[0] == "video" &&
+                      ((counter = 1),
+                      (
+                        <View style={styles.imageContainer}>
+                          {item?.postMediaContent?.map(data =>
+                            counter == 1
+                              ? ((counter = counter + 1),
+                                (
+                                  <TouchableOpacity
+                                    key={counter}
+                                    style={styles.touchContainer}
+                                    onPress={() => {
+                                      onViewImageVideo(item);
+                                    }}
+                                  >
+                                    {data?.mimetype?.split('/')[0] ==
+                                    'image' ? (
+                                      <Image
+                                        source={{
+                                          uri: data.url,
+                                        }}
+                                        style={styles.image}
+                                      />
+                                    ) : (
+                                      <ImageBackground
+                                        source={{
+                                          uri: data?.cover,
+                                        }}
+                                        key={counter}
+                                        style={[
+                                          styles.image,
+                                          styles.playButtonBg,
+                                        ]}
+                                      >
+                                        <TouchableOpacity
+                                          // activeOpacity={1}
+                                          style={styles.playButton}
+                                          onPress={() => {
+                                            onViewImageVideo(item);
+                                          }}
+                                        >
+                                          <FontAwesomeIcon
+                                            icon={faPlay}
+                                            size={ms(15)}
+                                            style={styles.Play}
+                                          />
+                                        </TouchableOpacity>
+                                      </ImageBackground>
+                                    )}
+                                  </TouchableOpacity>
+                                ))
+                              : counter == 2
+                              ? ((counter = counter + 1),
+                                (
+                                  <TouchableOpacity
+                                    key={counter}
+                                    style={styles.touchContainer}
+                                    onPress={() => {
+                                      onViewImageVideo(item);
+                                    }}
+                                  >
+                                    <ImageBackground
+                                      source={{
+                                        uri:
+                                          data?.mimetype?.split('/')[0] ==
+                                          'image'
+                                            ? data.url
+                                            : data?.cover,
+                                      }}
+                                      key={counter}
+                                      style={[styles.image, styles.moreImage]}
+                                    >
+                                      <TouchableOpacity
+                                        onPress={() => {
+                                          onViewImageVideo(item);
+                                        }}
+                                      >
+                                        <Text style={styles.extraImage}>
+                                          {strings.message.plus}
+                                          {item.postMediaContent?.length - 1}
+                                        </Text>
+                                      </TouchableOpacity>
+                                      {/* {data.mimetype.split("/")[0] == "video" &&
               <TouchableOpacity
                 // activeOpacity={1}
                 style={styles.playButton}
@@ -583,17 +643,16 @@ export function Home({ navigation }) {
 
               </TouchableOpacity>
             } */}
-
-                              </ImageBackground>
-                            </TouchableOpacity>
-                          ) : null
-                        )}
-                      </View>
+                                    </ImageBackground>
+                                  </TouchableOpacity>
+                                ))
+                              : null
+                          )}
+                        </View>
+                      ))
                     ) : null}
 
-
                     <CardFooter
-
                       // likePress={() => onUpVote(item.id, item.userId, user?.id, item)}
                       // disLikePress={() => onDownVote(item.id, item.userId, user?.id, item)}
                       postID={item?.id}
@@ -605,32 +664,38 @@ export function Home({ navigation }) {
                       commentCount={item?.comments_aggregate?.aggregate?.count}
                       postData={item}
                       postIndex={index}
-                      commentPress={() => navigation.navigate(NAVIGATION.comments, { DATA: item, "POST_INDEX": index })}
+                      commentPress={() =>
+                        navigation.navigate(NAVIGATION.comments, {
+                          DATA: item,
+                          POST_INDEX: index,
+                          type: POST_TYPE.REGULAR,
+                        })
+                      }
                       morePress={() => {
-                        setPostIndex(index)
+                        setPostIndex(index);
                         setIsAdminPost(item?.isAdminPost),
-                          setPostUserName(item?.user?.username)
+                          setPostUserName(item?.user?.username);
                         setOpen(true);
                         setPostUserId(item?.userId);
                         setpostId(item?.id);
-                        setPostTitle(item?.postTitle)
+                        setPostTitle(item?.postTitle);
                         setPostBody(item?.postBody);
                         setPostImg(item?.postImg);
                         setEditdata({
                           ...item,
                           DATA: {
                             sortBy,
-                            follwingSwitch
-                          }
-                        })
+                            follwingSwitch,
+                          },
+                        });
                       }}
                     />
                   </Card>
-                }
+                )}
               </View>
             )}
           />
-        }
+        )}
       </View>
 
       {/* post filter modal */}
@@ -654,22 +719,13 @@ export function Home({ navigation }) {
                     key={index}
                     style={styles.recentList}
                     onPress={() => {
-                      setSortBy(item.value)
-                      setRecentFilterOpen(false)
-                    }
-                    }
+                      setSortBy(item.value);
+                      setRecentFilterOpen(false);
+                    }}
                   >
-                    {sortBy == item.value ? (
-                      CheckIcon
-                    ) : (
-                      <Text> {'   '}</Text>
-                    )}
-                    <Text style={styles.recentListTxt}>
-                      {' '}
-                      {item.title}{' '}
-                    </Text>
+                    {sortBy == item.value ? CheckIcon : <Text> {'   '}</Text>}
+                    <Text style={styles.recentListTxt}> {item.title} </Text>
                   </TouchableOpacity>
-
                 ))}
               </View>
             </View>
@@ -692,7 +748,7 @@ export function Home({ navigation }) {
         />
       )}
       {/*  Slide up for follow, edit , review  */}
-      {open && (
+      {open &&
         (postUserId == user?.id ? (
           <ModalDown open={open} setOpen={setOpen}>
             <ModalList
@@ -703,7 +759,8 @@ export function Home({ navigation }) {
               onPress={() => {
                 navigationRef.navigate(NAVIGATION.updatePost, {
                   prevData: editData,
-                }), setOpen(false);
+                }),
+                  setOpen(false);
               }}
             />
             <HorizontalLine
@@ -716,14 +773,24 @@ export function Home({ navigation }) {
               icon={faTrash}
               iconBg={theme.light.colors.infoBgLight}
               iconColor={theme.light.colors.secondary}
-              onPress={() => { setReplace(true), setOpen(false) }}
+              onPress={() => {
+                setReplace(true), setOpen(false);
+              }}
             />
           </ModalDown>
-        ) :
+        ) : (
           <ModalDown open={open} setOpen={setOpen}>
             <ModalList
-              onPress={() => { onFollow() }}
-              title={(!ALLPOST[postIndex]?.is_following ? strings.operations.follow : strings.operations.unFollow) + " @" + postUserName}
+              onPress={() => {
+                onFollow();
+              }}
+              title={
+                (!ALLPOST[postIndex]?.is_following
+                  ? strings.operations.follow
+                  : strings.operations.unFollow) +
+                ' @' +
+                postUserName
+              }
               icon={faUserPlus}
               iconColor={theme.light.colors.primary}
               iconBg={theme.light.colors.primaryBgLight}
@@ -740,37 +807,35 @@ export function Home({ navigation }) {
               paddingBottom={8}
             />
             {(userType.user == `${strings.userType.free}`) |
-              (userType.user == `${strings.userType.vip}`) ? (
+            (userType.user == `${strings.userType.vip}`) ? (
               <>
-                {
-                  isAdminPost == false &&
+                {isAdminPost == false && (
                   <ModalList
                     title={strings.home.report}
                     icon={faFlag}
                     iconColor={theme.light.colors.secondary}
                     iconBg={theme.light.colors.infoBgLight}
                     onPress={() => {
-                      setReportOptionValue('')
+                      setReportOptionValue('');
                       setOpenReport(true);
                       setOpen(false);
-                      setreportImage(null)
+                      setreportImage(null);
                     }}
                   />
-                }
+                )}
 
-                {isAdminPost == false &&
+                {isAdminPost == false && (
                   <ModalList
-                    onPress={() => { onBlock() }}
-                    title={strings.operations.block + " @" + postUserName}
+                    onPress={() => {
+                      onBlock();
+                    }}
+                    title={strings.operations.block + ' @' + postUserName}
                     // title={(ALLPOST?.data[pos] ? strings.operations.block : strings.operations.unBlock) + " @" + postUserName}
                     icon={faXmark}
                     iconColor={theme.light.colors.secondary}
                     iconBg={theme.light.colors.infoBgLight}
                   />
-                }
-
-
-
+                )}
               </>
             ) : userType.user == `${strings.userType.admin}` ? (
               <>
@@ -779,7 +844,9 @@ export function Home({ navigation }) {
                   icon={faTrash}
                   iconColor={theme.light.colors.secondary}
                   iconBg={theme.light.colors.infoBgLight}
-                  onPress={() => { setReplace(true), setOpen(false) }}
+                  onPress={() => {
+                    setReplace(true), setOpen(false);
+                  }}
                 />
                 <ModalList
                   title={strings.operations.block + strings.home.DummyUser}
@@ -794,12 +861,9 @@ export function Home({ navigation }) {
                   iconBg={theme.light.colors.infoBgLight}
                 />
               </>
-            ) :
-              null
-            }
+            ) : null}
           </ModalDown>
-        )
-      )}
+        ))}
       {/* Replace Popup */}
       {openReplace && (
         <PopUp open={openReplace} setOpen={setReplace}>
@@ -809,7 +873,9 @@ export function Home({ navigation }) {
           <Button
             title={strings.operations.yes}
             style={styles.confirmButton}
-            onPress={() => { onDelete(), setReplace(false) }}
+            onPress={() => {
+              onDelete(), setReplace(false);
+            }}
           />
           <Button
             title={strings.operations.no}
@@ -857,37 +923,37 @@ export function Home({ navigation }) {
             paddingTop={15}
           />
           <View style={styles.reportPostBottomContainer}>
-
             <TouchableOpacity onPress={() => SelectFromGallery()}>
-              {reportImage ?
-                <Image style={{ height: ms(35), width: ms(35), borderRadius: ms(5) }} source={{ uri: reportImage.path }} />
-                :
-                <View pointerEvents='none'>
+              {reportImage ? (
+                <Image
+                  style={{ height: ms(35), width: ms(35), borderRadius: ms(5) }}
+                  source={{ uri: reportImage.path }}
+                />
+              ) : (
+                <View pointerEvents="none">
                   <Icon
                     icon={faImage}
                     size={ms(22)}
                     color={theme.light.colors.secondary}
                   />
                 </View>
-              }
+              )}
             </TouchableOpacity>
 
             <Button
               title={strings.operations.submit}
               disabled={!reportOptionValue}
               opacity={reportOptionValue ? 1 : 0.4}
-
               style={styles.reportPostButton}
               onPress={() => {
-
                 const reportData = {
                   objectId: postId,
                   reportedBy: user?.id,
                   reportTitle: reportOptionValue,
                   reportBody: reportComment,
-                  reportImg: reportImage
-                }
-                dispatch(reportPost(reportData))
+                  reportImg: reportImage,
+                };
+                dispatch(reportPost(reportData));
                 setOpenReport(false);
               }}
             />
@@ -903,7 +969,7 @@ export function Home({ navigation }) {
         />
       )}
 
-      {searchEnabled &&
+      {searchEnabled && (
         <SearchPost
           {...{
             setSearchEnabled,
@@ -912,11 +978,10 @@ export function Home({ navigation }) {
             setsearchText,
             searchText,
             user,
-            styles
+            styles,
           }}
         />
-      }
-
+      )}
     </SafeAreaView>
   );
 }
@@ -958,15 +1023,15 @@ const styles = StyleSheet.create({
     marginTop: vs(-10),
     margin: ms(10),
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   searchBoxTextFirld: {
     paddingRight: ms(45),
     backgroundColor: theme.light.colors.white,
-    borderWidth: 2
+    borderWidth: 2,
   },
   searchButton: {
-    marginLeft: ms(-30)
+    marginLeft: ms(-30),
   },
   left: {
     flexDirection: 'row',
@@ -1090,7 +1155,6 @@ const styles = StyleSheet.create({
     // paddingRight: ms(40),
     justifyContent: 'space-between',
     marginRight: ms(-5),
-
   },
   extraImage: {
     color: theme.light.colors.white,
@@ -1215,7 +1279,12 @@ const styles = StyleSheet.create({
     color: theme.light.colors.infoBgLight,
   },
   playButton: {
-    backgroundColor: theme.light.colors.primary, width: 50, height: 50, borderRadius: 100, justifyContent: "center", alignItems: "center"
+    backgroundColor: theme.light.colors.primary,
+    width: 50,
+    height: 50,
+    borderRadius: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   // delet confirm
@@ -1238,7 +1307,9 @@ const styles = StyleSheet.create({
     color: theme.light.colors.text,
   },
   loaderStyle: {
-    alignSelf: "center", justifyContent: "center", marginTop: ms(50)
+    alignSelf: 'center',
+    justifyContent: 'center',
+    marginTop: ms(50),
   },
   thumbnailImage: {
     width: '100%',

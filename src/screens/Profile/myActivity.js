@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+} from 'react-native';
 import { theme } from '@/theme';
 import { Card, CardHeader, Icon } from '@/components';
 import {
@@ -14,23 +20,33 @@ import { Data } from './ProfileData/myActivityData';
 import { useIsFocused } from '@react-navigation/native';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllActivityByUserId, getAllPostsByLoggedInUser } from '@/actions/UserActions';
+import {
+  TYPES,
+  getAllActivityByUserId,
+  getAllPostsByLoggedInUser,
+} from '@/actions/UserActions';
 import { getUser } from '@/selectors/UserSelectors';
 import { navigate } from '@/navigation/RootNavigation';
 import { NAVIGATION } from '@/constants';
-
+import { isLoadingSelector } from '@/selectors/StatusSelectors';
 
 export default function MyActivity({ navigation }) {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const focus = useIsFocused();
   const user = useSelector(getUser);
 
-  console.log("myactivity DAta", user?.MyActivityKey)
+  const isActvityLoading = useSelector(state =>
+    isLoadingSelector([TYPES.GET_ALL_ACTIVITY], state)
+  );
 
+  console.log(
+    '=====================',
+    isActvityLoading,
+    '======================'
+  );
   useEffect(() => {
     if (focus) {
-      dispatch(getAllActivityByUserId(user.id))
-
+      dispatch(getAllActivityByUserId(user.id));
     }
   }, [focus]);
   return (
@@ -47,7 +63,6 @@ export default function MyActivity({ navigation }) {
                 profilePic={user.profilePic}
                 time={item.created_at}
                 userId={item?.userId}
-
               />
               <View style={styles.activity}>
                 {item.activityDetails == 'upvoted this' ? (
@@ -74,7 +89,7 @@ export default function MyActivity({ navigation }) {
                     ]}
                   />
                 ) : null}
-                {item.activityDetails == "commented on this" ? (
+                {item.activityDetails == 'commented on this' ? (
                   <Icon
                     icon={faComment}
                     size={ms(15)}
@@ -88,12 +103,14 @@ export default function MyActivity({ navigation }) {
                 ) : null}
                 <View style={styles.textContainer}>
                   <Text style={styles.statsTxt}> {item.activityDetails} </Text>
-                  <TouchableOpacity onPress={() => navigate(NAVIGATION.singlePost, { postId: item.activityObjectId })}>
-                    <Text style={styles.reactOnTxt}>
-
-                      {`post`}{' '}
-
-                    </Text>
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigate(NAVIGATION.singlePost, {
+                        postId: item.activityObjectId,
+                      })
+                    }
+                  >
+                    <Text style={styles.reactOnTxt}>{`post`} </Text>
                   </TouchableOpacity>
                 </View>
               </View>

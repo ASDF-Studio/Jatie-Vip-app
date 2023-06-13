@@ -4,21 +4,17 @@ import { HttpClient } from './HttpClient';
 import { showMessage } from 'react-native-flash-message';
 
 export class UserController {
-
-
   static async login(number) {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.LOGIN;
       var data = JSON.stringify({
-        "phoneNumber": number
+        phoneNumber: number,
       });
       HttpClient.post(endpoint, data)
-        .then((response) => {
-
-
+        .then(response => {
           resolve(response);
         })
-        .catch((error) => {
+        .catch(error => {
           reject(new Error(error.message));
         });
     });
@@ -28,14 +24,14 @@ export class UserController {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.VERIFY_OTP;
       var data = JSON.stringify({
-        "phoneNumber": number,
-        "otp": Otp
+        phoneNumber: number,
+        otp: Otp,
       });
       HttpClient.post(endpoint, data)
-        .then((response) => {
+        .then(response => {
           resolve(response);
         })
-        .catch((error) => {
+        .catch(error => {
           reject(error);
         });
     });
@@ -44,23 +40,33 @@ export class UserController {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.CHECK_USERNAME;
       var data = JSON.stringify({
-        "username": username
+        username: username,
       });
       HttpClient.post(endpoint, data)
-        .then((response) => {
+        .then(response => {
           resolve(response);
         })
-        .catch((error) => {
+        .catch(error => {
           reject(error);
         });
     });
   }
-  static async updateProfile(dob, fullname, gender, id, primaryEmail, location, username, file, mimeType) {
+  static async updateProfile(
+    dob,
+    fullname,
+    gender,
+    id,
+    primaryEmail,
+    location,
+    username,
+    file,
+    mimeType
+  ) {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.UPDATE_USER;
-      var data = new FormData()
+      var data = new FormData();
       if (mimeType !== null) {
-        let filename = file.split("/").pop();
+        let filename = file.split('/').pop();
         var obj = {
           uri: file,
           name: filename,
@@ -77,13 +83,13 @@ export class UserController {
       data.append('gender', gender);
       data.append('profilePic', mimeType == null && file);
       const headers = {
-        'Content-Type': 'multipart/form-data'
-      }
+        'Content-Type': 'multipart/form-data',
+      };
       HttpClient.post(endpoint, data, { headers })
-        .then((response) => {
+        .then(response => {
           resolve(response);
         })
-        .catch((error) => {
+        .catch(error => {
           reject(error);
         });
     });
@@ -91,41 +97,40 @@ export class UserController {
   static async upload_Profile_Pic(file, mimeType, number) {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.UPLOAD_PROFILE_PIC;
-      let filename = file.split("/").pop();
+      let filename = file.split('/').pop();
       var obj = {
         uri: file,
         name: filename,
         type: mimeType,
       };
-      var data = new FormData()
+      var data = new FormData();
       data.append('myimage', obj);
-      data.append('phoneNumber', number)
+      data.append('phoneNumber', number);
       const headers = {
-        'Content-Type': 'multipart/form-data'
-      }
+        'Content-Type': 'multipart/form-data',
+      };
       HttpClient.post(endpoint, data, { headers })
-        .then((response) => {
+        .then(response => {
           resolve(response);
         })
-        .catch((error) => {
+        .catch(error => {
           reject(new Error(error));
         });
     });
   }
 
-
   static async followUser(followerId, followId) {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.VERIFY_OTP;
       var data = JSON.stringify({
-        "followerId": followerId,
-        "followId": followId
+        followerId: followerId,
+        followId: followId,
       });
       HttpClient.post(endpoint, data)
-        .then((response) => {
+        .then(response => {
           resolve(response);
         })
-        .catch((error) => {
+        .catch(error => {
           reject(error);
         });
     });
@@ -135,100 +140,120 @@ export class UserController {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.VERIFY_OTP;
       var data = JSON.stringify({
-        "unfollowerId": unFollowerId,
-        "followId": followId
-
+        unfollowerId: unFollowerId,
+        followId: followId,
       });
       HttpClient.post(endpoint, data)
-        .then((response) => {
+        .then(response => {
           resolve(response);
         })
-        .catch((error) => {
+        .catch(error => {
           reject(error);
         });
     });
   }
-
 
   // get User profile by user id API
   static async getUserProfileByUseridAPI(userId, loggedInID) {
-
     return new Promise((resolve, reject) => {
-      const endpoint = API_BASE_URL + API_END_POINTS.GET_USER_PROFILE_BY_USER_ID;
+      const endpoint =
+        API_BASE_URL + API_END_POINTS.GET_USER_PROFILE_BY_USER_ID;
       var data = {
         id: userId,
-        loggedInUserId: loggedInID
-      }
+        loggedInUserId: loggedInID,
+      };
       HttpClient.post(endpoint, data)
-        .then((response) => {
-          resolve(response)
-          console.log('response of every single user', JSON.stringify(response));
+        .then(response => {
+          resolve(response);
+          console.log(
+            'response of every single user',
+            JSON.stringify(response)
+          );
         })
-        .catch((error) => {
+        .catch(error => {
           reject(error);
         });
     });
   }
 
-
-
-
   // create post
 
-  static async createPost(id, postTitle, postBody, file, mimeType, imageArray, isVip) {
-    console.log("first", imageArray)
+  static async createPost(
+    id,
+    postTitle,
+    postBody,
+    file,
+    mimeType,
+    imageArray,
+    isVip
+  ) {
+    console.log('first', imageArray);
     return new Promise(async (resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.CREATE_POST;
-      let data = new FormData()
+      let data = new FormData();
       if (mimeType !== null) {
         let obj = [];
-        imageArray && imageArray?.map(item => {
-          let filename = item.image.split("/").pop();
-          obj = {
-            uri: item.image,
-            name: filename,
-            type: item.imageMime,
-          };
-          data.append('myimage', obj);
-        });
+        imageArray &&
+          imageArray?.map(item => {
+            let filename = item.image.split('/').pop();
+            obj = {
+              uri: item.image,
+              name: filename,
+              type: item.imageMime,
+            };
+            data.append('myimage', obj);
+          });
       }
 
       data.append('userId', id);
       data.append('postTitle', postTitle);
       data.append('postBody', postBody);
-      data.append('isVIPonly', isVip)
+      data.append('isVIPonly', isVip);
 
       data.append('postImg', mimeType == null && file);
-      console.log("CREATE__POST", data)
+      console.log('CREATE__POST', data);
 
       const headers = {
-        'Content-Type': 'multipart/form-data'
-      }
-
+        'Content-Type': 'multipart/form-data',
+      };
 
       await HttpClient.post(endpoint, data, { headers })
-        .then((response) => {
+        .then(response => {
           resolve(response);
-          console.log('response of create post', response)
+          console.log('response of create post', response);
         })
-        .catch((error) => {
+        .catch(error => {
           reject(error);
         });
     });
   }
   //update post
-  static async updatePost(id, userId, postTitle, postBody, file, preImageArray, mimeType, preMimeType, imageArray, userType) {
+  static async updatePost(
+    id,
+    userId,
+    postTitle,
+    postBody,
+    file,
+    preImageArray,
+    mimeType,
+    preMimeType,
+    imageArray,
+    userType
+  ) {
     return new Promise(async (resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.UPDATE_POST;
-      let data = new FormData()
+      let data = new FormData();
       if (mimeType !== null) {
         // if (isImage == strings.exclusive.video) {
         let obj = [];
         let videoPoster = [];
-        var isVideo = false
+        var isVideo = false;
 
         imageArray.map(item => {
-          let filename = item.video == null ? item.image.split("/").pop() : item.video.split("/").pop();
+          let filename =
+            item.video == null
+              ? item.image.split('/').pop()
+              : item.video.split('/').pop();
           obj = {
             uri: item.video == null ? item.image : item.video,
             name: filename,
@@ -236,22 +261,21 @@ export class UserController {
             // videoPoster: item.video == null ? null : item?.videoPoster
           };
           if (item.video !== null) {
-            let filename = item.videoPoster.split("/").pop();
+            let filename = item.videoPoster.split('/').pop();
             videoPoster = {
               uri: item.videoPoster,
               name: filename,
               // type: item.videoMime,
               // videoPoster: item.video == null ? null : item?.videoPoster
             };
-            isVideo = true
+            isVideo = true;
           }
           data.append('myimage', obj);
         });
         if (isVideo) {
-          data.append('videoPoster', videoPoster)
+          data.append('videoPoster', videoPoster);
         }
         // data.append('videoPoster', videoPoster);
-
       }
       // if (preImageArray.length > 0) {
       //   let preMedia = [];
@@ -267,7 +291,10 @@ export class UserController {
       //   });
 
       // }
-      data.append('postMediaContent', preImageArray.length > 0 ? JSON.stringify(preImageArray) : "")
+      data.append(
+        'postMediaContent',
+        preImageArray.length > 0 ? JSON.stringify(preImageArray) : ''
+      );
 
       data.append('id', id);
       data.append('userId', userId);
@@ -276,17 +303,16 @@ export class UserController {
       // data.append('postImg', preFile);
       data.append('userType', userType);
 
-
       // return false
       const headers = {
-        'Content-Type': 'multipart/form-data'
-      }
+        'Content-Type': 'multipart/form-data',
+      };
 
       await HttpClient.post(endpoint, data, { headers })
-        .then((response) => {
+        .then(response => {
           resolve(response);
         })
-        .catch((error) => {
+        .catch(error => {
           reject(error);
         });
     });
@@ -298,17 +324,17 @@ export class UserController {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.DELETE_POST;
       var data = JSON.stringify({
-        "id": id,
-        "postUserID": postUserId,
-        "userId": userId,
-        "userType": userType,
+        id: id,
+        postUserID: postUserId,
+        userId: userId,
+        userType: userType,
       });
 
       HttpClient.post(endpoint, data)
-        .then((response) => {
+        .then(response => {
           resolve(response);
         })
-        .catch((error) => {
+        .catch(error => {
           reject(error);
         });
     });
@@ -320,15 +346,15 @@ export class UserController {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.UPVOTE_POST;
       var data = JSON.stringify({
-        "id": id,
-        "likeUserID": userId,
+        id: id,
+        likeUserID: userId,
       });
 
       HttpClient.post(endpoint, data)
-        .then((response) => {
+        .then(response => {
           resolve(response);
         })
-        .catch((error) => {
+        .catch(error => {
           reject(error);
         });
     });
@@ -340,15 +366,15 @@ export class UserController {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.DOWNVOTE_POST;
       var data = JSON.stringify({
-        "id": id,
-        "unlikeUserID": userId,
+        id: id,
+        unlikeUserID: userId,
       });
 
       HttpClient.post(endpoint, data)
-        .then((response) => {
+        .then(response => {
           resolve(response);
         })
-        .catch((error) => {
+        .catch(error => {
           reject(error);
         });
     });
@@ -356,18 +382,52 @@ export class UserController {
 
   // create post by admin
 
-  static async createPostByAdmin(id, postTitle, postBody, file, mimeType, imageArray, screen, vipOnly, schedulePost, scheduleDetails, goingLIve, ad, publishDate, expireDate) {
-    console.log('log in controller', "vip only-", id, postTitle, postBody, file, mimeType, imageArray, vipOnly, schedulePost, scheduleDetails, goingLIve, ad, publishDate, expireDate)
+  static async createPostByAdmin(
+    id,
+    postTitle,
+    postBody,
+    file,
+    mimeType,
+    imageArray,
+    screen,
+    vipOnly,
+    schedulePost,
+    scheduleDetails,
+    goingLIve,
+    ad,
+    publishDate,
+    expireDate
+  ) {
+    console.log(
+      'log in controller',
+      'vip only-',
+      id,
+      postTitle,
+      postBody,
+      file,
+      mimeType,
+      imageArray,
+      vipOnly,
+      schedulePost,
+      scheduleDetails,
+      goingLIve,
+      ad,
+      publishDate,
+      expireDate
+    );
     return new Promise(async (resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.CREATE_POST_ADMIN;
-      let data = new FormData()
+      let data = new FormData();
       if (mimeType !== null) {
         // if (isImage == strings.exclusive.video) {
         let obj = [];
         let videoPoster = [];
-        var isVideo = false
+        var isVideo = false;
         imageArray.map(item => {
-          let filename = item.video == null ? item.image.split("/").pop() : item.video.split("/").pop();
+          let filename =
+            item.video == null
+              ? item.image.split('/').pop()
+              : item.video.split('/').pop();
           obj = {
             uri: item.video == null ? item.image : item.video,
             name: filename,
@@ -375,22 +435,21 @@ export class UserController {
             // videoPoster: item.video == null ? null : item?.videoPoster
           };
           if (item.video !== null) {
-            let filename = item.videoPoster.split("/").pop();
+            let filename = item.videoPoster.split('/').pop();
             videoPoster = {
               uri: item.videoPoster,
               name: filename,
               // type: item.videoMime,
               // videoPoster: item.video == null ? null : item?.videoPoster
             };
-            isVideo = true
+            isVideo = true;
           }
           data.append('myimage', obj);
         });
         if (isVideo) {
-          data.append('videoPoster', videoPoster)
+          data.append('videoPoster', videoPoster);
         }
         // data.append('videoPoster', videoPoster);
-
       }
 
       data.append('userId', id);
@@ -411,37 +470,37 @@ export class UserController {
       }
 
       const headers = {
-        'Content-Type': 'multipart/form-data'
-      }
+        'Content-Type': 'multipart/form-data',
+      };
       await HttpClient.post(endpoint, data, { headers })
-        .then((response) => {
-          resolve(response)
-          console.log('response of create post', JSON.stringify(response))
+        .then(response => {
+          resolve(response);
+          console.log('response of create post', JSON.stringify(response));
         })
-        .catch((error) => {
-
-
+        .catch(error => {
           reject(error);
-          console.log('error in create post', error)
+          console.log('error in create post', error);
         });
     });
   }
 
   // // post by user id
 
-  static async postByUserId(id, page) {
+  static async postByUserId(id, page, loggedInUserId) {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.POST_BY_USERID;
       var data = JSON.stringify({
-        "userId": id,
-        "dateCursor": page
+        loggedInUserId,
+        userId: id,
+        dateCursor: page,
       });
+
       HttpClient.post(endpoint, data)
-        .then((response) => {
+        .then(response => {
           resolve(response);
-          console.log('resonse of posts id   ', response)
+          // console.log('resonse of posts id   ', response);
         })
-        .catch((error) => {
+        .catch(error => {
           reject(new Error(error.message));
         });
     });
@@ -452,31 +511,30 @@ export class UserController {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.POST_BY_ID;
       var data = JSON.stringify({
-        "id": id
+        id: id,
       });
       HttpClient.post(endpoint, data)
-        .then((response) => {
+        .then(response => {
           resolve(response);
         })
-        .catch((error) => {
+        .catch(error => {
           reject(new Error(error.message));
         });
     });
   }
-
 
   // post by admin id
   static async postByAdminId(id) {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.POST_BY_ADMIN_ID;
       var data = JSON.stringify({
-        "id": id
+        id: id,
       });
       HttpClient.post(endpoint, data)
-        .then((response) => {
+        .then(response => {
           resolve(response);
         })
-        .catch((error) => {
+        .catch(error => {
           reject(new Error(error.message));
         });
     });
@@ -488,10 +546,10 @@ export class UserController {
     return new Promise(async (resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.ALL_POST_ADMIN;
       await HttpClient.post(endpoint)
-        .then((response) => {
+        .then(response => {
           resolve(response);
         })
-        .catch((error) => {
+        .catch(error => {
           reject(new Error(error.message));
         });
     });
@@ -503,11 +561,10 @@ export class UserController {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.ALL_PINNED_POST;
       HttpClient.post(endpoint)
-        .then((response) => {
-
+        .then(response => {
           resolve(response);
         })
-        .catch((error) => {
+        .catch(error => {
           reject(new Error(error.message));
         });
     });
@@ -517,10 +574,10 @@ export class UserController {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.ALL_POST;
       HttpClient.post(endpoint)
-        .then((response) => {
+        .then(response => {
           resolve(response);
         })
-        .catch((error) => {
+        .catch(error => {
           reject(new Error(error.message));
         });
     });
@@ -530,17 +587,14 @@ export class UserController {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.FOLLOWERS;
       var data = JSON.stringify({
-        "loggedInUserId": userId,
-        "id": id
+        loggedInUserId: userId,
+        id: id,
       });
       HttpClient.post(endpoint, data)
-        .then((response) => {
-
+        .then(response => {
           resolve(response);
-
-
         })
-        .catch((error) => {
+        .catch(error => {
           reject(new Error(error.message));
         });
     });
@@ -550,35 +604,30 @@ export class UserController {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.BLOCK_LIST;
       var data = JSON.stringify({
-        "id": userId
+        id: userId,
       });
       HttpClient.post(endpoint, data)
-        .then((response) => {
-
+        .then(response => {
           resolve(response);
-
         })
-        .catch((error) => {
+        .catch(error => {
           reject(new Error(error.message));
         });
     });
   }
 
   static async searchUserRequest(searchuservalue) {
-
     return new Promise((resolve, reject) => {
-
       const endpoint = API_BASE_URL + API_END_POINTS.SEARCH_USER;
       var data = JSON.stringify({
-        "searchWord": searchuservalue
+        searchWord: searchuservalue,
       });
       HttpClient.post(endpoint, data)
-        .then((response) => {
-
+        .then(response => {
           resolve(response);
-          console.log('response of search user users', response)
+          console.log('response of search user users', response);
         })
-        .catch((error) => {
+        .catch(error => {
           reject(new Error(error.message));
         });
     });
@@ -591,157 +640,147 @@ export class UserController {
   }
 
   static async getAllActivityRequestApi(id) {
-
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.GET_ALL_ACTIVITY;
       var data = JSON.stringify({
-        "loggedInUserId": id
+        loggedInUserId: id,
       });
       HttpClient.post(endpoint, data)
-        .then((response) => {
-          resolve(response)
-          console.log('response of all activity', response)
+        .then(response => {
+          resolve(response);
         })
-        .catch((error) => {
-          reject(new Error(error.message))
-          console.log('error of all activity', error)
+        .catch(error => {
+          reject(new Error(error.message));
+          console.log('error of all activity', error);
         });
     });
   }
 
   static async manageAllreportsRequestApi() {
-
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.MANAGE_ALL_REPORTS;
 
       HttpClient.post(endpoint)
-        .then((response) => {
-          resolve(response)
+        .then(response => {
+          resolve(response);
           // console.log('response of all managereports', response.data)
         })
-        .catch((error) => {
-          reject(new Error(error.message))
-          console.log('error of all manage Reports', error)
+        .catch(error => {
+          reject(new Error(error.message));
+          console.log('error of all manage Reports', error);
         });
     });
   }
 
   static async getAllBannedUsersRequest() {
-
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.GET_ALL_BANNED_USERS;
 
       HttpClient.post(endpoint)
-        .then((response) => {
-          resolve(response)
-          console.log('response of all banned Users', response)
-
+        .then(response => {
+          resolve(response);
+          console.log('response of all banned Users', response);
         })
-        .catch((error) => {
-          reject(new Error(error.message))
-          console.log('error of all banned users', error)
+        .catch(error => {
+          reject(new Error(error.message));
+          console.log('error of all banned users', error);
         });
     });
   }
 
-
   static async unBannedUserRequest(id) {
-
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.UNBANNED_USER_BY_ID;
       var data = JSON.stringify({
-        "userId": id
+        userId: id,
       });
       HttpClient.post(endpoint, data)
-        .then((response) => {
-          resolve(response)
-          console.log('response of unBanned User', response)
+        .then(response => {
+          resolve(response);
+          console.log('response of unBanned User', response);
           showMessage({
             message: 'User Unbanned',
-            type: 'success'
-          })
+            type: 'success',
+          });
         })
-        .catch((error) => {
-          reject(new Error(error.message))
-          console.log('error of  UnBanned user', error)
+        .catch(error => {
+          reject(new Error(error.message));
+          console.log('error of  UnBanned user', error);
         });
     });
   }
 
-
   static async bannedUserRequest(id) {
-
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.BANNED_USER_BY_ID;
       var data = JSON.stringify({
-        "userId": id
+        userId: id,
       });
       HttpClient.post(endpoint, data)
-        .then((response) => {
-          resolve(response)
-          console.log('response of banned User', response)
+        .then(response => {
+          resolve(response);
+          console.log('response of banned User', response);
           showMessage({
             message: 'User Banned',
-            type: 'success'
-          })
+            type: 'success',
+          });
         })
-        .catch((error) => {
-          reject(new Error(error.message))
-          console.log('error of  banned user', error)
+        .catch(error => {
+          reject(new Error(error.message));
+          console.log('error of  banned user', error);
         });
     });
   }
 
-
   static async AllNotificationsRequest(id, read) {
-
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.GET_ALL_NOTIFICATIONS;
 
       //  console.log("endPoint", endpoint)
       var data = JSON.stringify({
-        "loggedInUserId": id,
-        "viewStatus": read == true ? "unread" : "all"
+        loggedInUserId: id,
+        viewStatus: read == true ? 'unread' : 'all',
       });
       HttpClient.post(endpoint, data)
-        .then((response) => {
-          resolve(response)
-          console.log('response of All Notifications', JSON.stringify(response))
-
+        .then(response => {
+          resolve(response);
+          console.log(
+            'response of All Notifications',
+            JSON.stringify(response)
+          );
         })
-        .catch((error) => {
-          reject(new Error(error.message))
-          console.log('error of All notifications', error)
+        .catch(error => {
+          reject(new Error(error.message));
+          console.log('error of All notifications', error);
         });
     });
   }
 
-
   static async markAllNotificationsRequest(id) {
-
     return new Promise((resolve, reject) => {
-      const endpoint = API_BASE_URL + API_END_POINTS.MARK_ALL_READ_NOTIFICATIONS;
+      const endpoint =
+        API_BASE_URL + API_END_POINTS.MARK_ALL_READ_NOTIFICATIONS;
 
       //  console.log("endPoint", endpoint)
       var data = JSON.stringify({
-        "loggedInUserId": id,
-
+        loggedInUserId: id,
       });
       HttpClient.post(endpoint, data)
-        .then((response) => {
-          resolve(response)
-          console.log('response of mark read Notifications', JSON.stringify(response))
+        .then(response => {
+          resolve(response);
+          console.log(
+            'response of mark read Notifications',
+            JSON.stringify(response)
+          );
           showMessage({
             message: 'All Notifications are read',
-            type: 'success'
-          })
-
+            type: 'success',
+          });
         })
-        .catch((error) => {
-          reject(new Error(error.message))
-          console.log('error of All notifications', error)
+        .catch(error => {
+          reject(new Error(error.message));
+          console.log('error of All notifications', error);
         });
     });
   }
 }
-

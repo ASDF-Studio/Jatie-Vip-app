@@ -8,6 +8,7 @@ export const statusReducer = (state = {}, { type }) => {
     return {};
   }
 
+  // console.log(' =============> ', type);
   const matchesStart = /(.*)_(REQUEST)/.exec(type);
   const matchesError = /(.*)_(ERROR)/.exec(type);
   const matchesReset = /(.*)_(RESET)/.exec(type);

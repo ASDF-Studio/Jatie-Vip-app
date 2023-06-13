@@ -16,7 +16,13 @@ import {
   faUserPlus,
 } from '@fortawesome/free-solid-svg-icons';
 import { TextStyles, theme } from '@/theme';
-import { TopBackButton, Icon, Badge, HorizontalLine, CustomLoader } from '@/components';
+import {
+  TopBackButton,
+  Icon,
+  Badge,
+  HorizontalLine,
+  CustomLoader,
+} from '@/components';
 import { ModalDown, ModalList } from '@/components';
 import { NAVIGATION } from '@/constants';
 import { strings } from '@/localization';
@@ -34,30 +40,29 @@ import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { getAllPostData } from '@/selectors/PostSelectors';
 import { navigate } from '@/navigation/RootNavigation';
 export default function Followers({ navigation, route }) {
-  const dispatch = useDispatch()
-  const focus = useIsFocused()
-  const { id } = route.params
-  const { screenName } = route.params
+  const dispatch = useDispatch();
+  const focus = useIsFocused();
+  const { id } = route.params;
+  const { screenName } = route.params;
   //console.log("id in followers", id)
-  console.log(screenName)
-  const { active } = route.params
+  console.log(screenName);
+  const { active } = route.params;
 
   const [open, setOpen] = useState(false);
-  const [followId, setfollowId] = useState('')
-  const [followUnfollowId, SetfollowUnfollowId] = useState('')
+  const [followId, setfollowId] = useState('');
+  const [followUnfollowId, SetfollowUnfollowId] = useState('');
+  const [selectedUser, setSelectedUser] = useState(null);
 
   //Selector Usage
-  const user = useSelector(getUser)
+  const user = useSelector(getUser);
 
-  const post = useSelector(getAllPostData)
-  const followerDataa = user.followersDatainReducer
+  const post = useSelector(getAllPostData);
+  const followerDataa = user.followersDatainReducer;
 
   useEffect(() => {
-    dispatch(followers(user?.id, id))
+    dispatch(followers(user?.id, id));
     // console.log('followers list', user?.id, id)
-
   }, [focus]);
-
 
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.FOLLOWERS], state)
@@ -65,30 +70,27 @@ export default function Followers({ navigation, route }) {
 
   //follow handle press
   const followHandlePress = () => {
-    dispatch(followUser(user?.id, followId))
-    setOpen(false)
+    dispatch(followUser(user?.id, followId));
+    setOpen(false);
 
     setTimeout(() => {
-      dispatch(followers(user?.id, id))
+      dispatch(followers(user?.id, id));
     }, 1000);
-
-  }
+  };
 
   const UnfollowHandlePress = () => {
-    dispatch(unFollowUser(user?.id, followId))
-    setOpen(false)
+    dispatch(unFollowUser(user?.id, followId));
+    setOpen(false);
 
     setTimeout(() => {
-      dispatch(followers(user?.id, id))
+      dispatch(followers(user?.id, id));
     }, 1000);
-
-  }
+  };
 
   const onBlock = () => {
-    dispatch(blockUser(user?.id, followId))
-    setOpen(false)
-
-  }
+    dispatch(blockUser(user?.id, followId));
+    setOpen(false);
+  };
   return (
     <SafeAreaView style={styles.container}>
       {/* <CustomLoader open={isLoading} /> */}
@@ -113,33 +115,56 @@ export default function Followers({ navigation, route }) {
               <View style={styles.listContainer}>
                 <TouchableOpacity
                   style={styles.list}
-                  onPress={() => navigate(NAVIGATION.userProfile, { userId: item?.user?.id, }, console.log('check issue', item?.user?.id))}
-
+                  onPress={() =>
+                    navigate(
+                      NAVIGATION.userProfile,
+                      { userId: item?.user?.id },
+                      console.log('check issue', item?.user?.id)
+                    )
+                  }
                 >
                   <Image
-                    source={{ uri: item.userByFollowinguserid?.profilePic == '' ? null : item.user?.profilePic }}
+                    source={{
+                      uri:
+                        item.userByFollowinguserid?.profilePic == ''
+                          ? null
+                          : item.user?.profilePic,
+                    }}
                     style={styles.profileImage}
                   />
                   <View style={styles.nameContainer}>
                     <Text style={styles.nameTxt}> {item.user.fullName} </Text>
-                    <Text> {item.user.username} </Text>
+                    <Text> {` @${item.user.username}`} </Text>
                   </View>
                 </TouchableOpacity>
-                {screenName == "userProfile" ? null : <Icon
-                  icon={faEllipsis}
-                  size={ms(15)}
-                  color={theme.light.colors.secondary}
-                  onPress={() => { setfollowId(item.user.id), SetfollowUnfollowId(item.is_following), setOpen(true) }}
-                />}
-
+                {screenName == 'userProfile' ? null : (
+                  <Icon
+                    icon={faEllipsis}
+                    size={ms(15)}
+                    color={theme.light.colors.secondary}
+                    onPress={() => {
+                      setfollowId(item.user.id),
+                        SetfollowUnfollowId(item.is_following),
+                        setSelectedUser(item.user);
+                      setOpen(true);
+                    }}
+                  />
+                )}
               </View>
             );
           }}
         />
       </View>
       <ModalDown open={open} setOpen={setOpen}>
-        <ModalList onPress={followUnfollowId == false ? followHandlePress : UnfollowHandlePress}
-          title={followUnfollowId == false ? strings.operations.follow + strings.home.DummyUser : strings.operations.unFollow + strings.home.DummyUser}
+        <ModalList
+          onPress={
+            followUnfollowId == false ? followHandlePress : UnfollowHandlePress
+          }
+          title={
+            followUnfollowId == false
+              ? strings.operations.follow + ` @${selectedUser?.username}`
+              : strings.operations.unFollow + ` @${selectedUser?.username}`
+          }
           icon={faUserPlus}
           iconColor={theme.light.colors.primary}
           iconBg={theme.light.colors.primaryBgLight}
@@ -149,7 +174,7 @@ export default function Followers({ navigation, route }) {
           icon={faMessage}
           iconColor={theme.light.colors.success}
           iconBg={theme.light.colors.successBgLight}
-        // onPress = {()=> Alert.alert("message")}
+          // onPress = {()=> Alert.alert("message")}
         />
         <HorizontalLine
           color={theme.light.colors.infoBgLight}
@@ -161,7 +186,7 @@ export default function Followers({ navigation, route }) {
           icon={faFlag}
           iconColor={theme.light.colors.secondary}
           iconBg={theme.light.colors.infoBgLight}
-        // onPress = {()=> Alert.alert("report")}
+          // onPress = {()=> Alert.alert("report")}
         />
         <ModalList
           title={strings.operations.block + strings.home.DummyUser}

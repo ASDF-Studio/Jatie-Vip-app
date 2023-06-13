@@ -17,7 +17,13 @@ import {
   faUserMinus,
 } from '@fortawesome/free-solid-svg-icons';
 import { TextStyles, theme } from '@/theme';
-import { TopBackButton, Icon, Badge, HorizontalLine, CustomLoader } from '@/components';
+import {
+  TopBackButton,
+  Icon,
+  Badge,
+  HorizontalLine,
+  CustomLoader,
+} from '@/components';
 import { ModalDown, ModalList } from '@/components';
 import { NAVIGATION } from '@/constants';
 import { strings } from '@/localization';
@@ -34,19 +40,19 @@ import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { TYPES } from '@/actions/UserActions';
 
 export default function Following({ navigation, route }) {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const [open, setOpen] = useState(false);
 
-  const user = useSelector(getUser)
-  const followerDataa = user.followersDatainReducer
-  const { id } = route.params
-  const { screenName } = route.params
-  const [UnfollowId, setUnfollowId] = useState('')
-  const [username, setUserName] = useState('')
-  const focus = useIsFocused()
+  const user = useSelector(getUser);
+  const followerDataa = user.followersDatainReducer;
+  const { id } = route.params;
+  const { screenName } = route.params;
+  const [UnfollowId, setUnfollowId] = useState('');
+  const [username, setUserName] = useState('');
+  const focus = useIsFocused();
   useEffect(() => {
-    dispatch(followers(user?.id, id))
+    dispatch(followers(user?.id, id));
   }, [focus]);
 
   const isLoading = useSelector(state =>
@@ -54,18 +60,17 @@ export default function Following({ navigation, route }) {
   );
 
   const unFollowHandlePress = () => {
-    dispatch(unFollowUser(user?.id, UnfollowId))
-    setOpen(false)
+    dispatch(unFollowUser(user?.id, UnfollowId));
+    setOpen(false);
     setTimeout(() => {
-      dispatch(followers(user?.id, id))
+      dispatch(followers(user?.id, id));
     }, 1000);
-
-  }
+  };
 
   const blockUserById = () => {
-    dispatch(blockUser(user?.id, UnfollowId))
-    setOpen(false)
-  }
+    dispatch(blockUser(user?.id, UnfollowId));
+    setOpen(false);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -95,26 +100,44 @@ export default function Following({ navigation, route }) {
               <View style={styles.listContainer}>
                 <TouchableOpacity
                   style={styles.list}
-                  onPress={() => navigation.navigate(NAVIGATION.userProfile, { userId: item.userByFollowinguserid?.id })}
+                  onPress={() =>
+                    navigation.navigate(NAVIGATION.userProfile, {
+                      userId: item.userByFollowinguserid?.id,
+                    })
+                  }
                 >
                   <Image
-                    source={{ uri: item.userByFollowinguserid?.profilePic == '' ? null : item.userByFollowinguserid?.profilePic }}
+                    source={{
+                      uri:
+                        item.userByFollowinguserid?.profilePic == ''
+                          ? null
+                          : item.userByFollowinguserid?.profilePic,
+                    }}
                     style={styles.profileImage}
                   />
                   <View style={styles.nameContainer}>
-                    <Text style={styles.nameTxt}> {item.userByFollowinguserid?.fullName}</Text>
-                    <Text style={styles.userNameTxt}>{item.userByFollowinguserid?.username} </Text>
+                    <Text style={styles.nameTxt}>
+                      {' '}
+                      {item.userByFollowinguserid?.fullName}
+                    </Text>
+                    <Text style={styles.userNameTxt}>
+                      {`  @${item.userByFollowinguserid?.username}`}{' '}
+                    </Text>
                   </View>
                 </TouchableOpacity>
 
-
-                {screenName == "userProfile" ? null : <Icon
-                  icon={faEllipsis}
-                  size={ms(15)}
-                  color={theme.light.colors.secondary}
-                  onPress={() => { setUnfollowId(item.userByFollowinguserid.id), setUserName(item.userByFollowinguserid.username), setOpen(true) }}
-
-                />}
+                {screenName == 'userProfile' ? null : (
+                  <Icon
+                    icon={faEllipsis}
+                    size={ms(15)}
+                    color={theme.light.colors.secondary}
+                    onPress={() => {
+                      setUnfollowId(item.userByFollowinguserid.id),
+                        setUserName(item.userByFollowinguserid.username),
+                        setOpen(true);
+                    }}
+                  />
+                )}
               </View>
             );
           }}
@@ -122,7 +145,7 @@ export default function Following({ navigation, route }) {
       </View>
       <ModalDown open={open} setOpen={setOpen}>
         <ModalList
-          title={strings.profile.unfollow + ' ' + username}
+          title={strings.profile.unfollow + ' ' + `@${username}`}
           icon={faUserMinus}
           iconColor={theme.light.colors.primary}
           iconBg={theme.light.colors.primaryBgLight}

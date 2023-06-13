@@ -5,88 +5,84 @@ const initialState = {
 };
 
 export const postReducer = (state = {}, { payload, type }) => {
-
-
   switch (type) {
     case TYPES.VOTE_DOWN_SUCCESS:
       return {
         ...state,
         userPost: state.userPost.map(post =>
           post.id === payload.id ? { ...post, upVote: payload.upVote } : post
-        )
+        ),
       };
     case TYPES.VOTE_DOWN_SUCCESS:
       return {
         ...state,
         userPost: state.userPost.map(post =>
           post.id === payload.id ? { ...post, downVote: payload.upVote } : post
-        )
+        ),
       };
     case TYPES.DELETE_POST_SUCCESS:
       return {
         ...state,
-        ...payload.post
-      }
+        ...payload.post,
+      };
     case TYPES.GET_ALL_PIN_POST_SUCCESS:
       return {
         ...state,
-        pinedPost: payload.post.data
-
-      }
+        pinedPost: payload.post.data,
+      };
     case TYPES.GET_ALL_POST_SUCCESS:
       return {
         ...state,
-        feedData: payload.post.data
-
-      }
+        feedData: payload.post.data,
+      };
     case TYPES.GET_ALL_POST_PAGINATION_SUCCESS:
       if (payload.post.data.length == 0) {
         return {
           ...state,
           ...state.feedData,
-        }
+        };
       } else {
         return {
           ...state,
           feedData: [...state.feedData, ...payload.post.data],
-        }
+        };
       }
-
-
 
     case TYPES.SEARCH_ALL_POST_SUCCESS:
       return {
         ...state,
-        searchedPosts: payload.post
-      }
+        searchedPosts: payload.post,
+      };
     case TYPES.GET_COMMENTS_BY_POST_ID_SUCCESS:
       return {
         ...state,
-        postComments: payload?.comments
-      }
+        postComments: payload?.comments,
+      };
     case TYPES.COMMENT_ON_POST_SUCCESS:
       const updatedComments = [...state.postComments, payload.comment?.data[0]];
       return {
         ...state,
-        postComments: updatedComments
+        postComments: updatedComments,
       };
     case TYPES.EDIT_COMMENT_SUCCESS:
-      var myArr = state.postComments
+      var myArr = state.postComments;
       myArr[payload.commentIndex] = payload.commentData?.data[0];
       return {
         ...state,
-        postComments: [...myArr]
+        postComments: [...myArr],
       };
     case TYPES.DELETE_COMMENT_SUCCESS:
-      const newItems = state.postComments.filter(item => item.id !== payload.comment?.id);
+      const newItems = state.postComments.filter(
+        item => item.id !== payload.comment?.id
+      );
       return { ...state, postComments: newItems };
 
     case TYPES.REPORT_POST_SUCCESS:
-      return { ...state, reportPost: payload.report }
+      return { ...state, reportPost: payload.report };
 
     case TYPES.FOLLOW_USER_SUCCESS:
       if (payload.type === strings.home.post) {
-        var myArr = state.data
+        var myArr = state.data;
         const updatedData = myArr.map(item => {
           if (item.userId === payload.id) {
             return { ...item, is_following: true };
@@ -94,12 +90,10 @@ export const postReducer = (state = {}, { payload, type }) => {
           return item;
         });
         return { ...state, data: [...updatedData] };
-      }
-      else {
-        var myArr = state.postComments
+      } else {
+        var myArr = state.postComments;
         const updatedData = myArr.map(item => {
           if (item.userId === payload.id) {
-
             return { ...item, is_following: true };
           }
           return item;
@@ -109,7 +103,7 @@ export const postReducer = (state = {}, { payload, type }) => {
 
     case TYPES.UN_FOLLOW_USER_SUCCESS:
       if (payload.type == strings.home.post) {
-        var myArr = state.data
+        var myArr = state.data;
         const updatedData = myArr.map(item => {
           if (item.userId === payload.id) {
             return { ...item, is_following: false };
@@ -117,9 +111,8 @@ export const postReducer = (state = {}, { payload, type }) => {
           return item;
         });
         return { ...state, data: [...updatedData] };
-      }
-      else {
-        var myArr = state.postComments
+      } else {
+        var myArr = state.postComments;
         const updatedData = myArr.map(item => {
           if (item.userId === payload.id) {
             return { ...item, is_following: false };
@@ -136,29 +129,27 @@ export const postReducer = (state = {}, { payload, type }) => {
     case TYPES.GET_POST_BY_ID_SUCCESS:
       return {
         ...state,
-        singlePost: payload.post
-      }
+        singlePost: payload.post,
+      };
     case TYPES.SEARCH_USER_BY_USERNAME_SUCCESS:
       return { ...state, searchedUsers: payload.users };
 
     case TYPES.GET_ACTIVE_GIVEAWAY_SUCCESS:
-
       return {
         ...state,
-        ActiveGiveaway: payload.user.data
-
-      }
+        ActiveGiveaway: payload.user.data,
+      };
     case TYPES.GET_ACTIVE_GIVEAWAY_PAGINATION_SUCCESS:
       if (payload.user.data.length == 0) {
         return {
           ...state,
           ActiveGiveaway: [...state.ActiveGiveaway],
-        }
+        };
       } else {
         return {
           ...state,
           ActiveGiveaway: [...state.ActiveGiveaway, ...payload.user.data],
-        }
+        };
       }
 
     case TYPES.GET_PAST_GIVEAWAY_PAGINATION_SUCCESS:
@@ -166,56 +157,53 @@ export const postReducer = (state = {}, { payload, type }) => {
         return {
           ...state,
           PastGiveaway: [...state.PastGiveaway],
-        }
+        };
       } else {
         return {
           ...state,
           PastGiveaway: [...state.PastGiveaway, ...payload.user.data],
-        }
+        };
       }
     case TYPES.GET_PAST_GIVEAWAY_SUCCESS:
       return {
         ...state,
-        PastGiveaway: payload.user.data
-      }
+        PastGiveaway: payload.user.data,
+      };
     case TYPES.GET_ALL_EXCLUSIVE_POST_SUCCESS:
       return {
         ...state,
-        exclusivePost: payload.post.data
-      }
+        exclusivePost: payload.post.data,
+      };
 
     case TYPES.GET_ALL_EXCLUSIVE_POST_PAGINATION_SUCCESS:
       if (payload.post.data.length == 0) {
         return {
           ...state,
           exclusivePost: [...state.exclusivePost],
-        }
+        };
       } else {
         return {
           ...state,
           exclusivePost: [...state.exclusivePost, ...payload.post.data],
-        }
+        };
       }
-
 
     case TYPES.GET_ALL_EXCLUSIVE_POST_BY_ID_SUCCESS:
       return {
         ...state,
-        exclusiveSinglePost: payload.post.data
-      }
+        exclusiveSinglePost: payload.post.data,
+      };
     case TYPES.GET_SCHEDULE_POST_SUCCESS:
       return {
         ...state,
-        schedulePost: payload.post.data
-      }
-
-
+        schedulePost: payload.post.data,
+      };
 
     case TYPES.GET_SINGLE_GIVEAWAY_BY_ID_SUCCESS:
       return {
         ...state,
-        giveAwaySinglePost: payload.post
-      }
+        giveAwaySinglePost: payload.post,
+      };
 
     // case TYPES.DELETE_EXCLUSIVE_POST_SUCCESS:
     //   const newPost = state.exclusivePost.filter(item => item.id !== payload.id);

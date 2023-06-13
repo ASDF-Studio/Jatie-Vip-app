@@ -37,6 +37,8 @@ import {
 } from '@/selectors/PostSelectors';
 import { FontFamily } from '@/theme/Fonts';
 import { POST_TYPE } from '@/constants/enums';
+import { getUser } from '@/selectors/UserSelectors';
+import { getAllPostByUserIdSuccess } from '@/actions/UserActions';
 
 export const CommentInput = React.forwardRef((props, ref) => {
   const dispatch = useDispatch();
@@ -47,6 +49,7 @@ export const CommentInput = React.forwardRef((props, ref) => {
   const searchUserSelector = useSelector(state => state.post);
   const SEARCH_DATA = useSelector(getSearchData);
   const singlePost = useSelector(getPostByIdData);
+  const user = useSelector(getUser);
 
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.COMMENT_ON_POST], state)
@@ -132,11 +135,48 @@ export const CommentInput = React.forwardRef((props, ref) => {
           )
         );
         props.updateParentState();
-        var count =
-          SEARCH_DATA[props.postIndex]?.comments_aggregate?.aggregate?.count;
+        var count = arr[props.postIndex]?.comments_aggregate?.aggregate?.count;
         arr[props.postIndex].comments_aggregate.aggregate.count = count + 1;
 
         dispatch(searchAllPostSuccess([...arr]));
+      } else {
+        setIsEdit(false);
+        dispatch(
+          editComment(
+            props.commentId,
+            props.userId,
+            comment.trim(),
+            props.commentIndex
+          )
+        );
+        props.updateParentState();
+      }
+    }
+  };
+
+  const onUserProfileComment = () => {
+    if (comment == '') {
+      showMessage({
+        message: strings.home.commentvalid,
+        backgroundColor: theme.light.colors.activeTabIcon,
+      });
+    } else {
+      setComment('');
+      var arr = user.getAllPostsByUserId;
+      if (!isEdit) {
+        dispatch(
+          commentOnPost(
+            props.postId,
+            props.userId,
+            comment.trim(),
+            props.commentOwnerId
+          )
+        );
+        props.updateParentState();
+        const count = arr[props.postIndex].comments_aggregate.aggregate.count;
+        arr[props.postIndex].comments_aggregate.aggregate.count = count + 1;
+        console.log(count);
+        dispatch(getAllPostByUserIdSuccess(arr));
       } else {
         setIsEdit(false);
         dispatch(
@@ -244,6 +284,7 @@ export const CommentInput = React.forwardRef((props, ref) => {
     setIsEdit(false);
     setComment('');
   };
+
   return (
     <View style={styles.container}>
       <Suggestions {...triggers.mention} />
@@ -266,7 +307,9 @@ export const CommentInput = React.forwardRef((props, ref) => {
               ? onCommentSearch
               : props.type === POST_TYPE.SINGLE_POST
                 ? onSinglepostComment
-                : onComment
+                : props.type === POST_TYPE.USER_PROFILE
+                  ? onUserProfileComment
+                  : onComment
           }
         >
           <FontAwesomeIcon
