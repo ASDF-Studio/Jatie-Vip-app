@@ -5,11 +5,11 @@ import { Exclusive } from '@/screens';
 import Thubmnail from '@/screens/Exclusive/thumbnail';
 import AdminExclusivePost from '@/screens/Exclusive/AdminExclusivePost';
 import AdminPostOption from '@/screens/Exclusive/AdminPostOption';
-import Search from '@/screens/Exclusive/search';
 import Notification from '@/screens/Exclusive/notification';
 import UpdateExclusivePost from '@/screens/Exclusive/UpdateExclusivePost';
 import UpdateExclusiveOption from '@/screens/Exclusive/UpdateExclusiveOption';
 import { updateExclusivePost } from '@/actions/PostActions';
+import Search from '@/screens/Profile/search';
 
 const Stack = createNativeStackNavigator();
 
