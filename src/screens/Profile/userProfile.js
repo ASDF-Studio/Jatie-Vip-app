@@ -158,6 +158,8 @@ export default function UserProfile({ navigation, route }) {
     }
   };
 
+  console.log('===========>', user);
+
   return (
     <SafeAreaView style={styles.container}>
       <CustomLoader open={isProfileLoading} />
@@ -289,9 +291,11 @@ export default function UserProfile({ navigation, route }) {
                 profilePic={user?.profilePic}
                 time={item.created_at}
               />
-              {console.log(item?.postMediaContent)}
 
-              <CardBody VIPKEY={user?.isVIP} text={item?.postBody} />
+              <CardBody
+                VIPKEY={!userr?.isVIP && user?.isVIP}
+                text={item?.postBody}
+              />
 
               {item?.postMediaContent.length <= 2 ? (
                 <View style={styles.imageContainer}>
@@ -307,7 +311,7 @@ export default function UserProfile({ navigation, route }) {
                               setFeedImages(item?.postMediaContent);
                           }}
                         >
-                          {user?.isVIP == true ? (
+                          {!userr?.isVIP && user?.isVIP ? (
                             <>
                               <Image
                                 blurRadius={20}

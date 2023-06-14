@@ -686,6 +686,8 @@ export function Home({ navigation }) {
                           DATA: {
                             sortBy,
                             follwingSwitch,
+                            sortBy,
+                            follwingSwitch,
                           },
                         });
                       }}
