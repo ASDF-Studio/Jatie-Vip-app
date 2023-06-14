@@ -18,6 +18,7 @@ import {
   Icon,
   ModalDown,
   ModalList,
+  PopUpAlert,
   TopBackButton,
 } from '@/components';
 import { TextStyles, theme } from '@/theme';
@@ -57,6 +58,7 @@ export default function PostDetails({ navigation, route }) {
   const giveAwayId = data.id;
   const user = useSelector(getUser);
   const userType = useSelector(state => state.userType);
+  const [showAlert, setShowAlert] = useState(false);
   const { blink } = useBlinker();
 
   const [active, setActive] = useState(false);
@@ -316,6 +318,7 @@ export default function PostDetails({ navigation, route }) {
           iconColor={theme.light.colors.secondary}
         />
       </ModalDown>
+      {showAlert && <PopUpAlert />}
     </SafeAreaView>
   );
 }

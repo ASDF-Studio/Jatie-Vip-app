@@ -8,10 +8,20 @@ import {
 import PropTypes from 'prop-types';
 import { theme } from '@/theme';
 import { ms } from 'react-native-size-matters';
+import { BlurView } from '@react-native-community/blur';
 
-export function PopUp({ open, setOpen, height, children }) {
+export function PopUp({ open, setOpen, height, children, blurred = false }) {
   return (
     <Modal visible={open} transparent={true} animationType="fade">
+      {blurred && (
+        <BlurView
+          style={styles.absolute}
+          blurType="light"
+          blurAmount={1}
+          reducedTransparencyFallbackColor="white"
+        />
+      )}
+
       <TouchableWithoutFeedback onPress={() => setOpen(false)}>
         <View style={styles.container}>
           <View
@@ -37,6 +47,13 @@ PopUp.prototype = {
 };
 
 const styles = StyleSheet.create({
+  absolute: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+  },
   container: {
     flex: 1,
     alignItems: 'center',

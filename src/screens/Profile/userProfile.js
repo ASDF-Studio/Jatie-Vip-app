@@ -158,11 +158,9 @@ export default function UserProfile({ navigation, route }) {
     }
   };
 
-  console.log('===========>', user);
-
   return (
     <SafeAreaView style={styles.container}>
-      <CustomLoader open={isProfileLoading} />
+      {isProfileLoading && <CustomLoader open={isProfileLoading} />}
 
       <View style={styles.header}>
         <View style={styles.left}>

@@ -61,15 +61,15 @@ export const en = {
     reportPost: 'Report Post',
 
     // createpost
-    comment: "Comment",
+    comment: 'Comment',
     postTitle: 'Enter Post Title',
     postBody: 'Enter Post Body',
-    upVoteAgain: "This user already upvoted the post",
-    downVoteAgain: "This user already downvoted the post",
+    upVoteAgain: 'This user already upvoted the post',
+    downVoteAgain: 'This user already downvoted the post',
 
     //comment Post
 
-    commentvalid: "Please enter comment "
+    commentvalid: 'Please enter comment ',
   },
   sortBy: {
     recent: 'Recent',
@@ -95,11 +95,9 @@ export const en = {
     privacyPolicy: 'Privacy Policy',
     //-----
 
-    numberHint: "Please enter phone number",
-    numberValid: "Please enter valid phone number",
-    selectCountryCode: "Please select country code"
-
-
+    numberHint: 'Please enter phone number',
+    numberValid: 'Please enter valid phone number',
+    selectCountryCode: 'Please select country code',
   },
   enterOtp: {
     title: 'Enter OTP to \ncontinue',
@@ -107,14 +105,15 @@ export const en = {
       'Please enter the verification code that was sent to',
     edit: 'Edit',
     sorryCodeDidnotMatch: 'Sorry, the code didn’t match.',
-    resend: 'Resend'
+    resend: 'Resend',
   },
   setupUserId: {
     title: 'Setup your \nUser ID',
     subtitle: 'Select your User ID',
     placeholder: '@username',
-    chooseAnother: "Sorry, this username is already taken, please choose another one.",
-    userNameValidation: "Please enter username"
+    chooseAnother:
+      'Sorry, this username is already taken, please choose another one.',
+    userNameValidation: 'Please enter username',
   },
   profile: {
     message: 'This screen has the iOS native large header.',
@@ -204,16 +203,18 @@ export const en = {
     rule1: '1. Login to www.jativip.com',
     rule2: "2. Click 'Manage'",
     rule3: "3. Click 'Cancel Renewal'",
-    closeWarning: "You can't close your account while your subsription is still active.",
+    closeWarning:
+      "You can't close your account while your subsription is still active.",
     manageSubscription: 'Manage your subscription',
-    closeConfirm: "Are you sure want to close your account? This action can't be undone.",
+    closeConfirm:
+      "Are you sure want to close your account? This action can't be undone.",
     logout: 'Logout',
     editPost: 'Edit Post',
     reportUser: 'Report User',
     genderPlaceHolder: 'Prefer not to say',
     userID: 'User ID',
-    selecteImage: "Please upload image ",
-    editComment: "Edit Comment"
+    selecteImage: 'Please upload image ',
+    editComment: 'Edit Comment',
   },
   Welcome: {
     login: 'Login',
@@ -275,12 +276,12 @@ export const en = {
 
     //search
     search: 'Search',
-    searchPlaceHolder: "Search...",
+    searchPlaceHolder: 'Search...',
     searchUser: 'Search Users...',
     searchForUsers: 'Search for users...',
-    searchForUsersAndPosts: "Search for users and posts...",
-    sorryNoResultFound: "Sorry! No result found.",
-    seeMoreusers: "Show more users..."
+    searchForUsersAndPosts: 'Search for users and posts...',
+    sorryNoResultFound: 'Sorry! No result found.',
+    seeMoreusers: 'Show more users...',
   },
   giveaway: {
     header: 'Giveaway',
@@ -290,7 +291,7 @@ export const en = {
     learnMore: 'Learn More',
     title: 'Summer 2023 Giveaway',
     vipOnly: 'VIP Only',
-    giveAwayOption: "Giveaway Option",
+    giveAwayOption: 'Giveaway Option',
 
     //onPress learn more
     expires: 'Expires in',
@@ -381,30 +382,31 @@ export const en = {
     addComments: 'Add comments...',
     submit: 'Submit',
     delete: 'Delete',
+    gotIT: 'Got it',
   },
   alert: {
-    delete: 'Are you sure you want to delete this post?'
+    delete: 'Are you sure you want to delete this post?',
   },
   editProfile: {
-    updatedSuccess: "Profile Updated Successfully"
+    updatedSuccess: 'Profile Updated Successfully',
   },
   createPost: {
-    updatedSuccess: "Post Successfull"
+    updatedSuccess: 'Post Successfull',
   },
   updatePost: {
-    updatedSuccess: "Update Successfull"
+    updatedSuccess: 'Update Successfull',
   },
   deletePost: {
-    deletedSuccess: "Delete Successfull"
-  }, deleteCommentSuccsess: {
-    deletedSuccess: "Comment Deleted"
+    deletedSuccess: 'Delete Successfull',
+  },
+  deleteCommentSuccsess: {
+    deletedSuccess: 'Comment Deleted',
   },
   userFollowedSuccsess: {
-    followedSuccess: "Following"
-  }
-  ,
+    followedSuccess: 'Following',
+  },
   reports: {
-    post: "Reported Posts",
-    users: "Reported Users"
-  }
+    post: 'Reported Posts',
+    users: 'Reported Users',
+  },
 };

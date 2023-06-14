@@ -11,6 +11,7 @@ import {
   SafeAreaView,
   TextInput,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
 import {
@@ -70,6 +71,7 @@ import {
 import { SwiperViewer } from '@/components/SwiperComponent';
 import { navigationRef } from '@/navigation/RootNavigation';
 import DropDownPicker from 'react-native-dropdown-picker';
+import { TYPES as postTypes } from '@/actions/PostActions';
 
 export default function Search({ navigation }) {
   //Use State hooks
@@ -110,7 +112,7 @@ export default function Search({ navigation }) {
     isLoadingSelector([TYPES.SEARCH_USER], state)
   );
   const isPostLoading = useSelector(state =>
-    isLoadingSelector([TYPES.SEARCH_USER_SUCCESS], state)
+    isLoadingSelector([postTypes.SEARCH_ALL_POST], state)
   );
 
   const debouncedSearch = useMemo(() => {
@@ -167,7 +169,7 @@ export default function Search({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <CustomLoader open={loading} />
+      {/* <CustomLoader open={loading} /> */}
       <View style={styles.header}>
         <View style={styles.left}>
           <TopBackButton
@@ -225,24 +227,41 @@ export default function Search({ navigation }) {
       {searchListOpen &&
         isEmpty(SEARCH_DATA) &&
         isEmpty(searchUserData.data) && (
-          <View style={styles.searchBody}>
-            <FontAwesomeIcon
-              icon={faFaceSadSweat}
-              size={44}
-              color={theme.light.colors.primary}
-            />
-            <Text style={styles.searchTxt}>
-              {strings.exclusive.sorryNoResultFound}
-            </Text>
+          <View style={styles.loadingContainer}>
+            {isPostLoading ? (
+              <ActivityIndicator
+                animating={isPostLoading}
+                color={theme.light.colors.activeTabIcon}
+                size={'large'}
+              />
+            ) : (
+              <View style={styles.searchBody}>
+                <FontAwesomeIcon
+                  icon={faFaceSadSweat}
+                  size={44}
+                  color={theme.light.colors.primary}
+                />
+                <Text style={styles.searchTxt}>
+                  {strings.exclusive.sorryNoResultFound}
+                </Text>
+              </View>
+            )}
           </View>
         )}
-
       {searchListOpen &&
         (!isEmpty(SEARCH_DATA) || !isEmpty(searchUserData.data)) && (
           <View style={styles.contentContainerStyle}>
             <FlatList
               data={SEARCH_DATA}
               ListHeaderComponent={() =>
+                // isLoading ? (
+                //   <ActivityIndicator
+                //     animating={isLoading}
+                //     color={theme.light.colors.activeTabIcon}
+                //     size={'large'}
+                //     style={styles.loaderStyle}
+                //   />
+                // ) :
                 !isEmpty(searchUserData?.data) ? (
                   <View
                     style={{
@@ -297,7 +316,6 @@ export default function Search({ navigation }) {
             />
           </View>
         )}
-
       {showImageView && (
         <SwiperViewer
           visible={showImageView}
@@ -305,7 +323,6 @@ export default function Search({ navigation }) {
           images={imageFeed}
         />
       )}
-
       {showPostOptions &&
         (selectedPost?.userId === user?.id ? (
           <ModalDown open={showPostOptions} setOpen={setShowPostOptions}>
@@ -365,7 +382,7 @@ export default function Search({ navigation }) {
               paddingBottom={8}
             />
             {(userType.user == `${strings.userType.free}`) |
-              (userType.user == `${strings.userType.vip}`) ? (
+            (userType.user == `${strings.userType.vip}`) ? (
               <>
                 {selectedPost.isAdminPost == false && (
                   <ModalList
@@ -598,9 +615,11 @@ const styles = StyleSheet.create({
     top: ms(30),
   },
   searchBody: {
+    alignItems: 'center',
+  },
+  loadingContainer: {
     flex: 1,
     alignItems: 'center',
-
     justifyContent: 'center',
     backgroundColor: theme.light.colors.primaryBgLight,
   },
@@ -717,7 +736,8 @@ const styles = StyleSheet.create({
   loaderStyle: {
     alignSelf: 'center',
     justifyContent: 'center',
-    marginTop: ms(50),
+    flex: 1,
+    backgroundColor: theme.light.colors.primaryBgLight,
   },
   thumbnailImage: {
     width: '100%',
@@ -819,54 +839,3 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
-
-const a = {
-  comments_aggregate: { aggregate: { count: 1 } },
-  created_at: '2023-06-09T08:06:28.902057+00:00',
-  downVote: 0,
-  downVoteUserId: [],
-  has_downvoted: false,
-  has_upvoted: false,
-  id: 'c20ad3a4-02b8-430b-8a45-56db15601581',
-  index: 3,
-  isAdminPost: false,
-  isExclusive: false,
-  isGiveaway: false,
-  isPinned: false,
-  isReported: false,
-  isUSAonly: false,
-  isVIPonly: false,
-  is_following: false,
-  postBody: 'check blur issue123',
-  postExpires: null,
-  postImg: [],
-  postMediaContent: [
-    {
-      cover: '',
-      id: 10,
-      mimetype: 'image/jpeg',
-      url: 'https://d2wwqw32p0xkid.cloudfront.net/photo-1686297988692',
-    },
-    {
-      cover: '',
-      id: 9,
-      mimetype: 'image/jpeg',
-      url: 'https://d2wwqw32p0xkid.cloudfront.net/photo-1686297988792',
-    },
-  ],
-  postTitle: '',
-  postVideo: '[]',
-  shared: 0,
-  sharedUserId: [],
-  upVote: 0,
-  upVoteUserId: [],
-  updated_at: '2023-06-09T08:06:28.902057+00:00',
-  user: {
-    followers: [],
-    following: [],
-    fullName: 'Chris Holland1',
-    profilePic: 'https://d2wwqw32p0xkid.cloudfront.net/photo-1685424207848.jpg',
-    username: 'vipUser001',
-  },
-  userId: 'b9902993-ca3f-4a2f-9de8-397bf6f4767e',
-};

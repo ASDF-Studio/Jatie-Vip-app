@@ -39,7 +39,9 @@ export const theme = {
       dropDownBorder: '#E9EBEC',
       transparentGrey: 'rgba(43,45,66,0.4)',
       chatBackground: '#FDFBF4',
-      mention: '#9381FF'
+      mention: '#9381FF',
+      red: 'rgb(254, 95, 85)',
+      iconbackground: 'rgb(255, 223, 221)',
     },
   },
   dark: {
