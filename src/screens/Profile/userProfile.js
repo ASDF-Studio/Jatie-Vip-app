@@ -162,285 +162,281 @@ export default function UserProfile({ navigation, route }) {
     <SafeAreaView style={styles.container}>
       <CustomLoader open={isProfileLoading} />
 
-      <View>
-        <View style={styles.header}>
-          <View style={styles.left}>
-            <TopBackButton
-              onPress={() => navigationRef.goBack()}
-              style={styles.TopBackButton}
-            />
-          </View>
+      <View style={styles.header}>
+        <View style={styles.left}>
+          <TopBackButton
+            onPress={() => navigationRef.goBack()}
+            style={styles.TopBackButton}
+          />
         </View>
-        <View style={styles.headerContainer}>
-          <View style={styles.headerImageContainer}>
-            <Image
-              style={styles.headerImage}
-              source={{
-                uri: user?.profilePic || null,
-              }}
-            />
-            {user?.isVIP && user?.isAdmin && (
-              <View style={styles.profileLogoContainer}>
-                <FontAwesomeIcon
-                  icon={faCrown}
-                  color={theme.light.colors.primaryBgDark}
-                  size={20}
-                />
-              </View>
-            )}
-
-            <View style={styles.profileTitleContainer}>
-              <Text style={[TextStyles.header, styles.headerDesign]}>
-                {' '}
-                {user?.fullName}
-              </Text>
-              <Text style={styles.userNameDesign}> {user?.username}</Text>
+      </View>
+      <View style={styles.headerContainer}>
+        <View style={styles.headerImageContainer}>
+          <Image
+            style={styles.headerImage}
+            source={{
+              uri: user?.profilePic || null,
+            }}
+          />
+          {user?.isVIP && user?.isAdmin && (
+            <View style={styles.profileLogoContainer}>
+              <FontAwesomeIcon
+                icon={faCrown}
+                color={theme.light.colors.primaryBgDark}
+                size={20}
+              />
             </View>
-          </View>
-          <View style={styles.iconContiner}>
-            <Icon
-              icon={faSearch}
-              size={22}
-              style={styles.icon}
-              onPress={() => navigation.navigate(NAVIGATION.search)}
-            />
-            <Icon
-              icon={faBell}
-              size={22}
-              style={styles.icon}
-              onPress={() => navigation.navigate(NAVIGATION.notification)}
-            />
+          )}
+
+          <View style={styles.profileTitleContainer}>
+            <Text style={[TextStyles.header, styles.headerDesign]}>
+              {' '}
+              {user?.fullName}
+            </Text>
+            <Text style={styles.userNameDesign}> {user?.username}</Text>
           </View>
         </View>
-        <HeaderTab
-          title1={strings.profile.followers}
-          count1={user?.followerListsByFollowinguserid?.length}
-          onPress1={() =>
-            navigation.navigate(NAVIGATION.followers, {
-              id: userId,
-              screenName: 'userProfile',
-            })
-          }
-          title2={strings.profile.following}
-          count2={user?.follower_lists?.length}
-          onPress2={() =>
-            navigation.navigate(NAVIGATION.following, {
-              id: userId,
-              screenName: 'userProfile',
-            })
-          }
-        />
-        <HorizontalLine
-          color={theme.light.colors.infoBgLight}
-          paddingTop={8}
-          paddingBottom={4}
-        />
+        <View style={styles.iconContiner}>
+          <Icon
+            icon={faSearch}
+            size={22}
+            style={styles.icon}
+            onPress={() => navigation.navigate(NAVIGATION.search)}
+          />
+          <Icon
+            icon={faBell}
+            size={22}
+            style={styles.icon}
+            onPress={() => navigation.navigate(NAVIGATION.notification)}
+          />
+        </View>
+      </View>
+      <HeaderTab
+        title1={strings.profile.followers}
+        count1={user?.followerListsByFollowinguserid?.length}
+        onPress1={() =>
+          navigation.navigate(NAVIGATION.followers, {
+            id: userId,
+            screenName: 'userProfile',
+          })
+        }
+        title2={strings.profile.following}
+        count2={user?.follower_lists?.length}
+        onPress2={() =>
+          navigation.navigate(NAVIGATION.following, {
+            id: userId,
+            screenName: 'userProfile',
+          })
+        }
+      />
+      <HorizontalLine
+        color={theme.light.colors.infoBgLight}
+        paddingTop={8}
+        paddingBottom={4}
+      />
 
-        <View style={styles.messageHeader}>
-          <View style={styles.messageLeft}>
-            <TouchableOpacity
-              onPress={() => {
-                onMessageClick();
-              }}
-              style={[styles.IconBox, styles.IconBoxDesign]}
-            >
-              <FontAwesomeIcon
-                icon={faMessage}
-                color={theme.light.colors.success}
-              />
-              <Text style={[styles.IconBoxColor]}>
-                {strings.profile.message}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={onFollow} style={styles.IconBox}>
-              <FontAwesomeIcon
-                icon={faUserPlus}
-                color={theme.light.colors.primary}
-              />
-              {/* <Text style={[styles.labelColor]}> {renderFollowTitle()} </Text> */}
-              <Text style={[styles.labelColor]}>
-                {user?.is_following == true ? 'Unfollow' : 'Follow'}
-              </Text>
-            </TouchableOpacity>
-          </View>
+      <View style={styles.messageHeader}>
+        <View style={styles.messageLeft}>
           <TouchableOpacity
-            onPress={() => setOpenMore(true)}
-            style={styles.moreIconContainer}
+            onPress={() => {
+              onMessageClick();
+            }}
+            style={[styles.IconBox, styles.IconBoxDesign]}
           >
             <FontAwesomeIcon
-              icon={faEllipsis}
-              color={theme.light.colors.secondary}
+              icon={faMessage}
+              color={theme.light.colors.success}
             />
+            <Text style={[styles.IconBoxColor]}>{strings.profile.message}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onFollow} style={styles.IconBox}>
+            <FontAwesomeIcon
+              icon={faUserPlus}
+              color={theme.light.colors.primary}
+            />
+            {/* <Text style={[styles.labelColor]}> {renderFollowTitle()} </Text> */}
+            <Text style={[styles.labelColor]}>
+              {user?.is_following == true ? 'Unfollow' : 'Follow'}
+            </Text>
           </TouchableOpacity>
         </View>
-        <HorizontalLine />
-        <FlatList
-          data={userr?.getAllPostsByUserId || []}
-          key={props => props.id}
-          renderItem={({ item, index }) => (
-            <TouchableOpacity
-              onPress={() =>
-                userType?.user == `${strings.userType.free}` &&
-                navigation.navigate(NAVIGATION.upgradeMembership)
-              }
-              style={styles.cardContainer}
-            >
-              <Card>
-                <CardHeader
-                  fullName={user?.fullName}
-                  userName={user?.username}
-                  profilePic={user?.profilePic}
-                  time={item.created_at}
-                />
-                {console.log(item?.postMediaContent)}
+        <TouchableOpacity
+          onPress={() => setOpenMore(true)}
+          style={styles.moreIconContainer}
+        >
+          <FontAwesomeIcon
+            icon={faEllipsis}
+            color={theme.light.colors.secondary}
+          />
+        </TouchableOpacity>
+      </View>
+      <HorizontalLine />
+      <FlatList
+        data={userr?.getAllPostsByUserId || []}
+        key={props => props.id}
+        renderItem={({ item, index }) => (
+          <TouchableOpacity
+            onPress={() =>
+              userType?.user == `${strings.userType.free}` &&
+              navigation.navigate(NAVIGATION.upgradeMembership)
+            }
+            style={styles.cardContainer}
+          >
+            <Card>
+              <CardHeader
+                fullName={user?.fullName}
+                userName={user?.username}
+                profilePic={user?.profilePic}
+                time={item.created_at}
+              />
+              {console.log(item?.postMediaContent)}
 
-                <CardBody VIPKEY={user?.isVIP} text={item?.postBody} />
+              <CardBody VIPKEY={user?.isVIP} text={item?.postBody} />
 
-                {item?.postMediaContent.length <= 2 ? (
-                  <View style={styles.imageContainer}>
-                    {item?.postMediaContent.map(
-                      data => (
-                        (counter = counter + 1),
-                        (
-                          <TouchableOpacity
-                            key={counter}
-                            style={styles.touchContainer}
-                            onPress={() => {
-                              setShowImageView(true),
-                                setFeedImages(item?.postMediaContent);
-                            }}
-                          >
-                            {user?.isVIP == true ? (
-                              <>
-                                <Image
-                                  blurRadius={20}
-                                  style={styles.thumbnailImage}
-                                  source={{
-                                    uri:
-                                      item?.postMediaContent[0]?.mimetype?.split(
-                                        '/'
-                                      )[0] == 'image'
-                                        ? item?.postMediaContent[0]?.url
-                                        : item?.postMediaContent[0]?.cover,
-                                  }}
+              {item?.postMediaContent.length <= 2 ? (
+                <View style={styles.imageContainer}>
+                  {item?.postMediaContent.map(
+                    data => (
+                      (counter = counter + 1),
+                      (
+                        <TouchableOpacity
+                          key={counter}
+                          style={styles.touchContainer}
+                          onPress={() => {
+                            setShowImageView(true),
+                              setFeedImages(item?.postMediaContent);
+                          }}
+                        >
+                          {user?.isVIP == true ? (
+                            <>
+                              <Image
+                                blurRadius={20}
+                                style={styles.thumbnailImage}
+                                source={{
+                                  uri:
+                                    item?.postMediaContent[0]?.mimetype?.split(
+                                      '/'
+                                    )[0] == 'image'
+                                      ? item?.postMediaContent[0]?.url
+                                      : item?.postMediaContent[0]?.cover,
+                                }}
+                              />
+                              <View style={styles.vipOnlyContainer}>
+                                <FontAwesomeIcon
+                                  icon={faLock}
+                                  size={ms(10)}
+                                  style={styles.lock}
                                 />
-                                <View style={styles.vipOnlyContainer}>
-                                  <FontAwesomeIcon
-                                    icon={faLock}
-                                    size={ms(10)}
-                                    style={styles.lock}
-                                  />
-                                  <Text style={styles.vipOnlyText}>
-                                    {strings.giveaway.vipOnly}
-                                  </Text>
-                                </View>
-                              </>
-                            ) : null}
+                                <Text style={styles.vipOnlyText}>
+                                  {strings.giveaway.vipOnly}
+                                </Text>
+                              </View>
+                            </>
+                          ) : null}
 
-                            <Image
-                              source={{
-                                uri: data.url,
-                              }}
-                              style={styles.image}
-                            />
-                          </TouchableOpacity>
-                        )
+                          <Image
+                            source={{
+                              uri: data.url,
+                            }}
+                            style={styles.image}
+                          />
+                        </TouchableOpacity>
                       )
+                    )
+                  )}
+                </View>
+              ) : item?.postMediaContent.length > 2 ? (
+                ((counter = 1),
+                (
+                  <View style={styles.imageContainer}>
+                    {item?.postMediaContent.map(data =>
+                      counter == 1
+                        ? ((counter = counter + 1),
+                          (
+                            <TouchableOpacity
+                              key={counter}
+                              style={styles.touchContainer}
+                              onPress={() => {
+                                setShowImageView(true),
+                                  setFeedImages(item?.postMediaContent);
+                              }}
+                            >
+                              <Image
+                                source={{
+                                  uri: data.url,
+                                }}
+                                key={counter}
+                                style={styles.image}
+                              />
+                            </TouchableOpacity>
+                          ))
+                        : counter == 2
+                        ? ((counter = counter + 1),
+                          (
+                            <TouchableOpacity
+                              key={counter}
+                              style={styles.touchContainer}
+                              onPress={() => {
+                                setShowImageView(true),
+                                  setFeedImages(item?.postMediaContent);
+                              }}
+                            >
+                              <ImageBackground
+                                source={{
+                                  uri: data.url,
+                                }}
+                                key={counter}
+                                style={[styles.image, styles.moreImage]}
+                              >
+                                <TouchableOpacity
+                                  onPress={() => {
+                                    setShowImageView(true),
+                                      setFeedImages(item?.postMediaContent);
+                                  }}
+                                >
+                                  <Text style={styles.extraImage}>
+                                    {strings.message.plus}
+                                    {item?.postMediaContent.length - 1}
+                                  </Text>
+                                </TouchableOpacity>
+                              </ImageBackground>
+                            </TouchableOpacity>
+                          ))
+                        : null
                     )}
                   </View>
-                ) : item?.postMediaContent.length > 2 ? (
-                  ((counter = 1),
-                  (
-                    <View style={styles.imageContainer}>
-                      {item?.postMediaContent.map(data =>
-                        counter == 1
-                          ? ((counter = counter + 1),
-                            (
-                              <TouchableOpacity
-                                key={counter}
-                                style={styles.touchContainer}
-                                onPress={() => {
-                                  setShowImageView(true),
-                                    setFeedImages(item?.postMediaContent);
-                                }}
-                              >
-                                <Image
-                                  source={{
-                                    uri: data.url,
-                                  }}
-                                  key={counter}
-                                  style={styles.image}
-                                />
-                              </TouchableOpacity>
-                            ))
-                          : counter == 2
-                          ? ((counter = counter + 1),
-                            (
-                              <TouchableOpacity
-                                key={counter}
-                                style={styles.touchContainer}
-                                onPress={() => {
-                                  setShowImageView(true),
-                                    setFeedImages(item?.postMediaContent);
-                                }}
-                              >
-                                <ImageBackground
-                                  source={{
-                                    uri: data.url,
-                                  }}
-                                  key={counter}
-                                  style={[styles.image, styles.moreImage]}
-                                >
-                                  <TouchableOpacity
-                                    onPress={() => {
-                                      setShowImageView(true),
-                                        setFeedImages(item?.postMediaContent);
-                                    }}
-                                  >
-                                    <Text style={styles.extraImage}>
-                                      {strings.message.plus}
-                                      {item?.postMediaContent.length - 1}
-                                    </Text>
-                                  </TouchableOpacity>
-                                </ImageBackground>
-                              </TouchableOpacity>
-                            ))
-                          : null
-                      )}
-                    </View>
-                  ))
-                ) : null}
-                <CardFooter
-                  postType={POST_TYPE.USER_PROFILE}
-                  postIndex={index}
-                  postID={item?.id}
-                  postUserID={item?.userId}
-                  userID={userr?.id}
-                  likeCount={item?.upVote}
-                  disLikeCount={item?.downVote}
-                  commentCount={item.comments_aggregate?.aggregate.count || 0}
-                  commentPress={() =>
-                    navigation.navigate(NAVIGATION.comments, {
-                      DATA: item,
-                      POST_INDEX: index,
-                      type: POST_TYPE.USER_PROFILE,
-                    })
-                  }
-                  sharePress={() => console.log('share')}
-                  morePress={() => {
-                    setOpenMore(true);
-                    setpostId(item?.id);
-                    setPostUserId(item?.userId);
-                    setPostTitle(item?.postTitle);
-                    setPostBody(item?.postBody);
-                    setPostImg(item?.postImg);
-                  }}
-                />
-              </Card>
-            </TouchableOpacity>
-          )}
-        />
-      </View>
+                ))
+              ) : null}
+              <CardFooter
+                postType={POST_TYPE.USER_PROFILE}
+                postIndex={index}
+                postID={item?.id}
+                postUserID={item?.userId}
+                userID={userr?.id}
+                likeCount={item?.upVote}
+                disLikeCount={item?.downVote}
+                commentCount={item.comments_aggregate?.aggregate.count || 0}
+                commentPress={() =>
+                  navigation.navigate(NAVIGATION.comments, {
+                    DATA: item,
+                    POST_INDEX: index,
+                    type: POST_TYPE.USER_PROFILE,
+                  })
+                }
+                sharePress={() => console.log('share')}
+                morePress={() => {
+                  setOpenMore(true);
+                  setpostId(item?.id);
+                  setPostUserId(item?.userId);
+                  setPostTitle(item?.postTitle);
+                  setPostBody(item?.postBody);
+                  setPostImg(item?.postImg);
+                }}
+              />
+            </Card>
+          </TouchableOpacity>
+        )}
+      />
 
       {showImageView && (
         <SwiperViewer
