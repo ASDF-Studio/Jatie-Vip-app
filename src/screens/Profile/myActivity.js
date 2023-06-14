@@ -5,6 +5,7 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import { theme } from '@/theme';
 import { Card, CardHeader, Icon } from '@/components';
@@ -39,11 +40,6 @@ export default function MyActivity({ navigation }) {
     isLoadingSelector([TYPES.GET_ALL_ACTIVITY], state)
   );
 
-  console.log(
-    '=====================',
-    isActvityLoading,
-    '======================'
-  );
   useEffect(() => {
     if (focus) {
       dispatch(getAllActivityByUserId(user.id));
@@ -51,73 +47,85 @@ export default function MyActivity({ navigation }) {
   }, [focus]);
   return (
     <View style={styles.pageContainer}>
-      <FlatList
-        data={user?.MyActivityKey?.data}
-        key={item => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.cardContainer}>
-            <Card>
-              <CardHeader
-                fullName={user.fullName}
-                userName={user.username}
-                profilePic={user.profilePic}
-                time={item.created_at}
-                userId={item?.userId}
-              />
-              <View style={styles.activity}>
-                {item.activityDetails == 'upvoted this' ? (
-                  <Icon
-                    icon={faCircleUp}
-                    size={ms(15)}
-                    style={[
-                      styles.icon,
-                      {
-                        color: theme.light.colors.success,
-                      },
-                    ]}
-                  />
-                ) : null}
-                {item.activityDetails == 'downvoted this' ? (
-                  <Icon
-                    icon={faCircleDown}
-                    size={ms(15)}
-                    style={[
-                      styles.icon,
-                      {
-                        color: theme.light.colors.error,
-                      },
-                    ]}
-                  />
-                ) : null}
-                {item.activityDetails == 'commented on this' ? (
-                  <Icon
-                    icon={faComment}
-                    size={ms(15)}
-                    style={[
-                      styles.icon,
-                      {
-                        color: theme.light.colors.info,
-                      },
-                    ]}
-                  />
-                ) : null}
-                <View style={styles.textContainer}>
-                  <Text style={styles.statsTxt}> {item.activityDetails} </Text>
-                  <TouchableOpacity
-                    onPress={() =>
-                      navigate(NAVIGATION.singlePost, {
-                        postId: item.activityObjectId,
-                      })
-                    }
-                  >
-                    <Text style={styles.reactOnTxt}>{`post`} </Text>
-                  </TouchableOpacity>
+      {isActvityLoading ? (
+        <ActivityIndicator
+          size={'large'}
+          color={theme.light.colors.activeTabIcon}
+          style={{ alignSelf: 'center', marginTop: 50 }}
+          animating={isActvityLoading}
+        />
+      ) : (
+        <FlatList
+          data={user?.MyActivityKey?.data}
+          key={item => item.id}
+          renderItem={({ item }) => (
+            <View style={styles.cardContainer}>
+              <Card>
+                <CardHeader
+                  fullName={user.fullName}
+                  userName={user.username}
+                  profilePic={user.profilePic}
+                  time={item.created_at}
+                  userId={item?.userId}
+                />
+                <View style={styles.activity}>
+                  {item.activityDetails == 'upvoted this' ? (
+                    <Icon
+                      icon={faCircleUp}
+                      size={ms(15)}
+                      style={[
+                        styles.icon,
+                        {
+                          color: theme.light.colors.success,
+                        },
+                      ]}
+                    />
+                  ) : null}
+                  {item.activityDetails == 'downvoted this' ? (
+                    <Icon
+                      icon={faCircleDown}
+                      size={ms(15)}
+                      style={[
+                        styles.icon,
+                        {
+                          color: theme.light.colors.error,
+                        },
+                      ]}
+                    />
+                  ) : null}
+                  {item.activityDetails == 'commented on this' ? (
+                    <Icon
+                      icon={faComment}
+                      size={ms(15)}
+                      style={[
+                        styles.icon,
+                        {
+                          color: theme.light.colors.info,
+                        },
+                      ]}
+                    />
+                  ) : null}
+                  <View style={styles.textContainer}>
+                    <Text style={styles.statsTxt}>
+                      {' '}
+                      {item.activityDetails}{' '}
+                    </Text>
+                    <TouchableOpacity
+                      onPress={() =>
+                        navigate(NAVIGATION.singlePost, {
+                          postId: item.activityObjectId,
+                        })
+                      }
+                    >
+                      <Text style={styles.reactOnTxt}>{`post`} </Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-              </View>
-            </Card>
-          </View>
-        )}
-      />
+              </Card>
+            </View>
+          )}
+        />
+      )}
     </View>
   );
 }
