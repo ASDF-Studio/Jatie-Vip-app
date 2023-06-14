@@ -218,6 +218,16 @@ export function Home({ navigation }) {
     dispatch(
       deletePost(postId, postUserId, user?.id, userType.user, NAVIGATION.home)
     );
+    const page = '';
+    dispatch(
+      getAllPost(
+        user?.id,
+        sortBy,
+        follwingSwitch,
+        vipArea == `${strings.home.newFeed}` ? false : true,
+        page
+      )
+    );
   };
 
   const SelectFromGallery = () => {

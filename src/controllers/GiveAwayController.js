@@ -283,18 +283,19 @@ export class GiveAwayController {
         return new Promise(async (resolve, reject) => {
 
             const endpoint = API_BASE_URL + API_END_POINTS.END_GIVEAWAY;
-            let data = new FormData()
 
-            data.append('giveawayId', params.giveawayId);
-            console.log("GIVEATWA__End", data);
-            const headers = {
-                'Content-Type': 'multipart/form-data'
-            }
 
-            await HttpClient.post(endpoint, data, { headers })
+
+
+            var body = JSON.stringify({
+                "giveawayId": params.giveawayId,
+
+            });
+
+            HttpClient.post(endpoint, body)
                 .then((response) => {
                     resolve(response)
-                    console.log('giveaway end response', JSON.stringify(response))
+                    console.log('giveaway end responseeeee', JSON.stringify(response))
                 })
                 .catch((error) => {
                     reject(error)
@@ -305,6 +306,27 @@ export class GiveAwayController {
 
     }
 
+
+
+    static async getPostById(postId, userID) {
+        return new Promise((resolve, reject) => {
+            const endpoint = API_BASE_URL + API_END_POINTS.POST_BY_ID;
+            var body = JSON.stringify({
+                "id": postId,
+                "loggedInUserId": userID
+            });
+            HttpClient.post(endpoint, body)
+                .then((response) => {
+
+
+                    resolve(response)
+
+                }).catch((error) => {
+
+                    reject(error)
+                });
+        })
+    }
 
 
 

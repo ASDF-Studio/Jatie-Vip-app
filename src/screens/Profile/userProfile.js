@@ -19,6 +19,7 @@ import {
   faXmark,
   faPen,
   faTrash,
+  faLock,
 } from '@fortawesome/free-solid-svg-icons';
 import { TextStyles, theme } from '@/theme';
 
@@ -70,7 +71,7 @@ export default function UserProfile({ navigation, route }) {
 
   const getUserProfile = useSelector(getUser);
   const [active, setActive] = useState(false);
-
+  const userType = useSelector(state => state.userType);
   const [openMore, setOpenMore] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [user, setUser] = useState(null);
@@ -100,6 +101,8 @@ export default function UserProfile({ navigation, route }) {
   );
 
   const loggedInId = useSelector(getUser);
+
+  console.log('user vip', user?.isVIP)
 
   useEffect(() => {
     dispatch(getUserProfileByUserId(userId, userr.id));
@@ -292,7 +295,9 @@ export default function UserProfile({ navigation, route }) {
         data={userPosts || []}
         key={props => props.id}
         renderItem={({ item, index }) => (
-          <View style={styles.cardContainer}>
+          <TouchableOpacity
+            onPress={() => userType.user == `${strings.userType.free}` && navigation.navigate(NAVIGATION.upgradeMembership)}
+            opacity={0.2} style={styles.cardContainer}>
             <Card>
               <CardHeader
                 fullName={user?.fullName}
@@ -316,6 +321,25 @@ export default function UserProfile({ navigation, route }) {
                               setFeedImages(item?.postImg);
                           }}
                         >
+                          {user.isVIP == true ? <>
+                            <Image
+                              blurRadius={5}
+                              style={styles.thumbnailImage}
+                              source={{
+                                uri: item?.postMediaContent[0]?.mimetype?.split("/")[0] == "image" ? item?.postMediaContent[0]?.url : item?.postMediaContent[0]?.cover,
+                              }}
+                            />
+                            <View style={styles.vipOnlyContainer}>
+                              <FontAwesomeIcon
+                                icon={faLock}
+                                size={ms(10)}
+                                style={styles.lock}
+                              />
+                              <Text style={styles.vipOnlyText}>
+                                {strings.giveaway.vipOnly}
+                              </Text>
+                            </View>
+                          </> : null}
                           <Image
                             source={{
                               uri: data,
@@ -329,66 +353,66 @@ export default function UserProfile({ navigation, route }) {
                 </View>
               ) : item?.postImg?.length > 2 ? (
                 ((counter = 1),
-                (
-                  <View style={styles.imageContainer}>
-                    {item?.postImg?.map(data =>
-                      counter == 1
-                        ? ((counter = counter + 1),
-                          (
-                            <TouchableOpacity
-                              key={counter}
-                              style={styles.touchContainer}
-                              onPress={() => {
-                                setShowImageView(true),
-                                  setFeedImages(item?.postImg);
-                                // console.log(feedImages)
-                              }}
-                            >
-                              <Image
-                                source={{
-                                  uri: data,
-                                }}
+                  (
+                    <View style={styles.imageContainer}>
+                      {item?.postImg?.map(data =>
+                        counter == 1
+                          ? ((counter = counter + 1),
+                            (
+                              <TouchableOpacity
                                 key={counter}
-                                style={styles.image}
-                              />
-                            </TouchableOpacity>
-                          ))
-                        : counter == 2
-                        ? ((counter = counter + 1),
-                          (
-                            <TouchableOpacity
-                              key={counter}
-                              style={styles.touchContainer}
-                              onPress={() => {
-                                setShowImageView(true),
-                                  setFeedImages(item?.postImg);
-                              }}
-                            >
-                              <ImageBackground
-                                source={{
-                                  uri: data,
+                                style={styles.touchContainer}
+                                onPress={() => {
+                                  setShowImageView(true),
+                                    setFeedImages(item?.postImg);
+                                  // console.log(feedImages)
                                 }}
-                                key={counter}
-                                style={[styles.image, styles.moreImage]}
                               >
+                                <Image
+                                  source={{
+                                    uri: data,
+                                  }}
+                                  key={counter}
+                                  style={styles.image}
+                                />
+                              </TouchableOpacity>
+                            ))
+                          : counter == 2
+                            ? ((counter = counter + 1),
+                              (
                                 <TouchableOpacity
+                                  key={counter}
+                                  style={styles.touchContainer}
                                   onPress={() => {
                                     setShowImageView(true),
                                       setFeedImages(item?.postImg);
                                   }}
                                 >
-                                  <Text style={styles.extraImage}>
-                                    {strings.message.plus}
-                                    {item?.postImg?.length - 1}
-                                  </Text>
+                                  <ImageBackground
+                                    source={{
+                                      uri: data,
+                                    }}
+                                    key={counter}
+                                    style={[styles.image, styles.moreImage]}
+                                  >
+                                    <TouchableOpacity
+                                      onPress={() => {
+                                        setShowImageView(true),
+                                          setFeedImages(item?.postImg);
+                                      }}
+                                    >
+                                      <Text style={styles.extraImage}>
+                                        {strings.message.plus}
+                                        {item?.postImg?.length - 1}
+                                      </Text>
+                                    </TouchableOpacity>
+                                  </ImageBackground>
                                 </TouchableOpacity>
-                              </ImageBackground>
-                            </TouchableOpacity>
-                          ))
-                        : null
-                    )}
-                  </View>
-                ))
+                              ))
+                            : null
+                      )}
+                    </View>
+                  ))
               ) : null}
               <CardFooter
                 postType={POST_TYPE.REGULAR}
@@ -414,7 +438,7 @@ export default function UserProfile({ navigation, route }) {
                 }}
               />
             </Card>
-          </View>
+          </TouchableOpacity>
         )}
       />
 
@@ -443,7 +467,7 @@ export default function UserProfile({ navigation, route }) {
             icon={faMessage}
             iconColor={theme.light.colors.success}
             iconBg={theme.light.colors.successBgLight}
-            // onPress = {()=> Alert.alert("working")}
+          // onPress = {()=> Alert.alert("working")}
           />
           <HorizontalLine
             color={theme.light.colors.infoBgLight}
@@ -638,4 +662,28 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     width: '100%',
   },
+  thumbnailImage: {
+    width: '100%',
+    height: vs(180),
+    padding: ms(80),
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+
+    //  marginBottom: 10
+  },
+  vipOnlyContainer: {
+    backgroundColor: theme.light.colors.primary,
+    width: ms(100),
+    height: vs(25),
+    borderRadius: 6,
+    position: 'absolute',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: ms(10),
+    top: '42%',
+    left: '38%',
+
+    // marginLeft: '43%',
+    // marginTop: '22%',
+  }
 });

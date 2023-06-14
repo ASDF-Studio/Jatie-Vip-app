@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity, Pressable, Text, Platform } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Pressable, Text, Platform, ScrollView } from 'react-native';
 import { TextField } from '@/components';
 import { theme } from '@/theme';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -14,7 +14,7 @@ import { commentOnPost, editComment, getAllPostSuccess, getPostById, getPostById
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { Loader } from './Loader';
 import { useEffect } from 'react';
-import { ScrollView } from 'react-native-gesture-handler';
+
 import { getAllPostData, getPostByIdData } from '@/selectors/PostSelectors';
 import { FontFamily } from '@/theme/Fonts';
 
@@ -24,7 +24,9 @@ export const CommentInput = React.forwardRef((props, ref,) => {
   const [comment, setComment] = useState('');
   const [isEdit, setIsEdit] = useState(false);
   const [searchedKeyword, setSearchedKeyword] = useState('')
-  const searchUserSelector = useSelector(getAllPostData)
+  const searchUserSelector = useSelector((state) => state.post.searchedUsers)
+
+  console.log('llll', searchUserSelector)
   const singlePost = useSelector(getPostByIdData)
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.COMMENT_ON_POST], state)
@@ -66,7 +68,7 @@ export const CommentInput = React.forwardRef((props, ref,) => {
     return (
       <View style={{ height: 200 }}>
         <ScrollView >
-          {searchUserSelector?.searchedUsers?.filter(one => one.username.toLocaleLowerCase().includes(keyword.toLocaleLowerCase()))
+          {searchUserSelector?.filter(one => one.username.toLocaleLowerCase().includes(keyword.toLocaleLowerCase()))
             .map(one => (
               <Pressable
                 key={one.id}
@@ -122,7 +124,7 @@ export const CommentInput = React.forwardRef((props, ref,) => {
     }
   }
 
-  console.log(singlePost)
+  //   console.log(singlePost)
 
 
   React.useImperativeHandle(ref, () => ({
