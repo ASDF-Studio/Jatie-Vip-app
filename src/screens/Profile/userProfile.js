@@ -61,6 +61,7 @@ import { showMessage } from 'react-native-flash-message';
 import { useIsFocused } from '@react-navigation/native';
 import { POST_TYPE } from '@/constants/enums';
 import { getAllPostByUserIdSuccess } from '@/actions/UserActions';
+import { SwiperViewer } from '@/components/SwiperComponent';
 
 export default function UserProfile({ navigation, route }) {
   const [postIndex, setPostIndex] = useState(0);
@@ -122,19 +123,19 @@ export default function UserProfile({ navigation, route }) {
 
   const onFollow = () => {
     if (user?.is_following == true) {
-      dispatch(unFollowUser(loggedInId.id, user.id));
+      dispatch(unFollowUser(userr.id, user.id));
       setOpenMore(false);
-      console.log('check', loggedInId.id, user.id);
+      console.log('check', userr.id, user.id);
       //setOpen(false)
       setTimeout(() => {
         dispatch(getUserProfileByUserId(userId, userr.id));
       }, 100);
     } else {
-      dispatch(followUser(loggedInId.id, user.id));
+      dispatch(followUser(userr.id, user.id));
       setOpenMore(false);
 
       // setOpen(false)
-      console.log('follower log', loggedInId.id, user.id);
+      console.log('follower log', userr.id, user.id);
 
       setTimeout(() => {
         dispatch(getUserProfileByUserId(userId, userr.id));
@@ -248,8 +249,7 @@ export default function UserProfile({ navigation, route }) {
                 color={theme.light.colors.success}
               />
               <Text style={[styles.IconBoxColor]}>
-                {' '}
-                {strings.profile.message}{' '}
+                {strings.profile.message}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={onFollow} style={styles.IconBox}>
@@ -259,8 +259,7 @@ export default function UserProfile({ navigation, route }) {
               />
               {/* <Text style={[styles.labelColor]}> {renderFollowTitle()} </Text> */}
               <Text style={[styles.labelColor]}>
-                {' '}
-                {user?.is_following == true ? 'Unfollow' : 'Follow'}{' '}
+                {user?.is_following == true ? 'Unfollow' : 'Follow'}
               </Text>
             </TouchableOpacity>
           </View>
@@ -293,12 +292,13 @@ export default function UserProfile({ navigation, route }) {
                   profilePic={user?.profilePic}
                   time={item.created_at}
                 />
+                {console.log(item?.postMediaContent)}
 
                 <CardBody VIPKEY={user?.isVIP} text={item?.postBody} />
 
-                {item?.postImg?.length <= 2 ? (
+                {item?.postMediaContent.length <= 2 ? (
                   <View style={styles.imageContainer}>
-                    {item?.postImg?.map(
+                    {item?.postMediaContent.map(
                       data => (
                         (counter = counter + 1),
                         (
@@ -307,7 +307,7 @@ export default function UserProfile({ navigation, route }) {
                             style={styles.touchContainer}
                             onPress={() => {
                               setShowImageView(true),
-                                setFeedImages(item?.postImg);
+                                setFeedImages(item?.postMediaContent);
                             }}
                           >
                             {user?.isVIP == true ? (
@@ -339,7 +339,7 @@ export default function UserProfile({ navigation, route }) {
 
                             <Image
                               source={{
-                                uri: data,
+                                uri: data.url,
                               }}
                               style={styles.image}
                             />
@@ -348,68 +348,67 @@ export default function UserProfile({ navigation, route }) {
                       )
                     )}
                   </View>
-                ) : item?.postImg?.length > 2 ? (
+                ) : item?.postMediaContent.length > 2 ? (
                   ((counter = 1),
-                    (
-                      <View style={styles.imageContainer}>
-                        {item?.postImg?.map(data =>
-                          counter == 1
-                            ? ((counter = counter + 1),
-                              (
-                                <TouchableOpacity
-                                  key={counter}
-                                  style={styles.touchContainer}
-                                  onPress={() => {
-                                    setShowImageView(true),
-                                      setFeedImages(item?.postImg);
-                                    // console.log(feedImages)
+                  (
+                    <View style={styles.imageContainer}>
+                      {item?.postMediaContent.map(data =>
+                        counter == 1
+                          ? ((counter = counter + 1),
+                            (
+                              <TouchableOpacity
+                                key={counter}
+                                style={styles.touchContainer}
+                                onPress={() => {
+                                  setShowImageView(true),
+                                    setFeedImages(item?.postMediaContent);
+                                }}
+                              >
+                                <Image
+                                  source={{
+                                    uri: data.url,
                                   }}
+                                  key={counter}
+                                  style={styles.image}
+                                />
+                              </TouchableOpacity>
+                            ))
+                          : counter == 2
+                          ? ((counter = counter + 1),
+                            (
+                              <TouchableOpacity
+                                key={counter}
+                                style={styles.touchContainer}
+                                onPress={() => {
+                                  setShowImageView(true),
+                                    setFeedImages(item?.postMediaContent);
+                                }}
+                              >
+                                <ImageBackground
+                                  source={{
+                                    uri: data.url,
+                                  }}
+                                  key={counter}
+                                  style={[styles.image, styles.moreImage]}
                                 >
-                                  <Image
-                                    source={{
-                                      uri: data,
-                                    }}
-                                    key={counter}
-                                    style={styles.image}
-                                  />
-                                </TouchableOpacity>
-                              ))
-                            : counter == 2
-                              ? ((counter = counter + 1),
-                                (
                                   <TouchableOpacity
-                                    key={counter}
-                                    style={styles.touchContainer}
                                     onPress={() => {
                                       setShowImageView(true),
-                                        setFeedImages(item?.postImg);
+                                        setFeedImages(item?.postMediaContent);
                                     }}
                                   >
-                                    <ImageBackground
-                                      source={{
-                                        uri: data,
-                                      }}
-                                      key={counter}
-                                      style={[styles.image, styles.moreImage]}
-                                    >
-                                      <TouchableOpacity
-                                        onPress={() => {
-                                          setShowImageView(true),
-                                            setFeedImages(item?.postImg);
-                                        }}
-                                      >
-                                        <Text style={styles.extraImage}>
-                                          {strings.message.plus}
-                                          {item?.postImg?.length - 1}
-                                        </Text>
-                                      </TouchableOpacity>
-                                    </ImageBackground>
+                                    <Text style={styles.extraImage}>
+                                      {strings.message.plus}
+                                      {item?.postMediaContent.length - 1}
+                                    </Text>
                                   </TouchableOpacity>
-                                ))
-                              : null
-                        )}
-                      </View>
-                    ))
+                                </ImageBackground>
+                              </TouchableOpacity>
+                            ))
+                          : null
+                      )}
+                    </View>
+                  ))
                 ) : null}
                 <CardFooter
                   postType={POST_TYPE.USER_PROFILE}
@@ -444,10 +443,10 @@ export default function UserProfile({ navigation, route }) {
       </View>
 
       {showImageView && (
-        <AppImageViewer
+        <SwiperViewer
           visible={showImageView}
           setVisible={() => setShowImageView(false)}
-          images={feedImages}
+          images={feedImages || []}
         />
       )}
       {openMore && (
@@ -468,7 +467,7 @@ export default function UserProfile({ navigation, route }) {
             icon={faMessage}
             iconColor={theme.light.colors.success}
             iconBg={theme.light.colors.successBgLight}
-          // onPress = {()=> Alert.alert("working")}
+            // onPress = {()=> Alert.alert("working")}
           />
           <HorizontalLine
             color={theme.light.colors.infoBgLight}
