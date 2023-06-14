@@ -542,10 +542,12 @@ export class UserController {
 
   // all post by admin
 
-  static async getAllPostByAdmin() {
+  static async getAllPostByAdmin(loggedInUserId) {
     return new Promise(async (resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.ALL_POST_ADMIN;
-      await HttpClient.post(endpoint)
+      await HttpClient.post(endpoint, {
+        loggedInUserId
+      })
         .then(response => {
           resolve(response);
         })

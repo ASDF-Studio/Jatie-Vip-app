@@ -994,10 +994,8 @@ export const getAllPostsByLoggedInUser =
         allPosts = await UserController.postByUserId(id, null, loggedInUserId);
       }
       if (userType.user === strings.userType.admin) {
-
-        console.log("THIS IS WORKING  ", userType.user)
-        allPosts = await UserController.getAllPostByAdmin();
-
+        console.log('THIS IS WORKING  ', userType.user);
+        allPosts = await UserController.getAllPostByAdmin(loggedInUserId);
       }
 
       dispatch(getAllPostByLoggedInUserSuccess(allPosts?.data));

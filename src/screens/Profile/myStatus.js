@@ -123,8 +123,6 @@ export default function MyStatus({ navigation }) {
     );
   };
 
-  // console.log("=======> ", userType.user, user.getAllPostsByLoggedInUser[0])
-
   return (
     <SafeAreaView>
       {isLoading ? (
