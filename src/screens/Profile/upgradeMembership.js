@@ -10,8 +10,47 @@ import { FontFamily } from '@/theme/Fonts';
 import { NAVIGATION } from '@/constants';
 import { strings } from '@/localization';
 import { navigationRef } from '@/navigation/RootNavigation';
-
+import RNIap, {
+  validateReceiptAndroid,
+  getAvailablePurchases,
+  getSubscriptions,
+  initConnection,
+} from 'react-native-iap';
+import { useFocusEffect } from '@react-navigation/native';
+import { useEffect } from 'react';
 export default function UpgradeMembership({ navigation }) {
+  useEffect(() => {
+    initIAP();
+  }, []);
+  const initIAP = async () => {
+    try {
+      await initConnection();
+    } catch (error) {
+      console.log('Failed to initialize in-app purchase:', error);
+    }
+  };
+
+
+  useEffect(() => { loadPurchases() }, [])
+
+
+
+  const loadPurchases = async () => {
+    try {
+      const availablePurchases = await getAvailablePurchases();
+      console.log("PURCHASEEEE", availablePurchases);
+
+      if (availablePurchases?.length <= 0) {
+        console.log('Available Purchases:', availablePurchases);
+
+      }
+
+    } catch (error) {
+      console.log('Error loading purchases:', error);
+    }
+  };
+
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>

@@ -163,6 +163,13 @@ export const TYPES = {
   MARK_ALL_READ_NOTIFICATIONS_REQUEST: 'MARK_ALL_READ_NOTIFICATIONS_REQUEST',
   MARK_ALL_READ_NOTIFICATIONS_SUCCESS: 'MARK_ALL_READ_NOTIFICATIONS_SUCCESS',
   MARK_ALL_READ_NOTIFICATIONS_ERROR: 'MARK_ALL_READ_NOTIFICATIONS_ERROR',
+
+
+  //Update FCM token
+  UPDATE_FCM_TOKEN: 'UPDATE_FCM_TOKEN',
+  UPDATE_FCM_TOKEN_REQUEST: 'UPDATE_FCM_TOKEN_REQUEST',
+  UPDATE_FCM_TOKEN_SUCCESS: 'UPDATE_FCM_TOKEN_SUCCESS',
+  UPDATE_FCM_TOKEN_ERROR: 'UPDATE_FCM_TOKEN_ERROR',
 };
 
 const loginRequest = () => ({
@@ -563,6 +570,24 @@ const markAllReadNotificationsError = error => ({
   payload: { error },
 });
 
+
+
+export const updateFcmTokenSuccess = user => ({
+  type: TYPES.UPDATE_FCM_TOKEN_SUCCESS,
+  payload: user,
+});
+
+const updateFcmTokenRequest = () => ({
+  type: TYPES.UPDATE_FCM_TOKEN_REQUEST,
+  payload: null,
+});
+
+const updateFcmTokenError = error => ({
+  type: TYPES.UPDATE_FCM_TOKEN_ERROR,
+  payload: { error },
+});
+
+
 export const login = number => async dispatch => {
   dispatch(globalReset());
   dispatch(loginRequest());
@@ -636,37 +661,37 @@ export const updateProfile =
     mimeType,
     screen
   ) =>
-  async dispatch => {
-    dispatch(globalReset());
-    dispatch(updateProfileRequest());
-    try {
-      const user = await UserController.updateProfile(
-        dob,
-        fullname,
-        gender,
-        id,
-        primaryEmail,
-        location,
-        username,
-        file,
-        mimeType
-      );
-      dispatch(updateProfileSuccess(user));
-      if (screen == NAVIGATION.editProfile) {
+    async dispatch => {
+      dispatch(globalReset());
+      dispatch(updateProfileRequest());
+      try {
+        const user = await UserController.updateProfile(
+          dob,
+          fullname,
+          gender,
+          id,
+          primaryEmail,
+          location,
+          username,
+          file,
+          mimeType
+        );
+        dispatch(updateProfileSuccess(user));
+        if (screen == NAVIGATION.editProfile) {
+          showMessage({
+            message: strings.editProfile.updatedSuccess,
+            type: 'success',
+          });
+          navigationRef.navigate(NAVIGATION.profileSetting);
+        }
+      } catch (error) {
         showMessage({
-          message: strings.editProfile.updatedSuccess,
-          type: 'success',
+          message: error?.message,
+          type: 'danger',
         });
-        navigationRef.navigate(NAVIGATION.profileSetting);
+        dispatch(updateProfileError(error));
       }
-    } catch (error) {
-      showMessage({
-        message: error?.message,
-        type: 'danger',
-      });
-      dispatch(updateProfileError(error));
-    }
-  };
+    };
 export const uploadProfile = (file, mimeType, USER) => async dispatch => {
   dispatch(globalReset());
   dispatch(uploadProfileRequest());
@@ -735,44 +760,44 @@ export const logout = () => async dispatch => {
 
 export const createPost =
   (id, postTitle, postBody, file, mimeType, imageArray, screen, isVipOnly) =>
-  async dispatch => {
-    dispatch(globalReset());
-    dispatch(createPostRequest());
-    try {
-      const user = await UserController.createPost(
-        id,
-        postTitle,
-        postBody,
-        file,
-        mimeType,
-        imageArray,
-        isVipOnly
-      );
-      dispatch(createPostSuccess(user));
-      if (screen == NAVIGATION.home) {
+    async dispatch => {
+      dispatch(globalReset());
+      dispatch(createPostRequest());
+      try {
+        const user = await UserController.createPost(
+          id,
+          postTitle,
+          postBody,
+          file,
+          mimeType,
+          imageArray,
+          isVipOnly
+        );
+        dispatch(createPostSuccess(user));
+        if (screen == NAVIGATION.home) {
+          showMessage({
+            message: strings.createPost.updatedSuccess,
+            type: 'success',
+          });
+          navigationRef.dispatch(StackActions.popToTop());
+          navigationRef.navigate(NAVIGATION.home);
+        }
+        if (screen == NAVIGATION.profile) {
+          showMessage({
+            message: strings.createPost.updatedSuccess,
+            type: 'success',
+          });
+          navigationRef.dispatch(StackActions.popToTop());
+          navigationRef.navigate(NAVIGATION.profile);
+        }
+      } catch (error) {
         showMessage({
-          message: strings.createPost.updatedSuccess,
-          type: 'success',
+          message: error?.message,
+          type: 'danger',
         });
-        navigationRef.dispatch(StackActions.popToTop());
-        navigationRef.navigate(NAVIGATION.home);
+        dispatch(createPostError(error));
       }
-      if (screen == NAVIGATION.profile) {
-        showMessage({
-          message: strings.createPost.updatedSuccess,
-          type: 'success',
-        });
-        navigationRef.dispatch(StackActions.popToTop());
-        navigationRef.navigate(NAVIGATION.profile);
-      }
-    } catch (error) {
-      showMessage({
-        message: error?.message,
-        type: 'danger',
-      });
-      dispatch(createPostError(error));
-    }
-  };
+    };
 
 // create_post_by_admin action
 
@@ -793,34 +818,15 @@ export const createPostByAdmin =
     publishDate,
     expireDate
   ) =>
-  async dispatch => {
-    console.log(
-      'log in actions',
-      id,
-      postTitle,
-      postBody,
-      postImg,
-      mimeType,
-      imageArray,
-      vipOnly,
-      schedulePost,
-      scheduleDetails,
-      goingLIve,
-      ad,
-      publishDate,
-      expireDate
-    );
-    dispatch(globalReset());
-    dispatch(createPostRequest());
-    try {
-      const user = await UserController.createPostByAdmin(
+    async dispatch => {
+      console.log(
+        'log in actions',
         id,
         postTitle,
         postBody,
         postImg,
         mimeType,
         imageArray,
-        screen,
         vipOnly,
         schedulePost,
         scheduleDetails,
@@ -829,31 +835,50 @@ export const createPostByAdmin =
         publishDate,
         expireDate
       );
-      dispatch(createPostSuccess(user));
-      if (screen == NAVIGATION.home) {
+      dispatch(globalReset());
+      dispatch(createPostRequest());
+      try {
+        const user = await UserController.createPostByAdmin(
+          id,
+          postTitle,
+          postBody,
+          postImg,
+          mimeType,
+          imageArray,
+          screen,
+          vipOnly,
+          schedulePost,
+          scheduleDetails,
+          goingLIve,
+          ad,
+          publishDate,
+          expireDate
+        );
+        dispatch(createPostSuccess(user));
+        if (screen == NAVIGATION.home) {
+          showMessage({
+            message: strings.createPost.updatedSuccess,
+            type: 'success',
+          });
+          navigationRef.dispatch(StackActions.popToTop());
+          navigationRef.navigate(NAVIGATION.home);
+        }
+        if (screen == NAVIGATION.profile) {
+          showMessage({
+            message: strings.createPost.updatedSuccess,
+            type: 'success',
+          });
+          navigationRef.dispatch(StackActions.popToTop());
+          navigationRef.navigate(NAVIGATION.profile);
+        }
+      } catch (error) {
         showMessage({
-          message: strings.createPost.updatedSuccess,
-          type: 'success',
+          message: error?.message,
+          type: 'danger',
         });
-        navigationRef.dispatch(StackActions.popToTop());
-        navigationRef.navigate(NAVIGATION.home);
+        dispatch(createPostError(error));
       }
-      if (screen == NAVIGATION.profile) {
-        showMessage({
-          message: strings.createPost.updatedSuccess,
-          type: 'success',
-        });
-        navigationRef.dispatch(StackActions.popToTop());
-        navigationRef.navigate(NAVIGATION.profile);
-      }
-    } catch (error) {
-      showMessage({
-        message: error?.message,
-        type: 'danger',
-      });
-      dispatch(createPostError(error));
-    }
-  };
+    };
 
 // update_post action
 
@@ -871,49 +896,49 @@ export const updatePost =
     userType,
     screen
   ) =>
-  async dispatch => {
-    dispatch(globalReset());
-    dispatch(updatePostRequest());
-    try {
-      const user = await UserController.updatePost(
-        id,
-        userId,
-        postTitle,
-        postBody,
-        file,
-        preImageArray,
-        mimeType,
-        preMimeType,
-        imageArray,
-        userType
-      );
-      dispatch(updatePostSuccess(user));
-      if (screen == NAVIGATION.home) {
-        showMessage({
-          message: strings.updatePost.updatedSuccess,
-          type: 'success',
-        });
-        dispatch(getAllPost(userId, strings.sortBy.recent, false));
-        navigationRef.dispatch(StackActions.popToTop());
-        navigationRef.navigate(NAVIGATION.home);
-      }
-      if (screen == NAVIGATION.profile) {
-        showMessage({
-          message: strings.updatePost.updatedSuccess,
-          type: 'success',
-        });
+    async dispatch => {
+      dispatch(globalReset());
+      dispatch(updatePostRequest());
+      try {
+        const user = await UserController.updatePost(
+          id,
+          userId,
+          postTitle,
+          postBody,
+          file,
+          preImageArray,
+          mimeType,
+          preMimeType,
+          imageArray,
+          userType
+        );
+        dispatch(updatePostSuccess(user));
+        if (screen == NAVIGATION.home) {
+          showMessage({
+            message: strings.updatePost.updatedSuccess,
+            type: 'success',
+          });
+          dispatch(getAllPost(userId, strings.sortBy.recent, false));
+          navigationRef.dispatch(StackActions.popToTop());
+          navigationRef.navigate(NAVIGATION.home);
+        }
+        if (screen == NAVIGATION.profile) {
+          showMessage({
+            message: strings.updatePost.updatedSuccess,
+            type: 'success',
+          });
 
-        navigationRef.dispatch(StackActions.popToTop());
-        navigationRef.navigate(NAVIGATION.profile);
+          navigationRef.dispatch(StackActions.popToTop());
+          navigationRef.navigate(NAVIGATION.profile);
+        }
+      } catch (error) {
+        showMessage({
+          message: error?.message,
+          type: 'danger',
+        });
+        dispatch(updatePostError(error));
       }
-    } catch (error) {
-      showMessage({
-        message: error?.message,
-        type: 'danger',
-      });
-      dispatch(updatePostError(error));
-    }
-  };
+    };
 
 // update_post action
 
@@ -1167,5 +1192,18 @@ export const markAllRead = id => async dispatch => {
     dispatch(markAllReadNotificationsSuccess(user));
   } catch (error) {
     dispatch(markAllReadNotificationsError(error));
+  }
+};
+
+//Update FCM Token 
+
+export const updateFCMToken = (data) => async dispatch => {
+  dispatch(updateFcmTokenRequest());
+
+  try {
+    const user = await UserController.updateFCMTokenRequest(data);
+    dispatch(updateFcmTokenSuccess(user));
+  } catch (error) {
+    dispatch(updateFcmTokenError(error));
   }
 };

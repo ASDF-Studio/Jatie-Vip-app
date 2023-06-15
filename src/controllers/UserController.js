@@ -782,4 +782,36 @@ export class UserController {
         });
     });
   }
+
+  static async updateFCMTokenRequest(data) {
+
+    return new Promise((resolve, reject) => {
+      const endpoint =
+        API_BASE_URL + API_END_POINTS.UPDATE_FCM_TOKEN;
+
+      //  console.log("endPoint", endpoint)
+      var data = JSON.stringify({
+        "loggedInUserId": data.loggedInUserId,
+        "fcm_token": data.fcmToken,
+        "topic": "general",
+        "userId": data.loggedInUserId
+      });
+      HttpClient.post(endpoint, data)
+        .then(response => {
+          resolve(response);
+          console.log(
+            'response of mark read Notifications',
+            JSON.stringify(response)
+          );
+          showMessage({
+            message: 'All Notifications are read',
+            type: 'success',
+          });
+        })
+        .catch(error => {
+          reject(new Error(error.message));
+          console.log('error of All notifications', error);
+        });
+    });
+  }
 }

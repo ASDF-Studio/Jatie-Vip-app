@@ -128,5 +128,7 @@ export const API_END_POINTS = {
     GET_ALL_NOTIFICATIONS: 'user/all_notification_by_user_id',
 
     //MARK_ALL_READ_NOTIFICATIONS
-    MARK_ALL_READ_NOTIFICATIONS: 'user/notification_mark_as_read'
+    MARK_ALL_READ_NOTIFICATIONS: 'user/notification_mark_as_read',
+    UPDATE_FCM_TOKEN: 'user/save_fcm_token'
+
 };

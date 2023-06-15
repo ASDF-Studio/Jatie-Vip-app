@@ -10,6 +10,7 @@ import * as Sentry from '@sentry/react-native';
 
 import messaging from '@react-native-firebase/messaging';
 import { getFCMToken, requestUserPermission } from './helper/utils/pushNotifications';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 //import { requestUserPermission } from 'utils/PushNotifications';
 enableScreens();
 Sentry.init({
@@ -21,8 +22,23 @@ Sentry.init({
 export function App() {
   useEffect(() => {
     requestUserPermission()
-    getFCMToken()
+    getFCMToken1()
   }, [])
+  async function getFCMToken1() {
+    let fcmtoken = await AsyncStorage.getItem("fcmtoken");
+
+    if (!fcmtoken) {
+      try {
+        const fcmtoken = await messaging().getToken();
+        if (fcmtoken) {
+          console.log("newtokennnnnnnn", fcmtoken);
+          await AsyncStorage.setItem("fcmtoken", fcmtoken);
+        }
+      } catch (error) {
+        console.log("error in fcmtoken", error);
+      }
+    }
+  }
 
   // async function requestUserPermission() {
   //   const authStatus = await messaging().requestPermission();
