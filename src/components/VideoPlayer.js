@@ -6,7 +6,7 @@ import { ms } from 'react-native-size-matters';
 import VideoPlayer from 'react-native-video-controls';
 import { theme } from '@/theme';
 
-export const AppVideoPlayer = ({ url, poster, play }) => {
+export const AppVideoPlayer = ({ url, poster, play = false }) => {
   const [openFullScreen, setFullScreen] = useState(false);
   const [pause, setPause] = useState(play);
   return (
@@ -14,7 +14,6 @@ export const AppVideoPlayer = ({ url, poster, play }) => {
       {openFullScreen && (
         <Modal visible={openFullScreen} transparent={true}>
           <VideoPlayer
-
             source={{ uri: url }}
             navigator={null}
             toggleResizeModeOnFullscreen={true}
@@ -27,7 +26,7 @@ export const AppVideoPlayer = ({ url, poster, play }) => {
             // poster= "https://e7.pngegg.com/pngimages/244/695/png-clipart-play-icon-video-player-information-play-icon-miscellaneous-angle-thumbnail.png"
             paused={true}
             playIcon={<FontAwesomeIcon icon={faPlay} />}
-            showOnStart={false}
+            showOnStart={true}
           />
         </Modal>
       )}
@@ -45,8 +44,7 @@ export const AppVideoPlayer = ({ url, poster, play }) => {
             // position: 'absolute',
           }}
           poster={poster}
-          paused={true}
-          onPress={() => setPause(pause == true ? false : true)}
+          onPress={() => setPause(!pause)}
           resizeMode="cover"
           repeat
           customStyles={{

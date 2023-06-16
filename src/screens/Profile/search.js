@@ -213,7 +213,7 @@ export default function Search({ navigation }) {
       </View>
       <HorizontalLine />
       {!searchListOpen && (
-        <View style={styles.searchBody}>
+        <View style={styles.loadingContainer}>
           <FontAwesomeIcon
             icon={faSearch}
             size={30}

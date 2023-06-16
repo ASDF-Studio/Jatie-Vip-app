@@ -23,6 +23,7 @@ export const PopUpAlert = ({
   body = '',
   onClose,
   isOpen = false,
+  onPress,
 }) => {
   return (
     <PopUp open={isOpen} setOpen={onClose} blurred>
@@ -35,7 +36,7 @@ export const PopUpAlert = ({
         <Button
           title={strings.operations.gotIT}
           style={styles.alertButton}
-          onPress={onClose}
+          onPress={onPress}
         />
       </View>
     </PopUp>

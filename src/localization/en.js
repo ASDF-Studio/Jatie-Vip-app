@@ -360,6 +360,7 @@ export const en = {
     plus: '+',
     birthdayUsers: '12 Users',
     typeUser: 'Type user name to message...',
+    postIsDeleted: 'This post was removed',
   },
   operations: {
     save: 'Save',

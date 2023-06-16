@@ -7,6 +7,7 @@ import {
   Image,
   Text,
   TextInput,
+  ActivityIndicator,
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { theme } from '@/theme';
@@ -25,6 +26,7 @@ import {
   Button,
   Icon,
   PopUp,
+  PopUpAlert,
 } from '@/components';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NAVIGATION } from '@/constants';
@@ -48,10 +50,12 @@ import { strings } from '@/localization';
 import {
   faFlag,
   faImage,
+  faMessage,
   faPen,
   faPlay,
   faThumbsUp,
   faTrash,
+  faUserPlus,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import { SwiperViewer } from '@/components/SwiperComponent';
@@ -59,6 +63,7 @@ import { POST_TYPE } from '@/constants/enums';
 import { globalReset } from '@/actions/GlobalActions';
 import { showMessage } from 'react-native-flash-message';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { isEmpty } from 'lodash';
 
 export default function SinglePost({ navigation, route }) {
   const { postId } = route.params || {};
@@ -121,7 +126,6 @@ export default function SinglePost({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <CustomLoader open={isLoading} />
       {!isLoading && (
         <View style={styles.header}>
           <View style={styles.left}>
@@ -134,7 +138,14 @@ export default function SinglePost({ navigation, route }) {
       )}
 
       {/* <HorizontalLine /> */}
-      {!isLoading && (
+      {isLoading ? (
+        <ActivityIndicator
+          size={'large'}
+          color={theme.light.colors.activeTabIcon}
+          style={{ alignSelf: 'center', marginTop: 50 }}
+          animating={isLoading}
+        />
+      ) : (
         <View style={styles.cardContainer}>
           <Card>
             <CardHeader
@@ -146,7 +157,7 @@ export default function SinglePost({ navigation, route }) {
               // isOfficial={item.isOffical}
               showPin={item?.isPinned}
             />
-            <CardBody text={item?.postBody} />
+            <CardBody text={item?.postBody || strings.message.postIsDeleted} />
 
             {item?.postMediaContent?.length <= 2 ? (
               <View style={styles.imageContainer}>
@@ -295,266 +306,267 @@ export default function SinglePost({ navigation, route }) {
               ))
             ) : null}
 
-            <CardFooter
-              postType={POST_TYPE.SINGLE_POST}
-              index={0}
-              postID={item?.id}
-              postUserID={item?.userId}
-              userID={user?.id}
-              likeCount={item?.upVote}
-              disLikeCount={item?.downVote}
-              commentCount={item?.comments_aggregate?.aggregate?.count}
-              postData={item}
-              commentPress={() =>
-                navigation.navigate(NAVIGATION.comments, {
-                  DATA: item,
-                  type: POST_TYPE.SINGLE_POST,
-                })
-              }
-              morePress={() => {
-                setIsAdminPost(item?.isAdminPost),
-                  setPostUserName(item?.user?.username);
-                setOpen(true);
-                setPostUserId(item?.userId);
-                setPostTitle(item?.postTitle);
-                setPostBody(item?.postBody);
-                setPostImg(item?.postImg);
-                setEditdata(item);
+            {item && (
+              <CardFooter
+                postType={POST_TYPE.SINGLE_POST}
+                index={0}
+                postID={item?.id}
+                disable={isEmpty(item)}
+                postUserID={item?.userId}
+                userID={user?.id}
+                likeCount={item?.upVote}
+                disLikeCount={item?.downVote}
+                commentCount={item?.comments_aggregate?.aggregate?.count}
+                postData={item}
+                commentPress={() =>
+                  navigation.navigate(NAVIGATION.comments, {
+                    DATA: item,
+                    type: POST_TYPE.SINGLE_POST,
+                  })
+                }
+                morePress={() => {
+                  setIsAdminPost(item?.isAdminPost),
+                    setPostUserName(item?.user?.username);
+                  setOpen(true);
+                  setPostUserId(item?.userId);
+                  setPostTitle(item?.postTitle);
+                  setPostBody(item?.postBody);
+                  setPostImg(item?.postImg);
+                  setEditdata(item);
+                }}
+              />
+            )}
+          </Card>
+        </View>
+      )}
+      {showImageView && (
+        <SwiperViewer
+          visible={showImageView}
+          setVisible={() => setShowImageView(false)}
+          images={feedImages}
+        />
+      )}
+      {open &&
+        (postUserId == user?.id ? (
+          <ModalDown open={open} setOpen={setOpen}>
+            <ModalList
+              title={strings.profile.editPost}
+              icon={faPen}
+              iconBg={theme.light.colors.infoBgLight}
+              iconColor={theme.light.colors.info}
+              onPress={() => {
+                navigationRef.navigate(NAVIGATION.updatePost, {
+                  prevData: editData,
+                }),
+                  setOpen(false);
               }}
             />
-          </Card>
-          {showImageView && (
-            <SwiperViewer
-              visible={showImageView}
-              setVisible={() => setShowImageView(false)}
-              images={feedImages}
+            <HorizontalLine
+              color={theme.light.colors.infoBgLight}
+              paddingTop={15}
+              paddingBottom={8}
             />
-          )}
-          {open &&
-            (postUserId == user?.id ? (
-              <ModalDown open={open} setOpen={setOpen}>
-                <ModalList
-                  title={strings.profile.editPost}
-                  icon={faPen}
-                  iconBg={theme.light.colors.infoBgLight}
-                  iconColor={theme.light.colors.info}
-                  onPress={() => {
-                    navigationRef.navigate(NAVIGATION.updatePost, {
-                      prevData: editData,
-                    }),
+            <ModalList
+              title={strings.operations.delete}
+              icon={faTrash}
+              iconBg={theme.light.colors.infoBgLight}
+              iconColor={theme.light.colors.secondary}
+              onPress={() => {
+                setReplace(true), setOpen(false);
+              }}
+            />
+          </ModalDown>
+        ) : (
+          <ModalDown open={open} setOpen={setOpen}>
+            <ModalList
+              //   onPress={() => { onFollow() }}
+              title={
+                (!item.is_following
+                  ? strings.operations.follow
+                  : strings.operations.unFollow) +
+                ' @' +
+                postUserName
+              }
+              icon={faUserPlus}
+              iconColor={theme.light.colors.primary}
+              iconBg={theme.light.colors.primaryBgLight}
+            />
+            <ModalList
+              title={strings.operations.sendPrivateMessage}
+              icon={faMessage}
+              iconColor={theme.light.colors.success}
+              iconBg={theme.light.colors.successBgLight}
+            />
+            <HorizontalLine
+              color={theme.light.colors.infoBgLight}
+              paddingTop={15}
+              paddingBottom={8}
+            />
+            {(userType.user == `${strings.userType.free}`) |
+            (userType.user == `${strings.userType.vip}`) ? (
+              <>
+                {isAdminPost == false && (
+                  <ModalList
+                    title={strings.home.report}
+                    icon={faFlag}
+                    iconColor={theme.light.colors.secondary}
+                    iconBg={theme.light.colors.infoBgLight}
+                    onPress={() => {
+                      setReportOptionValue('');
+                      setOpenReport(true);
                       setOpen(false);
-                  }}
-                />
-                <HorizontalLine
-                  color={theme.light.colors.infoBgLight}
-                  paddingTop={15}
-                  paddingBottom={8}
-                />
+                      setreportImage(null);
+                    }}
+                  />
+                )}
+
+                {isAdminPost == false && (
+                  <ModalList
+                    onPress={() => {
+                      onBlock();
+                    }}
+                    title={strings.operations.block + ' @' + postUserName}
+                    // title={(ALLPOST?.data[pos] ? strings.operations.block : strings.operations.unBlock) + " @" + postUserName}
+                    icon={faXmark}
+                    iconColor={theme.light.colors.secondary}
+                    iconBg={theme.light.colors.infoBgLight}
+                  />
+                )}
+              </>
+            ) : userType.user == `${strings.userType.admin}` ? (
+              <>
                 <ModalList
-                  title={strings.operations.delete}
+                  title={strings.home.deletePost}
                   icon={faTrash}
-                  iconBg={theme.light.colors.infoBgLight}
                   iconColor={theme.light.colors.secondary}
+                  iconBg={theme.light.colors.infoBgLight}
                   onPress={() => {
                     setReplace(true), setOpen(false);
                   }}
                 />
-              </ModalDown>
-            ) : (
-              <ModalDown open={open} setOpen={setOpen}>
                 <ModalList
-                  //   onPress={() => { onFollow() }}
-                  title={
-                    (!item.is_following
-                      ? strings.operations.follow
-                      : strings.operations.unFollow) +
-                    ' @' +
-                    postUserName
-                  }
-                  icon={faUserPlus}
-                  iconColor={theme.light.colors.primary}
-                  iconBg={theme.light.colors.primaryBgLight}
+                  title={strings.operations.block + strings.home.DummyUser}
+                  icon={faXmark}
+                  iconColor={theme.light.colors.secondary}
+                  iconBg={theme.light.colors.infoBgLight}
                 />
                 <ModalList
-                  title={strings.operations.sendPrivateMessage}
-                  icon={faMessage}
-                  iconColor={theme.light.colors.success}
-                  iconBg={theme.light.colors.successBgLight}
+                  title={strings.operations.ban + strings.home.DummyUser}
+                  icon={faFlag}
+                  iconColor={theme.light.colors.secondary}
+                  iconBg={theme.light.colors.infoBgLight}
                 />
-                <HorizontalLine
-                  color={theme.light.colors.infoBgLight}
-                  paddingTop={15}
-                  paddingBottom={8}
-                />
-                {(userType.user == `${strings.userType.free}`) |
-                (userType.user == `${strings.userType.vip}`) ? (
-                  <>
-                    {isAdminPost == false && (
-                      <ModalList
-                        title={strings.home.report}
-                        icon={faFlag}
-                        iconColor={theme.light.colors.secondary}
-                        iconBg={theme.light.colors.infoBgLight}
-                        onPress={() => {
-                          setReportOptionValue('');
-                          setOpenReport(true);
-                          setOpen(false);
-                          setreportImage(null);
-                        }}
-                      />
-                    )}
-
-                    {isAdminPost == false && (
-                      <ModalList
-                        onPress={() => {
-                          onBlock();
-                        }}
-                        title={strings.operations.block + ' @' + postUserName}
-                        // title={(ALLPOST?.data[pos] ? strings.operations.block : strings.operations.unBlock) + " @" + postUserName}
-                        icon={faXmark}
-                        iconColor={theme.light.colors.secondary}
-                        iconBg={theme.light.colors.infoBgLight}
-                      />
-                    )}
-                  </>
-                ) : userType.user == `${strings.userType.admin}` ? (
-                  <>
-                    <ModalList
-                      title={strings.home.deletePost}
-                      icon={faTrash}
-                      iconColor={theme.light.colors.secondary}
-                      iconBg={theme.light.colors.infoBgLight}
-                      onPress={() => {
-                        setReplace(true), setOpen(false);
-                      }}
-                    />
-                    <ModalList
-                      title={strings.operations.block + strings.home.DummyUser}
-                      icon={faXmark}
-                      iconColor={theme.light.colors.secondary}
-                      iconBg={theme.light.colors.infoBgLight}
-                    />
-                    <ModalList
-                      title={strings.operations.ban + strings.home.DummyUser}
-                      icon={faFlag}
-                      iconColor={theme.light.colors.secondary}
-                      iconBg={theme.light.colors.infoBgLight}
-                    />
-                  </>
-                ) : null}
-              </ModalDown>
-            ))}
-          {/* Replace Popup */}
-          {openReplace && (
-            <PopUp open={openReplace} setOpen={setReplace}>
-              <View style={styles.ConfirmationTextContainer}>
-                <Text style={styles.ConfirmationText}>
-                  {strings.alert.delete}
-                </Text>
-              </View>
-              <Button
-                title={strings.operations.yes}
-                style={styles.confirmButton}
-                onPress={() => {
-                  onDelete(), setReplace(false);
-                }}
-              />
-              <Button
-                title={strings.operations.no}
-                style={styles.cancelButton}
-                onPress={() => setReplace(false)}
-              />
-            </PopUp>
-          )}
-          <ReportOnPostModal open={openReport} setOpen={setOpenReport}>
-            <View style={styles.reportPostContainer}>
-              <TopBackButton
-                onPress={() => setOpenReport(false)}
-                style={styles.reportPostBackButton}
-              />
-              <Text style={styles.reportTxt}> {strings.home.reportPost} </Text>
-              <HorizontalLine
-                color={theme.light.colors.infoBgLight}
-                paddingBottom={12}
-              />
-              <View style={styles.reportPostTopContainer}>
-                <DropDownPicker
-                  placeholder={strings.home.selectReason}
-                  open={reportListOpen}
-                  value={reportOptionValue}
-                  items={reportOption}
-                  setOpen={setReportListOpen}
-                  setValue={setReportOptionValue}
-                  setItems={setReportOption}
-                  style={styles.dropDownPicker}
-                  textStyle={styles.dropListTxt}
-                  dropDownContainerStyle={styles.dropDownContainerStyle}
-                  arrowIconStyle={styles.arrowIconStyle}
-                />
-                <TextInput
-                  multiline
-                  editable
-                  onChangeText={val => setReportCommnet(val)}
-                  placeholder={strings.operations.addComments}
-                  numberOfLines={4}
-                  style={styles.txtInput}
-                />
-              </View>
-              <HorizontalLine
-                color={theme.light.colors.infoBgLight}
-                paddingTop={15}
-              />
-              <View style={styles.reportPostBottomContainer}>
-                <TouchableOpacity onPress={() => SelectFromGallery()}>
-                  {reportImage ? (
-                    <Image
-                      style={{
-                        height: ms(35),
-                        width: ms(35),
-                        borderRadius: ms(5),
-                      }}
-                      source={{ uri: reportImage.path }}
-                    />
-                  ) : (
-                    <View pointerEvents="none">
-                      <Icon
-                        icon={faImage}
-                        size={ms(22)}
-                        color={theme.light.colors.secondary}
-                      />
-                    </View>
-                  )}
-                </TouchableOpacity>
-
-                <Button
-                  title={strings.operations.submit}
-                  disabled={!reportOptionValue}
-                  opacity={reportOptionValue ? 1 : 0.4}
-                  style={styles.reportPostButton}
-                  onPress={() => {
-                    const reportData = {
-                      objectId: postId,
-                      reportedBy: user?.id,
-                      reportTitle: reportOptionValue,
-                      reportBody: reportComment,
-                      reportImg: reportImage,
-                    };
-                    dispatch(reportPost(reportData));
-                    setOpenReport(false);
-                  }}
-                />
-              </View>
-            </View>
-          </ReportOnPostModal>
-          {isShowReportToast && (
-            <Toast
-              open={isShowReportToast}
-              icon={faThumbsUp}
-              message={strings.home.reportMessage}
-              onPressOk={() => dispatch(globalReset())}
+              </>
+            ) : null}
+          </ModalDown>
+        ))}
+      {/* Replace Popup */}
+      {openReplace && (
+        <PopUp open={openReplace} setOpen={setReplace}>
+          <View style={styles.ConfirmationTextContainer}>
+            <Text style={styles.ConfirmationText}>{strings.alert.delete}</Text>
+          </View>
+          <Button
+            title={strings.operations.yes}
+            style={styles.confirmButton}
+            onPress={() => {
+              onDelete(), setReplace(false);
+            }}
+          />
+          <Button
+            title={strings.operations.no}
+            style={styles.cancelButton}
+            onPress={() => setReplace(false)}
+          />
+        </PopUp>
+      )}
+      <ReportOnPostModal open={openReport} setOpen={setOpenReport}>
+        <View style={styles.reportPostContainer}>
+          <TopBackButton
+            onPress={() => setOpenReport(false)}
+            style={styles.reportPostBackButton}
+          />
+          <Text style={styles.reportTxt}> {strings.home.reportPost} </Text>
+          <HorizontalLine
+            color={theme.light.colors.infoBgLight}
+            paddingBottom={12}
+          />
+          <View style={styles.reportPostTopContainer}>
+            <DropDownPicker
+              placeholder={strings.home.selectReason}
+              open={reportListOpen}
+              value={reportOptionValue}
+              items={reportOption}
+              setOpen={setReportListOpen}
+              setValue={setReportOptionValue}
+              setItems={setReportOption}
+              style={styles.dropDownPicker}
+              textStyle={styles.dropListTxt}
+              dropDownContainerStyle={styles.dropDownContainerStyle}
+              arrowIconStyle={styles.arrowIconStyle}
             />
-          )}
+            <TextInput
+              multiline
+              editable
+              onChangeText={val => setReportCommnet(val)}
+              placeholder={strings.operations.addComments}
+              numberOfLines={4}
+              style={styles.txtInput}
+            />
+          </View>
+          <HorizontalLine
+            color={theme.light.colors.infoBgLight}
+            paddingTop={15}
+          />
+          <View style={styles.reportPostBottomContainer}>
+            <TouchableOpacity onPress={() => SelectFromGallery()}>
+              {reportImage ? (
+                <Image
+                  style={{
+                    height: ms(35),
+                    width: ms(35),
+                    borderRadius: ms(5),
+                  }}
+                  source={{ uri: reportImage.path }}
+                />
+              ) : (
+                <View pointerEvents="none">
+                  <Icon
+                    icon={faImage}
+                    size={ms(22)}
+                    color={theme.light.colors.secondary}
+                  />
+                </View>
+              )}
+            </TouchableOpacity>
+
+            <Button
+              title={strings.operations.submit}
+              disabled={!reportOptionValue}
+              opacity={reportOptionValue ? 1 : 0.4}
+              style={styles.reportPostButton}
+              onPress={() => {
+                const reportData = {
+                  objectId: postId,
+                  reportedBy: user?.id,
+                  reportTitle: reportOptionValue,
+                  reportBody: reportComment,
+                  reportImg: reportImage,
+                };
+                dispatch(reportPost(reportData));
+                setOpenReport(false);
+              }}
+            />
+          </View>
         </View>
+      </ReportOnPostModal>
+      {isShowReportToast && (
+        <Toast
+          open={isShowReportToast}
+          icon={faThumbsUp}
+          message={strings.home.reportMessage}
+          onPressOk={() => dispatch(globalReset())}
+        />
       )}
     </SafeAreaView>
   );

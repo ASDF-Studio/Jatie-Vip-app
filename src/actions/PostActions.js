@@ -896,85 +896,85 @@ const getExclusivePostByIdError = error => ({
 
 export const createPost =
   (id, postTitle, postBody, file, mimeType, imageArray, screen) =>
-    async dispatch => {
-      dispatch(globalReset());
-      dispatch(createPostRequest());
-      try {
-        const user = await UserController.createPost(
-          id,
-          postTitle,
-          postBody,
-          file,
-          mimeType,
-          imageArray
-        );
-        dispatch(createPostSuccess(user));
-        if (screen == NAVIGATION.home) {
-          showMessage({
-            message: strings.createPost.updatedSuccess,
-            type: 'success',
-          });
-          navigationRef.dispatch(StackActions.popToTop());
-          navigationRef.navigate(NAVIGATION.home);
-        }
-        if (screen == NAVIGATION.profile) {
-          showMessage({
-            message: strings.createPost.updatedSuccess,
-            type: 'success',
-          });
-          navigationRef.dispatch(StackActions.popToTop());
-          navigationRef.navigate(NAVIGATION.profile);
-        }
-      } catch (error) {
+  async dispatch => {
+    dispatch(globalReset());
+    dispatch(createPostRequest());
+    try {
+      const user = await UserController.createPost(
+        id,
+        postTitle,
+        postBody,
+        file,
+        mimeType,
+        imageArray
+      );
+      dispatch(createPostSuccess(user));
+      if (screen == NAVIGATION.home) {
         showMessage({
-          message: error?.message,
-          type: 'danger',
+          message: strings.createPost.updatedSuccess,
+          type: 'success',
         });
-        dispatch(createPostError(error));
+        navigationRef.dispatch(StackActions.popToTop());
+        navigationRef.navigate(NAVIGATION.home);
       }
-    };
+      if (screen == NAVIGATION.profile) {
+        showMessage({
+          message: strings.createPost.updatedSuccess,
+          type: 'success',
+        });
+        navigationRef.dispatch(StackActions.popToTop());
+        navigationRef.navigate(NAVIGATION.profile);
+      }
+    } catch (error) {
+      showMessage({
+        message: error?.message,
+        type: 'danger',
+      });
+      dispatch(createPostError(error));
+    }
+  };
 
 // create_post_by_admin action
 
 export const createPostByAdmin =
   (id, postTitle, postBody, file, mimeType, imageArray, screen) =>
-    async dispatch => {
-      dispatch(globalReset());
-      dispatch(createPostRequest());
-      try {
-        const user = await UserController.createPostByAdmin(
-          id,
-          postTitle,
-          postBody,
-          file,
-          mimeType,
-          imageArray
-        );
-        dispatch(createPostSuccess(user));
-        if (screen == NAVIGATION.home) {
-          showMessage({
-            message: strings.createPost.updatedSuccess,
-            type: 'success',
-          });
-          navigationRef.dispatch(StackActions.popToTop());
-          navigationRef.navigate(NAVIGATION.home);
-        }
-        if (screen == NAVIGATION.profile) {
-          showMessage({
-            message: strings.createPost.updatedSuccess,
-            type: 'success',
-          });
-          navigationRef.dispatch(StackActions.popToTop());
-          navigationRef.navigate(NAVIGATION.profile);
-        }
-      } catch (error) {
+  async dispatch => {
+    dispatch(globalReset());
+    dispatch(createPostRequest());
+    try {
+      const user = await UserController.createPostByAdmin(
+        id,
+        postTitle,
+        postBody,
+        file,
+        mimeType,
+        imageArray
+      );
+      dispatch(createPostSuccess(user));
+      if (screen == NAVIGATION.home) {
         showMessage({
-          message: error?.message,
-          type: 'danger',
+          message: strings.createPost.updatedSuccess,
+          type: 'success',
         });
-        dispatch(createPostError(error));
+        navigationRef.dispatch(StackActions.popToTop());
+        navigationRef.navigate(NAVIGATION.home);
       }
-    };
+      if (screen == NAVIGATION.profile) {
+        showMessage({
+          message: strings.createPost.updatedSuccess,
+          type: 'success',
+        });
+        navigationRef.dispatch(StackActions.popToTop());
+        navigationRef.navigate(NAVIGATION.profile);
+      }
+    } catch (error) {
+      showMessage({
+        message: error?.message,
+        type: 'danger',
+      });
+      dispatch(createPostError(error));
+    }
+  };
 
 // update_post action
 
@@ -992,47 +992,47 @@ export const updatePost =
     userType,
     screen
   ) =>
-    async dispatch => {
-      dispatch(globalReset());
-      dispatch(updatePostRequest());
-      try {
-        const user = await UserController.updatePost(
-          id,
-          userId,
-          postTitle,
-          postBody,
-          file,
-          preImageArray,
-          mimeType,
-          preMimeType,
-          imageArray,
-          userType
-        );
-        dispatch(updatePostSuccess(user));
-        if (screen == NAVIGATION.home) {
-          showMessage({
-            message: strings.updatePost.updatedSuccess,
-            type: 'success',
-          });
-          navigationRef.dispatch(StackActions.popToTop());
-          navigationRef.navigate(NAVIGATION.home);
-        }
-        if (screen == NAVIGATION.profile) {
-          showMessage({
-            message: strings.updatePost.updatedSuccess,
-            type: 'success',
-          });
-          navigationRef.dispatch(StackActions.popToTop());
-          navigationRef.navigate(NAVIGATION.profile);
-        }
-      } catch (error) {
+  async dispatch => {
+    dispatch(globalReset());
+    dispatch(updatePostRequest());
+    try {
+      const user = await UserController.updatePost(
+        id,
+        userId,
+        postTitle,
+        postBody,
+        file,
+        preImageArray,
+        mimeType,
+        preMimeType,
+        imageArray,
+        userType
+      );
+      dispatch(updatePostSuccess(user));
+      if (screen == NAVIGATION.home) {
         showMessage({
-          message: error?.message,
-          type: 'danger',
+          message: strings.updatePost.updatedSuccess,
+          type: 'success',
         });
-        dispatch(updatePostError(error));
+        navigationRef.dispatch(StackActions.popToTop());
+        navigationRef.navigate(NAVIGATION.home);
       }
-    };
+      if (screen == NAVIGATION.profile) {
+        showMessage({
+          message: strings.updatePost.updatedSuccess,
+          type: 'success',
+        });
+        navigationRef.dispatch(StackActions.popToTop());
+        navigationRef.navigate(NAVIGATION.profile);
+      }
+    } catch (error) {
+      showMessage({
+        message: error?.message,
+        type: 'danger',
+      });
+      dispatch(updatePostError(error));
+    }
+  };
 
 // update_post action
 
@@ -1449,7 +1449,7 @@ export const getAllExclusivePost = data => async dispatch => {
   dispatch(getAllExclusivePostRequest());
   try {
     const post = await ExclusivePostController.getAllExclusivePost(data);
-
+    console.log('exclusive posts data ', post);
     dispatch(getAllExclusivePostSuccess(post));
   } catch (error) {
     dispatch(getAllExclusivePostError(error));

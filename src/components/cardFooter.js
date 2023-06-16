@@ -38,8 +38,8 @@ export const CardFooter = ({
   postID,
   postUserID,
   userID,
-  likeCount,
-  disLikeCount,
+  likeCount = 0,
+  disLikeCount = 0,
   commentCount,
   // likePress,
   // disLikePress,
@@ -55,6 +55,7 @@ export const CardFooter = ({
   hasVotedDown,
   showMore,
   type,
+  disable = false,
 }) => {
   const dispatch = useDispatch();
   const [upVote, setUpVote] = useState(likeCount);
@@ -69,10 +70,10 @@ export const CardFooter = ({
     postType === POST_TYPE.REGULAR
       ? ALLPOST
       : POST_TYPE.PROFILE === postType
-        ? user?.getAllPostsByLoggedInUser
-        : POST_TYPE.USER_PROFILE === postType
-          ? user?.getAllPostsByUserId
-          : SEARCH_DATA;
+      ? user?.getAllPostsByLoggedInUser
+      : POST_TYPE.USER_PROFILE === postType
+      ? user?.getAllPostsByUserId
+      : SEARCH_DATA;
 
   const upVoteHandel = () => {
     onUpVote(postID, userID);
@@ -124,8 +125,21 @@ export const CardFooter = ({
         );
     }
     const a = await UserController.upVote(postID, userID);
-    console.log('============>adadada', a, postID, userID);
+    console.log(
+      '============>adadada',
+      a,
+      postID,
+      userID,
+      '==========',
+      upVote,
+      downVote
+    );
   };
+
+  useEffect(() => {
+    setUpVote(likeCount);
+    setDownVote(disLikeCount);
+  }, [postID]);
   const onDownVote = async (postID, userID) => {
     const post =
       postType === POST_TYPE.SINGLE_POST ? singlePost : postArray[postIndex];
@@ -168,7 +182,7 @@ export const CardFooter = ({
         );
     }
     const a = await UserController.downVote(postID, userID);
-    console.log("Downvote ======", userID, "   ", postID);
+    console.log('Downvote ======', userID, '   ', postID);
   };
   const generateLink = async () => {
     try {
@@ -211,19 +225,19 @@ export const CardFooter = ({
             styles.iconContainer,
             styles.likeIconContainer,
             POST_TYPE.SINGLE_POST !== postType &&
-            postArray?.[postIndex]?.has_upvoted && {
-              backgroundColor: theme.light.colors.infoBgLight,
-            },
+              postArray?.[postIndex]?.has_upvoted && {
+                backgroundColor: theme.light.colors.infoBgLight,
+              },
             POST_TYPE.SINGLE_POST === postType &&
-            singlePost &&
-            singlePost?.has_upvoted && {
-              backgroundColor: theme.light.colors.infoBgLight,
-            },
+              singlePost &&
+              singlePost?.has_upvoted && {
+                backgroundColor: theme.light.colors.infoBgLight,
+              },
           ]}
+          disabled={disable}
           onPress={() => upVoteHandel()}
         >
           <FontAwesomeIcon
-            onPress={() => upVoteHandel()}
             icon={faCircleUp}
             size={ms(13)}
             color={theme.light.colors.success}
@@ -235,19 +249,20 @@ export const CardFooter = ({
             styles.iconContainer,
             styles.disLikeIconContainer,
             POST_TYPE.SINGLE_POST !== postType &&
-            postArray?.[postIndex]?.has_downvoted && {
-              backgroundColor: theme.light.colors.infoBgLight,
-            },
+              postArray?.[postIndex]?.has_downvoted && {
+                backgroundColor: theme.light.colors.infoBgLight,
+              },
             POST_TYPE.SINGLE_POST === postType &&
-            singlePost &&
-            singlePost.has_downvoted && {
-              backgroundColor: theme.light.colors.infoBgLight,
-            },
+              singlePost &&
+              singlePost.has_downvoted && {
+                backgroundColor: theme.light.colors.infoBgLight,
+              },
           ]}
-          onPress={() => downVoteHandel()}
+          onPress={() => !disable && downVoteHandel()}
+          disabled={disable}
         >
           <FontAwesomeIcon
-            onPress={() => downVoteHandel()}
+            // onPress={() => !disable && downVoteHandel()}
             icon={faCircleDown}
             size={ms(13)}
             color={theme.light.colors.error}
@@ -255,6 +270,7 @@ export const CardFooter = ({
           <Text style={styles.disLikeText}>{downVote} </Text>
         </TouchableOpacity>
         <TouchableOpacity
+          disabled={disable}
           style={[styles.iconContainer, styles.commentsIconContainer]}
           onPress={commentPress}
         >
@@ -263,7 +279,7 @@ export const CardFooter = ({
             size={ms(13)}
             color={theme.light.colors.info}
             footerfooter
-          // onPress={commentPress}
+            // onPress={commentPress}
           />
           <Text style={styles.commentsTxt}>{commentCount} </Text>
         </TouchableOpacity>
@@ -273,7 +289,9 @@ export const CardFooter = ({
           icon={faShareNodes}
           size={ms(13)}
           color={theme.light.colors.info}
-          onPress={() => shareUser()}
+          onPress={() => {
+            !disable && shareUser();
+          }}
           style={styles.ShareNodeIcon}
         />
         {showMore == undefined && (
@@ -281,7 +299,9 @@ export const CardFooter = ({
             icon={faEllipsis}
             size={ms(13)}
             color={theme.light.colors.black}
-            onPress={morePress}
+            onPress={() => {
+              !disable && morePress();
+            }}
             style={styles.EllipsisIcon}
           />
         )}

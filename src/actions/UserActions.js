@@ -851,6 +851,7 @@ export const createPostByAdmin =
         publishDate,
         expireDate
       );
+      console.log('==================', user);
       dispatch(createPostSuccess(user));
       if (screen == NAVIGATION.home) {
         showMessage({
@@ -869,6 +870,7 @@ export const createPostByAdmin =
         navigationRef.navigate(NAVIGATION.profile);
       }
     } catch (error) {
+      console.log('===================> ', error);
       showMessage({
         message: error?.message,
         type: 'danger',

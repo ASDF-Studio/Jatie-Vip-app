@@ -9,6 +9,7 @@ import {
   SafeAreaView,
   ImageBackground,
   Alert,
+  TextInput,
 } from 'react-native';
 import {
   faCrown,
@@ -20,9 +21,11 @@ import {
   faPen,
   faTrash,
   faLock,
+  faThumbsUp,
+  faImage,
 } from '@fortawesome/free-solid-svg-icons';
 import { TextStyles, theme } from '@/theme';
-
+import DropDownPicker from 'react-native-dropdown-picker';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {
@@ -37,6 +40,9 @@ import {
   AppImageViewer,
   TopBackButton,
   CustomLoader,
+  Toast,
+  ReportOnPostModal,
+  Button,
 } from '@/components';
 import { strings } from '@/localization';
 import { HorizontalLine } from '@/components';
@@ -52,16 +58,28 @@ import {
 } from '@/actions/UserActions';
 import { useEffect } from 'react';
 import { getUser } from '@/selectors/UserSelectors';
-import { isLoadingSelector } from '@/selectors/StatusSelectors';
+import {
+  isLoadingSelector,
+  successSelector,
+} from '@/selectors/StatusSelectors';
 import { Loader } from '@/components/Loader';
 import { navigationRef } from '@/navigation/RootNavigation';
-import { TYPES, followUser, unFollowUser } from '@/actions/PostActions';
+import {
+  TYPES,
+  blockUser,
+  followUser,
+  getAllPost,
+  reportPost,
+  unFollowUser,
+} from '@/actions/PostActions';
 import { TYPES as UserActionTypes } from '@/actions/UserActions';
 import { showMessage } from 'react-native-flash-message';
 import { useIsFocused } from '@react-navigation/native';
 import { POST_TYPE } from '@/constants/enums';
 import { getAllPostByUserIdSuccess } from '@/actions/UserActions';
 import { SwiperViewer } from '@/components/SwiperComponent';
+import { globalReset } from '@/actions/GlobalActions';
+import ImagePicker from 'react-native-image-crop-picker';
 
 export default function UserProfile({ navigation, route }) {
   const [postIndex, setPostIndex] = useState(0);
@@ -85,6 +103,23 @@ export default function UserProfile({ navigation, route }) {
   const [postTitle, setPostTitle] = useState('');
   const [postBody, setPostBody] = useState('');
   const [postImg, setPostImg] = useState([]);
+  const [isAdminPost, setIsAdminPost] = useState(false);
+  const [reportOption, setReportOption] = useState([
+    { label: 'Explicit Content', value: 'Explicit Content' },
+    { label: 'Bullying or Harassment', value: 'Bullying or Harassment' },
+    { label: 'Spam', value: 'Spam' },
+    {
+      label: 'Misleading Information or Fake News',
+      value: 'Misleading Information or Fake News',
+    },
+  ]);
+  const [reportListOpen, setReportListOpen] = useState(false);
+  const [reportOptionValue, setReportOptionValue] = useState('');
+  const [reportComment, setReportCommnet] = useState('');
+  const [reportImage, setreportImage] = useState(null);
+  const [openReport, setOpenReport] = useState(false);
+  // const userFollower = user.followersDatainReducer?.data;
+
   let counter = 1;
 
   const focus = useIsFocused();
@@ -95,6 +130,10 @@ export default function UserProfile({ navigation, route }) {
   const isunFollowSuccess = useSelector(state =>
     isLoadingSelector([TYPES.UN_FOLLOW_USER], state)
   );
+  const isShowReportToast = useSelector(state =>
+    successSelector([TYPES.REPORT_POST], state)
+  );
+
   const userType = useSelector(state => state.userType);
 
   const isProfileLoading = useSelector(state =>
@@ -122,32 +161,24 @@ export default function UserProfile({ navigation, route }) {
   }, [userr]);
 
   const onFollow = () => {
-    if (user?.is_following == true) {
+    if (user?.is_following) {
       dispatch(unFollowUser(userr.id, user.id));
-      setOpenMore(false);
-      console.log('check', userr.id, user.id);
-      //setOpen(false)
-      setTimeout(() => {
-        dispatch(getUserProfileByUserId(userId, userr.id));
-      }, 100);
     } else {
       dispatch(followUser(userr.id, user.id));
-      setOpenMore(false);
-
-      // setOpen(false)
-      console.log('follower log', userr.id, user.id);
-
-      setTimeout(() => {
-        dispatch(getUserProfileByUserId(userId, userr.id));
-      }, 100);
     }
+    setOpenMore(false);
+    setTimeout(() => {
+      dispatch(getUserProfileByUserId(userId, userr.id));
+    }, 100);
   };
+
   const onMessageClick = () => {
     showMessage({
       message: 'Coming Soon',
       type: 'info',
     });
   };
+
   const renderFollowTitle = () => {
     const loggedInUserID = getUserProfile?.id;
     if (user) {
@@ -156,6 +187,32 @@ export default function UserProfile({ navigation, route }) {
         ? strings.profile.unfollow
         : strings.profile.follow;
     }
+  };
+
+  const onBlock = () => {
+    dispatch(blockUser(userr?.id, user?.id, postIndex));
+    setOpenMore(false);
+    showMessage({
+      message: 'User blocked successfully',
+      type: 'success',
+    });
+    dispatch(globalReset());
+    navigationRef.goBack();
+  };
+
+  const SelectFromGallery = () => {
+    ImagePicker.openPicker({
+      width: ms(300),
+      height: ms(400),
+      cropping: true,
+      freeStyleCropEnabled: true,
+      cropperCircleOverlay: true,
+    })
+      .then(image => {
+        console.log('check uploaded image', image);
+        setreportImage(image);
+      })
+      .catch(error => console.log('report image picker error', error));
   };
 
   return (
@@ -288,17 +345,18 @@ export default function UserProfile({ navigation, route }) {
                 userName={user?.username}
                 profilePic={user?.profilePic}
                 time={item.created_at}
+                isProfile
               />
 
               <CardBody
-                VIPKEY={!userr?.isVIP && user?.isVIP}
+                VIPKEY={!userr?.isVIP && item?.isVIPonly}
                 text={item?.postBody}
               />
 
               {item?.postMediaContent.length <= 2 ? (
                 <View style={styles.imageContainer}>
                   {item?.postMediaContent.map(
-                    data => (
+                    (data, index) => (
                       (counter = counter + 1),
                       (
                         <TouchableOpacity
@@ -309,8 +367,16 @@ export default function UserProfile({ navigation, route }) {
                               setFeedImages(item?.postMediaContent);
                           }}
                         >
-                          {!userr?.isVIP && user?.isVIP ? (
-                            <>
+                          {!userr?.isVIP && item?.isVIPonly ? (
+                            <View
+                              style={{
+                                flex: 1,
+                                position: 'relative',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                marginLeft: index == 1 ? ms(3) : 0,
+                              }}
+                            >
                               <Image
                                 blurRadius={20}
                                 style={styles.thumbnailImage}
@@ -333,15 +399,15 @@ export default function UserProfile({ navigation, route }) {
                                   {strings.giveaway.vipOnly}
                                 </Text>
                               </View>
-                            </>
-                          ) : null}
-
-                          <Image
-                            source={{
-                              uri: data.url,
-                            }}
-                            style={styles.image}
-                          />
+                            </View>
+                          ) : (
+                            <Image
+                              source={{
+                                uri: data.url,
+                              }}
+                              style={styles.image}
+                            />
+                          )}
                         </TouchableOpacity>
                       )
                     )
@@ -433,6 +499,7 @@ export default function UserProfile({ navigation, route }) {
                   setPostTitle(item?.postTitle);
                   setPostBody(item?.postBody);
                   setPostImg(item?.postImg);
+                  setIsAdminPost(item?.isAdminPost);
                 }}
               />
             </Card>
@@ -452,7 +519,7 @@ export default function UserProfile({ navigation, route }) {
           <ModalList
             onPress={onFollow}
             title={
-              user.is_following == true
+              user?.is_following == true
                 ? strings.operations.unFollow + ' @' + user?.username
                 : strings.operations.follow + ' @' + user?.username
             }
@@ -467,23 +534,34 @@ export default function UserProfile({ navigation, route }) {
             iconBg={theme.light.colors.successBgLight}
             // onPress = {()=> Alert.alert("working")}
           />
-          <HorizontalLine
-            color={theme.light.colors.infoBgLight}
-            paddingTop={15}
-            paddingBottom={8}
-          />
-          <ModalList
-            title={strings.operations.report}
-            icon={faFlag}
-            iconColor={theme.light.colors.secondary}
-            iconBg={theme.light.colors.infoBgLight}
-          />
-          <ModalList
-            title={strings.operations.block}
-            icon={faXmark}
-            iconColor={theme.light.colors.secondary}
-            iconBg={theme.light.colors.infoBgLight}
-          />
+          {!isAdminPost && (
+            <>
+              <HorizontalLine
+                color={theme.light.colors.infoBgLight}
+                paddingTop={15}
+                paddingBottom={8}
+              />
+              <ModalList
+                title={strings.operations.report}
+                icon={faFlag}
+                iconColor={theme.light.colors.secondary}
+                iconBg={theme.light.colors.infoBgLight}
+                onPress={() => {
+                  setReportOptionValue('');
+                  setOpenReport(true);
+                  setOpenMore(false);
+                  setreportImage(null);
+                }}
+              />
+              <ModalList
+                title={strings.operations.block}
+                icon={faXmark}
+                onPress={onBlock}
+                iconColor={theme.light.colors.secondary}
+                iconBg={theme.light.colors.infoBgLight}
+              />
+            </>
+          )}
         </ModalDown>
       )}
       {openEdit && (
@@ -507,16 +585,107 @@ export default function UserProfile({ navigation, route }) {
           />
         </ModalDown>
       )}
-      <Loader
-        visible={loader}
-        style={{ backgroundColor: 'white' }}
-        size="large"
-      />
+      {isShowReportToast && (
+        <Toast
+          open={isShowReportToast}
+          icon={faThumbsUp}
+          message={strings.home.reportMessage}
+          onPressOk={() => dispatch(globalReset())}
+        />
+      )}
+      <ReportOnPostModal open={openReport} setOpen={setOpenReport}>
+        <View style={styles.reportPostContainer}>
+          <TopBackButton
+            onPress={() => setOpenReport(false)}
+            style={styles.reportPostBackButton}
+          />
+          <Text style={styles.reportTxt}> {strings.home.reportPost} </Text>
+          <HorizontalLine
+            color={theme.light.colors.infoBgLight}
+            paddingBottom={12}
+          />
+          <View style={styles.reportPostTopContainer}>
+            <DropDownPicker
+              placeholder={strings.home.selectReason}
+              open={reportListOpen}
+              value={reportOptionValue}
+              items={reportOption}
+              setOpen={setReportListOpen}
+              setValue={setReportOptionValue}
+              setItems={setReportOption}
+              style={styles.dropDownPicker}
+              textStyle={styles.dropListTxt}
+              dropDownContainerStyle={styles.dropDownContainerStyle}
+              arrowIconStyle={styles.arrowIconStyle}
+            />
+            <TextInput
+              multiline
+              editable
+              onChangeText={val => setReportCommnet(val)}
+              placeholder={strings.operations.addComments}
+              numberOfLines={4}
+              style={styles.txtInput}
+            />
+          </View>
+          <HorizontalLine
+            color={theme.light.colors.infoBgLight}
+            paddingTop={15}
+          />
+          <View style={styles.reportPostBottomContainer}>
+            <TouchableOpacity onPress={() => SelectFromGallery()}>
+              {reportImage ? (
+                <Image
+                  style={{ height: ms(35), width: ms(35), borderRadius: ms(5) }}
+                  source={{ uri: reportImage.path }}
+                />
+              ) : (
+                <View pointerEvents="none">
+                  <Icon
+                    icon={faImage}
+                    size={ms(22)}
+                    color={theme.light.colors.secondary}
+                  />
+                </View>
+              )}
+            </TouchableOpacity>
+
+            <Button
+              title={strings.operations.submit}
+              disabled={!reportOptionValue}
+              opacity={reportOptionValue ? 1 : 0.4}
+              style={styles.reportPostButton}
+              onPress={() => {
+                const reportData = {
+                  objectId: postId,
+                  reportedBy: user?.id,
+                  reportTitle: reportOptionValue,
+                  reportBody: reportComment,
+                  reportImg: reportImage,
+                };
+                dispatch(reportPost(reportData));
+                setOpenReport(false);
+              }}
+            />
+          </View>
+        </View>
+      </ReportOnPostModal>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  txtInput: {
+    fontFamily: FontFamily.BrandonGrotesque_regular,
+    fontSize: ms(18, 0.3),
+    lineHeight: ms(22),
+    textAlignVertical: 'top',
+    backgroundColor: theme.light.colors.textFieldBackgroundColor,
+    borderRadius: 10,
+    borderWidth: 0.5,
+    borderColor: theme.light.colors.infoBg,
+    paddingLeft: ms(15),
+    height: 100,
+  },
   container: {
     flex: 1,
     backgroundColor: theme.light.colors.white,
@@ -637,13 +806,12 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginRight: ms(-5),
+    gap: 2,
   },
   touchContainer: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginRight: ms(-5),
   },
   image: {
     flex: 1,
@@ -661,27 +829,87 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   thumbnailImage: {
+    maxWidth: '100%',
     width: '100%',
     height: vs(180),
     padding: ms(80),
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
-
-    //  marginBottom: 10
   },
   vipOnlyContainer: {
     backgroundColor: theme.light.colors.primary,
-    width: ms(100),
+    width: ms(80),
     height: vs(25),
-    borderRadius: 6,
+    borderRadius: 4,
     position: 'absolute',
     flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
-    paddingLeft: ms(10),
-    top: '42%',
-    left: '38%',
+  },
+  reportPostContainer: {
+    // backgroundColor: theme.light.colors.white,
+    borderRadius: 10,
+    borderWidth: 0.5,
+    borderColor: theme.light.colors.primary,
+  },
+  reportPostBackButton: {
+    padding: ms(10),
+    paddingBottom: ms(-10),
+  },
+  reportPostTopContainer: {
+    paddingLeft: ms(9),
+    paddingRight: ms(9),
+  },
+  dropDownPicker: {
+    padding: ms(10),
+    marginBottom: ms(10),
+    backgroundColor: theme.light.colors.textFieldBackgroundColor,
+    borderWidth: 0.5,
+    borderColor: theme.light.colors.infoBg,
+    paddingLeft: ms(15),
+  },
+  dropDownContainerStyle: {
+    borderWidth: 1,
+    borderTopStartRadius: 10,
+    borderTopEndRadius: 10,
+    borderColor: theme.light.colors.infoBgLight,
+    shadowOffset: {
+      width: 0,
+      height: ms(2),
+    },
+    padding: ms(10),
+    marginTop: ms(5),
+    //IOS
+    shadowOffset: { width: -2, height: 4 },
+    shadowColor: theme.light.colors.secondary,
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
 
-    // marginLeft: '43%',
-    // marginTop: '22%',
+    //android
+    elevation: 5,
+  },
+  reportPostBottomContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: ms(10),
+  },
+  reportPostButton: {
+    width: ms(100),
+  },
+  arrowIconStyle: {
+    color: theme.light.colors.infoBgLight,
+  },
+  playButton: {
+    backgroundColor: theme.light.colors.primary,
+    width: 50,
+    height: 50,
+    borderRadius: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  reportTxt: {
+    fontFamily: FontFamily.Recoleta_bold,
+    fontSize: ms(14, 0.3),
+    color: theme.light.colors.black,
+    padding: 10,
   },
 });

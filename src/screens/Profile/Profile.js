@@ -33,18 +33,18 @@ import { followers } from '@/actions/UserActions';
 import { useIsFocused } from '@react-navigation/native';
 
 export function Profile({ navigation }) {
-  const user = useSelector(getUser)
-  const followerDataa = user.followersDatainReducer
-  const [searchData, setSearchData] = useState(null)
+  const user = useSelector(getUser);
+  const followerDataa = user.followersDatainReducer;
+  const [searchData, setSearchData] = useState(null);
 
   const userType = useSelector(state => state.userType);
   const [status, setStatus] = useState(strings.profile.myStatus);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-  const focus = useIsFocused()
+  const focus = useIsFocused();
 
   useEffect(() => {
-    dispatch(followers(user?.id, user.id))
+    dispatch(followers(user?.id, user.id));
   }, [focus]);
 
   return (
@@ -55,16 +55,16 @@ export function Profile({ navigation }) {
           <Image
             style={styles.headerImage}
             source={{
-              uri: user?.profilePic == null ? "" : user?.profilePic,
+              uri: user?.profilePic == null ? '' : user?.profilePic,
             }}
           />
           <View style={styles.headerText}>
-            <Text
-              numberOfLines={1}
-              style={styles.nameTxt}>{user?.fullName}</Text>
-            <Text
-              numberOfLines={1}
-              style={styles.userNameTxt}>{user?.username}</Text>
+            <Text numberOfLines={1} style={styles.nameTxt}>
+              {user?.fullName}
+            </Text>
+            <Text numberOfLines={1} style={styles.userNameTxt}>
+              {user?.username}
+            </Text>
           </View>
         </View>
         <View style={styles.iconContiner}>
@@ -92,10 +92,14 @@ export function Profile({ navigation }) {
       <HeaderTab
         title1={strings.profile.followers}
         count1={followerDataa?.data?.numOfFollowers}
-        onPress1={() => navigation.navigate(NAVIGATION.followers, { id: user.id })}
+        onPress1={() =>
+          navigation.navigate(NAVIGATION.followers, { id: user.id })
+        }
         title2={strings.profile.following}
         count2={followerDataa?.data?.numOfFollowing}
-        onPress2={() => navigation.navigate(NAVIGATION.following, { id: user.id })}
+        onPress2={() =>
+          navigation.navigate(NAVIGATION.following, { id: user.id })
+        }
       />
       <StatusNavigatorBar
         title1={strings.profile.myStatus}
@@ -114,7 +118,7 @@ export function Profile({ navigation }) {
           <MyActivity navigation={navigation} />
         )}
       </View>
-    </SafeAreaView >
+    </SafeAreaView>
   );
 }
 
@@ -159,7 +163,7 @@ export const styles = StyleSheet.create({
     top: ms(25),
     paddingLeft: ms(3, 0.3),
     paddingTop: ms(10),
-    width: ms(100)
+    width: ms(100),
   },
   iconContiner: {
     flexDirection: 'row',

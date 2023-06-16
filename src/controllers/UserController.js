@@ -451,7 +451,6 @@ export class UserController {
         }
         // data.append('videoPoster', videoPoster);
       }
-
       data.append('userId', id);
       data.append('postTitle', postTitle);
       data.append('postBody', postBody);
@@ -468,10 +467,11 @@ export class UserController {
         data.append('publishDate', publishDate);
         data.append('expiryDate', expireDate);
       }
-
+      console.log('=================== i am here');
       const headers = {
         'Content-Type': 'multipart/form-data',
       };
+      console.log('=================>', JSON.stringify(data));
       await HttpClient.post(endpoint, data, { headers })
         .then(response => {
           resolve(response);
@@ -546,7 +546,7 @@ export class UserController {
     return new Promise(async (resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.ALL_POST_ADMIN;
       await HttpClient.post(endpoint, {
-        loggedInUserId
+        loggedInUserId,
       })
         .then(response => {
           resolve(response);

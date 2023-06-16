@@ -92,6 +92,8 @@ import { POST_TYPE } from '@/constants/enums';
 import { followers } from '@/actions/UserActions';
 import { SwiperViewer } from '@/components/SwiperComponent';
 import { useRef } from 'react';
+import { useMemo } from 'react';
+import { isEmpty } from 'lodash';
 
 export function Home({ navigation }) {
   const ALLPOST = useSelector(getAllPostData);
@@ -132,6 +134,8 @@ export function Home({ navigation }) {
   const [postBody, setPostBody] = useState('');
   const [postImg, setPostImg] = useState([]);
   const [isAdminPost, setIsAdminPost] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const userFollower = user.followersDatainReducer?.data;
 
   const FILTER_DATA = [
     { title: strings.home.recent, value: strings.sortBy.recent },
@@ -259,21 +263,34 @@ export function Home({ navigation }) {
     sortBy,
     follwingSwitch,
   };
+
   const onFollow = () => {
     // setPostUserFollowed(true)
     setOpen(false);
-    if (ALLPOST[postIndex].is_following) {
+    if (isFollowing) {
       dispatch(unFollowUser(user?.id, postUserId, strings.home.post));
-      dispatch(followers(user?.id));
     } else {
       dispatch(followUser(user?.id, postUserId, strings.home.post));
     }
     setPostUserName(''), setPostUserId(''), setPostIndex();
+    setTimeout(() => {
+      dispatch(followers(user?.id, user.id));
+    }, 100);
   };
   const onBlock = () => {
     dispatch(blockUser(user?.id, postUserId, postIndex));
     setOpen(false);
-    dispatch(getAllPost(user?.id, sortBy, follwingSwitch));
+    setTimeout(() => {
+      dispatch(
+        getAllPost(
+          user?.id,
+          sortBy,
+          follwingSwitch,
+          vipArea == `${strings.home.newFeed}` ? false : true,
+          ''
+        )
+      );
+    }, 100);
   };
   const onViewImageVideo = data => {
     //   let arr=[]
@@ -301,8 +318,8 @@ export function Home({ navigation }) {
 
   const onLoadMorePost = () => {
     const post = ALLPOST.slice(-1);
-    console.log('LAST_POST===', post[0].created_at);
     const page = post[0].created_at;
+
     dispatch(
       getAllPostPagination(
         user?.id,
@@ -313,6 +330,8 @@ export function Home({ navigation }) {
       )
     );
   };
+
+  console.log('posts ===>', ALLPOST);
 
   const renderFooterPost = () => {
     return (
@@ -690,6 +709,18 @@ export function Home({ navigation }) {
                             follwingSwitch,
                           },
                         });
+                        console.log(
+                          userFollower?.following_List?.filter(
+                            el => el.followingUserId === item?.userId
+                          )
+                        );
+                        setIsFollowing(
+                          !isEmpty(
+                            userFollower?.following_List?.filter(
+                              el => el.followingUserId === item?.userId
+                            )
+                          )
+                        );
                       }}
                     />
                   </Card>
@@ -787,7 +818,7 @@ export function Home({ navigation }) {
                 onFollow();
               }}
               title={
-                (!ALLPOST[postIndex]?.is_following
+                (!isFollowing
                   ? strings.operations.follow
                   : strings.operations.unFollow) +
                 ' @' +

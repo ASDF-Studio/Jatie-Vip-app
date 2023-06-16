@@ -45,6 +45,7 @@ export default function MyActivity({ navigation }) {
       dispatch(getAllActivityByUserId(user.id));
     }
   }, [focus]);
+
   return (
     <View style={styles.pageContainer}>
       {isActvityLoading ? (
