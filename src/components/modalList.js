@@ -5,10 +5,24 @@ import { ms } from 'react-native-size-matters';
 import { TextStyles, theme } from '@/theme';
 import PropTypes from 'prop-types';
 
-export const ModalList = ({ title, icon, onPress, iconBg, iconColor }) => {
+export const ModalList = ({
+  title,
+  icon,
+  onPress,
+  iconBg,
+  iconColor,
+  disabled = false,
+}) => {
   return (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={onPress}>
+    <View
+      style={[
+        styles.container,
+        {
+          opacity: disabled ? 0.7 : 1,
+        },
+      ]}
+    >
+      <TouchableOpacity onPress={onPress} disabled={disabled}>
         <View style={styles.list}>
           <View
             style={[

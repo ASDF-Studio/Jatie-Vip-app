@@ -12,7 +12,13 @@ import {
 } from 'react-native';
 import { theme } from '@/theme';
 import Moment from 'moment';
-import { AppImageViewer, Card, CardBody, CustomLoader } from '@/components';
+import {
+  AppImageViewer,
+  Card,
+  CardBody,
+  CustomLoader,
+  Timer,
+} from '@/components';
 import { ms, vs } from 'react-native-size-matters';
 import { FontFamily } from '@/theme/Fonts';
 import { strings } from '@/localization';
@@ -33,8 +39,7 @@ import { useEffect } from 'react';
 import { useIsFocused } from '@react-navigation/native';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { SwiperViewer } from '@/components/SwiperComponent';
-import CountDown from 'react-native-countdown-component';
-import { useBlinker } from '@/hooks';
+import { useCallback } from 'react';
 
 export default function Active({ navigation, userType }) {
   const user = useSelector(getUser);
@@ -49,10 +54,9 @@ export default function Active({ navigation, userType }) {
     isLoadingSelector([TYPES.GET_ACTIVE_GIVEAWAY], state)
   );
   const focus = useIsFocused();
-  const { blink } = useBlinker();
 
   useEffect(() => {
-    getSeconds();
+    // getSeconds();
     getactiveData();
   }, []);
 
@@ -62,9 +66,9 @@ export default function Active({ navigation, userType }) {
     };
     dispatch(getAllActiveGiveaway(data));
   };
-  const onViewImageVideo = data => {
+  const onViewImageVideo = useCallback(data => {
     setShowImageView(true), setFeedImages(data.postMediaContent);
-  };
+  });
   const isLoadingMore = useSelector(state =>
     isLoadingSelector([TYPES.GET_ACTIVE_GIVEAWAY_PAGINATION], state)
   );
@@ -85,35 +89,12 @@ export default function Active({ navigation, userType }) {
     );
   };
 
-  function getSeconds(date) {
-    const dateString = date;
-    const dateObj = new Date(dateString);
-    const currentTime = new Date();
-    const timeDifference = dateObj.getTime() - currentTime.getTime();
-    const secondsLeft = Math.floor(timeDifference / 1000);
-    //   console.log("Seconds left:=-=-=-", secondsLeft);
-    return secondsLeft;
-  }
-
   return (
     <>
-      {/*  image view modal */}
-      {showImageView && (
-        // <AppImageViewer
-        //   visible={showImageView}
-        //   setVisible={() => setShowImageView(false)}
-        //   images={feedImages}
-        // />
-        <SwiperViewer
-          visible={showImageView}
-          setVisible={() => setShowImageView(false)}
-          images={feedImages}
-        />
-      )}
       <SafeAreaView
         style={{
           marginTop: Platform.OS === 'ios' ? -48 : 0,
-          marginBottom: Platform.OS === 'ios' ? -38 : 0,
+          marginBottom: Platform.OS === 'ios' ? -65 : 0,
         }}
       >
         {/* <CustomLoader
@@ -125,6 +106,7 @@ export default function Active({ navigation, userType }) {
             animating={isLoading}
             size={'large'}
             color={theme.light.colors.primary}
+            style={styles.loaderStyle}
           />
         )}
         <FlatList
@@ -147,44 +129,10 @@ export default function Active({ navigation, userType }) {
           renderItem={({ item, index }) => (
             <View style={styles.FlatListContainer}>
               <Card>
-                {console.log(JSON.stringify(item))}
                 <View>
                   <Text style={styles.title}>{item.postTitle}</Text>
                 </View>
-                <View
-                  style={[
-                    styles.officialTxt,
-                    {
-                      backgroundColor: blink
-                        ? theme.light.colors.primaryBg
-                        : theme.light.colors.primaryBgSolid,
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                    },
-                  ]}
-                >
-                  <Text>
-                    {strings.giveaway.EndsIn + ' '}
-                    <Text style={styles.EndTimeTxt}>
-                      {Moment.utc(item.postExpires).format('D/M/YY  hh:mm')}{' '}
-                      {/* {item.postExpires} */}
-                    </Text>
-                  </Text>
-                  <CountDown
-                    running={true}
-                    until={item?.remainingTime ?? getSeconds(item.postExpires)}
-                    separatorStyle={{ color: 'black', fontSize: 20 }}
-                    size={20}
-                    showSeparator={true}
-                    timeToShow={['D', 'H', 'S']}
-                    digitTxtStyle={{
-                      fontSize: ms(11, 0.3),
-                      color: 'black',
-                      fontFamily: FontFamily.Recoleta_medium,
-                    }}
-                  />
-                </View>
+                <Timer item={item} />
                 <CardBody text={item.postBody} />
 
                 {/* VIP only */}
@@ -509,6 +457,14 @@ export default function Active({ navigation, userType }) {
             </View>
           )}
         />
+        {/*  image view modal */}
+        {showImageView && (
+          <SwiperViewer
+            visible={showImageView}
+            setVisible={() => setShowImageView(false)}
+            images={feedImages}
+          />
+        )}
       </SafeAreaView>
     </>
   );
@@ -537,6 +493,11 @@ export const styles = StyleSheet.create({
     paddingLeft: ms(15),
   },
   FlatListContainer: { margin: ms(10) },
+  loaderStyle: {
+    alignSelf: 'center',
+    justifyContent: 'center',
+    marginTop: ms(50),
+  },
   thumbnailImage: {
     width: '100%',
     height: vs(180),
@@ -586,7 +547,7 @@ export const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: theme.light.colors.primary,
     position: 'absolute',
-    bottom: '3%',
+    bottom: '7%',
     left: '3%',
     backgroundColor: theme.light.colors.primary,
     width: ms(130),

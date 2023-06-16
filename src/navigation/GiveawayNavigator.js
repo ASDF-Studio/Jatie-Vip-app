@@ -9,8 +9,9 @@ import AdminGiveawayPost from '@/screens/Giveaway/AdminGiveawayPost';
 import AdminGiveawayOption from '@/screens/Giveaway/AdminGiveawayOption';
 import UpdateGiveawayOption from '@/screens/Giveaway/UpdateGiveawayOption';
 import UpdateGiveawayPost from '@/screens/Giveaway/UpdateGiveawayPost';
-import Notification from '@/screens/Giveaway/notification';
 import Search from '@/screens/Profile/search';
+import UpgradeMembership from '@/screens/Profile/upgradeMembership';
+import Notification from '@/screens/Home/notification';
 
 const Stack = createNativeStackNavigator();
 
@@ -55,6 +56,10 @@ export function GiveawayNavigator() {
       />
       <Stack.Screen name={NAVIGATION.notification} component={Notification} />
       <Stack.Screen name={NAVIGATION.search} component={Search} />
+      <Stack.Screen
+        name={NAVIGATION.upgradeMembership}
+        component={UpgradeMembership}
+      />
     </Stack.Navigator>
   );
 }

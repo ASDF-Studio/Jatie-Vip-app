@@ -27,6 +27,7 @@ import {
   Icon,
   PopUp,
   PopUpAlert,
+  MediaContainer,
 } from '@/components';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NAVIGATION } from '@/constants';
@@ -69,7 +70,6 @@ export default function SinglePost({ navigation, route }) {
   const { postId } = route.params || {};
   const userType = useSelector(state => state.userType);
   const dispatch = useDispatch();
-  const ALLPOST = useSelector(getAllPostData);
   const user = useSelector(getUser);
   const postData = useSelector(getPostByIdData);
   const [showImageView, setShowImageView] = useState(false);
@@ -124,6 +124,10 @@ export default function SinglePost({ navigation, route }) {
 
   let counter = 1;
 
+  const onViewImageVideo = data => {
+    setShowImageView(true), setFeedImages(data.postMediaContent);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {!isLoading && (
@@ -158,7 +162,6 @@ export default function SinglePost({ navigation, route }) {
               showPin={item?.isPinned}
             />
             <CardBody text={item?.postBody || strings.message.postIsDeleted} />
-
             {item?.postMediaContent?.length <= 2 ? (
               <View style={styles.imageContainer}>
                 {item?.postMediaContent?.map(
@@ -306,36 +309,34 @@ export default function SinglePost({ navigation, route }) {
               ))
             ) : null}
 
-            {item && (
-              <CardFooter
-                postType={POST_TYPE.SINGLE_POST}
-                index={0}
-                postID={item?.id}
-                disable={isEmpty(item)}
-                postUserID={item?.userId}
-                userID={user?.id}
-                likeCount={item?.upVote}
-                disLikeCount={item?.downVote}
-                commentCount={item?.comments_aggregate?.aggregate?.count}
-                postData={item}
-                commentPress={() =>
-                  navigation.navigate(NAVIGATION.comments, {
-                    DATA: item,
-                    type: POST_TYPE.SINGLE_POST,
-                  })
-                }
-                morePress={() => {
-                  setIsAdminPost(item?.isAdminPost),
-                    setPostUserName(item?.user?.username);
-                  setOpen(true);
-                  setPostUserId(item?.userId);
-                  setPostTitle(item?.postTitle);
-                  setPostBody(item?.postBody);
-                  setPostImg(item?.postImg);
-                  setEditdata(item);
-                }}
-              />
-            )}
+            <CardFooter
+              postType={POST_TYPE.SINGLE_POST}
+              index={0}
+              postID={item?.id}
+              disable={isEmpty(item)}
+              postUserID={item?.userId}
+              userID={user?.id}
+              likeCount={item?.upVote}
+              disLikeCount={item?.downVote}
+              commentCount={item?.comments_aggregate?.aggregate?.count}
+              postData={item}
+              commentPress={() =>
+                navigation.navigate(NAVIGATION.comments, {
+                  DATA: item,
+                  type: POST_TYPE.SINGLE_POST,
+                })
+              }
+              morePress={() => {
+                setIsAdminPost(item?.isAdminPost),
+                  setPostUserName(item?.user?.username);
+                setOpen(true);
+                setPostUserId(item?.userId);
+                setPostTitle(item?.postTitle);
+                setPostBody(item?.postBody);
+                setPostImg(item?.postImg);
+                setEditdata(item);
+              }}
+            />
           </Card>
         </View>
       )}
@@ -394,6 +395,7 @@ export default function SinglePost({ navigation, route }) {
             <ModalList
               title={strings.operations.sendPrivateMessage}
               icon={faMessage}
+              disabled
               iconColor={theme.light.colors.success}
               iconBg={theme.light.colors.successBgLight}
             />
@@ -770,6 +772,29 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     overflow: 'hidden',
     width: '100%',
+  },
+  playButtonBg: {
+    height: ms(200),
+    backgroundColor: theme.light.colors.hyperlink,
+    // opacity: 0.7,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    width: '100%',
+  },
+  Play: {
+    position: 'absolute',
+    color: theme.light.colors.background,
+    marginLeft: ms(8),
+    marginTop: ms(8),
+  },
+  playButton: {
+    backgroundColor: theme.light.colors.primary,
+    width: 50,
+    height: 50,
+    borderRadius: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   // sponsored post

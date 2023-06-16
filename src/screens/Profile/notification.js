@@ -213,7 +213,6 @@
 //   },
 // });
 
-
 import React, { useState } from 'react';
 import { TextStyles, theme } from '@/theme';
 import { FontFamily } from '@/theme/Fonts';
@@ -232,13 +231,23 @@ import {
   faCircleDown,
   faMessage,
 } from '@fortawesome/free-solid-svg-icons';
-import { AppSwitch, HorizontalLine, Icon, CardHeader, CustomLoader } from '@/components';
+import {
+  AppSwitch,
+  HorizontalLine,
+  Icon,
+  CardHeader,
+  CustomLoader,
+} from '@/components';
 import { ms, verticalScale } from 'react-native-size-matters';
 import { NAVIGATION } from '@/constants/navigation';
 import { strings } from '@/localization';
 import { Data, profilePic } from '@/screens/CommonData/notoficationData';
 import { faSearch } from '@fortawesome/pro-regular-svg-icons';
-import { TYPES, fetchAllNotifications, markAllRead } from '@/actions/UserActions';
+import {
+  TYPES,
+  fetchAllNotifications,
+  markAllRead,
+} from '@/actions/UserActions';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
@@ -248,34 +257,32 @@ import { isLoadingSelector } from '@/selectors/StatusSelectors';
 
 export default function Notification({ navigation }) {
   const [read, setRead] = useState(false);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-  const loggedInUser = useSelector(getUser)
-  const notificationData = loggedInUser.notificationKey
+  const loggedInUser = useSelector(getUser);
+  const notificationData = loggedInUser.notificationKey;
 
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.GET_ALL_NOTIFICATIONS], state)
   );
   //console.log('data', notificationData?.data)
   useEffect(() => {
-    dispatch(fetchAllNotifications(loggedInUser.id, read))
-  }, [read])
+    dispatch(fetchAllNotifications(loggedInUser.id, read));
+  }, [read]);
 
   const singelPostHnadlePress = () => {
-    dispatch(getPostById(item.objectId, loggedInUser?.id))
-    console.log(item.objectId, user?.id)
-  }
+    dispatch(getPostById(item.objectId, loggedInUser?.id));
+    console.log(item.objectId, user?.id);
+  };
   const markAllAsReadNotifications = () => {
-    dispatch(markAllRead(loggedInUser?.id))
+    dispatch(markAllRead(loggedInUser?.id));
     setTimeout(() => {
-      dispatch(fetchAllNotifications(loggedInUser.id, read))
+      dispatch(fetchAllNotifications(loggedInUser.id, read));
     }, 100);
-  }
-
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-
       <CustomLoader open={isLoading} />
       <View style={styles.header}>
         <View style={styles.left}>
@@ -329,9 +336,9 @@ export default function Notification({ navigation }) {
               style={
                 item.seenByUser == true
                   ? [
-                    styles.notificationCard,
-                    { backgroundColor: theme.light.colors.white },
-                  ]
+                      styles.notificationCard,
+                      { backgroundColor: theme.light.colors.white },
+                    ]
                   : styles.notificationCard
               }
             >
@@ -368,13 +375,12 @@ export default function Notification({ navigation }) {
                 ) : null}
                 <View style={styles.textContainer}>
                   <Text style={styles.statsTxt}> {item.status} </Text>
-                  <TouchableOpacity onPress={() => navigate(NAVIGATION.singlePost, { postId: item.objectId })}>
-                    <Text style={styles.reactOnTxt}>
-
-                      {item.text}{' '}
-
-                      post
-                    </Text>
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigate(NAVIGATION.singlePost, { postId: item.objectId })
+                    }
+                  >
+                    <Text style={styles.reactOnTxt}>{item.text} post</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -470,7 +476,9 @@ const styles = StyleSheet.create({
   markAllAsReadTextStyle: {
     fontSize: 20,
     textAlign: 'right',
-    marginRight: 20, marginTop: verticalScale(10),
-    color: theme.light.colors.info
-  }
+    marginRight: 20,
+    marginTop: verticalScale(10),
+    color: theme.light.colors.info,
+    fontFamily: FontFamily.Recoleta_semibold,
+  },
 });

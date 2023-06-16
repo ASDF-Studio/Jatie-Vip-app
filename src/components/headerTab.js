@@ -16,12 +16,23 @@ export const HeaderTab = ({
   return (
     <View style={styles.headerTab}>
       <TouchableOpacity style={styles.tab} onPress={onPress1}>
-        <Text style={styles.txt}> {title1}</Text>
-        <Text style={[styles.txt, { color: theme.light.colors.black }]}> {count1}</Text>
+        <Text style={[styles.txt, { color: theme.light.colors.timerText }]}>
+          {' '}
+          {title1}
+        </Text>
+        <Text style={[styles.txt, { color: theme.light.colors.black }]}>
+          {' '}
+          {count1}
+        </Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.tab} onPress={onPress2}>
-        <Text style={styles.txt}>{title2}</Text>
-        <Text style={[styles.txt, { color: theme.light.colors.black }]}> {count2}</Text>
+        <Text style={[styles.txt, { color: theme.light.colors.timerText }]}>
+          {title2}
+        </Text>
+        <Text style={[styles.txt, { color: theme.light.colors.black }]}>
+          {' '}
+          {count2}
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -56,10 +67,11 @@ const styles = StyleSheet.create({
     paddingRight: ms(12),
     borderRadius: ms(40),
     margin: ms(2),
+    // right: 20,
     alignItems: 'center',
   },
   txt: {
     fontFamily: FontFamily.Recoleta_semibold,
-    fontSize: ms(13, 0.3)
-  }
+    fontSize: ms(13, 0.3),
+  },
 });

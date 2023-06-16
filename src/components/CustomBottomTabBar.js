@@ -20,7 +20,7 @@ import { getAllExclusivePost, getAllPost } from '@/actions/PostActions';
 import { strings } from '@/localization';
 
 const tabBarLabel = {
-  [NAVIGATION.home]: 'Feed',
+  [NAVIGATION.homeNavigator]: 'Feed',
   [NAVIGATION.messageNavigator]: 'Message',
   [NAVIGATION.exclusiveNavigator]: 'Exclusive',
   [NAVIGATION.giveawayNavigator]: 'Giveaway',
@@ -28,7 +28,7 @@ const tabBarLabel = {
 };
 
 const tabBarIcon = {
-  [NAVIGATION.home]: faNewspaper,
+  [NAVIGATION.homeNavigator]: faNewspaper,
   [NAVIGATION.messageNavigator]: faMessage,
   [NAVIGATION.exclusiveNavigator]: faCrown,
   [NAVIGATION.giveawayNavigator]: faGift,
@@ -37,7 +37,7 @@ const tabBarIcon = {
 
 function CustomBottomTabBar({ state, descriptors, navigation }) {
   const { colors } = useTheme();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const user = useSelector(getUser);
   const [keyboardShow, setKeyboardShow] = React.useState();
   React.useEffect(() => {
@@ -72,8 +72,8 @@ function CustomBottomTabBar({ state, descriptors, navigation }) {
           options.tabBarLabel !== undefined
             ? options.tabBarLabel
             : options.title !== undefined
-              ? options.title
-              : route.name;
+            ? options.title
+            : route.name;
 
         const isFocused = state.index === index;
 
@@ -84,13 +84,20 @@ function CustomBottomTabBar({ state, descriptors, navigation }) {
             canPreventDefault: true,
           });
           if (index == 0) {
-            dispatch(getAllPost(user?.id, strings.sortBy.recent, strings.home.newFeed, false, ""))
-          }
-          else if (index == 2) {
+            // dispatch(
+            //   getAllPost(
+            //     user?.id,
+            //     strings.sortBy.recent,
+            //     strings.home.newFeed,
+            //     false,
+            //     ''
+            //   )
+            // );
+          } else if (index == 2) {
             const data = {
               userId: user?.id,
-            }
-            dispatch(getAllExclusivePost(data))
+            };
+            // dispatch(getAllExclusivePost(data));
           }
 
           if (!isFocused && !event.defaultPrevented) {
@@ -132,7 +139,7 @@ function CustomBottomTabBar({ state, descriptors, navigation }) {
               icon={tabBarIcon[route.name]}
               size={20}
               color={isFocused ? colors.activeTabIcon : colors.inactiveTabIcon}
-            // style={{ colo: 'black' }}
+              // style={{ colo: 'black' }}
             />
             <Text
               style={[

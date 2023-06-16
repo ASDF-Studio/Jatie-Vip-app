@@ -24,13 +24,14 @@ import { EditViewModal } from '@/components/CropPictureModal';
 import { showMessage } from 'react-native-flash-message';
 import { getUser } from '@/selectors/UserSelectors';
 import { NAVIGATION } from '@/constants';
+import { customShowMessage } from '@/utils';
 
 export function AddProfilePicture({ route }) {
   const { prevData } = route.params;
-  const user = useSelector(getUser)
+  const user = useSelector(getUser);
   const { colors } = useTheme();
   const [image, setImage] = useState(null);
-  const [mimeType, setmimeType] = useState(null)
+  const [mimeType, setmimeType] = useState(null);
   const [isModalVisible, setModalVisible] = useState(false);
   const [cropImageModal, setCropImageModal] = useState();
 
@@ -62,7 +63,21 @@ export function AddProfilePicture({ route }) {
   };
 
   const handleSubmit = () => {
-    dispatch(updateProfile(prevData?.birthday, prevData?.name, prevData?.genderValue, prevData?.ID, prevData?.email, prevData?.countryvalue, prevData?.username, prevData?.number, "", null, NAVIGATION.addProfilePicture))
+    dispatch(
+      updateProfile(
+        prevData?.birthday,
+        prevData?.name,
+        prevData?.genderValue,
+        prevData?.ID,
+        prevData?.email,
+        prevData?.countryvalue,
+        prevData?.username,
+        prevData?.number,
+        '',
+        null,
+        NAVIGATION.addProfilePicture
+      )
+    );
   };
 
   const OpenGallery = () => {
@@ -70,12 +85,12 @@ export function AddProfilePicture({ route }) {
       width: 300,
       height: 300,
       cropping: false,
-      compressImageQuality: 0.5
+      compressImageQuality: 0.5,
     })
       .then(image => {
         console.log(image);
         setImage(image.path);
-        setmimeType(image.mime)
+        setmimeType(image.mime);
         setModalVisible(!isModalVisible);
         setCropImageModal(true);
       })
@@ -88,12 +103,12 @@ export function AddProfilePicture({ route }) {
       width: 300,
       height: 300,
       cropping: false,
-      compressImageQuality: 0.5
+      compressImageQuality: 0.5,
     })
       .then(image => {
         setModalVisible(!isModalVisible);
         setImage(image.path);
-        setmimeType(image.mime)
+        setmimeType(image.mime);
         setCropImageModal(true);
       })
       .catch(e => {
@@ -103,20 +118,31 @@ export function AddProfilePicture({ route }) {
 
   const RemovePic = () => {
     setImage(null);
-    setmimeType(null)
-
+    setmimeType(null);
   };
   const handleFinish = () => {
     if (image == null) {
-      showMessage({
+      customShowMessage({
         message: strings.profile.selecteImage,
-        type: "danger",
-      })
+        type: 'danger',
+      });
+    } else {
+      dispatch(
+        updateProfile(
+          prevData?.birthday,
+          prevData?.name,
+          prevData?.genderValue,
+          prevData?.ID,
+          prevData?.email,
+          prevData?.countryvalue,
+          prevData.username,
+          prevData.number,
+          image,
+          mimeType,
+          NAVIGATION.addProfilePicture
+        )
+      );
     }
-    else {
-      dispatch(updateProfile(prevData?.birthday, prevData?.name, prevData?.genderValue, prevData?.ID, prevData?.email, prevData?.countryvalue, prevData.username, prevData.number, image, mimeType, NAVIGATION.addProfilePicture))
-    }
-
   };
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
@@ -134,10 +160,13 @@ export function AddProfilePicture({ route }) {
 
         <EditViewModal
           textStyleHeading={styles.HeadingTextStyle}
-          style={[styles.EditViewModal, {
-            alignSelf: 'center',
-            width: Dimensions.get('window').width,
-          }]}
+          style={[
+            styles.EditViewModal,
+            {
+              alignSelf: 'center',
+              width: Dimensions.get('window').width,
+            },
+          ]}
           // style={styles.EditViewModal}
           sourceUrl={image}
           isVisible={cropImageModal}
@@ -150,9 +179,7 @@ export function AddProfilePicture({ route }) {
           }}
           onPress={ReplaceImage}
         />
-        <CustomLoader
-          open={isLoading}
-        />
+        {isLoading && <CustomLoader open={isLoading} />}
         {!image ? (
           <Button
             onPress={toggleModal}

@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { faEllipsis, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { TextStyles, theme } from '@/theme';
@@ -24,50 +25,47 @@ import { NAVIGATION } from '@/constants';
 import { strings } from '@/localization';
 import { ms } from 'react-native-size-matters';
 import { FontFamily } from '@/theme/Fonts';
-import { Data } from './ProfileData/blockedUsersData';
-import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
 import { TYPES, blockUsersList } from '@/actions/UserActions';
-import { useIsFocused } from '@react-navigation/native';
-import { isLoadingSelector } from '@/selectors/StatusSelectors';
+import { useFocusEffect } from '@react-navigation/native';
 import { unBlockUser } from '@/actions/PostActions';
+import { useCallback } from 'react';
 
 export default function BlockedUsers({ navigation }) {
   const [open, setOpen] = useState(false);
-  const [blockUserId, setblockUserId] = useState('')
-  const [blockUsername, setblockUserName] = useState('')
-  const dispatch = useDispatch()
-  const focus = useIsFocused()
+  const [blockUserId, setblockUserId] = useState('');
+  const [blockUsername, setblockUserName] = useState('');
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
 
   //Selector Usage
-  const user = useSelector(getUser)
-  const blockListData = user.blockListKey
+  const user = useSelector(getUser);
+  const blockListData = user.blockListKey;
 
-  const isLoading = useSelector(state =>
-    isLoadingSelector([TYPES.BLOCK_LIST], state)
+  useFocusEffect(
+    useCallback(() => {
+      customReq();
+    }, [])
   );
 
-  useEffect(() => {
-    dispatch(blockUsersList(user?.id))
-  }, [focus]);
-
+  const customReq = async () => {
+    setLoading(true);
+    await blockUsersList(user?.id)(dispatch);
+    setLoading(false);
+  };
 
   //handle unblock user By Id
   const handleUnblockPress = () => {
-    dispatch(unBlockUser(user.id, blockUserId))
-    setOpen(false)
+    dispatch(unBlockUser(user.id, blockUserId));
+    setOpen(false);
     setTimeout(() => {
-      dispatch(blockUsersList(user?.id))
+      dispatch(blockUsersList(user?.id));
     }, 200);
-
-
-  }
-
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-      <CustomLoader open={isLoading} />
       <TopBackButton
         onPress={() => navigation.goBack()}
         style={styles.TopBackButton}
@@ -79,42 +77,62 @@ export default function BlockedUsers({ navigation }) {
       <HorizontalLine
         color={theme.light.colors.primaryBg}
         paddingTop={15}
-      // paddingBottom={8}
+        // paddingBottom={8}
       />
-      <View>
-        <FlatList
-          data={blockListData?.data}
-          key={props => props.id}
-          initialNumToRender={10}
-          contentContainerStyle={styles.contentContainerStyle}
-          style={styles.bellowContainer}
-          renderItem={({ item }) => {
-            return (
-              <View style={styles.listContainer}>
-                <TouchableOpacity
-                  style={styles.list}
-                // onPress={() => navigation.navigate(NAVIGATION.userProfile)}
-                >
-                  <Image
-                    source={{ uri: item.userByBlockeduser.profilePic }}
-                    style={styles.profileImage}
-                  />
-                  <View style={styles.nameContainer}>
-                    <Text style={styles.nameTxt}> {item.userByBlockeduser.fullName}</Text>
-                    <Text style={styles.userNameTxt}> {item.userByBlockeduser.username} </Text>
-                  </View>
-                </TouchableOpacity>
-                <Icon
-                  icon={faEllipsis}
-                  size={ms(15)}
-                  color={theme.light.colors.secondary}
-                  onPress={() => { setOpen(true), setblockUserId(item.blockedUser), setblockUserName(item.userByBlockeduser.username) }}
-                />
-              </View>
-            );
-          }}
+      {loading ? (
+        <ActivityIndicator
+          animating={loading}
+          color={theme.light.colors.activeTabIcon}
+          size={'large'}
+          style={styles.loaderStyle}
         />
-      </View>
+      ) : (
+        <View>
+          <FlatList
+            data={blockListData?.data}
+            key={props => props.id}
+            initialNumToRender={10}
+            contentContainerStyle={styles.contentContainerStyle}
+            style={styles.bellowContainer}
+            renderItem={({ item }) => {
+              return (
+                <View style={styles.listContainer}>
+                  <TouchableOpacity
+                    style={styles.list}
+                    // onPress={() => navigation.navigate(NAVIGATION.userProfile)}
+                  >
+                    <Image
+                      source={{ uri: item.userByBlockeduser.profilePic }}
+                      style={styles.profileImage}
+                    />
+                    <View style={styles.nameContainer}>
+                      <Text style={styles.nameTxt}>
+                        {' '}
+                        {item.userByBlockeduser.fullName}
+                      </Text>
+                      <Text style={styles.userNameTxt}>
+                        {' '}
+                        {item.userByBlockeduser.username}{' '}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                  <Icon
+                    icon={faEllipsis}
+                    size={ms(15)}
+                    color={theme.light.colors.secondary}
+                    onPress={() => {
+                      setOpen(true),
+                        setblockUserId(item.blockedUser),
+                        setblockUserName(item.userByBlockeduser.username);
+                    }}
+                  />
+                </View>
+              );
+            }}
+          />
+        </View>
+      )}
+
       {open && (
         <ModalDown open={open} setOpen={setOpen}>
           <ModalList
@@ -133,6 +151,11 @@ export default function BlockedUsers({ navigation }) {
 const styles = StyleSheet.create({
   bellowContainer: {
     paddingTop: 10,
+  },
+  loaderStyle: {
+    alignSelf: 'center',
+    justifyContent: 'center',
+    marginTop: ms(50),
   },
   container: {
     flex: 1,

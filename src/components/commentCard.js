@@ -1,5 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import { CardBody, CardHeader, Icon } from '@/components';
 import { theme, TextStyles } from '@/theme';
 import { ms } from 'react-native-size-matters';
@@ -11,10 +17,16 @@ import { CommentHeader } from './commentHeader';
 import { faCircleDown, faReplyAll } from '@fortawesome/pro-regular-svg-icons';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getCommentsByPostIdSuccess, voteDownComment, voteUpComment } from '@/actions/PostActions';
+import {
+  getCommentsByPostIdSuccess,
+  voteDownComment,
+  voteUpComment,
+} from '@/actions/PostActions';
 import { getCommentsByPostIdData } from '@/selectors/PostSelectors';
 import { navigationRef } from '@/navigation/RootNavigation';
 import { NAVIGATION } from '@/constants';
+import { getUser } from '@/selectors/UserSelectors';
+import { isEmpty } from 'lodash';
 
 export const CommentCard = ({
   name,
@@ -28,64 +40,74 @@ export const CommentCard = ({
   disLikePress,
   replyPress,
   morePress,
-  userId, commentId, commentIndex, commentData, commentUserId
+  userId,
+  commentId,
+  commentIndex,
+  commentData,
+  commentUserId,
+  isBlocked,
 }) => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [upVote, setUpVote] = useState(likeCount);
   const [downVote, setDownVote] = useState(disLikeCount);
-  const comm = useSelector(getCommentsByPostIdData)
-  const COMMENTS = comm?.postComments
+  const comm = useSelector(getCommentsByPostIdData);
+  const user = useSelector(getUser);
+
+  const COMMENTS = comm?.postComments;
   const onLikeComment = () => {
-
     var arr = COMMENTS;
-    var voteUpNumber = parseInt(arr[commentIndex].upVote)
-    var voteDonwNumber = parseInt(arr[commentIndex].downVote)
+    var voteUpNumber = parseInt(arr[commentIndex].upVote);
+    var voteDonwNumber = parseInt(arr[commentIndex].downVote);
     if (!arr[commentIndex].has_upvoted) {
-      arr[commentIndex].has_upvoted = true
-      arr[commentIndex].upVote = voteUpNumber + 1
+      arr[commentIndex].has_upvoted = true;
+      arr[commentIndex].upVote = voteUpNumber + 1;
       if (arr[commentIndex].has_downvoted) {
-        arr[commentIndex].has_downvoted = false
-        arr[commentIndex].downVote = voteDonwNumber - 1
-        setDownVote(voteDonwNumber - 1)
+        arr[commentIndex].has_downvoted = false;
+        arr[commentIndex].downVote = voteDonwNumber - 1;
+        setDownVote(voteDonwNumber - 1);
       }
-      setUpVote(voteUpNumber + 1)
+      setUpVote(voteUpNumber + 1);
     } else {
-      arr[commentIndex].has_upvoted = false
-      arr[commentIndex].upVote = voteUpNumber - 1
-      setUpVote(voteUpNumber - 1)
+      arr[commentIndex].has_upvoted = false;
+      arr[commentIndex].upVote = voteUpNumber - 1;
+      setUpVote(voteUpNumber - 1);
     }
-    dispatch(getCommentsByPostIdSuccess(arr))
-    dispatch(voteUpComment(commentId, userId))
-
-
-  }
+    dispatch(getCommentsByPostIdSuccess(arr));
+    dispatch(voteUpComment(commentId, userId));
+  };
   const onDisLikeComment = () => {
     var arr = COMMENTS;
-    var voteUpNumber = parseInt(arr[commentIndex].upVote)
-    var voteDonwNumber = parseInt(arr[commentIndex].downVote)
+    var voteUpNumber = parseInt(arr[commentIndex].upVote);
+    var voteDonwNumber = parseInt(arr[commentIndex].downVote);
     if (!arr[commentIndex].has_downvoted) {
-      arr[commentIndex].has_downvoted = true
-      arr[commentIndex].downVote = voteDonwNumber + 1
+      arr[commentIndex].has_downvoted = true;
+      arr[commentIndex].downVote = voteDonwNumber + 1;
       if (arr[commentIndex].has_upvoted) {
-        arr[commentIndex].has_upvoted = false
-        arr[commentIndex].upVote = voteUpNumber - 1
-        setUpVote(voteUpNumber - 1)
+        arr[commentIndex].has_upvoted = false;
+        arr[commentIndex].upVote = voteUpNumber - 1;
+        setUpVote(voteUpNumber - 1);
       }
-      setDownVote(voteDonwNumber + 1)
-
+      setDownVote(voteDonwNumber + 1);
     } else {
-      arr[commentIndex].has_downvoted = false
-      arr[commentIndex].downVote = voteDonwNumber - 1
-      setDownVote(voteDonwNumber - 1)
+      arr[commentIndex].has_downvoted = false;
+      arr[commentIndex].downVote = voteDonwNumber - 1;
+      setDownVote(voteDonwNumber - 1);
     }
-    dispatch(getCommentsByPostIdSuccess(arr))
-    dispatch(voteDownComment(commentId, userId))
-  }
+    dispatch(getCommentsByPostIdSuccess(arr));
+    dispatch(voteDownComment(commentId, userId));
+  };
   const navigateToUserProfile = () => {
-    navigationRef.navigate(NAVIGATION.userProfile, { userId: commentUserId })
-  }
-  return (
+    if (isBlocked) {
+      return;
+    }
+    if (userId === commentUserId) {
+      navigationRef.navigate(NAVIGATION.profileNavigator);
+    } else {
+      navigationRef.navigate(NAVIGATION.userProfile, { userId: commentUserId });
+    }
+  };
 
+  return (
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
         <View>
@@ -110,10 +132,13 @@ export const CommentCard = ({
         <View style={styles.footer}>
           <View style={styles.reacContainer}>
             <TouchableOpacity
-
               onPress={onLikeComment}
-              style={[styles.iconContainer, styles.likeContainer,
-              COMMENTS[commentIndex].has_upvoted && { backgroundColor: theme.light.colors.infoBgLight }
+              style={[
+                styles.iconContainer,
+                styles.likeContainer,
+                COMMENTS[commentIndex].has_upvoted && {
+                  backgroundColor: theme.light.colors.infoBgLight,
+                },
               ]}
             >
               <Icon
@@ -126,10 +151,13 @@ export const CommentCard = ({
             </TouchableOpacity>
             <TouchableOpacity
               onPress={onDisLikeComment}
-              style={
-                [styles.iconContainer, styles.disLikeContainer,
-                COMMENTS[commentIndex].has_downvoted && { backgroundColor: theme.light.colors.infoBgLight }
-                ]}
+              style={[
+                styles.iconContainer,
+                styles.disLikeContainer,
+                COMMENTS[commentIndex].has_downvoted && {
+                  backgroundColor: theme.light.colors.infoBgLight,
+                },
+              ]}
             >
               <Icon
                 icon={faCircleDown}
@@ -233,7 +261,6 @@ const styles = StyleSheet.create({
     paddingLeft: ms(3),
   },
   disLikeContainer: {
-
     borderRadius: 13,
     padding: ms(3),
     paddingLeft: ms(10),

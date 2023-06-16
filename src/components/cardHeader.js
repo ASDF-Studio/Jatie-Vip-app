@@ -5,7 +5,7 @@ import PropsType from 'prop-types';
 import { ms } from 'react-native-size-matters';
 import { FontFamily } from '@/theme/Fonts';
 import { Icon } from './Icon';
-import { faThumbTack } from '@fortawesome/free-solid-svg-icons';
+import { faEllipsis, faThumbTack } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { strings } from '@/localization';
 import { navigationRef } from '@/navigation/RootNavigation';
@@ -22,6 +22,8 @@ export const CardHeader = ({
   showPin,
   userId,
   isProfile,
+  showMore = false,
+  onMorePress = () => console.log('more pressed'),
 }) => {
   const user = useSelector(getUser);
   const getTime = t2 => {
@@ -88,12 +90,7 @@ export const CardHeader = ({
         )}
       </View>
       <View style={{ flexDirection: 'row' }}>
-        {time ? (
-          <Text style={[styles.timeTxt, { paddingRight: showPin ? 40 : 0 }]}>
-            {' '}
-            {getTime(time)}
-          </Text>
-        ) : null}
+        {time ? <Text style={[styles.timeTxt]}> {getTime(time)}</Text> : null}
         {showPin ? (
           <TouchableOpacity style={styles.pinIcon}>
             <FontAwesomeIcon
@@ -103,6 +100,14 @@ export const CardHeader = ({
             />
           </TouchableOpacity>
         ) : null}
+        {showMore && (
+          <Icon
+            icon={faEllipsis}
+            size={ms(15)}
+            onPress={onMorePress}
+            style={[styles.ellipsisIcon]}
+          />
+        )}
       </View>
     </View>
   );
@@ -121,6 +126,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: ms(10), //8
     paddingTop: ms(20), //
+    width: '100%',
   },
   Image: {
     width: ms(45),
@@ -146,6 +152,7 @@ const styles = StyleSheet.create({
     color: theme.light.colors.primary,
     backgroundColor: theme.light.colors.primaryBgLight, //primaryOg
     borderRadius: 4,
+    overflow: 'hidden',
     padding: ms(2),
     fontSize: ms(12, 0.3),
     marginLeft: ms(3),
@@ -162,9 +169,14 @@ const styles = StyleSheet.create({
     borderColor: theme.light.colors.primaryBgLight,
     padding: ms(8),
     marginTop: -8, //
+    marginLeft: ms(7),
     borderRadius: 100,
+    width: ms(30),
+    height: ms(30),
     justifyContent: 'center',
-    position: 'absolute',
-    right: 0,
+  },
+  ellipsisIcon: {
+    color: theme.light.colors.black,
+    marginLeft: ms(13),
   },
 });

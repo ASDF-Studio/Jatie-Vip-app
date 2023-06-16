@@ -21,6 +21,7 @@ import { ms } from 'react-native-size-matters';
 import { getUser } from '@/selectors/UserSelectors';
 import { createPostByAdmin, updatePost } from '@/actions/UserActions';
 import moment from 'moment';
+import { CustomSwitch } from '@/components/switch';
 
 export default function PostOptions({ route, navigation }) {
   const { prevData } = route.params;
@@ -30,7 +31,7 @@ export default function PostOptions({ route, navigation }) {
   const [goingLIve, setGoingLive] = useState(false);
   const [ad, setAd] = useState(false);
   const user = useSelector(getUser);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const [postDate, setPostDate] = useState(new Date());
   const [openPostDatePicker, setOpenPostDatePicker] = useState(false);
@@ -43,28 +44,46 @@ export default function PostOptions({ route, navigation }) {
   const [openExpiringDatePicker, setOpenExpiringDatePicker] = useState(false);
 
   //convert date into required format
-  const scheduleDetails = moment(postDate).format()
-  const publishDate = moment(publishingDate).format()
-  const expireDate = moment(expiringDate).format()
+  const scheduleDetails = moment(postDate).format();
+  const publishDate = moment(publishingDate).format();
+  const expireDate = moment(expiringDate).format();
 
   const handleSubmit = () => {
-    if (prevData?.actionType === "Update") {
-      dispatch(updatePost(prevData?.postId, prevData?.userId, prevData?.postTitle, prevData?.postBody, prevData?.postImg, prevData?.preImageArray, prevData?.mimeType, prevData?.preMimeType, prevData?.imageArray, prevData?.user_Type, NAVIGATION.profile))
+    if (prevData?.actionType === 'Update') {
+      dispatch(
+        updatePost(
+          prevData?.postId,
+          prevData?.userId,
+          prevData?.postTitle,
+          prevData?.postBody,
+          prevData?.postImg,
+          prevData?.preImageArray,
+          prevData?.mimeType,
+          prevData?.preMimeType,
+          prevData?.imageArray.filter(x => !x?.preContent),
+          prevData?.user_Type,
+          NAVIGATION.profile
+        )
+      );
     } else {
-      dispatch(createPostByAdmin(user?.id, prevData?.postTitle,
-        prevData?.postBody,
-        prevData?.postImg,
-        prevData?.mimeType,
-        prevData?.imageArray,
-        NAVIGATION.profile,
-        vipOnly,
-        schedulePost,
-        scheduleDetails, goingLIve, ad, publishDate, expireDate,
-
-
-
-      ))
-
+      dispatch(
+        createPostByAdmin(
+          user?.id,
+          prevData?.postTitle,
+          prevData?.postBody,
+          prevData?.postImg,
+          prevData?.mimeType,
+          prevData?.imageArray,
+          NAVIGATION.profile,
+          vipOnly,
+          schedulePost,
+          scheduleDetails,
+          goingLIve,
+          ad,
+          publishDate,
+          expireDate
+        )
+      );
     }
   };
 
@@ -79,85 +98,85 @@ export default function PostOptions({ route, navigation }) {
           <Text style={styles.headerTxt}>{strings.home.postOptions} </Text>
         </View>
         <View style={styles.optionContainer}>
-          <View style={styles.list}>
+          <View style={[styles.list]}>
             <View style={styles.left}>
               <Text style={styles.listTxt}>{strings.home.schedulePost} </Text>
-              <View style={styles.postSwitch}>
-                <AppSwitch
-                  value={schedulePost}
-                  onChange={() => setSchedulePost(prev => !prev)}
-                />
-              </View>
+              <CustomSwitch
+                value={schedulePost}
+                onChange={() => setSchedulePost(prev => !prev)}
+              />
             </View>
             <View style={styles.right}>
               {/* Date picker  */}
-              {schedulePost &&
-                <View>
-                  <TextField
-                    style={styles.rightContainerTextField}
-                    editable={false}
-                    value={postDate ? moment(postDate).format('DD-MM-YYYY') : null}
-                    placeholder={strings.home.selectTimeAndDate}
+              <View>
+                <TextField
+                  style={{
+                    ...styles.datePicketTextField,
+                    backgroundColor: schedulePost
+                      ? theme.light.colors.textFieldBackgroundColor
+                      : theme.light.colors.white,
+                  }}
+                  editable={false}
+                  value={
+                    postDate
+                      ? moment(postDate).format('hh:mm A DD/MM/YYYY')
+                      : null
+                  }
+                  placeholder={strings.home.selectTimeAndDate}
+                />
+                <TouchableOpacity
+                  disabled={!schedulePost}
+                  style={styles.datePickerIcon}
+                  onPress={() => setOpenPostDatePicker(true)}
+                >
+                  <FontAwesomeIcon
+                    icon={faCalendar}
+                    size={ms(13)}
+                    color={theme.light.colors.info}
                   />
-                  <TouchableOpacity
-                    style={styles.datePickerIcon}
-                    onPress={() => setOpenPostDatePicker(true)}
-                  >
-                    <FontAwesomeIcon
-                      icon={faCalendar}
-                      size={ms(13)}
-                      color={theme.light.colors.info}
-                    />
-                  </TouchableOpacity>
-                  <DatePicker
-                    modal
-                    mode="date"
-                    open={openPostDatePicker}
-                    // locale = "fr"
-                    date={postDate}
-                    onConfirm={date => {
-                      setOpenPostDatePicker(false);
-                      setPostDate(date);
-                    }}
-                    onCancel={() => {
-                      setOpenPostDatePicker(false);
-                    }}
-                  />
-                </View>}
+                </TouchableOpacity>
 
+                <DatePicker
+                  modal
+                  mode="datetime"
+                  open={openPostDatePicker}
+                  date={postDate}
+                  onConfirm={date => {
+                    setOpenPostDatePicker(false);
+                    setPostDate(date);
+                  }}
+                  onCancel={() => {
+                    setOpenPostDatePicker(false);
+                  }}
+                />
+              </View>
             </View>
           </View>
           <View style={styles.list}>
             <View style={styles.left}>
               <Text style={styles.listTxt}>{strings.home.forVIPsOnly} </Text>
-              <View style={styles.vipSwitch}>
-                <AppSwitch
-                  value={vipOnly}
-                  onChange={() => setVipOnly(prev => !prev)}
-                />
-              </View>
+              <CustomSwitch
+                value={vipOnly}
+                onChange={() => setVipOnly(prev => !prev)}
+              />
             </View>
           </View>
           <View style={styles.list}>
             <View style={styles.left}>
               <Text style={styles.listTxt}>{strings.home.pinThisPost} </Text>
-              <View style={styles.pinSwitch}>
-                <AppSwitch
-                  value={pinPost}
-                  onChange={() => setPinPost(prev => !prev)}
-                />
-              </View>
+              <CustomSwitch
+                value={pinPost}
+                onChange={() => setPinPost(prev => !prev)}
+              />
             </View>
           </View>
           <View style={styles.listTopAndBottom}>
             <View style={styles.listTop}>
               <Text style={styles.listTxt}>{strings.home.goingLive} </Text>
-              <View style={styles.goingLiveSwitch}>
-                <AppSwitch
-                  value={goingLIve}
-                  onChange={() => setGoingLive(prev => !prev)}
-                />
-              </View>
+              <CustomSwitch
+                value={goingLIve}
+                onChange={() => setGoingLive(prev => !prev)}
+              />
             </View>
             <Text style={styles.lebelTxt}>{strings.home.goingLiveLebel} </Text>
           </View>
@@ -165,28 +184,41 @@ export default function PostOptions({ route, navigation }) {
           <View style={styles.listTopAndBottom}>
             <View style={styles.listBottom}>
               <Text style={styles.listTxt}>{strings.home.thisIsAnAd} </Text>
-              <View style={styles.adSwitch}>
-                <AppSwitch value={ad} onChange={() => setAd(prev => !prev)} />
-              </View>
+              <CustomSwitch value={ad} onChange={() => setAd(prev => !prev)} />
             </View>
             <Text style={styles.lebelTxt}>{strings.home.adLebel} </Text>
           </View>
-
           {ad && (
             <View>
               <View style={styles.list}>
                 <View style={styles.left}>
-                  <Text style={styles.publishingTxt}>
+                  <Text
+                    style={[
+                      styles.publishingTxt,
+                      ad && {
+                        color: theme.light.colors.black,
+                      },
+                    ]}
+                  >
                     {strings.home.publishingDate}{' '}
                   </Text>
                 </View>
-                <View style={styles.right}>
+                <View style={[styles.right]}>
                   {/* Date picker  */}
                   <View>
                     <TextField
-                      style={styles.datePicketTextField}
+                      style={{
+                        ...styles.datePicketTextField,
+                        backgroundColor: ad
+                          ? theme.light.colors.textFieldBackgroundColor
+                          : theme.light.colors.white,
+                      }}
                       editable={false}
-                      value={publishingDate ? moment(publishingDate).format('DD-MM-YYYY') : null}
+                      value={
+                        publishingDate
+                          ? moment(publishingDate).format('hh:mm A DD/MM/YYYY')
+                          : null
+                      }
                       placeholder={strings.home.publishingDate}
                     />
                     <TouchableOpacity
@@ -201,7 +233,7 @@ export default function PostOptions({ route, navigation }) {
                     </TouchableOpacity>
                     <DatePicker
                       modal
-                      mode="date"
+                      mode="datetime"
                       open={openPublishingDatePicker}
                       // locale = "fr"
                       date={publishingDate}
@@ -218,17 +250,29 @@ export default function PostOptions({ route, navigation }) {
               </View>
               <View style={styles.list}>
                 <View style={styles.left}>
-                  <Text style={styles.publishingTxt}>
+                  <Text
+                    style={[
+                      styles.publishingTxt,
+                      ad && {
+                        color: theme.light.colors.black,
+                      },
+                    ]}
+                  >
                     {strings.home.ExpirationDate}
                   </Text>
                 </View>
-                <View style={styles.right}>
+                <View style={[styles.right]}>
                   {/* Date picker  */}
                   <View>
                     <TextField
-                      style={styles.datePicketTextField}
+                      style={{
+                        ...styles.datePicketTextField,
+                        backgroundColor: ad
+                          ? theme.light.colors.textFieldBackgroundColor
+                          : theme.light.colors.white,
+                      }}
                       editable={false}
-                      value={moment(expiringDate).format('DD-MM-YYYY')}
+                      value={moment(expiringDate).format('hh:mm A DD/MM/YYYY')}
                       placeholder={strings.home.ExpirationDate}
                     />
 
@@ -244,7 +288,7 @@ export default function PostOptions({ route, navigation }) {
                     </TouchableOpacity>
                     <DatePicker
                       modal
-                      mode="date"
+                      mode="datetime"
                       open={openExpiringDatePicker}
                       // locale = "fr"
                       date={expiringDate}
@@ -266,12 +310,12 @@ export default function PostOptions({ route, navigation }) {
             <Button
               title={strings.home.post}
               onPress={handleSubmit}
-              style={styles.buttonPost}
+              // style={styles.buttonPost}
             />
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView >
+    </SafeAreaView>
   );
 }
 
@@ -317,16 +361,20 @@ const styles = StyleSheet.create({
   },
   listTop: {
     flexDirection: 'row',
+    alignItems: 'center',
   },
   listBottom: {
     flexDirection: 'row',
   },
   rightContainerTextField: {
     width: ms(170),
+    borderWidth: 1,
+    borderColor: theme.light.colors.textFieldBorderColor,
+    borderRadius: 8,
   },
   datePickerIcon: {
     position: 'absolute',
-    top: ms(30),
+    top: ms(14),
     right: ms(10),
   },
   left: {
@@ -337,9 +385,16 @@ const styles = StyleSheet.create({
     fontSize: ms(16, 0.3),
     fontFamily: FontFamily.Recoleta_medium,
     color: theme.light.colors.black,
+    width: ms(110),
   },
   datePicketTextField: {
     width: ms(170),
+    marginVertical: 0,
+    height: ms(40),
+    fontSize: 15,
+    borderWidth: 1,
+    borderColor: theme.light.colors.textFieldBorderColor,
+    borderRadius: 8,
   },
   postSwitch: {
     marginLeft: ms(2),
@@ -358,7 +413,8 @@ const styles = StyleSheet.create({
   },
   lebelTxt: {
     fontFamily: FontFamily.BrandonGrotesque_regular,
-    fontSize: ms(15, 0.3),
+    fontSize: ms(18, 0.3),
+    marginTop: ms(10),
   },
   adPublishDateContainer: {
     flexDirection: 'row',
@@ -369,12 +425,13 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.BrandonGrotesque_regular,
     fontSize: ms(18, 0.3),
     lineHeight: ms(22),
+    color: theme.light.colors.inactiveTabLabel,
   },
 
   //button
 
   buttomContainer: {
-    padding: ms(9),
+    padding: ms(15),
   },
   buttonPost: {
     marginTop: ms(20),

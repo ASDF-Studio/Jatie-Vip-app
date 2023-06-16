@@ -15,101 +15,120 @@ import {
   ModalDown,
   ModalList,
   CustomLoader,
+  PopUp,
+  Button,
 } from '@/components';
 import { ms } from 'react-native-size-matters';
 import { NAVIGATION } from '@/constants';
 import { card, Data } from './ProfileData/manageReportOnPostData';
 import { useEffect } from 'react';
-import { followUser, getPostById, unFollowUser } from '@/actions/PostActions';
+import {
+  deletePost,
+  followUser,
+  getPostById,
+  unFollowUser,
+} from '@/actions/PostActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
 import { getPostByIdData } from '@/selectors/PostSelectors';
 import { useIsFocused } from '@react-navigation/native';
 import { useState } from 'react';
-import { faFlag, faMessage, faTrash, faUserPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
+import {
+  faFlag,
+  faMessage,
+  faTrash,
+  faUserPlus,
+  faXmark,
+} from '@fortawesome/free-solid-svg-icons';
 import { bannedUserById, unBannedUserById } from '@/actions/UserActions';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
-import { TYPES } from '../../actions/PostActions'
+import { TYPES } from '../../actions/PostActions';
 import { manageAllReports } from '@/actions/UserActions';
+import { isEmpty } from 'lodash';
 export default function ManageReportOnMessage({ navigation, route }) {
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.GET_POST_BY_ID], state)
   );
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const focus = useIsFocused();
-  const [banValue, setBanvalue] = useState(item?.post?.user?.isBanned)
-  const { item } = route.params
-  console.log('Item', item?.post?.user?.isBanned)
+  const [banValue, setBanvalue] = useState(item?.post?.user?.isBanned);
+  const { item } = route.params;
+  console.log('Item', item?.post?.user?.isBanned);
   const [open, setOpen] = useState(false);
-  const user = useSelector(getUser)
-  const postData = useSelector(getPostByIdData)
-  console.log("POST__DATAA In SELECTOR", JSON.stringify(postData?.is_following));
+  const user = useSelector(getUser);
+  const postData = useSelector(getPostByIdData);
+  const [openReplace, setReplace] = useState(false);
+  const userType = useSelector(state => state.userType);
 
-
+  console.log(
+    'POST__DATAA In SELECTOR',
+    JSON.stringify(postData?.is_following)
+  );
 
   useEffect(() => {
-    dispatch(getPostById(item.objectId, user?.id))
-    console.log(item.objectId, user?.id)
-
+    dispatch(getPostById(item.objectId, user?.id));
 
     // setLikeCount(item?.upVote)
     // setDownCount(item?.downVote)
     // setCommentCount(item?.comments_aggregate?.aggregate?.count)
+  }, [focus]);
 
-  }, [focus])
-
-
+  const onDelete = () => {
+    dispatch(
+      deletePost(
+        postData?.id,
+        postData?.userId,
+        user?.id,
+        userType.user,
+        NAVIGATION.manageReports
+      )
+    );
+  };
 
   const bannedHandlePress = () => {
-
-    dispatch(bannedUserById(postData?.userId))
-    setBanvalue(true)
-    setOpen(false)
+    dispatch(bannedUserById(postData?.userId));
+    setBanvalue(true);
+    setOpen(false);
     setTimeout(() => {
-      dispatch(manageAllReports())
+      dispatch(manageAllReports());
     }, 500);
 
     // console.log('banned id', postData?.user?.id)
-  }
+  };
   const unbannedHandlePress = () => {
-    setOpen(true)
-    dispatch(unBannedUserById(postData?.userId))
+    setOpen(false);
+    dispatch(unBannedUserById(postData?.userId));
 
-    setBanvalue(false)
+    setBanvalue(false);
     setTimeout(() => {
-      dispatch(manageAllReports())
+      dispatch(manageAllReports());
     }, 500);
     // console.log('banned id', postData?.user?.id)
-  }
+  };
   const onbanPress = () => {
-    banValue == true ? unbannedHandlePress() : bannedHandlePress()
+    banValue == true ? unbannedHandlePress() : bannedHandlePress();
     // console.log('banned id', postData?.user?.id)
-  }
+  };
 
   const onFollow = () => {
-
-
     if (postData?.is_following == true) {
-      dispatch(unFollowUser(user?.id, postData?.userId))
+      dispatch(unFollowUser(user?.id, postData?.userId));
       // console.log(user?.id, postData?.userId)
-      setOpen(false)
+      setOpen(false);
       setTimeout(() => {
-        dispatch(getPostById(item.objectId, user?.id))
+        dispatch(getPostById(item.objectId, user?.id));
       }, 100);
-
-    }
-    else {
-      dispatch(followUser(user?.id, postData?.userId))
-      setOpen(false)
+    } else {
+      dispatch(followUser(user?.id, postData?.userId));
+      setOpen(false);
 
       //console.log(user?.id, postData?.userId)
       setTimeout(() => {
-        dispatch(getPostById(item.objectId, user?.id))
+        dispatch(getPostById(item.objectId, user?.id));
       }, 100);
     }
-
-  }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -135,7 +154,10 @@ export default function ManageReportOnMessage({ navigation, route }) {
           <Text style={styles.reactOnTxt}>{strings.profile.thisPost}</Text>
         </View>
         <View style={styles.reasonContainer}>
-          <Text style={styles.reasonTxt}>{strings.profile.reason}{item.reportTitle}</Text>
+          <Text style={styles.reasonTxt}>
+            {strings.profile.reason}
+            {item.reportTitle}
+          </Text>
         </View>
       </View>
       <View style={styles.body}>
@@ -148,7 +170,9 @@ export default function ManageReportOnMessage({ navigation, route }) {
               time={postData?.created_at}
               userId={postData?.userId}
             />
-            <CardBody text={postData?.postBody} />
+            <CardBody
+              text={postData?.postBody || strings.message.postIsDeleted}
+            />
           </View>
           {/* <CommentContainer
             seeAllPress={() =>
@@ -167,22 +191,36 @@ export default function ManageReportOnMessage({ navigation, route }) {
             // disLikePress = {}
             /> */}
           {/* </CommentContainer> */}
-          <CardFooter morePress={() => { setOpen(true) }}
+          <CardFooter
+            morePress={() => {
+              setOpen(true);
+            }}
+            disable={isEmpty(postData)}
             postIndex={0}
             userID={user?.id}
             postID={postData?.id}
             likeCount={postData?.upVote}
             disLikeCount={postData?.downVote}
             commentCount={postData?.comments_aggregate.aggregate.count}
-            commentPress={() => navigation.navigate(NAVIGATION.comments,
-              { DATA: item.post, "POST_INDEX": 0 })} />
+            commentPress={() =>
+              navigation.navigate(NAVIGATION.comments, {
+                DATA: item.post,
+                POST_INDEX: 0,
+              })
+            }
+          />
         </Card>
-
 
         <ModalDown open={open} setOpen={setOpen}>
           <ModalList
-            onPress={() => { onFollow() }}
-            title={postData?.is_following == true ? 'UnFollow' + ' @' + postData?.user.username : 'Follow' + ' @' + postData?.user.username}
+            onPress={() => {
+              onFollow();
+            }}
+            title={
+              postData?.is_following == true
+                ? 'UnFollow' + ' @' + postData?.user.username
+                : 'Follow' + ' @' + postData?.user.username
+            }
             icon={faUserPlus}
             iconColor={theme.light.colors.primary}
             iconBg={theme.light.colors.primaryBgLight}
@@ -190,6 +228,7 @@ export default function ManageReportOnMessage({ navigation, route }) {
           <ModalList
             title={strings.operations.sendPrivateMessage}
             icon={faMessage}
+            disabled
             iconColor={theme.light.colors.success}
             iconBg={theme.light.colors.successBgLight}
           />
@@ -205,7 +244,10 @@ export default function ManageReportOnMessage({ navigation, route }) {
               icon={faTrash}
               iconColor={theme.light.colors.secondary}
               iconBg={theme.light.colors.infoBgLight}
-            // onPress={() => { setReplace(true), setOpen(false) }}
+              // onPress={() => console.log('1234')}
+              onPress={() => {
+                setReplace(true), setOpen(false);
+              }}
             />
             {/* <ModalList
               title={strings.operations.block + ' @' + postData?.user.username}
@@ -213,17 +255,42 @@ export default function ManageReportOnMessage({ navigation, route }) {
               iconColor={theme.light.colors.secondary}
               iconBg={theme.light.colors.infoBgLight}
             /> */}
-            <ModalList onPress={() => onbanPress()}
-              title={banValue == true ? strings.operations.unBan + ' @' + postData?.user.username : strings.operations.ban + ' @' + postData?.user.username}
+            <ModalList
+              onPress={() => onbanPress()}
+              title={
+                banValue == true
+                  ? strings.operations.unBan + ' @' + postData?.user.username
+                  : strings.operations.ban + ' @' + postData?.user.username
+              }
               icon={faFlag}
               iconColor={theme.light.colors.secondary}
               iconBg={theme.light.colors.infoBgLight}
             />
           </>
-
         </ModalDown>
+        {openReplace && (
+          <PopUp open={openReplace} setOpen={setReplace}>
+            <View style={styles.ConfirmationTextContainer}>
+              <Text style={styles.ConfirmationText}>
+                {strings.alert.delete}
+              </Text>
+            </View>
+            <Button
+              title={strings.operations.yes}
+              style={styles.confirmButton}
+              onPress={() => {
+                onDelete(), setReplace(false);
+              }}
+            />
+            <Button
+              title={strings.operations.no}
+              style={styles.cancelButton}
+              onPress={() => setReplace(false)}
+            />
+          </PopUp>
+        )}
       </View>
-    </SafeAreaView >
+    </SafeAreaView>
   );
 }
 
@@ -291,5 +358,28 @@ const styles = StyleSheet.create({
     borderColor: theme.light.colors.primary,
     backgroundColor: theme.light.colors.primaryBgLightest,
   },
-});
 
+  //delete
+  confirmButton: {
+    margin: ms(5),
+  },
+  cancelButton: {
+    margin: ms(5),
+  },
+  ConfirmationTextContainer: {
+    paddingLeft: ms(15),
+    paddingRight: ms(15),
+    paddingBottom: ms(15),
+  },
+  ConfirmationText: {
+    fontFamily: FontFamily.BrandonGrotesque_bold,
+    fontSize: ms(16, 0.3),
+    lineHeight: ms(22),
+    color: theme.light.colors.text,
+  },
+  loaderStyle: {
+    alignSelf: 'center',
+    justifyContent: 'center',
+    marginTop: ms(50),
+  },
+});

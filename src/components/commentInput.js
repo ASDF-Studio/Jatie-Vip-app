@@ -39,6 +39,7 @@ import { FontFamily } from '@/theme/Fonts';
 import { POST_TYPE } from '@/constants/enums';
 import { getUser } from '@/selectors/UserSelectors';
 import { getAllPostByUserIdSuccess } from '@/actions/UserActions';
+import { customShowMessage } from '@/utils';
 
 export const CommentInput = React.forwardRef((props, ref) => {
   const dispatch = useDispatch();
@@ -118,9 +119,9 @@ export const CommentInput = React.forwardRef((props, ref) => {
 
   const onCommentSearch = () => {
     if (comment == '') {
-      showMessage({
+      customShowMessage({
         message: strings.home.commentvalid,
-        backgroundColor: theme.light.colors.activeTabIcon,
+        type: 'danger',
       });
     } else {
       setComment('');
@@ -156,9 +157,9 @@ export const CommentInput = React.forwardRef((props, ref) => {
 
   const onUserProfileComment = () => {
     if (comment == '') {
-      showMessage({
+      customShowMessage({
         message: strings.home.commentvalid,
-        backgroundColor: theme.light.colors.activeTabIcon,
+        type: 'danger',
       });
     } else {
       setComment('');
@@ -194,9 +195,9 @@ export const CommentInput = React.forwardRef((props, ref) => {
 
   const onSinglepostComment = () => {
     if (comment == '') {
-      showMessage({
+      customShowMessage({
         message: strings.home.commentvalid,
-        backgroundColor: theme.light.colors.activeTabIcon,
+        type: 'danger',
       });
     } else {
       setComment('');
@@ -230,9 +231,9 @@ export const CommentInput = React.forwardRef((props, ref) => {
 
   const onComment = () => {
     if (comment == '') {
-      showMessage({
+      customShowMessage({
         message: strings.home.commentvalid,
-        backgroundColor: theme.light.colors.activeTabIcon,
+        type: 'danger',
       });
     } else {
       setComment('');
@@ -306,10 +307,10 @@ export const CommentInput = React.forwardRef((props, ref) => {
             props.type === POST_TYPE.SEARCH
               ? onCommentSearch
               : props.type === POST_TYPE.SINGLE_POST
-                ? onSinglepostComment
-                : props.type === POST_TYPE.USER_PROFILE
-                  ? onUserProfileComment
-                  : onComment
+              ? onSinglepostComment
+              : props.type === POST_TYPE.USER_PROFILE
+              ? onUserProfileComment
+              : onComment
           }
         >
           <FontAwesomeIcon

@@ -48,8 +48,10 @@ import {
   CardHeader,
   HorizontalLine,
   Icon,
+  MediaContainer,
   ModalDown,
   ModalList,
+  NotificationIcon,
   PopUp,
   ReportOnPostModal,
   SeeSchedulePost,
@@ -57,6 +59,7 @@ import {
   StatusNavigatorBar,
   Toast,
   TopBackButton,
+  UserPostOptions,
   VerticalLine,
 } from '@/components';
 import { Logo } from '@/assets';
@@ -73,6 +76,7 @@ import {
   unFollowUser,
   getAllPostPagination,
   getSchedulePost,
+  getAllPostSuccess,
 } from '@/actions/PostActions';
 import {
   getAllPostData,
@@ -88,16 +92,24 @@ import { globalReset } from '@/actions/GlobalActions';
 import SearchPost from './SearchPost';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import queryString from 'query-string';
-import { POST_TYPE } from '@/constants/enums';
-import { followers } from '@/actions/UserActions';
+import {
+  bannedUserById,
+  bannedUsers,
+  followers,
+  getUserProfileByUserId,
+  unBannedUserById,
+} from '@/actions/UserActions';
 import { SwiperViewer } from '@/components/SwiperComponent';
 import { useRef } from 'react';
-import { useMemo } from 'react';
-import { isEmpty } from 'lodash';
+import { isEmpty, last } from 'lodash';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
+import { MemoPostcard } from '@/components/PostCard';
+import { CustomSwitch } from '@/components/switch';
+import PostOptions from './PostOptions';
 
 export function Home({ navigation }) {
   const ALLPOST = useSelector(getAllPostData);
-  const SEARCH_DATA = useSelector(getSearchData);
   const flatListRef = useRef();
   const userType = useSelector(state => state.userType);
   const user = useSelector(getUser);
@@ -112,10 +124,8 @@ export function Home({ navigation }) {
   const [follwingSwitch, setFollowingSwtich] = useState(false);
   const [showImageView, setShowImageView] = useState(false);
   const [feedImages, setFeedImages] = useState([]);
-  const [editData, setEditdata] = useState({});
   const [reportListOpen, setReportListOpen] = useState(false);
-  const [fetchFeedPost, setFetchFeedPost] = useState(true);
-  const [loadMoreRundownLoader, setLoadMoreRundownLoader] = useState(false);
+  const [openBan, setOpenBan] = useState(false);
   const [reportOption, setReportOption] = useState([
     { label: 'Explicit Content', value: 'Explicit Content' },
     { label: 'Bullying or Harassment', value: 'Bullying or Harassment' },
@@ -128,14 +138,10 @@ export function Home({ navigation }) {
 
   const [reportOptionValue, setReportOptionValue] = useState('');
   const [reportComment, setReportCommnet] = useState('');
-  const [postUserId, setPostUserId] = useState(null);
-  const [postId, setpostId] = useState(null);
-  const [postTitle, setPostTitle] = useState('');
-  const [postBody, setPostBody] = useState('');
-  const [postImg, setPostImg] = useState([]);
-  const [isAdminPost, setIsAdminPost] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
   const userFollower = user.followersDatainReducer?.data;
+
+  const [selectedPost, setSelectedPost] = useState(null);
 
   const FILTER_DATA = [
     { title: strings.home.recent, value: strings.sortBy.recent },
@@ -143,10 +149,6 @@ export function Home({ navigation }) {
     { title: strings.home.popularThisWeek, value: strings.sortBy.week },
     { title: strings.home.popularThisMonth, value: strings.sortBy.month },
   ];
-  // click on more
-  const [postUserName, setPostUserName] = useState('');
-  const [postUserFollowed, setPostUserFollowed] = useState(false);
-  const [postIndex, setPostIndex] = useState(0);
   const [reportImage, setreportImage] = useState(null);
 
   //Search Post
@@ -155,27 +157,45 @@ export function Home({ navigation }) {
 
   // for delete
   const [openReplace, setReplace] = useState(false);
+  const [isBanned, setIsBanned] = useState(false);
 
-  useEffect(() => {
-    dispatch(getSchedulePost());
-    const page = '';
-    dispatch(
-      getAllPost(
-        user?.id,
-        sortBy,
-        follwingSwitch,
-        vipArea == `${strings.home.newFeed}` ? false : true,
-        page
-      )
-    );
-    if (
-      vipArea == strings.home.vipArea &&
-      userType.user == `${strings.userType.free}`
-    ) {
-      setVipArea(strings.home.newFeed);
-      navigation.navigate(NAVIGATION.upgradeMembership);
-    }
-  }, [sortBy, follwingSwitch, vipArea]);
+  useFocusEffect(
+    useCallback(() => {
+      dispatch(getSchedulePost());
+      dispatch(
+        getAllPost(
+          user?.id,
+          sortBy,
+          follwingSwitch,
+          vipArea == `${strings.home.newFeed}` ? false : true,
+          ''
+        )
+      );
+
+      return () => {
+        // dispatch(
+        //   getAllPostSuccess({
+        //     data: [],
+        //   })
+        // );
+      };
+    }, [sortBy, follwingSwitch, vipArea])
+  );
+
+  // useEffect(() => {
+  //   if (!user) return;
+
+  //   dispatch(getSchedulePost());
+  //   dispatch(getAllPost(user?.id, sortBy, follwingSwitch, false, ''));
+
+  //   return () => {
+  //     // dispatch(
+  //     //   getAllPostSuccess({
+  //     //     data: [],
+  //     //   })
+  //     // );
+  //   };
+  // }, [sortBy, follwingSwitch, vipArea, user]);
 
   useEffect(() => {
     dynamicLinks()
@@ -184,6 +204,7 @@ export function Home({ navigation }) {
         handleDynamicLink(link);
       });
     const linkingListener = dynamicLinks().onLink(handleDynamicLink);
+
     return () => {
       linkingListener();
     };
@@ -212,94 +233,9 @@ export function Home({ navigation }) {
     isLoadingSelector([TYPES.GET_ALL_POST_PAGINATION], state)
   );
 
-  const isShowReportToast = useSelector(state =>
-    successSelector([TYPES.REPORT_POST], state)
-  );
-
-  const onDelete = () => {
-    dispatch(
-      deletePost(postId, postUserId, user?.id, userType.user, NAVIGATION.home)
-    );
-    const page = '';
-    dispatch(
-      getAllPost(
-        user?.id,
-        sortBy,
-        follwingSwitch,
-        vipArea == `${strings.home.newFeed}` ? false : true,
-        page
-      )
-    );
-    if (
-      vipArea == strings.home.vipArea &&
-      userType.user == `${strings.userType.free}`
-    ) {
-      setVipArea(strings.home.newFeed);
-      navigation.navigate(NAVIGATION.upgradeMembership);
-    }
-  };
-
-  const SelectFromGallery = () => {
-    ImagePicker.openPicker({
-      width: ms(300),
-      height: ms(400),
-      cropping: true,
-      freeStyleCropEnabled: true,
-      cropperCircleOverlay: true,
-    })
-      .then(image => {
-        console.log('check uploaded image', image);
-        setreportImage(image);
-      })
-      .catch(error => console.log('report image picker error', error));
-  };
-
-  let counter = 1;
-  let DATA = {
-    postId,
-    postTitle,
-    postBody,
-    postImg,
-    sortBy,
-    follwingSwitch,
-  };
-
-  const onFollow = () => {
-    // setPostUserFollowed(true)
-    setOpen(false);
-    if (isFollowing) {
-      dispatch(unFollowUser(user?.id, postUserId, strings.home.post));
-    } else {
-      dispatch(followUser(user?.id, postUserId, strings.home.post));
-    }
-    setPostUserName(''), setPostUserId(''), setPostIndex();
-    setTimeout(() => {
-      dispatch(followers(user?.id, user.id));
-    }, 100);
-  };
-  const onBlock = () => {
-    dispatch(blockUser(user?.id, postUserId, postIndex));
-    setOpen(false);
-    setTimeout(() => {
-      dispatch(
-        getAllPost(
-          user?.id,
-          sortBy,
-          follwingSwitch,
-          vipArea == `${strings.home.newFeed}` ? false : true,
-          ''
-        )
-      );
-    }, 100);
-  };
   const onViewImageVideo = data => {
-    //   let arr=[]
-    // for (i=0;i<data.postImg.length;i++){
-
-    // }
-    setShowImageView(true),
-      // setFeedImages(item.postImg)
-      setFeedImages(data.postMediaContent);
+    setShowImageView(true);
+    setFeedImages(data.postMediaContent);
   };
 
   const handleScroll = ({ nativeEvent }) => {
@@ -313,25 +249,21 @@ export function Home({ navigation }) {
     }
   };
 
-  // Add the event listener when the component mounts
-  // and remove it when the component unmounts
-
   const onLoadMorePost = () => {
-    const post = ALLPOST.slice(-1);
-    const page = post[0].created_at;
+    if (isLoadingMore) return;
+
+    const page = last(ALLPOST).created_at;
 
     dispatch(
       getAllPostPagination(
         user?.id,
         sortBy,
         follwingSwitch,
-        vipArea == `${strings.home.newFeed}` ? false : true,
+        vipArea === `${strings.home.newFeed}` ? false : true,
         page
       )
     );
   };
-
-  console.log('posts ===>', ALLPOST);
 
   const renderFooterPost = () => {
     return (
@@ -340,6 +272,7 @@ export function Home({ navigation }) {
       </View>
     );
   };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="transparent" />
@@ -368,7 +301,11 @@ export function Home({ navigation }) {
                   {' '}
                   {strings.home.followingOnly}{' '}
                 </Text>
-                <AppSwitch
+                {/* <AppSwitch
+                  value={follwingSwitch}
+                  onChange={() => setFollowingSwtich(!follwingSwitch)}
+                /> */}
+                <CustomSwitch
                   value={follwingSwitch}
                   onChange={() => setFollowingSwtich(!follwingSwitch)}
                 />
@@ -377,19 +314,14 @@ export function Home({ navigation }) {
           </View>
         </View>
 
-        <View style={styles.right}>
+        <View style={[styles.right]}>
           <Icon
             icon={faSearch}
             size={ms(22)}
             onPress={() => navigation.navigate(NAVIGATION.search)}
             style={styles.searchIcon}
           />
-          <Icon
-            icon={faBell}
-            size={ms(22)}
-            onPress={() => navigation.navigate(NAVIGATION.notification)}
-            style={styles.bellIcon}
-          />
+          <NotificationIcon />
         </View>
       </View>
       <StatusNavigatorBar
@@ -398,13 +330,19 @@ export function Home({ navigation }) {
         key1={strings.home.newFeed}
         key2={strings.home.vipArea}
         status={vipArea}
-        setStatus={setVipArea}
+        setStatus={status => {
+          if (
+            status === strings.home.vipArea &&
+            userType?.user == `${strings.userType.free}`
+          ) {
+            navigation.navigate(NAVIGATION.upgradeMembership);
+            return;
+          }
+          setVipArea(status);
+        }}
         showLock={userType?.user == `${strings.userType.free}` ? true : false}
       />
       <HorizontalLine />
-      {/* <Text onPress={() => onSinglePost()}>Mukul</Text> */}
-      {/* {console.log(allPost.Admin_Post)} */}
-      {/* feed list */}
 
       <View style={styles.feedContainer}>
         {isLoading ? (
@@ -419,13 +357,9 @@ export function Home({ navigation }) {
             ref={flatListRef}
             ListHeaderComponent={
               <View>
-                {/* {userType.user == `${strings.userType.free}` && (
-                
-                )} */}
                 <ShareFeed
                   onPress={() => navigation.navigate(NAVIGATION.post)}
                 />
-
                 {userType.user == `${strings.userType.admin}` && (
                   <SeeSchedulePost
                     title={strings.home.seeSchedulePost}
@@ -436,296 +370,40 @@ export function Home({ navigation }) {
                 )}
               </View>
             }
+            initialNumToRender={5}
             ListFooterComponent={renderFooterPost}
-            // onEndReached={onLoadMorePost}
-            // onEndReachedThreshold={0.5}
-            onEndReached={() => {
-              if (!fetchFeedPost) {
-                // console.log("END===REACHED=========>", fetchFeedPost)
-                onLoadMorePost();
-                setFetchFeedPost(true);
-              }
-            }}
-            onMomentumScrollBegin={() => {
-              // console.log("LOAD_MORE============>", fetchFeedPost)
-              setFetchFeedPost(false);
-              // onEndReachedCalledDuringMomentum = false;
-            }}
-            extraData={searchEnabled ? SEARCH_DATA : ALLPOST}
-            onEndReachedThreshold={0.5}
-            data={searchEnabled ? SEARCH_DATA : ALLPOST}
-            keyExtractor={item => item.id}
+            onEndReached={onLoadMorePost}
+            extraData={ALLPOST}
+            onEndReachedThreshold={0.2}
+            data={ALLPOST}
+            keyExtractor={(item, index) => `${item.id}${index}`}
             contentContainerStyle={{ flexGrow: 1 }}
             renderItem={({ item, index }) => (
-              <View style={styles.cardContainer}>
-                {userType.user == `${strings.userType.free}` &&
-                vipArea == `${strings.home.vipArea}` ? (
-                  <TouchableOpacity
-                    onPress={() =>
-                      userType.user == `${strings.userType.free}` &&
-                      navigation.navigate(NAVIGATION.upgradeMembership)
-                    }
-                  >
-                    <Card>
-                      <CardHeader
-                        fullName={item?.user?.fullName}
-                        userName={item?.user?.username}
-                        profilePic={item?.user?.profilePic}
-                        time={item?.created_at}
-                        userId={item?.userId}
-                        // isOfficial={item.isOffical}
-                        showPin={item?.isPinned}
-                      />
-                      <CardBody text={item.postBody} />
-
-                      {item?.postMediaContent?.length > 0 ? (
-                        <View style={styles.thumbnailContainer}>
-                          <Image
-                            blurRadius={4}
-                            style={styles.thumbnailImage}
-                            source={{
-                              uri:
-                                item?.postMediaContent[0]?.mimetype?.split(
-                                  '/'
-                                )[0] == 'image'
-                                  ? item?.postMediaContent[0]?.url
-                                  : item?.postMediaContent[0]?.cover,
-                            }}
-                          />
-                          <View style={styles.vipOnlyContainer}>
-                            <FontAwesomeIcon
-                              icon={faLock}
-                              size={ms(10)}
-                              style={styles.lock}
-                            />
-                            <Text style={styles.vipOnlyText}>
-                              {strings.giveaway.vipOnly}
-                            </Text>
-                          </View>
-                        </View>
-                      ) : null}
-                    </Card>
-                  </TouchableOpacity>
-                ) : (
-                  <Card>
-                    <CardHeader
-                      fullName={item?.user?.fullName}
-                      userName={item?.user?.username}
-                      profilePic={item?.user?.profilePic}
-                      time={item?.created_at}
-                      userId={item?.userId}
-                      // isOfficial={item.isOffical}
-                      showPin={item?.isPinned}
-                    />
-                    <CardBody text={item.postBody} />
-
-                    {item?.postMediaContent?.length <= 2 ? (
-                      <View style={styles.imageContainer}>
-                        {item?.postMediaContent?.map(
-                          data => (
-                            (counter = counter + 1),
-                            (
-                              <TouchableOpacity
-                                key={counter}
-                                style={styles.touchContainer}
-                                onPress={() => {
-                                  onViewImageVideo(item);
-                                }}
-                              >
-                                {data?.mimetype?.split('/')[0] == 'image' ? (
-                                  <Image
-                                    source={{
-                                      uri: data.url,
-                                    }}
-                                    style={styles.image}
-                                  />
-                                ) : (
-                                  <ImageBackground
-                                    source={{
-                                      uri: data?.cover,
-                                    }}
-                                    key={counter}
-                                    style={[styles.image, styles.playButtonBg]}
-                                  >
-                                    <TouchableOpacity
-                                      // activeOpacity={1}
-                                      style={styles.playButton}
-                                      onPress={() => {
-                                        onViewImageVideo(item);
-                                      }}
-                                    >
-                                      <FontAwesomeIcon
-                                        icon={faPlay}
-                                        size={ms(15)}
-                                        style={styles.Play}
-                                      />
-                                    </TouchableOpacity>
-                                  </ImageBackground>
-                                )}
-                              </TouchableOpacity>
-                            )
-                          )
-                        )}
-                      </View>
-                    ) : item?.postMediaContent?.length > 2 ? (
-                      ((counter = 1),
-                      (
-                        <View style={styles.imageContainer}>
-                          {item?.postMediaContent?.map(data =>
-                            counter == 1
-                              ? ((counter = counter + 1),
-                                (
-                                  <TouchableOpacity
-                                    key={counter}
-                                    style={styles.touchContainer}
-                                    onPress={() => {
-                                      onViewImageVideo(item);
-                                    }}
-                                  >
-                                    {data?.mimetype?.split('/')[0] ==
-                                    'image' ? (
-                                      <Image
-                                        source={{
-                                          uri: data.url,
-                                        }}
-                                        style={styles.image}
-                                      />
-                                    ) : (
-                                      <ImageBackground
-                                        source={{
-                                          uri: data?.cover,
-                                        }}
-                                        key={counter}
-                                        style={[
-                                          styles.image,
-                                          styles.playButtonBg,
-                                        ]}
-                                      >
-                                        <TouchableOpacity
-                                          // activeOpacity={1}
-                                          style={styles.playButton}
-                                          onPress={() => {
-                                            onViewImageVideo(item);
-                                          }}
-                                        >
-                                          <FontAwesomeIcon
-                                            icon={faPlay}
-                                            size={ms(15)}
-                                            style={styles.Play}
-                                          />
-                                        </TouchableOpacity>
-                                      </ImageBackground>
-                                    )}
-                                  </TouchableOpacity>
-                                ))
-                              : counter == 2
-                              ? ((counter = counter + 1),
-                                (
-                                  <TouchableOpacity
-                                    key={counter}
-                                    style={styles.touchContainer}
-                                    onPress={() => {
-                                      onViewImageVideo(item);
-                                    }}
-                                  >
-                                    <ImageBackground
-                                      source={{
-                                        uri:
-                                          data?.mimetype?.split('/')[0] ==
-                                          'image'
-                                            ? data.url
-                                            : data?.cover,
-                                      }}
-                                      key={counter}
-                                      style={[styles.image, styles.moreImage]}
-                                    >
-                                      <TouchableOpacity
-                                        onPress={() => {
-                                          onViewImageVideo(item);
-                                        }}
-                                      >
-                                        <Text style={styles.extraImage}>
-                                          {strings.message.plus}
-                                          {item.postMediaContent?.length - 1}
-                                        </Text>
-                                      </TouchableOpacity>
-                                      {/* {data.mimetype.split("/")[0] == "video" &&
-              <TouchableOpacity
-                // activeOpacity={1}
-                style={styles.playButton}
-              >
-                <FontAwesomeIcon
-                  icon={faPlay}
-                  size={ms(15)}
-                  style={styles.Play}
-                />
-
-              </TouchableOpacity>
-            } */}
-                                    </ImageBackground>
-                                  </TouchableOpacity>
-                                ))
-                              : null
-                          )}
-                        </View>
-                      ))
-                    ) : null}
-
-                    <CardFooter
-                      // likePress={() => onUpVote(item.id, item.userId, user?.id, item)}
-                      // disLikePress={() => onDownVote(item.id, item.userId, user?.id, item)}
-                      postID={item?.id}
-                      postType={POST_TYPE.REGULAR}
-                      postUserID={item?.userId}
-                      userID={user?.id}
-                      likeCount={item?.upVote}
-                      disLikeCount={item?.downVote}
-                      commentCount={item?.comments_aggregate?.aggregate?.count}
-                      postData={item}
-                      postIndex={index}
-                      commentPress={() =>
-                        navigation.navigate(NAVIGATION.comments, {
-                          DATA: item,
-                          POST_INDEX: index,
-                          type: POST_TYPE.REGULAR,
-                        })
-                      }
-                      morePress={() => {
-                        setPostIndex(index);
-                        setIsAdminPost(item?.isAdminPost),
-                          setPostUserName(item?.user?.username);
-                        setOpen(true);
-                        setPostUserId(item?.userId);
-                        setpostId(item?.id);
-                        setPostTitle(item?.postTitle);
-                        setPostBody(item?.postBody);
-                        setPostImg(item?.postImg);
-                        setEditdata({
-                          ...item,
-                          DATA: {
-                            sortBy,
-                            follwingSwitch,
-                            sortBy,
-                            follwingSwitch,
-                          },
-                        });
-                        console.log(
-                          userFollower?.following_List?.filter(
-                            el => el.followingUserId === item?.userId
-                          )
-                        );
-                        setIsFollowing(
-                          !isEmpty(
-                            userFollower?.following_List?.filter(
-                              el => el.followingUserId === item?.userId
-                            )
-                          )
-                        );
-                      }}
-                    />
-                  </Card>
-                )}
-              </View>
+              <MemoPostcard
+                item={item}
+                userType={userType}
+                index={index}
+                onViewImageVideo={onViewImageVideo}
+                onMorePress={() => {
+                  setSelectedPost({ ...item, index: index });
+                  setOpen(true);
+                  setIsFollowing(
+                    !isEmpty(
+                      userFollower?.following_List?.filter(
+                        el => el.followingUserId === item?.userId
+                      )
+                    )
+                  );
+                  setIsBanned(
+                    !isEmpty(
+                      user?.getAllBannedUsersKey?.data.filter(
+                        x => x?.userId === item?.userId
+                      )
+                    )
+                  );
+                }}
+                vipArea={vipArea}
+              />
             )}
           />
         )}
@@ -768,12 +446,6 @@ export function Home({ navigation }) {
 
       {/*  image view modal */}
       {showImageView && (
-        // <AppImageViewer
-        //   visible={showImageView}
-        //   setVisible={() => setShowImageView(false)}
-        //   images={feedImages}
-        // />
-
         <SwiperViewer
           visible={showImageView}
           setVisible={() => setShowImageView(false)}
@@ -781,226 +453,17 @@ export function Home({ navigation }) {
         />
       )}
       {/*  Slide up for follow, edit , review  */}
-      {open &&
-        (postUserId == user?.id ? (
-          <ModalDown open={open} setOpen={setOpen}>
-            <ModalList
-              title={strings.profile.editPost}
-              icon={faPen}
-              iconBg={theme.light.colors.infoBgLight}
-              iconColor={theme.light.colors.info}
-              onPress={() => {
-                navigationRef.navigate(NAVIGATION.updatePost, {
-                  prevData: editData,
-                }),
-                  setOpen(false);
-              }}
-            />
-            <HorizontalLine
-              color={theme.light.colors.infoBgLight}
-              paddingTop={15}
-              paddingBottom={8}
-            />
-            <ModalList
-              title={strings.operations.delete}
-              icon={faTrash}
-              iconBg={theme.light.colors.infoBgLight}
-              iconColor={theme.light.colors.secondary}
-              onPress={() => {
-                setReplace(true), setOpen(false);
-              }}
-            />
-          </ModalDown>
-        ) : (
-          <ModalDown open={open} setOpen={setOpen}>
-            <ModalList
-              onPress={() => {
-                onFollow();
-              }}
-              title={
-                (!isFollowing
-                  ? strings.operations.follow
-                  : strings.operations.unFollow) +
-                ' @' +
-                postUserName
-              }
-              icon={faUserPlus}
-              iconColor={theme.light.colors.primary}
-              iconBg={theme.light.colors.primaryBgLight}
-            />
-            <ModalList
-              title={strings.operations.sendPrivateMessage}
-              icon={faMessage}
-              iconColor={theme.light.colors.success}
-              iconBg={theme.light.colors.successBgLight}
-            />
-            <HorizontalLine
-              color={theme.light.colors.infoBgLight}
-              paddingTop={15}
-              paddingBottom={8}
-            />
-            {(userType.user == `${strings.userType.free}`) |
-            (userType.user == `${strings.userType.vip}`) ? (
-              <>
-                {isAdminPost == false && (
-                  <ModalList
-                    title={strings.home.report}
-                    icon={faFlag}
-                    iconColor={theme.light.colors.secondary}
-                    iconBg={theme.light.colors.infoBgLight}
-                    onPress={() => {
-                      setReportOptionValue('');
-                      setOpenReport(true);
-                      setOpen(false);
-                      setreportImage(null);
-                    }}
-                  />
-                )}
 
-                {isAdminPost == false && (
-                  <ModalList
-                    onPress={() => {
-                      onBlock();
-                    }}
-                    title={strings.operations.block + ' @' + postUserName}
-                    // title={(ALLPOST?.data[pos] ? strings.operations.block : strings.operations.unBlock) + " @" + postUserName}
-                    icon={faXmark}
-                    iconColor={theme.light.colors.secondary}
-                    iconBg={theme.light.colors.infoBgLight}
-                  />
-                )}
-              </>
-            ) : userType.user == `${strings.userType.admin}` ? (
-              <>
-                <ModalList
-                  title={strings.home.deletePost}
-                  icon={faTrash}
-                  iconColor={theme.light.colors.secondary}
-                  iconBg={theme.light.colors.infoBgLight}
-                  onPress={() => {
-                    setReplace(true), setOpen(false);
-                  }}
-                />
-                <ModalList
-                  title={strings.operations.block + strings.home.DummyUser}
-                  icon={faXmark}
-                  iconColor={theme.light.colors.secondary}
-                  iconBg={theme.light.colors.infoBgLight}
-                />
-                <ModalList
-                  title={strings.operations.ban + strings.home.DummyUser}
-                  icon={faFlag}
-                  iconColor={theme.light.colors.secondary}
-                  iconBg={theme.light.colors.infoBgLight}
-                />
-              </>
-            ) : null}
-          </ModalDown>
-        ))}
-      {/* Replace Popup */}
-      {openReplace && (
-        <PopUp open={openReplace} setOpen={setReplace}>
-          <View style={styles.ConfirmationTextContainer}>
-            <Text style={styles.ConfirmationText}>{strings.alert.delete}</Text>
-          </View>
-          <Button
-            title={strings.operations.yes}
-            style={styles.confirmButton}
-            onPress={() => {
-              onDelete(), setReplace(false);
-            }}
-          />
-          <Button
-            title={strings.operations.no}
-            style={styles.cancelButton}
-            onPress={() => setReplace(false)}
-          />
-        </PopUp>
-      )}
-      <ReportOnPostModal open={openReport} setOpen={setOpenReport}>
-        <View style={styles.reportPostContainer}>
-          <TopBackButton
-            onPress={() => setOpenReport(false)}
-            style={styles.reportPostBackButton}
-          />
-          <Text style={styles.reportTxt}> {strings.home.reportPost} </Text>
-          <HorizontalLine
-            color={theme.light.colors.infoBgLight}
-            paddingBottom={12}
-          />
-          <View style={styles.reportPostTopContainer}>
-            <DropDownPicker
-              placeholder={strings.home.selectReason}
-              open={reportListOpen}
-              value={reportOptionValue}
-              items={reportOption}
-              setOpen={setReportListOpen}
-              setValue={setReportOptionValue}
-              setItems={setReportOption}
-              style={styles.dropDownPicker}
-              textStyle={styles.dropListTxt}
-              dropDownContainerStyle={styles.dropDownContainerStyle}
-              arrowIconStyle={styles.arrowIconStyle}
-            />
-            <TextInput
-              multiline
-              editable
-              onChangeText={val => setReportCommnet(val)}
-              placeholder={strings.operations.addComments}
-              numberOfLines={4}
-              style={styles.txtInput}
-            />
-          </View>
-          <HorizontalLine
-            color={theme.light.colors.infoBgLight}
-            paddingTop={15}
-          />
-          <View style={styles.reportPostBottomContainer}>
-            <TouchableOpacity onPress={() => SelectFromGallery()}>
-              {reportImage ? (
-                <Image
-                  style={{ height: ms(35), width: ms(35), borderRadius: ms(5) }}
-                  source={{ uri: reportImage.path }}
-                />
-              ) : (
-                <View pointerEvents="none">
-                  <Icon
-                    icon={faImage}
-                    size={ms(22)}
-                    color={theme.light.colors.secondary}
-                  />
-                </View>
-              )}
-            </TouchableOpacity>
-
-            <Button
-              title={strings.operations.submit}
-              disabled={!reportOptionValue}
-              opacity={reportOptionValue ? 1 : 0.4}
-              style={styles.reportPostButton}
-              onPress={() => {
-                const reportData = {
-                  objectId: postId,
-                  reportedBy: user?.id,
-                  reportTitle: reportOptionValue,
-                  reportBody: reportComment,
-                  reportImg: reportImage,
-                };
-                dispatch(reportPost(reportData));
-                setOpenReport(false);
-              }}
-            />
-          </View>
-        </View>
-      </ReportOnPostModal>
-      {isShowReportToast && (
-        <Toast
-          open={isShowReportToast}
-          icon={faThumbsUp}
-          message={strings.home.reportMessage}
-          onPressOk={() => dispatch(globalReset())}
-        />
-      )}
+      <UserPostOptions
+        selectedPostData={selectedPost}
+        open={open}
+        setOpen={setOpen}
+        selectetFeedConfigData={{
+          sortBy,
+          follwingSwitch,
+          vipArea: vipArea == `${strings.home.newFeed}` ? false : true,
+        }}
+      />
 
       {searchEnabled && (
         <SearchPost
@@ -1077,8 +540,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: ms(10),
   },
-  searchIcon: { marginRight: ms(5) },
-  bellIcon: { marginRight: ms(10) },
+  searchIcon: { marginRight: ms(20), color: theme.light.colors.black },
+  // bellIcon: { marginRight: ms(10) },
   cardContainer: {
     margin: ms(8),
     borderRadius: 10,
@@ -1380,4 +843,55 @@ const styles = StyleSheet.create({
     width: '100%',
     height: vs(180),
   },
+
+  //ban container
+
+  imageViewContainer: {
+    flexDirection: 'row',
+    marginTop: ms(15),
+    marginBottom: ms(20),
+  },
+  imageDesign: {
+    height: ms(40),
+    width: ms(40),
+    borderRadius: 100,
+    marginRight: ms(10),
+  },
+  headerFullname: {
+    color: theme.light.colors.black,
+    fontSize: ms(18, 0.3),
+  },
+  yesBanButton: {
+    marginTop: 10,
+    backgroundColor: theme.light.colors.white,
+    borderWidth: 2,
+    borderColor: theme.light.colors.primary,
+  },
+  DoNotBanButton: {
+    marginTop: 10,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: ms(10),
+  },
+  headerImageContainer: {
+    flexDirection: 'row',
+    position: 'relative',
+  },
+  headerImage: {
+    width: ms(50),
+    height: ms(50),
+    borderWidth: 2,
+    borderRadius: 75,
+  },
+  freeMemberText: {
+    backgroundColor: theme.light.colors.inputFiled,
+    borderRadius: 4,
+    padding: 3,
+    paddingHorizontal: 10,
+    marginTop: 3,
+    color: theme.light.colors.black,
+  },
+  headerColor: { color: theme.light.colors.black },
 });

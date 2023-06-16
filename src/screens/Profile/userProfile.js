@@ -10,6 +10,7 @@ import {
   ImageBackground,
   Alert,
   TextInput,
+  ActivityIndicator,
 } from 'react-native';
 import {
   faCrown,
@@ -43,6 +44,9 @@ import {
   Toast,
   ReportOnPostModal,
   Button,
+  PopUp,
+  MediaContainer,
+  UserPostOptions,
 } from '@/components';
 import { strings } from '@/localization';
 import { HorizontalLine } from '@/components';
@@ -52,9 +56,13 @@ import { faSearch } from '@fortawesome/pro-regular-svg-icons';
 import { FontFamily } from '@/theme/Fonts';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  bannedUserById,
+  bannedUsers,
   getAllPostsByUserid,
+  getAllPostsByUseridPagination,
   getUserProfileByUserId,
   getUserProfileByUserIdSuccess,
+  unBannedUserById,
 } from '@/actions/UserActions';
 import { useEffect } from 'react';
 import { getUser } from '@/selectors/UserSelectors';
@@ -67,6 +75,7 @@ import { navigationRef } from '@/navigation/RootNavigation';
 import {
   TYPES,
   blockUser,
+  deletePost,
   followUser,
   getAllPost,
   reportPost,
@@ -74,12 +83,16 @@ import {
 } from '@/actions/PostActions';
 import { TYPES as UserActionTypes } from '@/actions/UserActions';
 import { showMessage } from 'react-native-flash-message';
-import { useIsFocused } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import { POST_TYPE } from '@/constants/enums';
 import { getAllPostByUserIdSuccess } from '@/actions/UserActions';
 import { SwiperViewer } from '@/components/SwiperComponent';
 import { globalReset } from '@/actions/GlobalActions';
 import ImagePicker from 'react-native-image-crop-picker';
+import { useCallback } from 'react';
+import { customShowMessage } from '@/utils';
+import { isEmpty, last } from 'lodash';
+import PostOptions from '../Home/PostOptions';
 
 export default function UserProfile({ navigation, route }) {
   const [postIndex, setPostIndex] = useState(0);
@@ -113,12 +126,21 @@ export default function UserProfile({ navigation, route }) {
       value: 'Misleading Information or Fake News',
     },
   ]);
-  const [reportListOpen, setReportListOpen] = useState(false);
-  const [reportOptionValue, setReportOptionValue] = useState('');
-  const [reportComment, setReportCommnet] = useState('');
-  const [reportImage, setreportImage] = useState(null);
-  const [openReport, setOpenReport] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [endReachedDuringMomentum, setEndReachedDuringMomentum] =
+    useState(true);
+
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [openReplace, setReplace] = useState(false);
+
+  const [openBan, setOpenBan] = useState(false);
+
   // const userFollower = user.followersDatainReducer?.data;
+
+  const isBanned = !isEmpty(
+    userr?.getAllBannedUsersKey?.data.filter(x => x?.userId === userId)
+  );
 
   let counter = 1;
 
@@ -136,27 +158,26 @@ export default function UserProfile({ navigation, route }) {
 
   const userType = useSelector(state => state.userType);
 
-  const isProfileLoading = useSelector(state =>
-    isLoadingSelector([UserActionTypes.GET_ALL_POST_BY_USERID], state)
+  const customReq = async () => {
+    setLoading(true);
+    await getAllPostsByUserid(userId, userr.id)(dispatch);
+    setLoading(false);
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      dispatch(getUserProfileByUserId(userId, userr.id));
+      customReq();
+
+      return () => {
+        dispatch(getUserProfileByUserIdSuccess(null));
+        dispatch(getAllPostByUserIdSuccess(null));
+      };
+    }, [userId])
   );
 
   useEffect(() => {
-    dispatch(getUserProfileByUserId(userId, userr.id));
-  }, [isFollowSuccess, isunFollowSuccess, focus]);
-
-  useEffect(() => {
-    return () => {
-      dispatch(getUserProfileByUserIdSuccess(null));
-      dispatch(getAllPostByUserIdSuccess(null));
-    };
-  }, []);
-
-  useEffect(() => {
-    dispatch(getAllPostsByUserid(userId, userr.id));
-  }, [userId]);
-
-  useEffect(() => {
-    if (!userr) return;
+    if (!userr.getUserByUserId) return;
     setUser(userr?.getUserByUserId);
   }, [userr]);
 
@@ -173,7 +194,7 @@ export default function UserProfile({ navigation, route }) {
   };
 
   const onMessageClick = () => {
-    showMessage({
+    customShowMessage({
       message: 'Coming Soon',
       type: 'info',
     });
@@ -189,35 +210,70 @@ export default function UserProfile({ navigation, route }) {
     }
   };
 
-  const onBlock = () => {
-    dispatch(blockUser(userr?.id, user?.id, postIndex));
-    setOpenMore(false);
-    showMessage({
-      message: 'User blocked successfully',
-      type: 'success',
-    });
-    dispatch(globalReset());
-    navigationRef.goBack();
+  const loadingMoreReq = async () => {
+    setLoadingMore(true);
+    const lastPost = last(userr?.getAllPostsByUserId);
+    await getAllPostsByUseridPagination(
+      userId,
+      lastPost.created_at,
+      userr.id
+    )(dispatch);
+    setLoadingMore(false);
   };
 
-  const SelectFromGallery = () => {
-    ImagePicker.openPicker({
-      width: ms(300),
-      height: ms(400),
-      cropping: true,
-      freeStyleCropEnabled: true,
-      cropperCircleOverlay: true,
-    })
-      .then(image => {
-        console.log('check uploaded image', image);
-        setreportImage(image);
-      })
-      .catch(error => console.log('report image picker error', error));
+  const getPostPagination = () => {
+    if (!loadingMore && !endReachedDuringMomentum) {
+      loadingMoreReq();
+    }
+  };
+
+  const renderFooterPost = () => {
+    return (
+      <View style={{}}>
+        {loadingMore && <ActivityIndicator size={'large'} color="orange" />}
+      </View>
+    );
+  };
+
+  // useEffect(() => {
+  //   if (!openMore) {
+  //     setpostId(null);
+  //   }
+  // }, [openMore]);
+
+  console.log('==================  ', user);
+
+  const a = {
+    contact: 18181828211,
+    created_at: '2023-03-09T13:42:02.714804+00:00',
+    dob: '1981-06-09',
+    followerListsByFollowinguserid: [
+      { followerUserId: '9c20a34e-43ec-4d5b-8487-9a4eb1cf936d' },
+      { followerUserId: 'eb58c2b7-24af-4cb7-bb80-34fbc9825da4' },
+      { followerUserId: 'b9902993-ca3f-4a2f-9de8-397bf6f4767e' },
+      { followerUserId: '7fed4129-b3da-46ff-9b48-89cdc8e5b896' },
+    ],
+    follower_lists: [
+      { followingUserId: 'bc29a04b-8862-469b-bafa-3db299bd1e4b' },
+      { followingUserId: '6aae7065-5341-45b1-b717-0c3e3256dc2f' },
+    ],
+    fullName: 'Team Airly1',
+    gender: 'Male',
+    id: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+    isAdmin: false,
+    isBanned: true,
+    isVIP: true,
+    is_following: false,
+    location: 'United States',
+    primaryEmail: 'John@hbo.comm',
+    profilePic: 'https://d2wwqw32p0xkid.cloudfront.net/photo-1679142507829.jpg',
+    profileRole: null,
+    username: 'Jane',
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      {isProfileLoading && <CustomLoader open={isProfileLoading} />}
+      {loading && <CustomLoader open={loading} />}
 
       <View style={styles.header}>
         <View style={styles.left}>
@@ -247,7 +303,6 @@ export default function UserProfile({ navigation, route }) {
 
           <View style={styles.profileTitleContainer}>
             <Text style={[TextStyles.header, styles.headerDesign]}>
-              {' '}
               {user?.fullName}
             </Text>
             <Text style={styles.userNameDesign}> {user?.username}</Text>
@@ -318,7 +373,18 @@ export default function UserProfile({ navigation, route }) {
           </TouchableOpacity>
         </View>
         <TouchableOpacity
-          onPress={() => setOpenMore(true)}
+          onPress={() => {
+            setSelectedPost({
+              isAdminPost: user?.isAdmin,
+              user: {
+                id: user.id,
+                profilePic: user?.profilePic,
+                username: user?.username,
+              },
+              userId: user.id,
+            });
+            setOpenMore(true);
+          }}
           style={styles.moreIconContainer}
         >
           <FontAwesomeIcon
@@ -330,13 +396,19 @@ export default function UserProfile({ navigation, route }) {
       <HorizontalLine />
       <FlatList
         data={userr?.getAllPostsByUserId || []}
+        onEndReached={getPostPagination}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={renderFooterPost}
+        onMomentumScrollBegin={() => setEndReachedDuringMomentum(false)}
         key={props => props.id}
         renderItem={({ item, index }) => (
           <TouchableOpacity
             onPress={() =>
               userType?.user == `${strings.userType.free}` &&
+              item?.isVIPonly &&
               navigation.navigate(NAVIGATION.upgradeMembership)
             }
+            key={item?.id}
             style={styles.cardContainer}
           >
             <Card>
@@ -352,7 +424,7 @@ export default function UserProfile({ navigation, route }) {
                 VIPKEY={!userr?.isVIP && item?.isVIPonly}
                 text={item?.postBody}
               />
-
+              {/* <MediaContainer contents  /> */}
               {item?.postMediaContent.length <= 2 ? (
                 <View style={styles.imageContainer}>
                   {item?.postMediaContent.map(
@@ -360,11 +432,15 @@ export default function UserProfile({ navigation, route }) {
                       (counter = counter + 1),
                       (
                         <TouchableOpacity
-                          key={counter}
+                          key={index}
                           style={styles.touchContainer}
                           onPress={() => {
-                            setShowImageView(true),
-                              setFeedImages(item?.postMediaContent);
+                            if (!(!userr?.isVIP && item?.isVIPonly)) {
+                              setShowImageView(true),
+                                setFeedImages(item?.postMediaContent);
+                            } else {
+                              navigation.navigate(NAVIGATION.upgradeMembership);
+                            }
                           }}
                         >
                           {!userr?.isVIP && item?.isVIPonly ? (
@@ -417,12 +493,12 @@ export default function UserProfile({ navigation, route }) {
                 ((counter = 1),
                 (
                   <View style={styles.imageContainer}>
-                    {item?.postMediaContent.map(data =>
+                    {item?.postMediaContent.map((data, index) =>
                       counter == 1
                         ? ((counter = counter + 1),
                           (
                             <TouchableOpacity
-                              key={counter}
+                              key={index}
                               style={styles.touchContainer}
                               onPress={() => {
                                 setShowImageView(true),
@@ -500,6 +576,7 @@ export default function UserProfile({ navigation, route }) {
                   setPostBody(item?.postBody);
                   setPostImg(item?.postImg);
                   setIsAdminPost(item?.isAdminPost);
+                  setSelectedPost({ ...item, index: index, user: user });
                 }}
               />
             </Card>
@@ -514,161 +591,13 @@ export default function UserProfile({ navigation, route }) {
           images={feedImages || []}
         />
       )}
-      {openMore && (
-        <ModalDown open={openMore} setOpen={setOpenMore}>
-          <ModalList
-            onPress={onFollow}
-            title={
-              user?.is_following == true
-                ? strings.operations.unFollow + ' @' + user?.username
-                : strings.operations.follow + ' @' + user?.username
-            }
-            icon={faUserPlus}
-            iconColor={theme.light.colors.primary}
-            iconBg={theme.light.colors.primaryBgLight}
-          />
-          <ModalList
-            title={strings.operations.sendPrivateMessage}
-            icon={faMessage}
-            iconColor={theme.light.colors.success}
-            iconBg={theme.light.colors.successBgLight}
-            // onPress = {()=> Alert.alert("working")}
-          />
-          {!isAdminPost && (
-            <>
-              <HorizontalLine
-                color={theme.light.colors.infoBgLight}
-                paddingTop={15}
-                paddingBottom={8}
-              />
-              <ModalList
-                title={strings.operations.report}
-                icon={faFlag}
-                iconColor={theme.light.colors.secondary}
-                iconBg={theme.light.colors.infoBgLight}
-                onPress={() => {
-                  setReportOptionValue('');
-                  setOpenReport(true);
-                  setOpenMore(false);
-                  setreportImage(null);
-                }}
-              />
-              <ModalList
-                title={strings.operations.block}
-                icon={faXmark}
-                onPress={onBlock}
-                iconColor={theme.light.colors.secondary}
-                iconBg={theme.light.colors.infoBgLight}
-              />
-            </>
-          )}
-        </ModalDown>
-      )}
-      {openEdit && (
-        <ModalDown open={openEdit} setOpen={setOpenEdit}>
-          <ModalList
-            title={strings.operations.edit}
-            icon={faPen}
-            iconBg={theme.light.colors.infoBgLight}
-            iconColor={theme.light.colors.info}
-          />
-          <HorizontalLine
-            color={theme.light.colors.infoBgLight}
-            paddingTop={15}
-            paddingBottom={8}
-          />
-          <ModalList
-            title={strings.operations.remove}
-            icon={faTrash}
-            iconBg={theme.light.colors.infoBgLight}
-            iconColor={theme.light.colors.secondary}
-          />
-        </ModalDown>
-      )}
-      {isShowReportToast && (
-        <Toast
-          open={isShowReportToast}
-          icon={faThumbsUp}
-          message={strings.home.reportMessage}
-          onPressOk={() => dispatch(globalReset())}
-        />
-      )}
-      <ReportOnPostModal open={openReport} setOpen={setOpenReport}>
-        <View style={styles.reportPostContainer}>
-          <TopBackButton
-            onPress={() => setOpenReport(false)}
-            style={styles.reportPostBackButton}
-          />
-          <Text style={styles.reportTxt}> {strings.home.reportPost} </Text>
-          <HorizontalLine
-            color={theme.light.colors.infoBgLight}
-            paddingBottom={12}
-          />
-          <View style={styles.reportPostTopContainer}>
-            <DropDownPicker
-              placeholder={strings.home.selectReason}
-              open={reportListOpen}
-              value={reportOptionValue}
-              items={reportOption}
-              setOpen={setReportListOpen}
-              setValue={setReportOptionValue}
-              setItems={setReportOption}
-              style={styles.dropDownPicker}
-              textStyle={styles.dropListTxt}
-              dropDownContainerStyle={styles.dropDownContainerStyle}
-              arrowIconStyle={styles.arrowIconStyle}
-            />
-            <TextInput
-              multiline
-              editable
-              onChangeText={val => setReportCommnet(val)}
-              placeholder={strings.operations.addComments}
-              numberOfLines={4}
-              style={styles.txtInput}
-            />
-          </View>
-          <HorizontalLine
-            color={theme.light.colors.infoBgLight}
-            paddingTop={15}
-          />
-          <View style={styles.reportPostBottomContainer}>
-            <TouchableOpacity onPress={() => SelectFromGallery()}>
-              {reportImage ? (
-                <Image
-                  style={{ height: ms(35), width: ms(35), borderRadius: ms(5) }}
-                  source={{ uri: reportImage.path }}
-                />
-              ) : (
-                <View pointerEvents="none">
-                  <Icon
-                    icon={faImage}
-                    size={ms(22)}
-                    color={theme.light.colors.secondary}
-                  />
-                </View>
-              )}
-            </TouchableOpacity>
-
-            <Button
-              title={strings.operations.submit}
-              disabled={!reportOptionValue}
-              opacity={reportOptionValue ? 1 : 0.4}
-              style={styles.reportPostButton}
-              onPress={() => {
-                const reportData = {
-                  objectId: postId,
-                  reportedBy: user?.id,
-                  reportTitle: reportOptionValue,
-                  reportBody: reportComment,
-                  reportImg: reportImage,
-                };
-                dispatch(reportPost(reportData));
-                setOpenReport(false);
-              }}
-            />
-          </View>
-        </View>
-      </ReportOnPostModal>
+      <UserPostOptions
+        open={openMore}
+        postType={POST_TYPE.USER_PROFILE}
+        setOpen={setOpenMore}
+        selectedPostData={selectedPost}
+        callBack={customReq}
+      />
     </SafeAreaView>
   );
 }
@@ -911,5 +840,75 @@ const styles = StyleSheet.create({
     fontSize: ms(14, 0.3),
     color: theme.light.colors.black,
     padding: 10,
+  },
+
+  //ban container
+
+  imageViewContainer: {
+    flexDirection: 'row',
+    marginTop: ms(15),
+    marginBottom: ms(20),
+  },
+  imageDesign: {
+    height: ms(40),
+    width: ms(40),
+    borderRadius: 100,
+    marginRight: ms(10),
+  },
+  headerFullname: {
+    color: theme.light.colors.black,
+    fontSize: ms(18, 0.3),
+  },
+  yesBanButton: {
+    marginTop: 10,
+    backgroundColor: theme.light.colors.white,
+    borderWidth: 2,
+    borderColor: theme.light.colors.primary,
+  },
+  DoNotBanButton: {
+    marginTop: 10,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: ms(10),
+  },
+  headerImageContainer: {
+    flexDirection: 'row',
+    position: 'relative',
+  },
+  headerImage: {
+    width: ms(50),
+    height: ms(50),
+    borderWidth: 2,
+    borderRadius: 75,
+  },
+  freeMemberText: {
+    backgroundColor: theme.light.colors.inputFiled,
+    borderRadius: 4,
+    padding: 3,
+    paddingHorizontal: 10,
+    marginTop: 3,
+    color: theme.light.colors.black,
+  },
+  headerColor: { color: theme.light.colors.black },
+
+  //delete
+  confirmButton: {
+    margin: ms(5),
+  },
+  cancelButton: {
+    margin: ms(5),
+  },
+  ConfirmationTextContainer: {
+    paddingLeft: ms(15),
+    paddingRight: ms(15),
+    paddingBottom: ms(15),
+  },
+  ConfirmationText: {
+    fontFamily: FontFamily.BrandonGrotesque_bold,
+    fontSize: ms(16, 0.3),
+    lineHeight: ms(22),
+    color: theme.light.colors.text,
   },
 });

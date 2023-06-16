@@ -112,6 +112,7 @@ export default function ManageReportOnMessage({ navigation }) {
           <ModalList
             title={strings.operations.sendPrivateMessage}
             icon={faMessage}
+            disabled
             iconColor={theme.light.colors.success}
             iconBg={theme.light.colors.successBgLight}
           />

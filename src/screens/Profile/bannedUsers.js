@@ -34,12 +34,12 @@ import { isLoadingSelector } from '@/selectors/StatusSelectors';
 
 export default function Notification({ navigation }) {
   const [open, setOpen] = useState(false);
-  const [bannedId, SetBannedId] = useState('')
-  const [userName, setUserName] = useState('')
+  const [bannedId, SetBannedId] = useState(null);
+  const [userName, setUserName] = useState('');
   const focus = useIsFocused();
 
-  const dispatch = useDispatch()
-  const user = useSelector(getUser)
+  const dispatch = useDispatch();
+  const user = useSelector(getUser);
 
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.GET_ALL_BANNED_USERS], state)
@@ -47,22 +47,17 @@ export default function Notification({ navigation }) {
 
   useEffect(() => {
     if (focus) {
-      dispatch(bannedUsers())
+      dispatch(bannedUsers());
     }
   }, [focus]);
 
-
   const unBannedHandlePress = () => {
-    dispatch(unBannedUserById(bannedId))
-    setOpen(false)
+    dispatch(unBannedUserById(bannedId.id));
+    setOpen(false);
     setTimeout(() => {
-      dispatch(bannedUsers())
+      dispatch(bannedUsers());
     }, 200);
-
-
-
-
-  }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -97,7 +92,6 @@ export default function Notification({ navigation }) {
       <View style={styles.searchList}>
         <View>
           <FlatList
-
             data={user?.getAllBannedUsersKey?.data}
             key={props => props.id}
             initialNumToRender={10}
@@ -111,16 +105,20 @@ export default function Notification({ navigation }) {
                       style={styles.profileImage}
                     />
                     <View style={styles.nameContainer}>
-
                       <Text style={styles.nameTxt}> {item.user.fullName} </Text>
-                      <Text style={styles.userNameTxt}> {item.user.username} </Text>
+                      <Text style={styles.userNameTxt}>
+                        {' '}
+                        {`@${item.user.username}`}{' '}
+                      </Text>
                     </View>
                   </TouchableOpacity>
                   <Icon
                     icon={faEllipsis}
                     size={ms(15)}
                     color={theme.light.colors.secondary}
-                    onPress={() => { SetBannedId(item.user.id), setOpen(true) }}
+                    onPress={() => {
+                      SetBannedId(item.user), setOpen(true);
+                    }}
                   />
                 </View>
               );
@@ -131,8 +129,9 @@ export default function Notification({ navigation }) {
 
       {open && (
         <ModalDown open={open} setOpen={setOpen}>
-          <ModalList onPress={unBannedHandlePress}
-            title={strings.profile.unban + strings.home.DummyUser}
+          <ModalList
+            onPress={unBannedHandlePress}
+            title={strings.profile.unban + ` @${bannedId?.username}`}
             icon={faCheck}
             iconColor={theme.light.colors.info}
             iconBg={theme.light.colors.infoBgLight}

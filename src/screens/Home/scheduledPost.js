@@ -11,10 +11,22 @@ import {
   Image,
 } from 'react-native';
 import { ms, vs } from 'react-native-size-matters';
-import { Card, CardBody, CardHeader, CustomLoader, TopBackButton } from '@/components';
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  CustomLoader,
+  MediaContainer,
+  TopBackButton,
+} from '@/components';
 import { strings } from '@/localization';
 import { TextStyles, theme } from '@/theme';
-import { faClock, faLock, faPen, faPlay } from '@fortawesome/free-solid-svg-icons';
+import {
+  faClock,
+  faLock,
+  faPen,
+  faPlay,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import Moment from 'moment';
 import { FontFamily } from '@/theme/Fonts';
@@ -28,14 +40,13 @@ import { getUser } from '@/selectors/UserSelectors';
 import { useState } from 'react';
 import { SwiperViewer } from '@/components/SwiperComponent';
 
-
 export default function SchedulePost({ navigation }) {
-  const flatListRef = useRef()
+  const flatListRef = useRef();
   const userType = useSelector(state => state.userType);
   const user = useSelector(getUser);
-  const dispatch = useDispatch()
-  const postData = useSelector(getSchedulePostData)
-  console.log("POSOPOPOPO", postData);
+  const dispatch = useDispatch();
+  const postData = useSelector(getSchedulePostData);
+  console.log('POSOPOPOPO', postData);
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.GET_SCHEDULE_POST], state)
   );
@@ -46,11 +57,19 @@ export default function SchedulePost({ navigation }) {
   //   dispatch(getSchedulePost())
   // }, [])
   const onLoadMorePost = () => {
-    const post = ALLPOST.slice(-1)
-    console.log("LAST_POST===", post[0].created_at);
-    const page = post[0].created_at
-    dispatch(getAllPostPagination(user?.id, sortBy, follwingSwitch, vipArea == `${strings.home.newFeed}` ? false : true, page))
-  }
+    const post = ALLPOST.slice(-1);
+    console.log('LAST_POST===', post[0].created_at);
+    const page = post[0].created_at;
+    dispatch(
+      getAllPostPagination(
+        user?.id,
+        sortBy,
+        follwingSwitch,
+        vipArea == `${strings.home.newFeed}` ? false : true,
+        page
+      )
+    );
+  };
   // const renderFooterPost = () => {
   //   return (
   //     <View style={{}}>
@@ -62,17 +81,13 @@ export default function SchedulePost({ navigation }) {
   //     </View>
   //   );
   // };
-  const onViewImageVideo = (data) => {
-
-    setShowImageView(true),
-
-      setFeedImages(data.postMediaContent)
-  }
+  const onViewImageVideo = data => {
+    setShowImageView(true), setFeedImages(data.postMediaContent);
+  };
   let counter = 1;
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
-
         <TopBackButton
           onPress={() => navigation.goBack()}
           style={styles.TopBackButton}
@@ -157,17 +172,16 @@ export default function SchedulePost({ navigation }) {
         </View>
       </View> */}
       <View style={styles.feedContainer}>
-        {isLoading ?
-
+        {isLoading ? (
           <ActivityIndicator
             animating={isLoading}
             color={theme.light.colors.activeTabIcon}
-            size={"large"}
+            size={'large'}
             style={styles.loaderStyle}
-          /> :
+          />
+        ) : (
           <FlatList
             ref={flatListRef}
-
             // ListFooterComponent={renderFooterPost}
             // onEndReached={() => {
 
@@ -186,15 +200,14 @@ export default function SchedulePost({ navigation }) {
             contentContainerStyle={{ flexGrow: 1 }}
             renderItem={({ item, index }) => (
               <View style={styles.cardContainer}>
-
-                {(userType.user == `${strings.userType.free}` && vipArea == `${strings.home.vipArea}`) ?
-
-
+                {userType.user == `${strings.userType.free}` &&
+                vipArea == `${strings.home.vipArea}` ? (
                   <TouchableOpacity
-
-                    onPress={() => userType.user == `${strings.userType.free}` && navigation.navigate(NAVIGATION.upgradeMembership)}
+                    onPress={() =>
+                      userType.user == `${strings.userType.free}` &&
+                      navigation.navigate(NAVIGATION.upgradeMembership)
+                    }
                   >
-
                     <Card>
                       <CardHeader
                         fullName={item?.user?.fullName}
@@ -206,11 +219,9 @@ export default function SchedulePost({ navigation }) {
                         showPin={item?.isPinned}
                       />
                       <CardBody text={item.postBody} />
-
-
                     </Card>
                   </TouchableOpacity>
-                  :
+                ) : (
                   <Card>
                     <CardHeader
                       fullName={item?.user?.fullName}
@@ -222,127 +233,13 @@ export default function SchedulePost({ navigation }) {
                       showPin={item?.isPinned}
                     />
                     <CardBody text={item.postBody} />
-                    {item?.postMediaContent?.length <= 2 ? (
-                      <View style={styles.imageContainer}>
-                        {item?.postMediaContent?.map(data => (
-                          counter = counter + 1,
-                          <TouchableOpacity
-                            key={counter}
-                            style={styles.touchContainer}
-                            onPress={() => {
-                              onViewImageVideo(item)
-                            }}
-                          >
-                            {data?.mimetype?.split("/")[0] == "image" ? <Image
-                              source={{
-                                uri: data.url,
-                              }}
-                              style={styles.image}
-                            /> : <ImageBackground
-                              source={{
-                                uri: data?.cover,
-                              }}
-                              key={counter}
-                              style={[styles.image, styles.playButtonBg]}
-                            >
-
-                              <TouchableOpacity
-                                // activeOpacity={1}
-                                style={styles.playButton}
-                                onPress={() => {
-                                  onViewImageVideo(item)
-                                }}
-                              >
-                                <FontAwesomeIcon
-                                  icon={faPlay}
-                                  size={ms(15)}
-                                  style={styles.Play}
-                                />
-
-                              </TouchableOpacity>
-                            </ImageBackground>}
-
-
-                          </TouchableOpacity>
-                        ))}
-                      </View>
-                    ) : item?.postMediaContent?.length > 2 ? (
-                      counter = 1,
-                      <View style={styles.imageContainer}>
-                        {item?.postMediaContent?.map(data =>
-                          counter == 1 ? (
-                            counter = counter + 1,
-                            <TouchableOpacity
-                              key={counter}
-                              style={styles.touchContainer}
-                              onPress={() => {
-                                onViewImageVideo(item)
-                              }}
-                            >
-                              {data?.mimetype?.split("/")[0] == "image" ? <Image
-                                source={{
-                                  uri: data.url,
-                                }}
-                                style={styles.image}
-                              /> : <ImageBackground
-                                source={{
-                                  uri: data?.cover,
-                                }}
-                                key={counter}
-                                style={[styles.image, styles.playButtonBg]}
-                              >
-
-                                <TouchableOpacity
-                                  // activeOpacity={1}
-                                  style={styles.playButton}
-                                  onPress={() => {
-                                    onViewImageVideo(item)
-                                  }}
-                                >
-                                  <FontAwesomeIcon
-                                    icon={faPlay}
-                                    size={ms(15)}
-                                    style={styles.Play}
-                                  />
-
-                                </TouchableOpacity>
-                              </ImageBackground>}
-                            </TouchableOpacity>
-                          ) : counter == 2 ? (
-                            counter = counter + 1,
-                            <TouchableOpacity
-                              key={counter}
-                              style={styles.touchContainer}
-                              onPress={() => {
-                                onViewImageVideo(item)
-                              }}
-                            >
-                              <ImageBackground
-                                source={{
-                                  uri: data?.mimetype?.split("/")[0] == "image" ? data.url : data?.cover,
-                                }}
-                                key={counter}
-                                style={[styles.image, styles.moreImage]}
-                              >
-                                <TouchableOpacity
-                                  onPress={() => {
-                                    onViewImageVideo(item)
-                                  }}
-                                >
-                                  <Text style={styles.extraImage}>
-                                    {strings.message.plus}
-                                    {item.postMediaContent?.length - 1}
-                                  </Text>
-
-                                </TouchableOpacity>
-
-
-                              </ImageBackground>
-                            </TouchableOpacity>
-                          ) : null
-                        )}
-                      </View>
-                    ) : null}
+                    <MediaContainer
+                      borderBottom={false}
+                      contents={item?.postMediaContent}
+                      onPress={() => {
+                        onViewImageVideo(item);
+                      }}
+                    />
 
                     <View style={styles.cardFooter}>
                       <View style={styles.timeBox}>
@@ -353,7 +250,9 @@ export default function SchedulePost({ navigation }) {
                         />
                         <Text style={styles.timeTxt}>
                           {' '}
-                          {Moment.utc(item.created_at).format('hh:mm A  MMM D, YYYY')}{' '}
+                          {Moment.utc(item.created_at).format(
+                            'hh:mm A  MMM D, YYYY'
+                          )}{' '}
                         </Text>
                       </View>
                       {/* <TouchableOpacity style={styles.penIcon}>
@@ -364,13 +263,12 @@ export default function SchedulePost({ navigation }) {
                         />
                       </TouchableOpacity> */}
                     </View>
-
                   </Card>
-                }
+                )}
               </View>
             )}
           />
-        }
+        )}
       </View>
       {showImageView && (
         <SwiperViewer
@@ -574,7 +472,6 @@ const styles = StyleSheet.create({
     // paddingRight: ms(40),
     justifyContent: 'space-between',
     marginRight: ms(-5),
-
   },
   extraImage: {
     color: theme.light.colors.white,
@@ -699,7 +596,12 @@ const styles = StyleSheet.create({
     color: theme.light.colors.infoBgLight,
   },
   playButton: {
-    backgroundColor: theme.light.colors.primary, width: 50, height: 50, borderRadius: 100, justifyContent: "center", alignItems: "center"
+    backgroundColor: theme.light.colors.primary,
+    width: 50,
+    height: 50,
+    borderRadius: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   // delet confirm
@@ -722,7 +624,9 @@ const styles = StyleSheet.create({
     color: theme.light.colors.text,
   },
   loaderStyle: {
-    alignSelf: "center", justifyContent: "center", marginTop: ms(50)
+    alignSelf: 'center',
+    justifyContent: 'center',
+    marginTop: ms(50),
   },
   thumbnailImage: {
     width: '100%',

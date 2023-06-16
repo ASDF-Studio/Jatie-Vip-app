@@ -5,6 +5,7 @@ import { StyleSheet, TextInput } from 'react-native';
 import { TextStyles, theme } from '@/theme';
 import { FontFamily } from '@/theme/Fonts';
 import { ms } from 'react-native-size-matters';
+import { forwardRef } from 'react';
 
 const styles = StyleSheet.create({
   input: {
@@ -23,24 +24,28 @@ const styles = StyleSheet.create({
   },
 });
 
-export function TextField({ style, value, onChangeText, ...rest }) {
-  const { colors } = useTheme();
+export const TextField = forwardRef(
+  ({ style, value, onChangeText, ...rest }, ref) => {
+    const { colors } = useTheme();
 
-  return (
-    <TextInput value={value}
-      onChangeText={onChangeText}
-      style={[
-        { color: colors.text },
-        TextStyles.text,
-        styles.input,
-        styles.textFieldStyle,
-        style,
-      ]}
-      underlineColorAndroid="transparent"
-      {...rest}
-    />
-  );
-}
+    return (
+      <TextInput
+        ref={ref}
+        value={value}
+        onChangeText={onChangeText}
+        style={[
+          { color: colors.text },
+          TextStyles.text,
+          styles.input,
+          styles.textFieldStyle,
+          style,
+        ]}
+        underlineColorAndroid="transparent"
+        {...rest}
+      />
+    );
+  }
+);
 
 TextField.propTypes = {
   style: PropTypes.object,

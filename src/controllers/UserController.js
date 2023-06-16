@@ -2,6 +2,7 @@ import { API_BASE_URL, API_END_POINTS } from '@/constants';
 import { strings } from '@/localization';
 import { HttpClient } from './HttpClient';
 import { showMessage } from 'react-native-flash-message';
+import { customShowMessage } from '@/utils';
 
 export class UserController {
   static async login(number) {
@@ -194,7 +195,7 @@ export class UserController {
       if (mimeType !== null) {
         let obj = [];
         imageArray &&
-          imageArray?.map(item => {
+          imageArray?.slice(0, 3)?.map(item => {
             let filename = item.image.split('/').pop();
             obj = {
               uri: item.image,
@@ -243,54 +244,33 @@ export class UserController {
     return new Promise(async (resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.UPDATE_POST;
       let data = new FormData();
-      if (mimeType !== null) {
-        // if (isImage == strings.exclusive.video) {
-        let obj = [];
-        let videoPoster = [];
-        var isVideo = false;
 
-        imageArray.map(item => {
-          let filename =
-            item.video == null
-              ? item.image.split('/').pop()
-              : item.video.split('/').pop();
-          obj = {
-            uri: item.video == null ? item.image : item.video,
-            name: filename,
-            type: item.video == null ? item.imageMime : item.videoMime,
-            // videoPoster: item.video == null ? null : item?.videoPoster
-          };
-          if (item.video !== null) {
-            let filename = item.videoPoster.split('/').pop();
-            videoPoster = {
-              uri: item.videoPoster,
-              name: filename,
-              // type: item.videoMime,
-              // videoPoster: item.video == null ? null : item?.videoPoster
-            };
-            isVideo = true;
-          }
-          data.append('myimage', obj);
+      console.log('===================== ', preImageArray.length);
+
+      imageArray.forEach(item => {
+        const fileName = item.video
+          ? item.video.split('/').pop()
+          : item.image.split('/').pop();
+
+        const url = item.video ? item.video : item.image;
+        const mime = item.video ? item.videoMime : item.imageMime;
+
+        data.append('myimage', {
+          uri: url,
+          name: fileName,
+          type: mime,
         });
-        if (isVideo) {
-          data.append('videoPoster', videoPoster);
+
+        if (item.video) {
+          const posterName = item.videoPoster.split('/').pop();
+          data.append('videoPoster', {
+            uri: item.videoPoster,
+            name: posterName,
+            type: item.videoPostermime,
+          });
         }
-        // data.append('videoPoster', videoPoster);
-      }
-      // if (preImageArray.length > 0) {
-      //   let preMedia = [];
+      });
 
-      //   preImageArray.map(item => {
-      //     preMedia = {
-      //       "url": item.url,
-      //       "mimetype": item.mimetype,
-      //       "cover": item?.cover
-      //     };
-      //     ;
-      //     data.append('postMediaContent', preMedia)
-      //   });
-
-      // }
       data.append(
         'postMediaContent',
         preImageArray.length > 0 ? JSON.stringify(preImageArray) : ''
@@ -398,80 +378,55 @@ export class UserController {
     publishDate,
     expireDate
   ) {
-    console.log(
-      'log in controller',
-      'vip only-',
-      id,
-      postTitle,
-      postBody,
-      file,
-      mimeType,
-      imageArray,
-      vipOnly,
-      schedulePost,
-      scheduleDetails,
-      goingLIve,
-      ad,
-      publishDate,
-      expireDate
-    );
     return new Promise(async (resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.CREATE_POST_ADMIN;
       let data = new FormData();
-      if (mimeType !== null) {
-        // if (isImage == strings.exclusive.video) {
-        let obj = [];
-        let videoPoster = [];
-        var isVideo = false;
-        imageArray.map(item => {
-          let filename =
-            item.video == null
-              ? item.image.split('/').pop()
-              : item.video.split('/').pop();
-          obj = {
-            uri: item.video == null ? item.image : item.video,
-            name: filename,
-            type: item.video == null ? item.imageMime : item.videoMime,
-            // videoPoster: item.video == null ? null : item?.videoPoster
-          };
-          if (item.video !== null) {
-            let filename = item.videoPoster.split('/').pop();
-            videoPoster = {
-              uri: item.videoPoster,
-              name: filename,
-              // type: item.videoMime,
-              // videoPoster: item.video == null ? null : item?.videoPoster
-            };
-            isVideo = true;
-          }
-          data.append('myimage', obj);
+
+      imageArray.forEach(item => {
+        const fileName = item.video
+          ? item.video.split('/').pop()
+          : item.image.split('/').pop();
+
+        const url = item.video ? item.video : item.image;
+        const mime = item.video ? item.videoMime : item.imageMime;
+
+        data.append('myimage', {
+          uri: url,
+          name: fileName,
+          type: mime,
         });
-        if (isVideo) {
-          data.append('videoPoster', videoPoster);
+
+        if (item.video) {
+          const posterName = item.videoPoster.split('/').pop();
+          data.append('videoPoster', {
+            uri: item.videoPoster,
+            name: posterName,
+            type: item.videoPostermime,
+          });
         }
-        // data.append('videoPoster', videoPoster);
-      }
+      });
+
       data.append('userId', id);
       data.append('postTitle', postTitle);
       data.append('postBody', postBody);
       data.append('postImg', mimeType == null && file);
       data.append('isVIPonly', vipOnly);
-      {
-        schedulePost && data.append('isScheduled', schedulePost);
-        data.append('scheduleDetails', scheduleDetails);
-      }
+
+      schedulePost && data.append('isScheduled', schedulePost);
+      data.append('scheduleDetails', scheduleDetails);
 
       data.append('goingLive', goingLIve);
-      {
-        ad && data.append('isAdvertisement', ad);
-        data.append('publishDate', publishDate);
-        data.append('expiryDate', expireDate);
-      }
-      console.log('=================== i am here');
+
+      ad && data.append('isAdvertisement', ad);
+      data.append('publishDate', publishDate);
+      data.append('expiryDate', expireDate);
+
       const headers = {
         'Content-Type': 'multipart/form-data',
       };
-      console.log('=================>', JSON.stringify(data));
+
+      console.log('=========================   ', data);
+
       await HttpClient.post(endpoint, data, { headers })
         .then(response => {
           resolve(response);
@@ -700,7 +655,7 @@ export class UserController {
         .then(response => {
           resolve(response);
           console.log('response of unBanned User', response);
-          showMessage({
+          customShowMessage({
             message: 'User Unbanned',
             type: 'success',
           });
@@ -722,7 +677,7 @@ export class UserController {
         .then(response => {
           resolve(response);
           console.log('response of banned User', response);
-          showMessage({
+          customShowMessage({
             message: 'User Banned',
             type: 'success',
           });
@@ -774,10 +729,41 @@ export class UserController {
             'response of mark read Notifications',
             JSON.stringify(response)
           );
-          showMessage({
+          customShowMessage({
             message: 'All Notifications are read',
             type: 'success',
           });
+        })
+        .catch(error => {
+          reject(new Error(error.message));
+          console.log('error of All notifications', error);
+        });
+    });
+  }
+
+  static async markSingleNotificationsRequest(userId, notifId) {
+    return new Promise((resolve, reject) => {
+      const endpoint =
+        API_BASE_URL + API_END_POINTS.MARK_SINGLE_READ_NOTIFICATIONS;
+
+      //  console.log("endPoint", endpoint)
+
+      var data = JSON.stringify({
+        loggedInUserId: userId,
+        notificationId: notifId,
+      });
+
+      HttpClient.post(endpoint, data)
+        .then(response => {
+          resolve(response);
+          console.log(
+            'response of mark read Notifications',
+            JSON.stringify(response)
+          );
+          // customShowMessage({
+          //   message: 'All Notifications are read',
+          //   type: 'success',
+          // });
         })
         .catch(error => {
           reject(new Error(error.message));

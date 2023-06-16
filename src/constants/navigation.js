@@ -1,6 +1,6 @@
 export const NAVIGATION = {
   //App Navigator
-  AppNavigator: "AppNavigator",
+  AppNavigator: 'AppNavigator',
   welcome: 'Welcome',
   login: 'Login',
   enterOtp: 'EnterOtp',
@@ -59,7 +59,7 @@ export const NAVIGATION = {
   post: 'Post',
   updatePost: 'UpdatePost',
   postOptions: 'PostOptions',
-  singlePost: "SinglePost",
+  singlePost: 'SinglePost',
 
   //Exclusive
   exclusiveThumbnail: 'ExclusiveThumbnail', //onPress thumbnail navigator
@@ -81,6 +81,6 @@ export const NAVIGATION = {
   notification: 'Notification',
   search: 'Search',
   //Exclusive
-  updateExclusivepost: "UpdateExclusivePost",
-  updateExclusiveOption: "UpdateExculsiveOption"
+  updateExclusivepost: 'UpdateExclusivePost',
+  updateExclusiveOption: 'UpdateExculsiveOption',
 };

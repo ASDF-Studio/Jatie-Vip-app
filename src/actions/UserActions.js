@@ -3,9 +3,9 @@ import { UserController } from '@/controllers';
 import { strings } from '@/localization';
 import { navigationRef } from '@/navigation/RootNavigation';
 import { StackActions } from '@react-navigation/native';
-import { showMessage } from 'react-native-flash-message';
 import { globalReset } from './GlobalActions';
 import { getAllPost } from './PostActions';
+import { customShowMessage } from '@/utils';
 
 export const TYPES = {
   CLEAR_STORE: 'CLEAR_STORE',
@@ -87,14 +87,22 @@ export const TYPES = {
   GET_ALL_POST_BY_USERID_SUCCESS: 'GET_ALL_POST_BY_USERID_SUCCESS',
   GET_ALL_POST_BY_USERID_ERROR: 'GET_ALL_POST_BY_USERID_ERROR',
 
+  GET_ALL_POST_BY_USER_ID_PAGINATION: 'GET_ALL_POST_BY_USER_ID_PAGINATION',
+  GET_ALL_POST_BY_USER_ID_PAGINATION_REQUEST:
+    'GET_ALL_POST_BY_USER_ID_PAGINATION_REQUEST',
+  GET_ALL_POST_BY_USER_ID_PAGINATION_SUCCESS:
+    'GET_ALL_POST_BY_USER_ID_PAGINATION_SUCCESS',
+  GET_ALL_POST_BY_USER_ID_PAGINATION_ERROR:
+    'GET_ALL_POST_BY_USER_ID_PAGINATION_ERROR',
+
   GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION:
-    ' GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION',
+    'GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION',
   GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION_REQUEST:
-    ' GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION_REQUEST',
+    'GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION_REQUEST',
   GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION_SUCCESS:
-    ' GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION_SUCCESS',
+    'GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION_SUCCESS',
   GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION_ERROR:
-    ' GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION_ERROR',
+    'GET_ALL_POST_BY_LOGGED_IN_USER_PAGINATION_ERROR',
 
   GET_ALL_ACTIVITY_BY_LOGGED_IN_USER: 'GET_ALL_ACTIVITY_BY_LOGGED_IN_USER',
   GET_ALL_ACTIVITY_BY_LOGGED_IN_USER_REQUEST:
@@ -340,6 +348,21 @@ const getAllPostByUserIDRequest = () => ({
 
 const getAllPostByUserIDError = error => ({
   type: TYPES.GET_ALL_POST_BY_USERID_ERROR,
+  payload: { error },
+});
+
+export const getAllPostByUserIdPaginationSuccess = post => ({
+  type: TYPES.GET_ALL_POST_BY_USER_ID_PAGINATION_SUCCESS,
+  payload: { post },
+});
+
+const getAllPostByUserIdPaginationRequest = () => ({
+  type: TYPES.GET_ALL_POST_BY_USER_ID_PAGINATION_REQUEST,
+  payload: null,
+});
+
+const getAllPostByUserIdPaginationError = error => ({
+  type: TYPES.GET_ALL_POST_BY_USER_ID_PAGINATION_ERROR,
   payload: { error },
 });
 
@@ -675,14 +698,14 @@ export const updateProfile =
       );
       dispatch(updateProfileSuccess(user));
       if (screen == NAVIGATION.editProfile) {
-        showMessage({
+        customShowMessage({
           message: strings.editProfile.updatedSuccess,
           type: 'success',
         });
         navigationRef.navigate(NAVIGATION.profileSetting);
       }
     } catch (error) {
-      showMessage({
+      customShowMessage({
         message: error?.message,
         type: 'danger',
       });
@@ -700,7 +723,7 @@ export const uploadProfile = (file, mimeType, USER) => async dispatch => {
     );
     // dispatch(uploadProfileSuccess(USER))
   } catch (error) {
-    showMessage({
+    customShowMessage({
       message: error?.message,
       type: 'danger',
     });
@@ -772,7 +795,7 @@ export const createPost =
       );
       dispatch(createPostSuccess(user));
       if (screen == NAVIGATION.home) {
-        showMessage({
+        customShowMessage({
           message: strings.createPost.updatedSuccess,
           type: 'success',
         });
@@ -780,7 +803,7 @@ export const createPost =
         navigationRef.navigate(NAVIGATION.home);
       }
       if (screen == NAVIGATION.profile) {
-        showMessage({
+        customShowMessage({
           message: strings.createPost.updatedSuccess,
           type: 'success',
         });
@@ -788,7 +811,7 @@ export const createPost =
         navigationRef.navigate(NAVIGATION.profile);
       }
     } catch (error) {
-      showMessage({
+      customShowMessage({
         message: error?.message,
         type: 'danger',
       });
@@ -816,24 +839,9 @@ export const createPostByAdmin =
     expireDate
   ) =>
   async dispatch => {
-    console.log(
-      'log in actions',
-      id,
-      postTitle,
-      postBody,
-      postImg,
-      mimeType,
-      imageArray,
-      vipOnly,
-      schedulePost,
-      scheduleDetails,
-      goingLIve,
-      ad,
-      publishDate,
-      expireDate
-    );
     dispatch(globalReset());
     dispatch(createPostRequest());
+
     try {
       const user = await UserController.createPostByAdmin(
         id,
@@ -851,10 +859,10 @@ export const createPostByAdmin =
         publishDate,
         expireDate
       );
-      console.log('==================', user);
+
       dispatch(createPostSuccess(user));
       if (screen == NAVIGATION.home) {
-        showMessage({
+        customShowMessage({
           message: strings.createPost.updatedSuccess,
           type: 'success',
         });
@@ -862,7 +870,7 @@ export const createPostByAdmin =
         navigationRef.navigate(NAVIGATION.home);
       }
       if (screen == NAVIGATION.profile) {
-        showMessage({
+        customShowMessage({
           message: strings.createPost.updatedSuccess,
           type: 'success',
         });
@@ -870,8 +878,7 @@ export const createPostByAdmin =
         navigationRef.navigate(NAVIGATION.profile);
       }
     } catch (error) {
-      console.log('===================> ', error);
-      showMessage({
+      customShowMessage({
         message: error?.message,
         type: 'danger',
       });
@@ -913,7 +920,7 @@ export const updatePost =
       );
       dispatch(updatePostSuccess(user));
       if (screen == NAVIGATION.home) {
-        showMessage({
+        customShowMessage({
           message: strings.updatePost.updatedSuccess,
           type: 'success',
         });
@@ -922,7 +929,7 @@ export const updatePost =
         navigationRef.navigate(NAVIGATION.home);
       }
       if (screen == NAVIGATION.profile) {
-        showMessage({
+        customShowMessage({
           message: strings.updatePost.updatedSuccess,
           type: 'success',
         });
@@ -931,7 +938,7 @@ export const updatePost =
         navigationRef.navigate(NAVIGATION.profile);
       }
     } catch (error) {
-      showMessage({
+      customShowMessage({
         message: error?.message,
         type: 'danger',
       });
@@ -954,14 +961,14 @@ export const deletePost =
       );
       dispatch(deletePostSuccess(user));
       if (screen == NAVIGATION.home) {
-        showMessage({
+        customShowMessage({
           message: strings.deletePost.deletedSuccess,
           type: 'success',
         });
         navigationRef.navigate(NAVIGATION.home);
       }
       if (screen == NAVIGATION.profile) {
-        showMessage({
+        customShowMessage({
           message: strings.deletePost.deletedSuccess,
           type: 'success',
         });
@@ -972,7 +979,7 @@ export const deletePost =
         navigationRef.navigate(NAVIGATION.profile);
       }
     } catch (error) {
-      showMessage({
+      customShowMessage({
         message: error?.message,
         type: 'danger',
       });
@@ -996,7 +1003,6 @@ export const getAllPostsByLoggedInUser =
         allPosts = await UserController.postByUserId(id, null, loggedInUserId);
       }
       if (userType.user === strings.userType.admin) {
-        console.log('THIS IS WORKING  ', userType.user);
         allPosts = await UserController.getAllPostByAdmin(loggedInUserId);
       }
 
@@ -1007,26 +1013,46 @@ export const getAllPostsByLoggedInUser =
   };
 
 //Get all post by userid
-export const getAllPostsByUserid =
-  (id, loggedInUserId) => async (dispatch, getState) => {
-    dispatch(globalReset());
-    dispatch(getAllPostByUserIDRequest());
+export const getAllPostsByUserid = (id, loggedInUserId) => async dispatch => {
+  dispatch(globalReset());
+  dispatch(getAllPostByUserIDRequest());
 
-    const userType = getState().userType;
+  let allPosts;
+  try {
+    // if (
+    //   userType.user === strings.userType.free ||
+    //   userType.user === strings.userType.vip
+    // ) {
+    allPosts = await UserController.postByUserId(id, '', loggedInUserId);
+    // }
+    // if (userType.user === strings.userType.admin) {
+    //   allPosts = await UserController.getAllPostByAdmin();
+    // }
+    dispatch(getAllPostByUserIdSuccess(allPosts?.data));
+  } catch (error) {
+    dispatch(getAllPostByUserIDError(error));
+  }
+};
+
+export const getAllPostsByUseridPagination =
+  (id, page, loggedInUserId) => async dispatch => {
+    dispatch(globalReset());
+    dispatch(getAllPostByUserIdPaginationRequest());
+
     let allPosts;
     try {
       // if (
       //   userType.user === strings.userType.free ||
       //   userType.user === strings.userType.vip
       // ) {
-      allPosts = await UserController.postByUserId(id, null, loggedInUserId);
+      allPosts = await UserController.postByUserId(id, page, loggedInUserId);
       // }
       // if (userType.user === strings.userType.admin) {
       //   allPosts = await UserController.getAllPostByAdmin();
       // }
-      dispatch(getAllPostByUserIdSuccess(allPosts?.data));
+      dispatch(getAllPostByUserIdPaginationSuccess(allPosts?.data));
     } catch (error) {
-      dispatch(getAllPostByUserIDError(error));
+      dispatch(getAllPostByUserIdPaginationError(error));
     }
   };
 
@@ -1221,5 +1247,14 @@ export const markAllRead = id => async dispatch => {
     dispatch(markAllReadNotificationsSuccess(user));
   } catch (error) {
     dispatch(markAllReadNotificationsError(error));
+  }
+};
+
+export const markSingleNotifRead = async (userId, notifId) => {
+  try {
+    await UserController.markSingleNotificationsRequest(userId, notifId);
+    console.log('notification read successfully ===================');
+  } catch (error) {
+    console.log(error);
   }
 };

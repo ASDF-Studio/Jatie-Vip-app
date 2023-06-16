@@ -1,4 +1,4 @@
-import { theme } from '@/theme';
+import { TextStyles, theme } from '@/theme';
 import { StyleSheet } from 'react-native';
 import { FontFamily } from '@/theme/Fonts';
 import { ms, vs } from 'react-native-size-matters';
@@ -10,10 +10,12 @@ export const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: ms(10),
+    marginBottom: vs(8),
   },
   headerImageContainer: {
     flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
   },
   headerImage: {
     width: ms(50),
@@ -22,7 +24,12 @@ export const styles = StyleSheet.create({
     borderRadius: 75,
   },
   playButton: {
-    backgroundColor: theme.light.colors.primary, width: 50, height: 50, borderRadius: 100, justifyContent: "center", alignItems: "center"
+    backgroundColor: theme.light.colors.primary,
+    width: 50,
+    height: 50,
+    borderRadius: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   image: {
     flex: 1,
@@ -38,29 +45,42 @@ export const styles = StyleSheet.create({
     padding: 35,
   },
   exclusive: {
-    paddingLeft: ms(7),
+    paddingLeft: ms(10),
   },
+  nameTxt: [
+    TextStyles.header,
+    {
+      color: theme.light.colors.black,
+    },
+  ],
   iconContiner: {
     flexDirection: 'row',
-  },
-  icon: {
-    margin: ms(10),
-  },
-  cardContainer: { margin: ms(12), },
-  recentContiner: {
-    padding: ms(4),
-    flexDirection: 'row',
+    justifyContent: 'flex-end',
     alignItems: 'center',
+    padding: ms(10),
+  },
+  icon: { marginRight: ms(20), color: theme.light.colors.black },
+  cardContainer: {
+    margin: ms(12),
+    // paddingRight: ms(40),
+  },
+  recentContiner: {
+    flexDirection: 'row',
+    position: 'absolute',
+    top: ms(30),
+    paddingLeft: ms(5),
   },
   recent: {
     fontFamily: FontFamily.Recoleta_medium,
     fontSize: ms(12, 0.3),
+    color: theme.light.colors.secondary,
   },
   recentIcon: {
     marginLeft: ms(3),
     color: theme.light.colors.secondary,
   },
   feedContainer: {
+    marginBottom: Platform.OS === 'ios' ? -34 : 0,
     flex: 1,
     backgroundColor: theme.light.colors.primaryBgLight,
   },
@@ -101,9 +121,9 @@ export const styles = StyleSheet.create({
   videoPlay: {
     color: theme.light.colors.primary,
   },
-  CardHeaderContainer: { paddingTop: vs(8) },
+  CardHeaderContainer: { paddingTop: vs(5), paddingHorizontal: ms(5) },
   fullNameTxtContainer: { paddingLeft: ms(5) },
-  headerColor: { color: theme.light.colors.text },
+  headerColor: { color: theme.light.colors.black },
   ellipsisIconColor: {
     color: theme.light.colors.black,
   },
@@ -219,7 +239,6 @@ export const styles = StyleSheet.create({
     // paddingRight: ms(40),
     justifyContent: 'space-between',
     marginRight: ms(-5),
-
   },
   touchContainer: {
     flex: 1,
@@ -253,11 +272,11 @@ export const styles = StyleSheet.create({
     width: '100%',
   },
   absolute: {
-    position: "absolute",
+    position: 'absolute',
     top: 0,
     left: 0,
     bottom: 0,
-    right: 0
+    right: 0,
   },
   vipOnlyContainer: {
     backgroundColor: theme.light.colors.primary,
@@ -283,8 +302,7 @@ export const styles = StyleSheet.create({
     color: theme.light.colors.background,
   },
   thumbnailContainer: {
-    width: '100%',
-    height: vs(180),
+    // width: '100%',
+    // height: vs(180),
   },
-
 });

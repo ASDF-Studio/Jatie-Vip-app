@@ -1,6 +1,7 @@
 import { API_BASE_URL, API_END_POINTS } from '@/constants';
 import { showMessage } from 'react-native-flash-message';
 import { HttpClient } from './HttpClient';
+import { customShowMessage } from '@/utils';
 
 export class GiveAwayController {
   // create post
@@ -42,6 +43,7 @@ export class GiveAwayController {
             videoPoster = {
               uri: item.videoPoster,
               name: filename,
+              type: item.videoPostermime,
               // type: item.videoMime,
               // videoPoster: item.video == null ? null : item?.videoPoster
             };
@@ -130,7 +132,7 @@ export class GiveAwayController {
         giveawayId: data?.giveawayId,
         participantId: data?.participantId,
       });
-      console.log('JOINNNNN', body);
+
       HttpClient.post(endpoint, body)
         .then(response => {
           resolve(response);
@@ -138,14 +140,14 @@ export class GiveAwayController {
 
           {
             response.status == 'User already joined'
-              ? showMessage({
-                message: 'User already joined',
-                type: 'success',
-              })
-              : showMessage({
-                message: 'Participant Join the giveaway',
-                type: 'success',
-              });
+              ? customShowMessage({
+                  message: 'User already joined',
+                  type: 'success',
+                })
+              : customShowMessage({
+                  message: 'Participant Join the giveaway',
+                  type: 'success',
+                });
           }
         })
         .catch(error => {
@@ -193,6 +195,7 @@ export class GiveAwayController {
             videoPoster = {
               uri: item.videoPoster,
               name: filename,
+              type: item.videoPostermime,
               // type: item.videoMime,
               // videoPoster: item.video == null ? null : item?.videoPoster
             };
@@ -257,7 +260,7 @@ export class GiveAwayController {
         JSON.stringify({
           id: params?.id,
           userId: params?.userId,
-        }),
+        })
       )
         .then(response => {
           resolve(response);
@@ -319,10 +322,10 @@ export class GiveAwayController {
         .then(response => {
           resolve(response);
 
-          // showMessage({
-          //     message: 'Participant withdrawn from the giveaway',
-          //     type: 'success'
-          // })
+          // customShowMessage({
+          //   message: 'Participant withdrawn from the giveaway',
+          //   type: 'success',
+          // });
         })
         .catch(error => {
           reject(new Error(error.message));

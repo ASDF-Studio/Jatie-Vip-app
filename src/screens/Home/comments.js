@@ -72,6 +72,7 @@ import { useRef } from 'react';
 import ImagePicker from 'react-native-image-crop-picker';
 import { globalReset } from '@/actions/GlobalActions';
 import { POST_TYPE } from '@/constants/enums';
+import { isEmpty } from 'lodash';
 export default function Comments({ navigation, route }) {
   const keyboardScroll = useRef(null);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
@@ -214,6 +215,7 @@ export default function Comments({ navigation, route }) {
       keyboardDidHideListener.remove();
     };
   }, []);
+
   const commentReplyFormat = (id, username) => {
     childRef.current.resetValue();
     setReplyUserId(id), setReplyUserName(username);
@@ -222,6 +224,7 @@ export default function Comments({ navigation, route }) {
     childRef.current.childReplyFunction(link);
     setOpenReplyTo(true);
   };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
@@ -241,12 +244,19 @@ export default function Comments({ navigation, route }) {
             <Loader visible={true} size={'large'} />
           ) : (
             <FlatList
-              data={COMMENTS?.postComments}
+              data={COMMENTS?.postComments || []}
               ref={flatListRef}
               keyExtractor={item => item.id}
               onContentSizeChange={scrollToBottom}
               renderItem={({ item, index }) => (
                 <CommentCard
+                  isBlocked={
+                    !isEmpty(
+                      USER?.blockListKey?.data.filter(
+                        el => el?.blockedUser === item?.userId
+                      ) || []
+                    )
+                  }
                   name={item?.user?.fullName}
                   userId={USER?.id}
                   commentData={item}
@@ -315,7 +325,7 @@ export default function Comments({ navigation, route }) {
             commentIndex={commentIndex}
             commentOwnerId={DATA?.userId}
             type={type}
-          // scrollRef={handleTextInputFocus}
+            // scrollRef={handleTextInputFocus}
           />
         )}
         {/*  Slide up for follow, edit , review  */}
@@ -367,6 +377,7 @@ export default function Comments({ navigation, route }) {
               <ModalList
                 title={strings.operations.sendPrivateMessage}
                 icon={faMessage}
+                disabled
                 iconColor={theme.light.colors.success}
                 iconBg={theme.light.colors.successBgLight}
               />

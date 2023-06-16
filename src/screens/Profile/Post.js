@@ -15,6 +15,8 @@ import {
   CustomLoader,
   HorizontalLine,
   Icon,
+  PostInput,
+  SelectedFiles,
   TopBackButton,
 } from '@/components';
 import {
@@ -38,14 +40,14 @@ import { getUser } from '@/selectors/UserSelectors';
 import { TYPES, createPost } from '@/actions/UserActions';
 import { navigationRef } from '@/navigation/RootNavigation';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
-
-let nextId = 0;
+import { createThumbnail } from 'react-native-create-thumbnail';
+import { customShowMessage } from '@/utils';
 
 export default function Post({ navigation }) {
   const userType = useSelector(state => state.userType);
 
   // console.log('usertype', userType)
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const user = useSelector(getUser);
   const [imageArray, setImageArray] = useState([]);
   const [isModalVisible, setModalVisible] = useState(false);
@@ -69,58 +71,74 @@ export default function Post({ navigation }) {
   const closeModal = () => {
     setModalVisible(!isModalVisible);
   };
-  deleteFile = id => {
-    setImageArray(imageArray.filter(a => a.id !== id));
+  const deleteFile = itemIndex => {
+    setImageArray(imageArray.filter((_, index) => itemIndex !== index));
   };
-
   const OpenGallery = () => {
     {
       isImage == strings.exclusive.image
         ? ImageCropPicker.openPicker({
-          width: 300,
-          height: 400,
-          mediaType: strings.exclusive.image,
-          multiple: true,
-          compressImageQuality: 0.5
-        })
-          .then(images => {
-            images.forEach(item => {
-              imageArray.push({
-                id: nextId++,
-                image: item.path,
-                imageMime: item.mime,
-                video: null,
+            width: ms(300),
+            height: ms(400),
+            maxFiles: 3,
+            mediaType: strings.exclusive.image,
+            multiple: true,
+            compressImageQuality: 0.5,
+          })
+            .then(images => {
+              images.slice(0, 3).forEach(item => {
+                if (item?.duration) return;
+                imageArray.push({
+                  image: item.path,
+                  imageMime: item.mime,
+                  video: null,
+                });
+                // postImg.push(item.path);
+                // mimeType.push(item.mime);
               });
-              postImg.push(item.path);
-              mimeType.push(item.mime);
+            })
+            .catch(e => {
+              console.log('Error: ' + e);
+            })
+            .finally(() => {
+              setImageArray([...imageArray]);
               setModalVisible(!isModalVisible);
-            });
-          })
-          .catch(e => {
-            console.log('Error: ' + e);
-          })
+            })
         : ImageCropPicker.openPicker({
-          width: 300,
-          height: 400,
-          mediaType: strings.exclusive.video,
-          multiple: true,
-          compressImageQuality: 0.5,
-          loadingLabelText: 'loading',
-        })
-          .then(video => {
-            imageArray.push({
-              id: nextId++,
-              image: null,
-              video: video.path,
-              videoMime: video.mime,
-            });
-            setPostImg(video.path);
-            setmimeType(video.mime);
-            setModalVisible(!isModalVisible);
+            width: 300,
+            height: 400,
+            maxFiles: 3,
+            mediaType: strings.exclusive.video,
+            multiple: true,
+            compressImageQuality: 0.5,
+            loadingLabelText: 'loading',
           })
-          .catch(e => {
-            console.log('Error: ' + e);
-          });
+            .then(video => {
+              video.slice(0, 3).forEach(item => {
+                createThumbnail({
+                  url: item.path,
+                  timeStamp: 10000,
+                })
+                  .then(response => {
+                    imageArray.push({
+                      image: null,
+                      video: item.path,
+                      videoMime: item.mime,
+                      videoPoster: response?.path,
+                      videoPostermime: response?.mime,
+                    });
+
+                    setImageArray([...imageArray]);
+                    setModalVisible(!isModalVisible);
+                  })
+                  .catch(err => console.log({ err }));
+                // setPostImg(video.path);
+                // setmimeType(video.mime);
+              });
+            })
+            .catch(e => {
+              console.log('Error: ' + e);
+            });
     }
   };
 
@@ -128,115 +146,116 @@ export default function Post({ navigation }) {
     {
       isImage == strings.exclusive.image
         ? ImageCropPicker.openCamera({
-          width: 300,
-          height: 400,
-          cropping: false,
-          compressImageQuality: 0.5,
-        })
-          .then(image => {
-            imageArray.push({
-              id: nextId++,
-              image: image.path,
-              imageMime: image.mime,
-              video: null,
-            });
-            setPostImg(image.path);
-            setmimeType(image.mime);
-            setModalVisible(!isModalVisible);
+            width: 300,
+            height: 400,
+            cropping: false,
+            compressImageQuality: 0.5,
           })
-          .catch(e => {
-            console.log('Error: ' + e);
-          })
+            .then(image => {
+              imageArray.push({
+                image: image.path,
+                imageMime: image.mime,
+                video: null,
+              });
+              // setPostImg(image.path);
+              // setmimeType(image.mime);
+            })
+            .catch(e => {
+              console.log('Error: ' + e);
+            })
+            .finally(() => {
+              setImageArray([...imageArray]);
+              setModalVisible(!isModalVisible);
+            })
         : ImageCropPicker.openCamera({
-          width: 300,
-          height: 400,
-          cropping: false,
-          mediaType: strings.exclusive.video,
-          compressImageQuality: 0.5,
-        })
-          .then(image => {
-            imageArray.push({
-              id: nextId++,
-              image: null,
-              video: image.path,
-              videoMime: image.mime,
-            });
-            setPostImg(image.path);
-            setmimeType(image.mime);
-            setModalVisible(!isModalVisible);
+            width: 300,
+            height: 400,
+            cropping: false,
+            mediaType: strings.exclusive.video,
+            compressImageQuality: 0.5,
           })
-          .catch(e => {
-            console.log('Error: ' + e);
-          });
+            .then(image => {
+              imageArray.push({
+                image: null,
+                video: image.path,
+                videoMime: image.mime,
+              });
+              setImageArray([...imageArray]);
+              setModalVisible(!isModalVisible);
+              // setPostImg(image.path);
+              // setmimeType(image.mime);
+            })
+            .catch(e => {
+              console.log('Error: ' + e);
+            });
     }
   };
-
   const validation = () => {
     if (postBody == '') {
-      showMessage({
+      customShowMessage({
         message: strings.home.postBody,
-        type: "danger"
-      })
+        type: 'danger',
+      });
+      return;
     }
-    // else if (postTitle == '') {
-    //   showMessage({
-    //     message: strings.home.postTitle,
-    //     type: "danger"
-    //   })
-    // } 
-    // else if (postImg == "") {
-    //   showMessage({
-    //     message: strings.SignUp.dobPlaceHolder,
-    //     type: "danger"
-    //   })
-    // }
-    else {
-
-      let DATA = {
-        postTitle, postBody, postImg, mimeType, imageArray
-      }
-
-      {
-        userType.user == strings.userType.free && (
-          dispatch(createPost(user?.id, postTitle, postBody, postImg, mimeType, imageArray, NAVIGATION.profile, vipOnly))
-        )
-      }
-      {
-        userType.user == strings.userType.admin && (
-          navigationRef.navigate(NAVIGATION.postOptions, {
-            prevData: DATA,
-          })
-        )
-      }
-
-      // dispatch(createPost(user?.id, postTitle, postBody, postImg, mimeType, imageArray, NAVIGATION.profile))
-
-      // var DATA = {
-      //   postTitle, postBody, postImg, mimeType, imageArray
-      // }
-      // navigationRef.navigate(NAVIGATION.postOptions, {
-      //   prevData: DATA
-      // })
-
-      {
-        userType.user == strings.userType.vip && (
-          dispatch(createPost(user?.id, postTitle, postBody, postImg, mimeType, imageArray, NAVIGATION.profile, vipOnly
-          ),
-
+    {
+      userType.user == strings.userType.free &&
+        dispatch(
+          createPost(
+            user?.id,
+            postTitle,
+            postBody,
+            postImg,
+            mimeType,
+            imageArray,
+            NAVIGATION.profile,
+            vipOnly
           )
-
-
-
-        )
-      }
+        );
+    }
+    {
+      userType.user == strings.userType.admin &&
+        navigationRef.navigate(NAVIGATION.postOptions, {
+          prevData: {
+            postTitle,
+            postBody,
+            postImg,
+            mimeType,
+            imageArray,
+          },
+        });
     }
 
-  }
-  const onSave = () => {
-    validation()
-    //console.log(userType.user, strings.userType.admin);
+    // dispatch(createPost(user?.id, postTitle, postBody, postImg, mimeType, imageArray, NAVIGATION.profile))
 
-  }
+    // var DATA = {
+    //   postTitle, postBody, postImg, mimeType, imageArray
+    // }
+    // navigationRef.navigate(NAVIGATION.postOptions, {
+    //   prevData: DATA
+    // })
+
+    {
+      userType.user == strings.userType.vip &&
+        dispatch(
+          createPost(
+            user?.id,
+            postTitle,
+            postBody,
+            postImg,
+            mimeType,
+            imageArray,
+            NAVIGATION.profile,
+            vipOnly
+          )
+        );
+    }
+  };
+  const onSave = () => {
+    validation();
+    //console.log(userType.user, strings.userType.admin);
+  };
+
   return (
     <SafeAreaView style={styles.contianer}>
       <View style={styles.header}>
@@ -246,21 +265,11 @@ export default function Post({ navigation }) {
         </Text>
       </View>
       <HorizontalLine />
-      <CustomLoader
-        open={isLoading}
-      />
+      <CustomLoader open={isLoading} />
       <ScrollView>
         <View style={styles.postContainer}>
           <View style={styles.TextBoxDEsc}>
-            <TextInput
-              placeholder={strings.home.whatOnYourMind}
-              style={styles.InputTextBoxDEsc}
-              value={postBody}
-              onChangeText={val => setPostBody(val)}
-              editable
-              multiline
-              numberOfLines={6}
-            />
+            <PostInput value={postBody} setValue={setPostBody} />
           </View>
         </View>
       </ScrollView>
@@ -269,7 +278,9 @@ export default function Post({ navigation }) {
         {imageArray.length ? (
           <HorizontalLine color={theme.light.colors.infoBgLight} />
         ) : null}
-        {FileUpload(imageArray)}
+        {imageArray && (
+          <SelectedFiles imageArray={imageArray} onDelete={deleteFile} />
+        )}
         <View style={styles.BottomFileContainer}>
           <View style={styles.iconContainer}>
             <Icon
@@ -299,7 +310,7 @@ export default function Post({ navigation }) {
             )}
 
             {/* show only for admin */}
-            {/* {userType.user == strings.userType.admin && (
+            {userType.user == strings.userType.admin && (
               <>
                 <View style={styles.verticalBar} />
                 <Icon
@@ -311,7 +322,7 @@ export default function Post({ navigation }) {
                   style={styles.icon}
                 />
               </>
-            )} */}
+            )}
           </View>
 
           {/* button */}
@@ -420,7 +431,6 @@ export const FileUpload = imageArray => {
                       </Text>
                     </View>
                     <View style={styles.videoPlayContainer}>
-                      {' '}
                       <ActivityIndicator
                         animating={animating}
                         color={theme.light.colors.primary}
@@ -477,6 +487,9 @@ const styles = StyleSheet.create({
   InputTextBoxDEsc: {
     height: '100%',
     textAlignVertical: 'top',
+    fontFamily: FontFamily.BrandonGrotesque_regular,
+    fontWeight: '400',
+    fontSize: 18,
   },
   vipButton: {
     width: ms(100),

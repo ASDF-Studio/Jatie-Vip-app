@@ -5,6 +5,7 @@ import {
   Text,
   TouchableOpacity,
   SafeAreaView,
+  Linking,
 } from 'react-native';
 import {
   faArrowRight,
@@ -222,11 +223,61 @@ export const Footer = () => {
   return (
     <View style={styles.footer}>
       <View style={styles.socialContainer}>
-        <Icon icon={faFacebook} size={ms(25)} style={styles.socialIcon} />
-        <Icon icon={faTiktok} size={ms(25)} style={styles.socialIcon} />
-        <Icon icon={faSnapchat} size={ms(25)} style={styles.socialIcon} />
-        <Icon icon={faYoutube} size={ms(25)} style={styles.socialIcon} />
-        <Icon icon={faInstagram} size={ms(25)} style={styles.socialIcon} />
+        <Icon
+          icon={faFacebook}
+          size={ms(25)}
+          style={styles.socialIcon}
+          onPress={() => {
+            Linking.openURL('fb://page/JatieVlogsVideos').catch(() => {
+              Linking.openURL('https://www.facebook.com/JatieVlogsVideos');
+            });
+          }}
+        />
+        <Icon
+          icon={faTiktok}
+          size={ms(25)}
+          style={styles.socialIcon}
+          onPress={() => {
+            Linking.openURL('https://www.tiktok.com/@joshxkatie').catch(() => {
+              Linking.openURL('https://www.tiktok.com/@joshxkatie');
+            });
+          }}
+        />
+
+        <Icon
+          icon={faSnapchat}
+          size={ms(25)}
+          style={styles.socialIcon}
+          onPress={() => {
+            Linking.openURL('https://www.snapchat.com/add/joshbrueckner').catch(
+              () => {
+                Linking.openURL('https://www.snapchat.com/add/joshbrueckner');
+              }
+            );
+          }}
+        />
+        <Icon
+          icon={faYoutube}
+          size={ms(25)}
+          style={styles.socialIcon}
+          onPress={() => {
+            Linking.openURL('vnd.youtube://user/channel/JatieVlogs').catch(
+              () => {
+                Linking.openURL('https://www.youtube.com/c/JatieVlogs');
+              }
+            );
+          }}
+        />
+        <Icon
+          icon={faInstagram}
+          size={ms(25)}
+          style={styles.socialIcon}
+          onPress={() => {
+            Linking.openURL('instagram://user?username=jatievip').catch(() => {
+              Linking.openURL('https://www.instagram.com/jatievip');
+            });
+          }}
+        />
       </View>
       <View style={styles.copyWriteContainer}>
         <Text style={styles.copyRightText}> {strings.profile.appVersion} </Text>

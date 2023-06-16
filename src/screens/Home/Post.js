@@ -8,7 +8,7 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
 } from 'react-native';
 import {
   AppSwitch,
@@ -16,6 +16,8 @@ import {
   CustomLoader,
   HorizontalLine,
   Icon,
+  PostInput,
+  SelectedFiles,
   TopBackButton,
 } from '@/components';
 import {
@@ -28,7 +30,6 @@ import { FontFamily } from '@/theme/Fonts';
 import { NAVIGATION } from '@/constants';
 import { ms, vs } from 'react-native-size-matters';
 import { strings } from '@/localization';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState } from 'react';
 import Modal from 'react-native-modal';
@@ -39,11 +40,10 @@ import { navigationRef } from '@/navigation/RootNavigation';
 import { TYPES, createPost } from '@/actions/UserActions';
 import { getUser } from '@/selectors/UserSelectors';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { KeyboardManager } from 'react-native-keyboard-manager';
-import { KeyboardAccessoryView } from 'react-native-keyboard-accessory';
-import { createThumbnail } from "react-native-create-thumbnail";
-let nextId = 0;
+import { createThumbnail } from 'react-native-create-thumbnail';
+import { isEmpty } from 'lodash';
+import { useCallback } from 'react';
+import { customShowMessage } from '@/utils';
 
 export default function AdminPost({ navigation }) {
   const userType = useSelector(state => state.userType);
@@ -70,40 +70,41 @@ export default function AdminPost({ navigation }) {
   const closeModal = () => {
     setModalVisible(!isModalVisible);
   };
-  deleteFile = id => {
-    setImageArray(imageArray.filter(a => a.id !== id));
-  };
+
+  const deleteFile = useCallback(itemIndex =>
+    setImageArray(imageArray.filter((_, index) => index !== itemIndex))
+  );
 
   const OpenGallery = () => {
-    {
-      isImage == strings.exclusive.image
-        ? ImageCropPicker.openPicker({
+    isImage == strings.exclusive.image
+      ? ImageCropPicker.openPicker({
           width: ms(300),
           height: ms(400),
-
           maxFiles: 3,
           mediaType: strings.exclusive.image,
           multiple: true,
-          compressImageQuality: 0.5
+          compressImageQuality: 0.5,
         })
           .then(images => {
-            images.forEach(item => {
+            images.slice(0, 3).forEach(item => {
+              if (item?.duration) return;
               imageArray.push({
-                id: nextId++,
                 image: item.path,
                 imageMime: item.mime,
                 video: null,
               });
-              postImg.push(item.path);
-              mimeType.push(item.mime);
-
-              setModalVisible(!isModalVisible);
+              // postImg.push(item.path);
+              // mimeType.push(item.mime);
             });
           })
           .catch(e => {
             console.log('Error: ' + e);
           })
-        : ImageCropPicker.openPicker({
+          .finally(() => {
+            setImageArray([...imageArray]);
+            setModalVisible(!isModalVisible);
+          })
+      : ImageCropPicker.openPicker({
           width: 300,
           height: 400,
           maxFiles: 3,
@@ -113,137 +114,149 @@ export default function AdminPost({ navigation }) {
           loadingLabelText: 'loading',
         })
           .then(video => {
-
-            video.forEach(item => {
+            video.slice(0, 3).forEach(item => {
               createThumbnail({
                 url: item.path,
                 timeStamp: 10000,
               })
-                .then(response => imageArray.push({
-                  id: nextId++,
-                  image: null,
-                  video: item.path,
-                  videoMime: item.mime,
-                  videoPoster: response?.path
-                }))
+                .then(response => {
+                  imageArray.push({
+                    image: null,
+                    video: item.path,
+                    videoMime: item.mime,
+                    videoPoster: response?.path,
+                    videoPostermime: response?.mime,
+                  });
+                  setImageArray([...imageArray]);
+                  setModalVisible(!isModalVisible);
+                })
                 .catch(err => console.log({ err }));
-              setPostImg(video.path);
-              setmimeType(video.mime);
-              setModalVisible(!isModalVisible);
+              // setPostImg(video.path);
+              // setmimeType(video.mime);
             });
-
-
-
           })
           .catch(e => {
             console.log('Error: ' + e);
           });
-    }
   };
 
   const OpenCamera = () => {
     {
       isImage == strings.exclusive.image
         ? ImageCropPicker.openCamera({
-          width: 300,
-          height: 400,
-          cropping: false,
-          compressImageQuality: 0.5,
-        })
-          .then(image => {
-            imageArray.push({
-              id: nextId++,
-              image: image.path,
-              imageMime: image.mime,
-              video: null,
-            });
-            setPostImg(image.path);
-            setmimeType(image.mime);
-            setModalVisible(!isModalVisible);
+            width: 300,
+            height: 400,
+            cropping: false,
+            compressImageQuality: 0.5,
           })
-          .catch(e => {
-            console.log('Error: ' + e);
-          })
+            .then(image => {
+              imageArray.push({
+                image: image.path,
+                imageMime: image.mime,
+                video: null,
+              });
+              // setPostImg(image.path);
+              // setmimeType(image.mime);
+            })
+            .catch(e => {
+              console.log('Error: ' + e);
+            })
+            .finally(() => {
+              setImageArray([...imageArray]);
+              setModalVisible(!isModalVisible);
+            })
         : ImageCropPicker.openCamera({
-          width: 300,
-          height: 400,
-          cropping: false,
-          mediaType: strings.exclusive.video,
-          compressImageQuality: 0.5,
-        })
-          .then(image => {
-            imageArray.push({
-              id: nextId++,
-              image: null,
-              video: image.path,
-              videoMime: image.mime,
-            });
-            setPostImg(image.path);
-            setmimeType(image.mime);
-            setModalVisible(!isModalVisible);
+            width: 300,
+            height: 400,
+            cropping: false,
+            mediaType: strings.exclusive.video,
+            compressImageQuality: 0.5,
           })
-          .catch(e => {
-            console.log('Error: ' + e);
-          });
+            .then(item => {
+              createThumbnail({
+                url: item.path,
+                timeStamp: 10000,
+              })
+                .then(response => {
+                  imageArray.push({
+                    image: null,
+                    video: item.path,
+                    videoMime: item.mime,
+                    videoPoster: response?.path,
+                    videoPostermime: response?.mime,
+                  });
+                  setImageArray([...imageArray]);
+                  setModalVisible(!isModalVisible);
+                })
+                .catch(err => console.log({ err }));
+            })
+            .catch(e => {
+              console.log('Error: ' + e);
+            })
+            .finally(() => {
+              setImageArray([...imageArray]);
+            });
     }
   };
 
   const validation = () => {
-
     if (postBody == '') {
-      showMessage({
+      customShowMessage({
         message: strings.home.postBody,
-        type: "danger"
-      })
-    }
-    // else if (postTitle == '') {
-    //   showMessage({
-    //     message: strings.home.postTitle,
-    //     type: "danger"
-    //   })
-    // } 
-    // else if (postImg == "") {
-    //   showMessage({
-    //     message: strings.SignUp.dobPlaceHolder,
-    //     type: "danger"
-    //   })
-    // }
-    else {
+        type: 'danger',
+      });
 
-      let DATA = {
-        postTitle, postBody, postImg, mimeType, imageArray, isImage
-      }
-
-      // let navigationPath = 'home';
-
-      {
-        userType.user === strings.userType.free && (
-          dispatch(createPost(user?.id, postTitle, postBody, postImg, mimeType, imageArray, NAVIGATION.home, vipOnly))
-        )
-      }
-      {
-        userType.user === strings.userType.admin && (
-          navigationRef.navigate(NAVIGATION.postOptions, {
-            prevData: DATA,
-          })
-        )
-      }
-      {
-        userType.user == strings.userType.vip && (
-          dispatch(createPost(user?.id, postTitle, postBody, postImg, mimeType, imageArray, NAVIGATION.home, vipOnly
-          ),
-
-          )
-
-        )
-      }
+      return;
     }
 
-  }
+    if (userType.user === strings.userType.free) {
+      dispatch(
+        createPost(
+          user?.id,
+          postTitle,
+          postBody,
+          postImg,
+          mimeType,
+          imageArray,
+          NAVIGATION.home,
+          vipOnly
+        )
+      );
+    }
+
+    if (userType.user === strings.userType.admin) {
+      navigationRef.navigate(NAVIGATION.postOptions, {
+        prevData: {
+          postTitle,
+          postBody,
+          postImg,
+          mimeType,
+          imageArray,
+          isImage,
+        },
+      });
+    }
+
+    if (userType.user == strings.userType.vip) {
+      dispatch(
+        createPost(
+          user?.id,
+          postTitle,
+          postBody,
+          postImg,
+          mimeType,
+          imageArray,
+          NAVIGATION.home,
+          vipOnly
+        )
+      );
+    }
+  };
+
   const onSave = () => {
-    validation()
+    validation();
+  };
 
-  }
   return (
     <SafeAreaView style={styles.contianer}>
       <View style={styles.header}>
@@ -253,37 +266,25 @@ export default function AdminPost({ navigation }) {
         </Text>
       </View>
       <HorizontalLine color={theme.light.colors.primaryBgLight} />
-      <CustomLoader
-        open={isLoading}
-      />
+      <CustomLoader open={isLoading} />
       <KeyboardAvoidingView
-        behavior={Platform.OS == "ios" ? 'padding' : null}
+        behavior={Platform.OS == 'ios' ? 'padding' : null}
         style={{ flex: 1 }}
       >
         <View style={styles.postContainer}>
           <View style={styles.TextBoxDEsc}>
-            <TextInput
-
-              placeholder={strings.home.whatOnYourMind}
-              style={styles.InputTextBoxDEsc}
-              value={postBody}
-              onChangeText={val => setPostBody(val)}
-              editable
-              multiline
-            // numberOfLines={6}
-            />
-
+            <PostInput value={postBody} setValue={setPostBody} />
           </View>
-
         </View>
-
       </KeyboardAvoidingView>
 
       <View>
         {imageArray.length ? (
           <HorizontalLine color={theme.light.colors.infoBgLight} />
         ) : null}
-        {FileUpload(imageArray)}
+        {!isEmpty(imageArray) && (
+          <SelectedFiles imageArray={imageArray} onDelete={deleteFile} />
+        )}
         <View style={styles.BottomFileContainer}>
           <View style={styles.iconContainer}>
             <Icon
@@ -386,89 +387,9 @@ export default function AdminPost({ navigation }) {
           </View>
         </View>
       </Modal>
-
     </SafeAreaView>
   );
 }
-
-export const FileUpload = imageArray => {
-  return (
-    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-      {imageArray ? (
-        <View style={styles.BottomVideoContainer}>
-          <View style={styles.videoContainer}>
-            {imageArray.map(item => {
-              if (item == null) {
-                return;
-              } else {
-                return item.image ? (
-                  <View style={styles.fileSpacing} key={item.id}>
-                    <Image
-                      style={styles.thumbnail}
-                      source={{ uri: item.image }}
-                    />
-                    <TouchableOpacity style={styles.minus}
-                      onPress={() => {
-                        deleteFile(item.id);
-                      }}
-                    >
-                      <Text
-                        style={styles.minusTxt}
-
-                      >
-                        {strings.giveaway.minus}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                ) : (
-                  <View style={styles.fileSpacing} key={item.id}>
-                    <Image
-                      style={styles.thumbnail}
-                      source={{ uri: item.image }}
-                    />
-                    <TouchableOpacity
-                      onPress={() => {
-                        deleteFile(item.id);
-                      }}
-                      style={styles.minus}>
-                      <Text
-                        style={styles.minusTxt}
-
-                      >
-                        {strings.giveaway.minus}
-                      </Text>
-                    </TouchableOpacity>
-                    <View style={styles.videoPlayContainer}>
-
-                      {/* <ActivityIndicator
-                        animating={true}
-                        color={theme.light.colors.primary}
-                        size="large"
-                        style={styles.activityIndicator}
-                      /> */}
-                      <FontAwesomeIcon
-                        icon={faCircle}
-                        size={ms(30)}
-                        style={styles.videoPlay}
-                      />
-                      <FontAwesomeIcon
-                        icon={faVideoCamera}
-                        size={ms(15)}
-                        style={styles.Play}
-                      />
-                    </View>
-                  </View>
-                );
-              }
-            })}
-          </View>
-        </View>
-      )
-        : null
-      }
-    </ScrollView>
-  );
-};
 
 const styles = StyleSheet.create({
   contianer: {
@@ -498,6 +419,9 @@ const styles = StyleSheet.create({
   InputTextBoxDEsc: {
     height: '100%',
     textAlignVertical: 'top',
+    fontFamily: FontFamily.BrandonGrotesque_regular,
+    fontWeight: '400',
+    fontSize: 18,
   },
 
   //BottomLAyout of file contant

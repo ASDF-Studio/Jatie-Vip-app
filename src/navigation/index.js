@@ -14,6 +14,7 @@ import dynamicLinks from '@react-native-firebase/dynamic-links';
 export function RootNavigator() {
   const user = useSelector(getUser);
   const scheme = useColorScheme();
+
   // useEffect(() => {
   //   dynamicLinks().getInitialLink().then((link) => {
   //     handleDynamicLink(link)
@@ -43,7 +44,7 @@ export function RootNavigator() {
   return (
     // Force use "light" color scheme for now
     <NavigationContainer ref={navigationRef} theme={theme['light']}>
-      {user ? <HomeNavigator /> : <AuthNavigator />}
+      {user ? <AppNavigator /> : <AuthNavigator />}
     </NavigationContainer>
   );
 }

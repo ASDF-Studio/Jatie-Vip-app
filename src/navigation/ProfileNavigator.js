@@ -7,7 +7,6 @@ import Followers from '@/screens/Profile/followers';
 import Settings from '@/screens/Profile/settings';
 import UserProfile from '@/screens/Profile/userProfile';
 import EditProfile from '@/screens/Profile/editProfile';
-import Notification from '@/screens/Profile/notification';
 import Search from '@/screens/Profile/search';
 import NotificationSettings from '@/screens/Profile/notificationSettings';
 import BlockedUsers from '@/screens/Profile/blockedUsers';
@@ -24,6 +23,9 @@ import ManageReportOnPostAllComments from '@/screens/Profile/manageReportOnPost 
 import Post from '@/screens/Profile/Post';
 import UpdatePost from '@/screens/Profile/updatePost';
 import PostOptions from '@/screens/Profile/PostOptions';
+import Comments from '@/screens/Home/comments';
+import SinglePost from '@/screens/Home/SinglePost';
+import Notification from '@/screens/Home/notification';
 
 const Stack = createNativeStackNavigator();
 
@@ -85,6 +87,8 @@ export function ProfileNavigator() {
       <Stack.Screen name={NAVIGATION.post} component={Post} />
       <Stack.Screen name={NAVIGATION.updatePost} component={UpdatePost} />
       <Stack.Screen name={NAVIGATION.postOptions} component={PostOptions} />
+      <Stack.Screen name={NAVIGATION.comments} component={Comments} />
+      <Stack.Screen name={NAVIGATION.singlePost} component={SinglePost} />
     </Stack.Navigator>
   );
 }

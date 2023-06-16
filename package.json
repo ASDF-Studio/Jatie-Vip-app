@@ -73,6 +73,7 @@
     "react-native-smooth-pincode-input": "^1.0.9",
     "react-native-svg": "^13.6.0",
     "react-native-swiper-flatlist": "^3.2.2",
+    "react-native-switch": "^1.5.1",
     "react-native-thumbnail-video": "^0.1.2",
     "react-native-video": "^5.2.1",
     "react-native-video-controls": "^2.8.1",

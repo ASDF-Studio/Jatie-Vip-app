@@ -46,7 +46,12 @@ import { Data, demo, User } from './ProfileData/manageReportOnProfileData';
 import { faSearch } from '@fortawesome/pro-regular-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { bannedUserById, getUserProfileByUserId, TYPES, unBannedUserById } from '@/actions/UserActions';
+import {
+  bannedUserById,
+  getUserProfileByUserId,
+  TYPES,
+  unBannedUserById,
+} from '@/actions/UserActions';
 import { getUser } from '@/selectors/UserSelectors';
 import { UserController } from '@/controllers';
 import { UserData } from './ProfileData/manageReportOnMessageData';
@@ -69,87 +74,75 @@ export default function ManageReportOnMessage({ navigation, route }) {
   const [openMore, setOpenMore] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openBan, setOpenBan] = useState(false);
-  const [user, setUser] = useState(null)
-  const [userPosts, setuserPosts] = useState([])
+  const [user, setUser] = useState(null);
+  const [userPosts, setuserPosts] = useState([]);
   const [postIndex, setPostIndex] = useState(0);
-  const { item } = route.params
+  const { item } = route.params;
   //console.log("item", item)
-  const { reportedByUserDetails } = route.params
+  const { reportedByUserDetails } = route.params;
   // console.log('data of card ', JSON.stringify(reportedByUserDetails))
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-  const getUserProfile = useSelector(getUser)
+  const getUserProfile = useSelector(getUser);
 
   //console.log('userDataaaaaaaaa', user)
 
-  const focus = useIsFocused()
+  const focus = useIsFocused();
   //console.log('userPosts', user)
-  const userr = useSelector(getUser)
+  const userr = useSelector(getUser);
   useEffect(() => {
-    dispatch(getUserProfileByUserId(item, userr.id))
-    console.log('use eff')
+    dispatch(getUserProfileByUserId(item, userr.id));
+    console.log('use eff');
     setTimeout(() => {
-      getUserPostById(item)
+      getUserPostById(item);
     }, 100);
-
-
-  }, [focus])
+  }, [focus]);
   useEffect(() => {
-    setUser(getUserProfile?.getUserByUserId)
-  }, [getUserProfile, focus])
+    setUser(getUserProfile?.getUserByUserId);
+  }, [getUserProfile, focus]);
 
-  const getUserPostById = async (id) => {
+  const getUserPostById = async id => {
     const data = await UserController.postByUserId(id);
     if (data) {
       //setLoader(false);
       setuserPosts(data.data);
     }
-
-  }
-
+  };
 
   const banUnBanHandlePress = () => {
     if (user?.isBanned == true) {
-      dispatch(unBannedUserById(item))
-      setOpenBan(false)
+      dispatch(unBannedUserById(item));
+      setOpenBan(false);
       setTimeout(() => {
-        dispatch(getUserProfileByUserId(item))
-
+        dispatch(getUserProfileByUserId(item));
+      }, 100);
+    } else {
+      dispatch(bannedUserById(item));
+      setOpenBan(false);
+      setTimeout(() => {
+        dispatch(getUserProfileByUserId(item));
       }, 100);
     }
-    else {
-      dispatch(bannedUserById(item))
-      setOpenBan(false)
-      setTimeout(() => {
-        dispatch(getUserProfileByUserId(item))
-
-      }, 100);
-    }
-  }
+  };
 
   const onFollow = () => {
-
-
     if (user?.is_following == true) {
-      dispatch(unFollowUser(userr?.id, item))
+      dispatch(unFollowUser(userr?.id, item));
 
       //setOpen(false)
       setTimeout(() => {
-        dispatch(getUserProfileByUserId(item, userr.id))
+        dispatch(getUserProfileByUserId(item, userr.id));
       }, 100);
-
-    }
-    else {
-      dispatch(followUser(userr?.id, item))
+    } else {
+      dispatch(followUser(userr?.id, item));
       // setOpen(false)
-      console.log("follower log", userr?.id, item)
+      console.log('follower log', userr?.id, item);
 
       setTimeout(() => {
-        dispatch(getUserProfileByUserId(item, userr.id))
+        dispatch(getUserProfileByUserId(item, userr.id));
       }, 100);
     }
-
-  }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -175,7 +168,10 @@ export default function ManageReportOnMessage({ navigation, route }) {
           <Text style={styles.reactOnTxt}>{`this Profile`}</Text>
         </View>
         <View style={styles.reasonContainer}>
-          <Text style={styles.reasonTxt}>{strings.profile.reason}{reportedByUserDetails.reportTitle} </Text>
+          <Text style={styles.reasonTxt}>
+            {strings.profile.reason}
+            {reportedByUserDetails.reportTitle}{' '}
+          </Text>
         </View>
       </View>
       <View style={styles.body}>
@@ -206,13 +202,23 @@ export default function ManageReportOnMessage({ navigation, route }) {
             </View>
           </View>
           <HeaderTab
-            onPress1={() => navigation.navigate(NAVIGATION.followers, { id: item, screenName: 'userProfile' })}
+            onPress1={() =>
+              navigation.navigate(NAVIGATION.followers, {
+                id: item,
+                screenName: 'userProfile',
+              })
+            }
             title1={strings.profile.followers}
             count1={user?.followerListsByFollowinguserid?.length}
             // onPress1 = {()=>Alert.alert('press 1')}
             title2={strings.profile.following}
             count2={user?.follower_lists?.length}
-            onPress2={() => navigation.navigate(NAVIGATION.following, { id: item, screenName: 'userProfile' })}
+            onPress2={() =>
+              navigation.navigate(NAVIGATION.following, {
+                id: item,
+                screenName: 'userProfile',
+              })
+            }
           />
           <HorizontalLine
             color={theme.light.colors.infoBgLight}
@@ -233,15 +239,19 @@ export default function ManageReportOnMessage({ navigation, route }) {
                   {strings.profile.message}{' '}
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={onFollow} style={[styles.IconBox, styles.IconBoxDesign]}>
+              <TouchableOpacity
+                onPress={onFollow}
+                style={[styles.IconBox, styles.IconBoxDesign]}
+              >
                 <FontAwesomeIcon
                   icon={faUserPlus}
                   size={ms(13)}
                   color={theme.light.colors.primary}
                 />
                 <Text style={styles.followersBtnTxt}>
-
-                  {user?.is_following == true ? strings.operations.unFollow : strings.operations.follow}
+                  {user?.is_following == true
+                    ? strings.operations.unFollow
+                    : strings.operations.follow}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -268,84 +278,93 @@ export default function ManageReportOnMessage({ navigation, route }) {
                 />
                 <CardBody text={item?.postBody} />
 
-
                 {item?.postImg?.length <= 2 ? (
                   <View style={styles.imageContainer}>
-                    {item?.postImg?.map(data => (
-                      counter = counter + 1,
-                      <TouchableOpacity
-                        key={counter}
-                        style={styles.touchContainer}
-                        onPress={() => {
-                          setShowImageView(true),
-                            setFeedImages(item?.postImg)
-                        }}
-                      >
-                        <Image
-                          source={{
-                            uri: data,
-                          }}
-                          style={styles.image}
-                        />
-                      </TouchableOpacity>
-                    ))}
-                  </View>
-                ) : item?.postImg?.length > 2 ? (
-                  counter = 1,
-                  <View style={styles.imageContainer}>
-                    {item?.postImg?.map(data =>
-                      counter == 1 ? (
-                        counter = counter + 1,
-                        <TouchableOpacity
-                          key={counter}
-                          style={styles.touchContainer}
-                          onPress={() => {
-                            setShowImageView(true),
-                              setFeedImages(item?.postImg);
-                            // console.log(feedImages)
-                          }}
-                        >
-                          <Image
-                            source={{
-                              uri: data,
-                            }}
+                    {item?.postImg?.map(
+                      data => (
+                        (counter = counter + 1),
+                        (
+                          <TouchableOpacity
                             key={counter}
-                            style={styles.image}
-                          />
-                        </TouchableOpacity>
-                      ) : counter == 2 ? (
-                        counter = counter + 1,
-                        <TouchableOpacity
-                          key={counter}
-                          style={styles.touchContainer}
-                          onPress={() => {
-                            setShowImageView(true),
-                              setFeedImages(item?.postImg);
-                          }}
-                        >
-                          <ImageBackground
-                            source={{
-                              uri: data,
+                            style={styles.touchContainer}
+                            onPress={() => {
+                              setShowImageView(true),
+                                setFeedImages(item?.postImg);
                             }}
-                            key={counter}
-                            style={[styles.image, styles.moreImage]}
                           >
-                            <TouchableOpacity
-                              onPress={() => {
-                                setShowImageView(true),
-                                  setFeedImages(item?.postImg);
+                            <Image
+                              source={{
+                                uri: data,
                               }}
-                            >
-                              <Text style={styles.extraImage}>
-                                {strings.message.plus}
-                                {item?.postImg?.length - 1}
-                              </Text>
-                            </TouchableOpacity>
-                          </ImageBackground>
-                        </TouchableOpacity>
-                      ) : null
+                              style={styles.image}
+                            />
+                          </TouchableOpacity>
+                        )
+                      )
                     )}
                   </View>
+                ) : item?.postImg?.length > 2 ? (
+                  ((counter = 1),
+                  (
+                    <View style={styles.imageContainer}>
+                      {item?.postImg?.map(data =>
+                        counter == 1
+                          ? ((counter = counter + 1),
+                            (
+                              <TouchableOpacity
+                                key={counter}
+                                style={styles.touchContainer}
+                                onPress={() => {
+                                  setShowImageView(true),
+                                    setFeedImages(item?.postImg);
+                                  // console.log(feedImages)
+                                }}
+                              >
+                                <Image
+                                  source={{
+                                    uri: data,
+                                  }}
+                                  key={counter}
+                                  style={styles.image}
+                                />
+                              </TouchableOpacity>
+                            ))
+                          : counter == 2
+                          ? ((counter = counter + 1),
+                            (
+                              <TouchableOpacity
+                                key={counter}
+                                style={styles.touchContainer}
+                                onPress={() => {
+                                  setShowImageView(true),
+                                    setFeedImages(item?.postImg);
+                                }}
+                              >
+                                <ImageBackground
+                                  source={{
+                                    uri: data,
+                                  }}
+                                  key={counter}
+                                  style={[styles.image, styles.moreImage]}
+                                >
+                                  <TouchableOpacity
+                                    onPress={() => {
+                                      setShowImageView(true),
+                                        setFeedImages(item?.postImg);
+                                    }}
+                                  >
+                                    <Text style={styles.extraImage}>
+                                      {strings.message.plus}
+                                      {item?.postImg?.length - 1}
+                                    </Text>
+                                  </TouchableOpacity>
+                                </ImageBackground>
+                              </TouchableOpacity>
+                            ))
+                          : null
+                      )}
+                    </View>
+                  ))
                 ) : null}
                 <CardFooter
                   likeCount={item?.upVote}
@@ -355,13 +374,16 @@ export default function ManageReportOnMessage({ navigation, route }) {
                   postType={POST_TYPE.REGULAR}
                   postData={item}
                   postIndex={index}
-
-
                   commentCount={item?.comments_aggregate?.aggregate?.count ?? 0}
-                  commentPress={() => navigation.navigate(NAVIGATION.comments, { DATA: item, "POST_INDEX": index })}
+                  commentPress={() =>
+                    navigation.navigate(NAVIGATION.comments, {
+                      DATA: item,
+                      POST_INDEX: index,
+                    })
+                  }
                   // sharePress = {()=> Alert.alert("share")}
                   morePress={() => {
-                    setPostIndex(index)
+                    setPostIndex(index);
                     // setIsAdminPost(item?.isAdminPost),
                     //setPostUserName(item?.user?.username)
                     //   setOpen(true);
@@ -379,9 +401,12 @@ export default function ManageReportOnMessage({ navigation, route }) {
         {openMore && (
           <ModalDown open={openMore} setOpen={setOpenMore}>
             <ModalList
-
               onPress={onFollow}
-              title={user?.is_following == true ? strings.operations.unFollow + ' @' + user?.username : strings.operations.follow + ' @' + user?.username}
+              title={
+                user?.is_following == true
+                  ? strings.operations.unFollow + ' @' + user?.username
+                  : strings.operations.follow + ' @' + user?.username
+              }
               icon={faUserPlus}
               iconColor={theme.light.colors.primary}
               iconBg={theme.light.colors.primaryBgLight}
@@ -391,7 +416,7 @@ export default function ManageReportOnMessage({ navigation, route }) {
               icon={faMessage}
               iconColor={theme.light.colors.success}
               iconBg={theme.light.colors.successBgLight}
-            // onPress = {()=> Alert.alert("working")}
+              // onPress = {()=> Alert.alert("working")}
             />
             <HorizontalLine
               color={theme.light.colors.infoBgLight}
@@ -410,7 +435,11 @@ export default function ManageReportOnMessage({ navigation, route }) {
               iconBg={theme.light.colors.infoBgLight}
             /> */}
             <ModalList
-              title={user?.isBanned == true ? strings.operations.unBan + ' @' + user?.username : strings.operations.ban + ' @' + user?.username}
+              title={
+                user?.isBanned == true
+                  ? strings.operations.unBan + ' @' + user?.username
+                  : strings.operations.ban + ' @' + user?.username
+              }
               icon={faFlag}
               iconColor={theme.light.colors.secondary}
               iconBg={theme.light.colors.infoBgLight}
@@ -440,12 +469,14 @@ export default function ManageReportOnMessage({ navigation, route }) {
         <PopUp open={openBan} setOpen={setOpenBan}>
           <View>
             <Text style={[TextStyles.header, styles.headerColor]}>
-              {strings.profile.areYouSureWantToBan}
+              {user?.isBanned
+                ? strings.profile.areYouSureWantToUnBan
+                : strings.profile.areYouSureWantToBan}
             </Text>
             <View style={styles.imageViewContainer}>
               <Image
                 source={{
-                  uri: user?.profilePic
+                  uri: user?.profilePic,
                 }}
                 style={styles.imageDesign}
               />
@@ -453,23 +484,32 @@ export default function ManageReportOnMessage({ navigation, route }) {
                 <Text style={[TextStyles.header, styles.headerFullname]}>
                   {user?.fullName}
                 </Text>
-                <Text> {user?.username}</Text>
+                <Text> {`@${user?.username}`.toLowerCase()}</Text>
                 <Text style={styles.freeMemberText}>
-                  {' '}
-                  {strings.profile.freeMember}{' '}
+                  {strings.profile.freeMember}
                 </Text>
               </View>
             </View>
             <View>
-              <Button onPress={banUnBanHandlePress}
-                title={strings.profile.yesBan}
+              <Button
+                onPress={banUnBanHandlePress}
+                title={
+                  user?.isBanned
+                    ? strings.profile.yeaUnBan
+                    : strings.profile.yesBan
+                }
                 style={styles.yesBanButton}
                 textStyle={{
                   color: theme.light.colors.primary,
                 }}
               />
-              <Button onPress={() => setOpenBan(false)}
-                title={strings.profile.DoNotBan}
+              <Button
+                onPress={() => setOpenBan(false)}
+                title={
+                  user?.isBanned
+                    ? strings.profile.DoNotUnBan
+                    : strings.profile.DoNotBan
+                }
                 style={styles.DoNotBanButton}
               />
             </View>
@@ -484,7 +524,6 @@ export default function ManageReportOnMessage({ navigation, route }) {
           setVisible={() => setShowImageView(false)}
           images={feedImages}
         />
-
       )}
     </SafeAreaView>
   );
@@ -569,8 +608,11 @@ const styles = StyleSheet.create({
   },
   freeMemberText: {
     backgroundColor: theme.light.colors.inputFiled,
-    borderRadius: 10,
-    padding: 2,
+    borderRadius: 4,
+    padding: 3,
+    paddingHorizontal: 10,
+    marginTop: 3,
+    color: theme.light.colors.black,
   },
   headerFullname: {
     color: theme.light.colors.black,
@@ -590,7 +632,7 @@ const styles = StyleSheet.create({
     {
       color: theme.light.colors.text,
       fontSize: ms(24),
-      marginLeft: moderateScale(10)
+      marginLeft: moderateScale(10),
     },
   ],
   userNameTxt: {
@@ -598,7 +640,7 @@ const styles = StyleSheet.create({
     fontSize: ms(14, 0.3),
     // position: 'absolute',
     bottom: ms(5),
-    marginLeft: moderateScale(10)
+    marginLeft: moderateScale(10),
   },
   iconContiner: {
     flexDirection: 'row',
@@ -623,11 +665,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerColor: { color: theme.light.colors.black },
-  imageViewContainer: { flexDirection: 'row' },
+  imageViewContainer: {
+    flexDirection: 'row',
+    marginTop: ms(15),
+    marginBottom: ms(20),
+  },
   imageDesign: {
     height: ms(40),
     width: ms(40),
     borderRadius: 100,
+    marginRight: ms(10),
   },
   messageHeader: {
     flexDirection: 'row',

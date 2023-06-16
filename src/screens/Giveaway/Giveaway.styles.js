@@ -9,9 +9,16 @@ export const styles = StyleSheet.create({
   },
   headerContainer: {
     flexDirection: 'row',
-    // alignItems: 'center',
+    alignItems: 'center',
     justifyContent: 'space-between',
-    margin: ms(10),
+  },
+  userPic: {
+    width: ms(61),
+    height: ms(66),
+    borderRadius: 100,
+    marginLeft: ms(10),
+    marginRight: ms(10),
+    marginTop: ms(10),
   },
   headerImageContainer: {
     // flexDirection: 'row',
@@ -20,8 +27,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerDesign: {
-    color: theme.light.colors.text,
-    margin: ms(15),
+    color: theme.light.colors.black,
   },
   headerImage: {
     width: ms(50),
@@ -32,7 +38,6 @@ export const styles = StyleSheet.create({
   adminBtnDesign: {
     backgroundColor: theme.light.colors.primary,
     width: ms(140),
-
   },
   adminBtnTxtColor: { color: theme.light.colors.white },
   iconContiner: {
@@ -40,14 +45,12 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignItems: 'center',
-    // padding: ms(10),
+    padding: ms(10),
   },
   bellIcon: {
     position: 'relative',
   },
-  searchIcon: {
-    marginRight: ms(10),
-  },
+  searchIcon: { marginRight: ms(20), color: theme.light.colors.black },
   bellAlert: {
     height: ms(10),
     width: ms(10),
@@ -60,7 +63,7 @@ export const styles = StyleSheet.create({
 
   feedContainer: {
     // marginTop: Platform.OS == 'ios' ? vs(-37) : vs(0),
-    // top: -40,
+    // bottom: -20,
     flex: 1,
     backgroundColor: theme.light.colors.primaryBgLight,
   },
@@ -68,16 +71,14 @@ export const styles = StyleSheet.create({
   //Admin
 
   adminBtn: {
-    marginTop: vs(10),
-    borderWidth: 0,
     borderRadius: 10,
-    padding: ms(8),
+    padding: ms(11),
     alignItems: 'center',
-    borderWidth: 2,
     borderColor: theme.light.colors.primary,
     position: 'absolute',
-    top: '90%',
-    left: '60%',
+    top: '91%',
+    left: '50%',
+    marginLeft: ms(35),
   },
   adminBtnTxt: {
     fontFamily: FontFamily.BrandonGrotesque_bold,

@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from 'react';
 import { Text, TouchableOpacity, View, Keyboard } from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
@@ -11,17 +10,18 @@ import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { ms } from 'react-native-size-matters';
 import { Logo } from '@/assets';
 import { TextStyles } from '@/theme';
-import { showMessage } from "react-native-flash-message";
+import { showMessage } from 'react-native-flash-message';
 import { SITE_KEY, CAPTCHA_BASE_URL } from '@/constants';
 import Recaptcha from 'react-native-recaptcha-that-works';
-import { CountryPicker } from "react-native-country-codes-picker";
+import { CountryPicker } from 'react-native-country-codes-picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { customShowMessage } from '@/utils';
 export function Login({ route }) {
   const recaptcha = useRef();
-  const { postId, postIndex } = route.params || {}
+  const { postId, postIndex } = route.params || {};
   const dispatch = useDispatch();
   const [mobileNumber, setMobileNumber] = useState('');
-  const [captchaToken, setCaptchaToken] = useState("");
+  const [captchaToken, setCaptchaToken] = useState('');
   const [show, setShow] = useState(false);
   const [countryCode, setCountryCode] = useState('+1');
 
@@ -33,45 +33,41 @@ export function Login({ route }) {
     shallowEqual
   );
   const validation = () => {
-    if (countryCode == "") {
-      showMessage({
+    if (countryCode == '') {
+      customShowMessage({
         message: strings.login.selectCountryCode,
-        type: "danger",
+        type: 'danger',
       });
-
-    }
-    else if (mobileNumber == 0) {
-      showMessage({
+    } else if (mobileNumber == 0) {
+      customShowMessage({
         message: strings.login.numberHint,
-        type: "danger",
+        type: 'danger',
       });
     } else if (mobileNumber.length < 10) {
-      showMessage({ message: strings.login.numberValid, type: "danger", });
-
-    }
-    else {
+      customShowMessage({ message: strings.login.numberValid, type: 'danger' });
+    } else {
       recaptcha.current.open();
-      Keyboard.dismiss()
+      Keyboard.dismiss();
     }
   };
   const handleSubmit = () => {
-    validation()
+    validation();
   };
   const send = () => {
     console.log('send!');
     recaptcha.current.open();
-  }
+  };
 
   const onVerify = token => {
     // Keyboard.dismiss()
-    setCaptchaToken(token)
-    const finalNumber = countryCode + mobileNumber
-    dispatch(login(finalNumber))
-  }
+    setCaptchaToken(token);
+    const finalNumber = countryCode + mobileNumber;
+    dispatch(login(finalNumber));
+  };
 
   const onExpire = () => {
-    setCaptchaToken("")
-  }
+    setCaptchaToken('');
+  };
 
   // testing purpose code
   const [userListOpen, setUserListOpen] = useState(false);
@@ -82,22 +78,18 @@ export function Login({ route }) {
     { label: 'VIP', value: 'VIP' },
   ]);
 
-
   return (
     <KeyboardAwareScrollView
       showsVerticalScrollIndicator={false}
-      keyboardShouldPersistTaps={"handled"}
+      keyboardShouldPersistTaps={'handled'}
       contentContainerStyle={styles.mainContainer}
     >
-      <View
-        style={styles.container}
-      >
+      <View style={styles.container}>
         <View style={{ marginBottom: ms(10) }}>
           <Logo height={ms(142)} width={ms(142)} />
         </View>
         <Text style={TextStyles.title}>{strings.login.loginOrSignup}</Text>
-        <Text
-          style={styles.subTitle}>{strings.login.enterPhoneNumber}</Text>
+        <Text style={styles.subTitle}>{strings.login.enterPhoneNumber}</Text>
         <CountryPicker
           enableModalAvoiding={true}
           show={show}
@@ -109,19 +101,14 @@ export function Login({ route }) {
           }}
           onBackdropPress={() => setShow(false)}
           // when picker button press you will get the country object with dial code
-          pickerButtonOnPress={(item) => {
+          pickerButtonOnPress={item => {
             setCountryCode(item.dial_code);
             setShow(false);
           }}
         />
         <View style={styles.inputFieldView}>
-          <TouchableOpacity
-            onPress={setShow}
-            style={styles.countryCodePicker}>
-            <Text style={styles.countryPickerText}>
-              {countryCode}
-            </Text>
-
+          <TouchableOpacity onPress={setShow} style={styles.countryCodePicker}>
+            <Text style={styles.countryPickerText}>{countryCode}</Text>
           </TouchableOpacity>
           <TextField
             style={styles.numberinput}
@@ -151,11 +138,13 @@ export function Login({ route }) {
         />
         <Text style={styles.termsAndConditionsStyle}>
           {strings.login.byContinue}
-          <Text style={styles.linkColor}>{strings.login.termsAndConditions}</Text>
+          <Text style={styles.linkColor}>
+            {strings.login.termsAndConditions}
+          </Text>
           {strings.login.and}
           <Text style={styles.linkColor}>{strings.login.privacyPolicy}</Text>
         </Text>
-      </View >
+      </View>
     </KeyboardAwareScrollView>
   );
 }

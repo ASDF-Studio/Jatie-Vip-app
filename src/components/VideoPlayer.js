@@ -5,47 +5,65 @@ import { View, Modal, Text, StyleSheet } from 'react-native';
 import { ms } from 'react-native-size-matters';
 import VideoPlayer from 'react-native-video-controls';
 import { theme } from '@/theme';
+import { useEffect } from 'react';
 
-export const AppVideoPlayer = ({ url, poster, play = false }) => {
+export const AppVideoPlayer = ({ url, poster, isPaused }) => {
   const [openFullScreen, setFullScreen] = useState(false);
-  const [pause, setPause] = useState(play);
+  const [pause, setPause] = useState(isPaused);
+
+  useEffect(() => {
+    setPause(isPaused);
+  }, [isPaused]);
+
   return (
-    <View>
-      {openFullScreen && (
+    <View
+      style={{
+        width: '100%',
+        height: ms(200),
+      }}
+    >
+      {openFullScreen ? (
         <Modal visible={openFullScreen} transparent={true}>
           <VideoPlayer
             source={{ uri: url }}
             navigator={null}
-            toggleResizeModeOnFullscreen={true}
             tapAnywhereToPause={true}
             disableBack
-            onEnterFullscreen={() => setFullScreen(prev => !prev)}
+            toggleResizeModeOnFullscreen={false}
+            onExitFullscreen={() => setFullScreen(false)}
+            onPress={() => setPause(!pause)}
             style={{
               height: ms(200),
             }}
+            fullscreen={true}
+            muted={false}
+            paused={pause}
+            ignoreSilentSwitch={'ignore'}
             // poster= "https://e7.pngegg.com/pngimages/244/695/png-clipart-play-icon-video-player-information-play-icon-miscellaneous-angle-thumbnail.png"
-            paused={true}
             playIcon={<FontAwesomeIcon icon={faPlay} />}
-            showOnStart={true}
+            showOnStart={false}
           />
         </Modal>
-      )}
-      <View>
+      ) : (
         <VideoPlayer
+          muted={false}
+          ignoreSilentSwitch={'ignore'}
           source={{ uri: url }}
           navigator={null}
-          toggleResizeModeOnFullscreen={true}
+          toggleResizeModeOnFullscreen={false}
           tapAnywhereToPause={true}
           disableBack
-          onEnterFullscreen={() => setFullScreen(prev => !prev)}
-          style={{
-            height: ms(200),
-
-            // position: 'absolute',
+          onEnterFullscreen={() => {
+            setFullScreen(true);
           }}
-          poster={poster}
+          paused={pause}
+          style={{
+            width: '100%',
+            height: ms(200),
+          }}
           onPress={() => setPause(!pause)}
-          resizeMode="cover"
+          poster={poster}
+          resizeMode="contain"
           repeat
           customStyles={{
             playIcon: {
@@ -57,7 +75,7 @@ export const AppVideoPlayer = ({ url, poster, play = false }) => {
           playIcon={true}
           showOnStart={false}
         />
-      </View>
+      )}
     </View>
   );
 };

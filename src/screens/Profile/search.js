@@ -15,7 +15,6 @@ import {
 } from 'react-native';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
 import {
-  faEllipsis,
   faFlag,
   faImage,
   faMessage,
@@ -26,7 +25,6 @@ import {
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import {
-  CustomLoader,
   HorizontalLine,
   Icon,
   TextField,
@@ -39,18 +37,22 @@ import {
   Toast,
   ModalDown,
   ModalList,
+  MemoPostCard,
+  UserPostOptions,
 } from '@/components';
 import { moderateScale, ms, vs } from 'react-native-size-matters';
 import { NAVIGATION } from '@/constants/navigation';
 import { strings } from '@/localization';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { Data } from '@/screens/CommonData/searchData';
 import { faFaceSadSweat, faSearch } from '@fortawesome/pro-regular-svg-icons';
 import {
   TYPES,
+  bannedUserById,
+  bannedUsers,
   followers,
   searchUser,
   searchUserSuccess,
+  unBannedUserById,
 } from '@/actions/UserActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
@@ -62,6 +64,7 @@ import { debounce, isEmpty, size } from 'lodash';
 import { useEffect, useMemo } from 'react';
 import { getSearchData } from '@/selectors/PostSelectors';
 import {
+  blockUser,
   followUser,
   reportPost,
   searchAllPost,
@@ -72,6 +75,10 @@ import { SwiperViewer } from '@/components/SwiperComponent';
 import { navigationRef } from '@/navigation/RootNavigation';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { TYPES as postTypes } from '@/actions/PostActions';
+import { createRef } from 'react';
+import { useRef } from 'react';
+import { globalReset } from '@/actions/GlobalActions';
+import { POST_TYPE } from '@/constants/enums';
 
 export default function Search({ navigation }) {
   //Use State hooks
@@ -83,21 +90,12 @@ export default function Search({ navigation }) {
   const [imageFeed, setImageFeed] = useState([]);
   const [seeMoreUser, setShowSeeMoreUser] = useState(false);
   const [showPostOptions, setShowPostOptions] = useState(false);
-  const [openReplace, setReplace] = useState(false);
-  const [openReport, setOpenReport] = useState(false);
-  const [reportListOpen, setReportListOpen] = useState(false);
-  const [reportOption, setReportOption] = useState([
-    { label: 'Explicit Content', value: 'Explicit Content' },
-    { label: 'Bullying or Harassment', value: 'Bullying or Harassment' },
-    { label: 'Spam', value: 'Spam' },
-    {
-      label: 'Misleading Information or Fake News',
-      value: 'Misleading Information or Fake News',
-    },
-  ]);
-  const [reportOptionValue, setReportOptionValue] = useState('');
-  const [reportImage, setreportImage] = useState(null);
-  const [reportComment, setReportCommnet] = useState('');
+
+  const [isBanned, setIsBanned] = useState(false);
+
+  const [isFollowing, setIsFollowing] = useState(false);
+
+  const inputRef = useRef();
 
   const dispatch = useDispatch();
   const user = useSelector(getUser);
@@ -107,6 +105,7 @@ export default function Search({ navigation }) {
   const isShowReportToast = useSelector(state =>
     successSelector([TYPES.REPORT_POST], state)
   );
+  const userFollower = user.followersDatainReducer?.data;
 
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.SEARCH_USER], state)
@@ -118,7 +117,7 @@ export default function Search({ navigation }) {
   const debouncedSearch = useMemo(() => {
     return debounce(value => {
       setsearchuservalue(value);
-    }, 200);
+    }, 300);
   }, []);
 
   useEffect(() => {
@@ -140,32 +139,17 @@ export default function Search({ navigation }) {
     }
   }, [searchuservalue, user?.id]);
 
-  const onFollow = () => {
-    setShowPostOptions(false);
-    console.log('=========>', SEARCH_DATA[selectedPost.index]);
-    if (SEARCH_DATA[selectedPost.index].is_following) {
-      dispatch(unFollowUser(user?.id, selectedPost.userId, strings.home.post));
-      dispatch(followers(user?.id));
-    } else {
-      dispatch(followUser(user?.id, selectedPost.userId, strings.home.post));
-    }
-  };
-  const onBlock = () => {
-    dispatch(blockUser(user?.id, postUserId, postIndex));
-    setOpen(false);
-    dispatch(getAllPost(user?.id, sortBy, follwingSwitch));
-  };
-
   const SearchHandlePress = () => {
     // setLoading(true)
-    {
-      searchuservalue.length >= 1
-        ? dispatch(searchUser(searchuservalue))
-        : null;
-    }
-
+    // {
+    //   searchuservalue.length >= 1
+    //     ? dispatch(searchUser(searchuservalue))
+    //     : null;
+    // }
     // setLoading(false)
   };
+
+  // const filteredUser = searchUserData?.data?.filter(user => !user.isVIP) || [];
 
   return (
     <SafeAreaView style={styles.container}>
@@ -202,13 +186,20 @@ export default function Search({ navigation }) {
       </View>
       <View style={styles.searchBox}>
         <TextField
+          ref={inputRef}
           onChangeText={debouncedSearch}
           style={styles.searchBoxTextFirld}
           placeholder={strings.exclusive.searchPlaceHolder}
           onFocus={() => setSearchListOpen(true)}
         />
         <View style={styles.moreIcon}>
-          <Icon icon={faXmark} />
+          <Icon
+            icon={faXmark}
+            onPress={() => {
+              setsearchuservalue('');
+              inputRef.current.clear();
+            }}
+          />
         </View>
       </View>
       <HorizontalLine />
@@ -268,11 +259,11 @@ export default function Search({ navigation }) {
                       display: 'flex',
                     }}
                   >
-                    {searchUserData.data
+                    {searchUserData?.data
                       .slice(0, seeMoreUser ? size(searchUserData.data) : 3)
-                      .map((item, index) => (
-                        <UserCard item={item} key={index} />
-                      ))}
+                      .map((item, index) => {
+                        return <UserCard item={item} key={index} />;
+                      })}
                     {!seeMoreUser && size(searchUserData.data) > 3 && (
                       <Button
                         style={styles.moreButton}
@@ -299,7 +290,7 @@ export default function Search({ navigation }) {
                 />
               )}
               renderItem={({ item, index }) => (
-                <PostCard
+                <MemoPostCard
                   onImagePress={() => {
                     setImageFeed(item.postMediaContent);
                     setShowImageView(true);
@@ -307,6 +298,21 @@ export default function Search({ navigation }) {
                   onMorePress={() => {
                     setSelectedPost({ ...item, index: index });
                     setShowPostOptions(true);
+                    setIsBanned(
+                      !isEmpty(
+                        user?.getAllBannedUsersKey?.data.filter(
+                          x => x?.userId === item?.userId
+                        )
+                      )
+                    );
+                    // setisBlocked()
+                    setIsFollowing(
+                      !isEmpty(
+                        userFollower?.following_List?.filter(
+                          el => el.followingUserId === item?.userId
+                        )
+                      )
+                    );
                   }}
                   key={index}
                   index={index}
@@ -323,230 +329,15 @@ export default function Search({ navigation }) {
           images={imageFeed}
         />
       )}
-      {showPostOptions &&
-        (selectedPost?.userId === user?.id ? (
-          <ModalDown open={showPostOptions} setOpen={setShowPostOptions}>
-            <ModalList
-              title={strings.profile.editPost}
-              icon={faPen}
-              iconBg={theme.light.colors.infoBgLight}
-              iconColor={theme.light.colors.info}
-              onPress={() => {
-                navigationRef.navigate(NAVIGATION.updatePost, {
-                  prevData: selectedPost,
-                }),
-                  setShowPostOptions(false);
-              }}
-            />
-            <HorizontalLine
-              color={theme.light.colors.infoBgLight}
-              paddingTop={15}
-              paddingBottom={8}
-            />
-            <ModalList
-              title={strings.operations.delete}
-              icon={faTrash}
-              iconBg={theme.light.colors.infoBgLight}
-              iconColor={theme.light.colors.secondary}
-              onPress={() => {
-                setReplace(true), setShowPostOptions(false);
-              }}
-            />
-          </ModalDown>
-        ) : (
-          <ModalDown open={showPostOptions} setOpen={setShowPostOptions}>
-            <ModalList
-              onPress={() => {
-                onFollow();
-              }}
-              title={
-                (!SEARCH_DATA[selectedPost.index]?.is_following
-                  ? strings.operations.follow
-                  : strings.operations.unFollow) +
-                ' @' +
-                selectedPost.user.username
-              }
-              icon={faUserPlus}
-              iconColor={theme.light.colors.primary}
-              iconBg={theme.light.colors.primaryBgLight}
-            />
-            <ModalList
-              title={strings.operations.sendPrivateMessage}
-              icon={faMessage}
-              iconColor={theme.light.colors.success}
-              iconBg={theme.light.colors.successBgLight}
-            />
-            <HorizontalLine
-              color={theme.light.colors.infoBgLight}
-              paddingTop={15}
-              paddingBottom={8}
-            />
-            {(userType.user == `${strings.userType.free}`) |
-            (userType.user == `${strings.userType.vip}`) ? (
-              <>
-                {selectedPost.isAdminPost == false && (
-                  <ModalList
-                    title={strings.home.report}
-                    icon={faFlag}
-                    iconColor={theme.light.colors.secondary}
-                    iconBg={theme.light.colors.infoBgLight}
-                    onPress={() => {
-                      setReportOptionValue('');
-                      setOpenReport(true);
-                      setShowPostOptions(false);
-                      setreportImage(null);
-                    }}
-                  />
-                )}
-
-                {selectedPost.isAdminPost == false && (
-                  <ModalList
-                    onPress={() => {
-                      onBlock();
-                    }}
-                    title={
-                      strings.operations.block +
-                      ' @' +
-                      selectedPost.user.username
-                    }
-                    // title={(ALLPOST?.data[pos] ? strings.operations.block : strings.operations.unBlock) + " @" + postUserName}
-                    icon={faXmark}
-                    iconColor={theme.light.colors.secondary}
-                    iconBg={theme.light.colors.infoBgLight}
-                  />
-                )}
-              </>
-            ) : userType.user == `${strings.userType.admin}` ? (
-              <>
-                <ModalList
-                  title={strings.home.deletePost}
-                  icon={faTrash}
-                  iconColor={theme.light.colors.secondary}
-                  iconBg={theme.light.colors.infoBgLight}
-                  onPress={() => {
-                    setReplace(true), setShowPostOptions(false);
-                  }}
-                />
-                <ModalList
-                  title={strings.operations.block + strings.home.DummyUser}
-                  icon={faXmark}
-                  iconColor={theme.light.colors.secondary}
-                  iconBg={theme.light.colors.infoBgLight}
-                />
-                <ModalList
-                  title={strings.operations.ban + strings.home.DummyUser}
-                  icon={faFlag}
-                  iconColor={theme.light.colors.secondary}
-                  iconBg={theme.light.colors.infoBgLight}
-                />
-              </>
-            ) : null}
-          </ModalDown>
-        ))}
-      {/* Replace Popup */}
-      {openReplace && (
-        <PopUp open={openReplace} setOpen={setReplace}>
-          <View style={styles.ConfirmationTextContainer}>
-            <Text style={styles.ConfirmationText}>{strings.alert.delete}</Text>
-          </View>
-          <Button
-            title={strings.operations.yes}
-            style={styles.confirmButton}
-            onPress={() => {
-              onDelete(), setReplace(false);
-            }}
-          />
-          <Button
-            title={strings.operations.no}
-            style={styles.cancelButton}
-            onPress={() => setReplace(false)}
-          />
-        </PopUp>
-      )}
-      <ReportOnPostModal open={openReport} setOpen={setOpenReport}>
-        <View style={styles.reportPostContainer}>
-          <TopBackButton
-            onPress={() => setOpenReport(false)}
-            style={styles.reportPostBackButton}
-          />
-          <Text style={styles.reportTxt}> {strings.home.reportPost} </Text>
-          <HorizontalLine
-            color={theme.light.colors.infoBgLight}
-            paddingBottom={12}
-          />
-          <View style={styles.reportPostTopContainer}>
-            <DropDownPicker
-              placeholder={strings.home.selectReason}
-              open={reportListOpen}
-              value={reportOptionValue}
-              items={reportOption}
-              setOpen={setReportListOpen}
-              setValue={setReportOptionValue}
-              setItems={setReportOption}
-              style={styles.dropDownPicker}
-              textStyle={styles.dropListTxt}
-              dropDownContainerStyle={styles.dropDownContainerStyle}
-              arrowIconStyle={styles.arrowIconStyle}
-            />
-            <TextInput
-              multiline
-              editable
-              onChangeText={val => setReportCommnet(val)}
-              placeholder={strings.operations.addComments}
-              numberOfLines={4}
-              style={styles.txtInput}
-            />
-          </View>
-          <HorizontalLine
-            color={theme.light.colors.infoBgLight}
-            paddingTop={15}
-          />
-          <View style={styles.reportPostBottomContainer}>
-            <TouchableOpacity onPress={() => SelectFromGallery()}>
-              {reportImage ? (
-                <Image
-                  style={{ height: ms(35), width: ms(35), borderRadius: ms(5) }}
-                  source={{ uri: reportImage.path }}
-                />
-              ) : (
-                <View pointerEvents="none">
-                  <Icon
-                    icon={faImage}
-                    size={ms(22)}
-                    color={theme.light.colors.secondary}
-                  />
-                </View>
-              )}
-            </TouchableOpacity>
-
-            <Button
-              title={strings.operations.submit}
-              disabled={!reportOptionValue}
-              opacity={reportOptionValue ? 1 : 0.4}
-              style={styles.reportPostButton}
-              onPress={() => {
-                const reportData = {
-                  objectId: selectedPost.id,
-                  reportedBy: user?.id,
-                  reportTitle: reportOptionValue,
-                  reportBody: reportComment,
-                  reportImg: reportImage,
-                };
-                dispatch(reportPost(reportData));
-                setOpenReport(false);
-              }}
-            />
-          </View>
-        </View>
-      </ReportOnPostModal>
-      {isShowReportToast && (
-        <Toast
-          open={isShowReportToast}
-          icon={faThumbsUp}
-          message={strings.home.reportMessage}
-          onPressOk={() => dispatch(globalReset())}
-        />
-      )}
+      <UserPostOptions
+        open={showPostOptions}
+        setOpen={setShowPostOptions}
+        selectedPostData={selectedPost}
+        postType={POST_TYPE.SEARCH}
+        callBack={() => {
+          dispatch(searchAllPost(searchuservalue, user?.id));
+        }}
+      />
     </SafeAreaView>
   );
 }
@@ -838,4 +629,54 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+
+  //ban container
+  imageViewContainer: {
+    flexDirection: 'row',
+    marginTop: ms(15),
+    marginBottom: ms(20),
+  },
+  imageDesign: {
+    height: ms(40),
+    width: ms(40),
+    borderRadius: 100,
+    marginRight: ms(10),
+  },
+  headerFullname: {
+    color: theme.light.colors.black,
+    fontSize: ms(18, 0.3),
+  },
+  yesBanButton: {
+    marginTop: 10,
+    backgroundColor: theme.light.colors.white,
+    borderWidth: 2,
+    borderColor: theme.light.colors.primary,
+  },
+  DoNotBanButton: {
+    marginTop: 10,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: ms(10),
+  },
+  headerImageContainer: {
+    flexDirection: 'row',
+    position: 'relative',
+  },
+  headerImage: {
+    width: ms(50),
+    height: ms(50),
+    borderWidth: 2,
+    borderRadius: 75,
+  },
+  freeMemberText: {
+    backgroundColor: theme.light.colors.inputFiled,
+    borderRadius: 4,
+    padding: 3,
+    paddingHorizontal: 10,
+    marginTop: 3,
+    color: theme.light.colors.black,
+  },
+  headerColor: { color: theme.light.colors.black },
 });

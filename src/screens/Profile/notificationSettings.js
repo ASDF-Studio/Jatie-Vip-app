@@ -5,71 +5,135 @@ import { FontFamily } from '@/theme/Fonts';
 import { AppSwitch, HorizontalLine, Button, TopBackButton } from '@/components';
 import { ms, vs } from 'react-native-size-matters';
 import { strings } from '@/localization';
+import { CustomSwitch } from '@/components/switch';
 
 export default function NotificationSettings({ navigation }) {
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
+  const [config, setConfig] = useState({
+    masterConfig: false,
+    postReact: false,
+    postComment: false,
+    postFollowing: false,
+    jatiePost: false,
+    jatieLive: false,
+    oneHourBeforeLive: false,
+  });
+
+  const handleSwitch = key => setConfig({ ...config, [key]: !config[key] });
+
   return (
     <SafeAreaView style={styles.container}>
-      <TopBackButton
-        onPress={() => navigation.goBack()}
-        style={styles.TopBackButton}
-      />
-      <View style={styles.listHeader}>
-        <Text style={[TextStyles.header, { color: theme.light.colors.black }]}>
-          {' '}
-          {strings.profile.notificatin}{' '}
-        </Text>
-        <AppSwitch value={isEnabled} onChange={toggleSwitch} />
+      <View>
+        <TopBackButton
+          onPress={() => navigation.goBack()}
+          style={styles.TopBackButton}
+        />
+        <View style={styles.listHeader}>
+          <Text
+            style={[TextStyles.header, { color: theme.light.colors.black }]}
+          >
+            {strings.profile.notificatin}
+          </Text>
+          <CustomSwitch
+            value={config.masterConfig}
+            onChange={() => handleSwitch('masterConfig')}
+          />
+        </View>
+
+        <HorizontalLine
+          color={theme.light.colors.infoBgLight}
+          paddingTop={5}
+          paddingBottom={5}
+        />
+
+        <Text style={styles.headerText}> {strings.profile.fromMembers}</Text>
+        <View style={styles.list}>
+          <Text style={styles.listTxt}> {strings.profile.reactTo} </Text>
+          <CustomSwitch
+            value={config.masterConfig || config.postReact}
+            onChange={() => handleSwitch('postReact')}
+          />
+          {/* <AppSwitch /> */}
+        </View>
+        <View style={styles.list}>
+          <Text style={styles.listTxt}> {strings.profile.commentsOn} </Text>
+          <CustomSwitch
+            value={config.masterConfig || config.postComment}
+            onChange={() => handleSwitch('postComment')}
+          />
+          {/* <AppSwitch
+          value={config.masterConfig || config.postComment}
+          onChange={() => handleSwitch('postComment')}
+        /> */}
+        </View>
+        <View style={styles.list}>
+          <Text style={styles.listTxt}> {strings.profile.ImFollowing} </Text>
+          <CustomSwitch
+            value={config.masterConfig || config.postFollowing}
+            onChange={() => handleSwitch('postFollowing')}
+          />
+          {/* <AppSwitch
+          value={config.masterConfig || config.postFollowing}
+          onChange={() => handleSwitch('postFollowing')}
+        /> */}
+        </View>
+        <HorizontalLine
+          color={theme.light.colors.infoBgLight}
+          paddingTop={5}
+          paddingBottom={5}
+        />
+        <Text style={styles.headerText}> {strings.profile.fromJatie} </Text>
+        <View style={styles.list}>
+          <Text style={styles.listTxt}> {strings.profile.jatiePost} </Text>
+          <CustomSwitch
+            value={config.masterConfig || config.jatiePost}
+            onChange={() => handleSwitch('jatiePost')}
+          />
+          {/* <AppSwitch
+          value={config.masterConfig || config.jatiePost}
+          onChange={() => handleSwitch('jatiePost')}
+        /> */}
+        </View>
+        <View style={styles.list}>
+          <Text style={styles.listTxt}> {strings.profile.JatieLive} </Text>
+          <CustomSwitch
+            value={config.masterConfig || config.jatieLive}
+            onChange={() => handleSwitch('jatieLive')}
+          />
+          {/* <AppSwitch
+          value={config.masterConfig || config.jatieLive}
+          onChange={() => handleSwitch('jatieLive')}
+        /> */}
+        </View>
+        <View style={styles.list}>
+          <Text style={styles.listTxt}> {strings.profile.beforeLive} </Text>
+          <CustomSwitch
+            value={config.masterConfig || config.oneHourBeforeLive}
+            onChange={() => handleSwitch('oneHourBeforeLive')}
+          />
+          {/* <AppSwitch
+          value={config.masterConfig || config.oneHourBeforeLive}
+          onChange={() => handleSwitch('oneHourBeforeLive')}
+        /> */}
+        </View>
       </View>
 
-      <HorizontalLine
-        color={theme.light.colors.infoBgLight}
-        paddingTop={5}
-        paddingBottom={5}
-      />
-
-      <Text style={styles.headerText}> {strings.profile.fromMembers}</Text>
-      <View style={styles.list}>
-        <Text style={styles.listTxt}> {strings.profile.reactTo} </Text>
-        <AppSwitch value={isEnabled} onChange={toggleSwitch} />
-      </View>
-      <View style={styles.list}>
-        <Text style={styles.listTxt}> {strings.profile.commentsOn} </Text>
-        <AppSwitch value={isEnabled} onChange={toggleSwitch} />
-      </View>
-      <View style={styles.list}>
-        <Text style={styles.listTxt}> {strings.profile.ImFollowing} </Text>
-        <AppSwitch value={isEnabled} onChange={toggleSwitch} />
-      </View>
-      <HorizontalLine
-        color={theme.light.colors.infoBgLight}
-        paddingTop={5}
-        paddingBottom={5}
-      />
-      <Text style={styles.headerText}> {strings.profile.fromJatie} </Text>
-      <View style={styles.list}>
-        <Text style={styles.listTxt}> {strings.profile.jatiePost} </Text>
-        <AppSwitch value={isEnabled} onChange={toggleSwitch} />
-      </View>
-      <View style={styles.list}>
-        <Text style={styles.listTxt}> {strings.profile.JatieLive} </Text>
-        <AppSwitch value={isEnabled} onChange={toggleSwitch} />
-      </View>
-      <View style={styles.list}>
-        <Text style={styles.listTxt}> {strings.profile.beforeLive} </Text>
-        <AppSwitch value={isEnabled} onChange={toggleSwitch} />
-      </View>
-
-      <View style={{ alignItems: 'center', marginTop: ms(150) }}>
+      <View>
+        <HorizontalLine
+          color={theme.light.colors.infoBgLight}
+          paddingTop={5}
+          paddingBottom={5}
+        />
         <Button
           title={strings.operations.save}
           style={{
             backgroundColor: theme.light.colors.primary,
-            alignItems: 'center',
             borderWidth: 0,
             width: '90%',
+            marginVertical: ms(15),
+            alignSelf: 'center',
           }}
           textStyle={{
             color: theme.light.colors.white,
@@ -84,6 +148,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.light.colors.white,
+    justifyContent: 'space-between',
   },
   TopBackButton: { padding: ms(10), paddingLeft: ms(15) },
   listHeader: {

@@ -1,5 +1,15 @@
-import { createExclusivePost, getAllExclusivePost, TYPES } from '@/actions/PostActions';
-import { AppSwitch, Button, CustomLoader, TextField, TopBackButton } from '@/components';
+import {
+  createExclusivePost,
+  getAllExclusivePost,
+  TYPES,
+} from '@/actions/PostActions';
+import {
+  AppSwitch,
+  Button,
+  CustomLoader,
+  TextField,
+  TopBackButton,
+} from '@/components';
 import { strings } from '@/localization';
 import { TextStyles, theme } from '@/theme';
 import { FontFamily } from '@/theme/Fonts';
@@ -21,11 +31,12 @@ import { ms } from 'react-native-size-matters';
 import { useDispatch, useSelector } from 'react-redux';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { getUser } from '@/selectors/UserSelectors';
+import { CustomSwitch } from '@/components/switch';
 export default function AdminPostOption({ navigation, route }) {
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.CREATE_EXCLUSIVE_POST], state)
   );
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const user = useSelector(getUser);
   const [schedulePost, setSchedulePost] = useState(false);
   const [vipOnly, setVipOnly] = useState(false);
@@ -34,22 +45,15 @@ export default function AdminPostOption({ navigation, route }) {
   const [postDate, setPostDate] = useState(new Date());
   const [openPostDatePicker, setOpenPostDatePicker] = useState(false);
 
-  const [endDate, SetEndDate] = useState(new Date())
-  const [openEndDatePicker, setopenEndDatePicker] = useState(false)
-  const finalData = route.params.prevData
+  const [endDate, SetEndDate] = useState(new Date());
+  const [openEndDatePicker, setopenEndDatePicker] = useState(false);
+  const finalData = route.params.prevData;
 
   // const [publishingDate, setPublishingDate] = useState(new Date());
   // const [openPublishingDatePicker, setOpenPublishingDatePicker] = useState(false);
 
   // const [expiringDate, setExpiringDate] = useState(new Date());
   // const [openExpiringDatePicker, setOpenExpiringDatePicker] = useState(false);
-  const data = {
-    postExpires: moment(endDate).format(),
-    isVIPonly: vipOnly,
-    isUSAonly: pinPost,
-    schedulePost: schedulePost,
-    scheduleDate: postDate
-  }
 
   const onExclusivePost = () => {
     const data = {
@@ -62,13 +66,13 @@ export default function AdminPostOption({ navigation, route }) {
       postTitle: finalData?.postTitle,
       postBody: finalData?.postBody,
       imageArray: finalData?.imageArray,
-    }
-    dispatch(createExclusivePost(data))
+    };
+    dispatch(createExclusivePost(data));
     const dataa = {
       userId: user?.id,
-    }
+    };
     // dispatch(getAllExclusivePost(dataa))
-  }
+  };
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
@@ -87,7 +91,7 @@ export default function AdminPostOption({ navigation, route }) {
                 {strings.exclusive.schedulePost}{' '}
               </Text>
               <View style={styles.postSwitch}>
-                <AppSwitch
+                <CustomSwitch
                   value={schedulePost}
                   onChange={() => setSchedulePost(prev => !prev)}
                 />
@@ -97,13 +101,19 @@ export default function AdminPostOption({ navigation, route }) {
               {/* Date picker  */}
               <View>
                 <TextField
-                  style={styles.rightTextField}
+                  style={{
+                    ...styles.rightTextField,
+                    backgroundColor: schedulePost
+                      ? theme.light.colors.textFieldBackgroundColor
+                      : theme.light.colors.white,
+                  }}
                   editable={false}
-                  value={moment(postDate).format('DD-MM-YYYY')}
+                  value={moment(postDate).format('hh:mm A DD/MM/YYYY')}
                   placeholder={strings.home.selectTimeAndDate}
                 />
                 <TouchableOpacity
-                  style={styles.datePickerIcon}
+                  style={[styles.datePickerIcon]}
+                  disabled={!schedulePost}
                   onPress={() => setOpenPostDatePicker(true)}
                 >
                   <FontAwesomeIcon
@@ -115,7 +125,7 @@ export default function AdminPostOption({ navigation, route }) {
                 <DatePicker
                   minimumDate={postDate}
                   modal
-                  mode="date"
+                  mode="datetime"
                   open={openPostDatePicker}
                   // locale = "fr"
                   date={postDate}
@@ -125,7 +135,6 @@ export default function AdminPostOption({ navigation, route }) {
                   }}
                   onCancel={() => {
                     setOpenPostDatePicker(false);
-
                   }}
                 />
               </View>
@@ -138,7 +147,7 @@ export default function AdminPostOption({ navigation, route }) {
             <View style={styles.left}>
               <Text style={styles.listTxt}>{strings.home.forVIPsOnly} </Text>
               <View style={styles.vipSwitch}>
-                <AppSwitch
+                <CustomSwitch
                   value={vipOnly}
                   onChange={() => setVipOnly(prev => !prev)}
                 />
@@ -149,7 +158,7 @@ export default function AdminPostOption({ navigation, route }) {
             <View style={styles.left}>
               <Text style={styles.listTxt}>{strings.home.pinThisPost} </Text>
               <View style={styles.pinSwitch}>
-                <AppSwitch
+                <CustomSwitch
                   value={pinPost}
                   onChange={() => setPinPost(prev => !prev)}
                 />
@@ -159,7 +168,9 @@ export default function AdminPostOption({ navigation, route }) {
 
           <View style={styles.PostButtonContainer}>
             <Button
-              onPress={() => { onExclusivePost() }}
+              onPress={() => {
+                onExclusivePost();
+              }}
               style={styles.PostButton}
               title={strings.exclusive.postButton}
             />
@@ -200,11 +211,17 @@ const styles = StyleSheet.create({
   },
   datePickerIcon: {
     position: 'absolute',
-    top: ms(30),
+    top: ms(14),
     right: ms(10),
   },
   rightTextField: {
     width: ms(170),
+    marginVertical: 0,
+    height: ms(40),
+    fontSize: 15,
+    borderWidth: 1,
+    borderColor: theme.light.colors.textFieldBorderColor,
+    borderRadius: 8,
   },
   left: {
     flexDirection: 'row',

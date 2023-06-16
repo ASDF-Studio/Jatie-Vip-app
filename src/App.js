@@ -5,39 +5,32 @@ import { Provider, useSelector } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistor, store } from '@/store';
 import { RootNavigator } from '@/navigation';
-import FlashMessage from "react-native-flash-message";
+import FlashMessage from 'react-native-flash-message';
 import * as Sentry from '@sentry/react-native';
+import {
+  getFCMToken,
+  requestUserPermission,
+} from './helper/utils/pushNotifications';
 
-import messaging from '@react-native-firebase/messaging';
-import { getFCMToken, requestUserPermission } from './helper/utils/pushNotifications';
 //import { requestUserPermission } from 'utils/PushNotifications';
 enableScreens();
 Sentry.init({
   dsn: 'https://7b8d6347944f41148a983605c2e88d17@o4504937868492800.ingest.sentry.io/4504937962864640',
 });
 
-
-
 export function App() {
   useEffect(() => {
-    requestUserPermission()
-    getFCMToken()
-  }, [])
-
+    requestUserPermission();
+    getFCMToken();
+  }, []);
 
   return (
     <Sentry.ErrorBoundary>
       <Provider store={store}>
-
         <PersistGate onBeforeLift={hide} persistor={persistor}>
           <RootNavigator />
         </PersistGate>
-        <FlashMessage
-          hideOnPress
-          position="top"
-          floating
-          duration={700}
-        />
+        <FlashMessage hideOnPress position="bottom" floating duration={700} />
       </Provider>
     </Sentry.ErrorBoundary>
   );

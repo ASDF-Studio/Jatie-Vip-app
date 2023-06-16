@@ -10,7 +10,14 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
-import { Button, CustomLoader, HorizontalLine, Icon, TopBackButton } from '@/components';
+import {
+  Button,
+  CustomLoader,
+  HorizontalLine,
+  Icon,
+  SelectedFiles,
+  TopBackButton,
+} from '@/components';
 import {
   faCircle,
   faImage,
@@ -30,15 +37,19 @@ import ImageCropPicker from 'react-native-image-crop-picker';
 import { Data, File } from './exclusiveData/adminExclusivePostData';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
-import { createThumbnail } from "react-native-create-thumbnail";
+import { createThumbnail } from 'react-native-create-thumbnail';
+import { useMedia } from '@/hooks';
 
 let nextId = 0;
 
 export default function UpdateExclusivePost({ navigation, route }) {
-  const { DATA } = route.params
-  console.log("DATA=-=-POPOPOPOPOPOPOP=-", DATA);
+  const { DATA } = route.params;
+  console.log('DATA=-=-POPOPOPOPOPOPOP=-', DATA);
   const user = useSelector(getUser);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const { selectedMedias, onDelete, OpenCamera, OpenGallery } = useMedia({
+    initImages: DATA?.postMediaContent || [],
+  });
   const [imageArray, setImageArray] = useState([]);
   const [isModalVisible, setModalVisible] = useState(false);
   const [imageArrayDisplay, setImageArrayDisplay] = useState([]);
@@ -51,245 +62,36 @@ export default function UpdateExclusivePost({ navigation, route }) {
   const [animating, setAnimating] = useState();
   const [preImageArray, setPreImageArray] = useState([]);
   const [prePostImg, setPrePostImg] = useState([]);
-  let nextId = 100;
-  let preNextId = 100;
-  let next = 10;
-  let preNext = 10;
+
   useEffect(() => {
-    setPostTitle(DATA?.postTitle)
-    setPostDesc(DATA?.postBody)
-    // {
-    //   DATA?.postImg.map(item => (
-    //     preImageArray.push({
-    //       id: next--,
-    //       image: item,
-    //       imageMime: null,
-    //       video: null,
-    //     }),
-    //     imageArray.push({
-    //       id: preNext--,
-    //       image: item,
-    //       imageMime: null,
-    //       video: null,
-    //     })
-    //   ))
-    //   setPrePostImg(DATA.postImg)
-    // }
-    {
-      DATA?.postMediaContent.map(item => (
-        // preImageArray.push({
-        //   id: next--,
-        //   image: item.mimetype.split("/")[0] == "image" ? item.url : null,
-        //   imageMime: null,
-        //   video: item.mimetype.split("/")[0] == "video" ? item.url : null,
-        // }),
-
-
-        preImageArray.push({
-          id: next--,
-          "url": item.url,
-          "mimetype": item.mimetype,
-          "cover": item.cover
-        }),
-        imageArrayDisplay.push({
-          id: preNext--,
-          image: item.mimetype.split("/")[0] == "image" ? item.url : null,
-          imageMime: item.mimetype,
-          video: item.mimetype.split("/")[0] == "video" ? item.url : null,
-        })
-
-        // ,
-        // imageArray.push({
-        //   id: preNext--,
-        //   image: item.mimetype.split("/")[0] == "image" ? item.url : null,
-        //   imageMime: item.mimetype,
-        //   video: item.mimetype.split("/")[0] == "video" ? item.url : null,
-        // })
-      ))
-      // setPreImageArray(data?.postMediaContent)
-      setPrePostImg(DATA.postImg)
-    }
-
-    // setImageArray(DATA?.postImg)
-  }, [])
+    setPostTitle(DATA?.postTitle);
+    setPostDesc(DATA?.postBody);
+  }, []);
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
   const closeModal = () => {
     setModalVisible(!isModalVisible);
   };
-  deleteFile = id => {
-    // setImageArray(imageArray.filter(a => a.id !== id));
-    setImageArrayDisplay(imageArrayDisplay.filter(a => a.id !== id));
-    if (id >= 100) {
-      setImageArray(imageArray.filter(a => a.id !== id));
-    } else {
-      setPreImageArray(preImageArray.filter(a => a.id !== id));
-    }
-  };
-
-  const OpenGallery = () => {
-    // if (imageArray < 3) {
-    {
-      isImage == strings.exclusive.image
-        ? ImageCropPicker.openPicker({
-          width: 300,
-          height: 400,
-          maxFiles: 3,
-          mediaType: strings.exclusive.image,
-          multiple: true,
-        })
-          .then(images => {
-            images.forEach(item => {
-              imageArray.push({
-                id: nextId++,
-                image: item.path,
-                imageMime: item.mime,
-                video: null,
-              });
-              imageArrayDisplay.push({
-                id: preNextId++,
-                image: item.path,
-                imageMime: item.mime,
-                video: null,
-              });
-              setModalVisible(!isModalVisible);
-            });
-          })
-          .catch(e => {
-            console.log('Error: ' + e);
-          })
-        : ImageCropPicker.openPicker({
-          width: 300,
-          height: 400,
-          mediaType: strings.exclusive.video,
-          multiple: true,
-          maxFiles: 3,
-          compressImageQuality: 0.5,
-          loadingLabelText: 'loading',
-        })
-          .then(video => {
-            video.forEach(item => {
-              createThumbnail({
-                url: item.path,
-                timeStamp: 10000,
-              })
-                .then(response => {
-                  imageArray.push({
-                    id: nextId++,
-                    image: null,
-                    video: item.path,
-                    videoMime: item.mime,
-                    videoPoster: response?.path
-                  })
-                  imageArrayDisplay.push({
-                    id: nextId++,
-                    image: null,
-                    video: item.path,
-                    videoMime: item.mime,
-                    videoPoster: response?.path
-                  })
-                }
-
-                )
-                .catch(err => console.log({ err }));
-              setPostImg(video.path);
-              setmimeType(video.mime);
-              setModalVisible(!isModalVisible);
-            });
-
-          })
-          .catch(e => {
-            console.log('Error: ' + e);
-          });
-    }
-    // }
-    // else {
-    //   setModalVisible(!isModalVisible);
-    //   Alert.alert("You can select max 3 images")
-    // }
-
-  };
-
-  const OpenCamera = () => {
-    // if (imageArray < 3) {
-    {
-      isImage == strings.exclusive.image
-        ? ImageCropPicker.openCamera({
-          width: 300,
-          height: 400,
-          cropping: false,
-        })
-          .then(item => {
-            imageArray.push({
-              id: nextId++,
-              image: item.path,
-              imageMime: item.mime,
-              video: null,
-            });
-            imageArrayDisplay.push({
-              id: preNextId++,
-              image: item.path,
-              imageMime: item.mime,
-              video: null,
-            });
-            setModalVisible(!isModalVisible);
-          })
-          .catch(e => {
-            console.log('Error: ' + e);
-          })
-        : ImageCropPicker.openCamera({
-          width: 300,
-          height: 400,
-          cropping: false,
-          mediaType: strings.exclusive.video,
-        })
-          .then(item => {
-            imageArray.push({
-              id: nextId++,
-              image: null,
-              video: item.path,
-              videoMime: item.mime,
-              videoPoster: response?.path
-            })
-            imageArrayDisplay.push({
-              id: nextId++,
-              image: null,
-              video: item.path,
-              videoMime: item.mime,
-              videoPoster: response?.path
-            })
-          })
-          .catch(e => {
-            console.log('Error: ' + e);
-          });
-    }
-    // } else {
-    //   setModalVisible(!isModalVisible);
-    //   Alert.alert("You can select max 3 images")
-    // }
-  };
 
   const validation = () => {
-
     const params = {
       userId: user?.id,
       postTitle: postTitle,
       postBody: postDesc,
-      imageArray: imageArray,
+      imageArray: selectedMedias.filter(x => !x?.preMedia),
       postId: DATA?.id,
       vipOnly: DATA?.isVIPonly,
       pinnedPost: DATA?.isPinned,
       schedulePost: DATA?.isScheduled,
-      preImageArray: preImageArray,
-      mimeType: mimeType
-
-    }
+      preImageArray: selectedMedias.filter(x => x?.preMedia),
+      mimeType: mimeType,
+    };
 
     // console.log("ARRRAAATA", JSON.stringify(params));
     // return false
-    navigation.navigate(NAVIGATION.updateExclusiveOption, { prevData: params })
-  }
+    navigation.navigate(NAVIGATION.updateExclusiveOption, { prevData: params });
+  };
 
   return (
     <SafeAreaView style={styles.contianer}>
@@ -323,7 +125,6 @@ export default function UpdateExclusivePost({ navigation, route }) {
           </View>
           <View style={styles.TextBoxDEsc}>
             <TextInput
-              // value={postDesc}
               style={styles.InputTextBoxDEsc}
               multiline={true}
               placeholder={strings.exclusive.whatOnYourMind}
@@ -338,7 +139,8 @@ export default function UpdateExclusivePost({ navigation, route }) {
       </ScrollView>
 
       {/* {BttomContantLayout()} */}
-      {FileUpload(imageArrayDisplay)}
+      {/* {FileUpload(imageArrayDisplay)} */}
+      <SelectedFiles imageArray={selectedMedias} onDelete={onDelete} />
 
       <View style={styles.BottomFileContainer}>
         <View style={styles.iconContainer}>
@@ -378,12 +180,22 @@ export default function UpdateExclusivePost({ navigation, route }) {
           </TouchableOpacity>
           <Button
             title={strings.operations.imageFromCamera}
-            onPress={OpenCamera}
+            onPress={() => {
+              OpenCamera({
+                isImage: isImage === strings.exclusive.image,
+                closeModal: closeModal,
+              });
+            }}
           />
           <View style={styles.imageFromGalleryButton}>
             <Button
               title={strings.operations.imageFromGallery}
-              onPress={OpenGallery}
+              onPress={() => {
+                OpenGallery({
+                  isImage: isImage === strings.exclusive.image,
+                  closeModal: closeModal,
+                });
+              }}
             />
           </View>
         </View>
@@ -392,79 +204,6 @@ export default function UpdateExclusivePost({ navigation, route }) {
   );
 }
 
-export const FileUpload = imageArray => {
-
-  return (
-    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-      {imageArray ? (
-        <View style={styles.BottomVideoContainer}>
-          <View style={styles.videoContainer}>
-            {imageArray.map(item => {
-              if (item == null) {
-                return;
-              } else {
-                return item.image ? (
-                  <View style={styles.fileSpacing} key={item.id}>
-                    <Image
-                      style={styles.thumbnail}
-                      source={{ uri: item.image }}
-                    />
-                    <View style={styles.minus}>
-                      <Text
-                        style={styles.minusTxt}
-                        onPress={() => {
-                          deleteFile(item.id);
-                        }}
-                      >
-                        {strings.giveaway.minus}
-                      </Text>
-                    </View>
-                  </View>
-                ) : (
-                  <View style={styles.fileSpacing} key={item.id}>
-                    <Image
-                      style={styles.thumbnail}
-                      source={{ uri: item.image }}
-                    />
-                    <View style={styles.minus}>
-                      <Text
-                        style={styles.minusTxt}
-                        onPress={() => {
-                          deleteFile(item.id);
-                        }}
-                      >
-                        {strings.giveaway.minus}
-                      </Text>
-                    </View>
-                    <View style={styles.videoPlayContainer}>
-                      {/* {' '}
-                      <ActivityIndicator
-                        animating={false}
-                        color={theme.light.colors.primary}
-                        size="large"
-                        style={styles.activityIndicator}
-                      /> */}
-                      <FontAwesomeIcon
-                        icon={faCircle}
-                        size={ms(30)}
-                        style={styles.videoPlay}
-                      />
-                      <FontAwesomeIcon
-                        icon={faVideoCamera}
-                        size={ms(15)}
-                        style={styles.Play}
-                      />
-                    </View>
-                  </View>
-                );
-              }
-            })}
-          </View>
-        </View>
-      ) : null}
-    </ScrollView>
-  );
-};
 export const BttomContantLayout = () => {
   return (
     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
@@ -578,6 +317,9 @@ const styles = StyleSheet.create({
   InputTextBoxDEsc: {
     height: '100%',
     textAlignVertical: 'top',
+    fontFamily: FontFamily.BrandonGrotesque_regular,
+    fontWeight: '400',
+    fontSize: 18,
   },
   TextBoxDEscDesign: {
     fontFamily: FontFamily.BrandonGrotesque_regular,

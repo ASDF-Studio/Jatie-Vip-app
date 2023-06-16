@@ -7,28 +7,42 @@ import { theme } from '@/theme';
 import { FontFamily } from '@/theme/Fonts';
 import { strings } from '@/localization';
 import { Button } from './Button';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from './Icon';
 
-const CircleIcon = ({ onClick }) => (
-  <TouchableWithoutFeedback onPress={onClick}>
-    <View style={styles.iconContainer}>
+const CircleIcon = ({ isSuccess }) => (
+  <View
+    style={[
+      styles.iconContainer,
+      isSuccess && { backgroundColor: theme.light.colors.successBg },
+    ]}
+  >
+    {isSuccess ? (
+      <Icon
+        icon={faCheck}
+        size={ms(13)}
+        style={{
+          color: theme.light.colors.success,
+        }}
+      />
+    ) : (
       <Icon icon={faTimes} size={ms(13)} style={styles.icon} />
-    </View>
-  </TouchableWithoutFeedback>
+    )}
+  </View>
 );
 
 export const PopUpAlert = ({
   title = '',
   body = '',
-  onClose,
   isOpen = false,
-  onPress,
+  isSuccess = true,
 }) => {
+  const [state, setState] = useState(isOpen);
+
   return (
-    <PopUp open={isOpen} setOpen={onClose} blurred>
+    <PopUp open={state} setOpen={setState} blurred>
       <View style={styles.container}>
-        <CircleIcon onClick={onClose} />
+        <CircleIcon isSuccess={isSuccess} />
         <View style={styles.textContainer}>
           <Text style={styles.titleText}>{title}</Text>
           <Text style={styles.bodyText}>{body}</Text>
@@ -36,7 +50,9 @@ export const PopUpAlert = ({
         <Button
           title={strings.operations.gotIT}
           style={styles.alertButton}
-          onPress={onPress}
+          onPress={() => {
+            setState(false);
+          }}
         />
       </View>
     </PopUp>
@@ -62,6 +78,7 @@ const styles = StyleSheet.create({
     // lineHeight: ms(22),
     color: theme.light.colors.headingBlack,
     fontWeight: '600',
+    textAlign: 'center',
   },
   bodyText: {
     marginTop: ms(10),

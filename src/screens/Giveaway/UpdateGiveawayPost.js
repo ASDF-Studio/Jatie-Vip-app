@@ -1,19 +1,25 @@
 import React, { useEffect } from 'react';
 import {
-    StyleSheet,
-    View,
-    Text,
-    Image,
-    ScrollView,
-    TextInput,
-    TouchableOpacity,
-    ActivityIndicator,
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  ScrollView,
+  TextInput,
+  TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
-import { Button, HorizontalLine, Icon, TopBackButton } from '@/components';
 import {
-    faCircle,
-    faImage,
-    faVideoCamera,
+  Button,
+  HorizontalLine,
+  Icon,
+  SelectedFiles,
+  TopBackButton,
+} from '@/components';
+import {
+  faCircle,
+  faImage,
+  faVideoCamera,
 } from '@fortawesome/free-solid-svg-icons';
 import { TextStyles, theme } from '@/theme';
 import { FontFamily } from '@/theme/Fonts';
@@ -33,659 +39,477 @@ import { getUser } from '@/selectors/UserSelectors';
 import { giveAwayPost } from '@/actions/PostActions';
 import { roundToNearestPixel } from 'react-native/Libraries/Utilities/PixelRatio';
 import { navigate } from '@/navigation/RootNavigation';
-import { createThumbnail } from "react-native-create-thumbnail";
+import { createThumbnail } from 'react-native-create-thumbnail';
+import { useMedia } from '@/hooks';
 
 export default function UpdateGiveawayPost({ navigation, route }) {
-    const { DATA } = route.params
-    const user = useSelector(getUser);
-    const dispatch = useDispatch()
-    const [imageArray, setImageArray] = useState([]);
-    const [isModalVisible, setModalVisible] = useState(false);
-    const [imageArrayDisplay, setImageArrayDisplay] = useState([]);
-    const [isImage, setIsImage] = useState();
-    const [postTxt, setPostTxt] = useState('');
-    const [postImg, setPostImg] = useState([]);
-    const [mimeType, setmimeType] = useState([]);
-    const [postTitle, setPostTitle] = useState('');
-    const [postDesc, setPostDesc] = useState('');
-    const [preImageArray, setPreImageArray] = useState([]);
-    const [prePostImg, setPrePostImg] = useState([]);
-    let nextId = 100;
-    let preNextId = 100;
-    let next = 10;
-    let preNext = 10;
-    useEffect(() => {
-        setPostTitle(DATA?.postTitle)
-        setPostDesc(DATA?.postBody)
-        // {
-        //     DATA?.postImg.map(item => (
-        //         preImageArray.push({
-        //             id: next--,
-        //             image: item,
-        //             imageMime: null,
-        //             video: null,
-        //         }),
-        //         imageArray.push({
-        //             id: preNext--,
-        //             image: item,
-        //             imageMime: null,
-        //             video: null,
-        //         })
-        //     ))
-        //     setPrePostImg(DATA.postImg)
-        // }
+  const { DATA } = route.params;
+  const user = useSelector(getUser);
+  const dispatch = useDispatch();
+  const [imageArray, setImageArray] = useState([]);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [imageArrayDisplay, setImageArrayDisplay] = useState([]);
+  const [isImage, setIsImage] = useState();
+  const [postTxt, setPostTxt] = useState('');
+  const [postImg, setPostImg] = useState([]);
+  const [mimeType, setmimeType] = useState([]);
+  const [postTitle, setPostTitle] = useState('');
+  const [postDesc, setPostDesc] = useState('');
+  const [preImageArray, setPreImageArray] = useState([]);
+  const [prePostImg, setPrePostImg] = useState([]);
+  const { selectedMedias, OpenCamera, OpenGallery, onDelete } = useMedia({
+    initImages: DATA?.postMediaContent,
+  });
 
-        // setImageArray(DATA?.postImg)
+  useEffect(() => {
+    setPostTitle(DATA?.postTitle);
+    setPostDesc(DATA?.postBody);
+  }, []);
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
+  const closeModal = () => {
+    setModalVisible(!isModalVisible);
+  };
 
-
-
-        {
-            DATA?.postMediaContent.map(item => (
-                // preImageArray.push({
-                //   id: next--,
-                //   image: item.mimetype.split("/")[0] == "image" ? item.url : null,
-                //   imageMime: null,
-                //   video: item.mimetype.split("/")[0] == "video" ? item.url : null,
-                // }),
-
-
-                preImageArray.push({
-                    id: next--,
-                    "url": item.url,
-                    "mimetype": item.mimetype,
-                    "cover": item.cover
-                }),
-                imageArrayDisplay.push({
-                    id: preNext--,
-                    image: item.mimetype.split("/")[0] == "image" ? item.url : null,
-                    imageMime: item.mimetype,
-                    video: item.mimetype.split("/")[0] == "video" ? item.url : null,
-                })
-
-                // ,
-                // imageArray.push({
-                //   id: preNext--,
-                //   image: item.mimetype.split("/")[0] == "image" ? item.url : null,
-                //   imageMime: item.mimetype,
-                //   video: item.mimetype.split("/")[0] == "video" ? item.url : null,
-                // })
-            ))
-            // setPreImageArray(data?.postMediaContent)
-            setPrePostImg(DATA.postImg)
-        }
-
-
-    }, [])
-    const toggleModal = () => {
-        setModalVisible(!isModalVisible);
-    };
-    const closeModal = () => {
-        setModalVisible(!isModalVisible);
-    };
-    deleteFile = id => {
-        // setImageArray(imageArray.filter(a => a.id !== id));
-        setImageArrayDisplay(imageArrayDisplay.filter(a => a.id !== id));
-        if (id >= 100) {
-            setImageArray(imageArray.filter(a => a.id !== id));
-        } else {
-            setPreImageArray(preImageArray.filter(a => a.id !== id));
-        }
+  const validation = () => {
+    const params = {
+      userId: user?.id,
+      postTitle: postTitle,
+      postBody: postDesc,
+      imageArray: selectedMedias.filter(x => !x?.preMedia),
+      preImageArray: selectedMedias.filter(x => x?.preMedia),
+      id: DATA?.id,
     };
 
-    const OpenGallery = () => {
-        {
-            isImage == strings.exclusive.image
-                ? ImageCropPicker.openPicker({
-                    width: ms(300),
-                    height: ms(400),
-                    mediaType: strings.exclusive.image,
-                    multiple: true,
-                    maxFiles: 3,
-                    compressImageQuality: 0.5
-                })
-                    .then(images => {
-                        images.forEach(item => {
-                            imageArray.push({
-                                id: nextId++,
-                                image: item.path,
-                                imageMime: item.mime,
-                                video: null,
-                            });
-                            imageArrayDisplay.push({
-                                id: preNextId++,
-                                image: item.path,
-                                imageMime: item.mime,
-                                video: null,
-                            });
-                            setModalVisible(!isModalVisible);
-                        });
-                    })
-                    .catch(e => {
-                        console.log('Error: ' + e);
-                    })
-                : ImageCropPicker.openPicker({
-                    width: 300,
-                    height: 400,
-                    mediaType: strings.exclusive.video,
-                    multiple: true,
-                    maxFiles: 3,
-                    compressImageQuality: 0.5,
-                    loadingLabelText: 'loading',
-                })
-                    .then(video => {
-                        video.forEach(item => {
-                            createThumbnail({
-                                url: item.path,
-                                timeStamp: 10000,
-                            })
-                                .then(response => {
-                                    imageArray.push({
-                                        id: nextId++,
-                                        image: null,
-                                        video: item.path,
-                                        videoMime: item.mime,
-                                        videoPoster: response?.path
-                                    })
-                                    imageArrayDisplay.push({
-                                        id: nextId++,
-                                        image: null,
-                                        video: item.path,
-                                        videoMime: item.mime,
-                                        videoPoster: response?.path
-                                    })
-                                }
+    navigation.navigate(NAVIGATION.updateGiveawayOption, { prevData: params });
+  };
 
-                                )
-                                .catch(err => console.log({ err }));
-                            setPostImg(video.path);
-                            setmimeType(video.mime);
-                            setModalVisible(!isModalVisible);
-                        });
-                    })
-                    .catch(e => {
-                        console.log('Error: ' + e);
-                    });
-        }
-    };
+  return (
+    <SafeAreaView style={styles.contianer}>
+      <View style={styles.header}>
+        <TopBackButton onPress={() => navigation.goBack()} />
+        <Text style={[styles.headerText, TextStyles.header]}>
+          {strings.giveaway.createGiveaway}
+        </Text>
+      </View>
+      <HorizontalLine />
+      <ScrollView>
+        <View style={styles.postContainer}>
+          <View style={styles.title}>
+            <Text style={[TextStyles.text, styles.postTextDesign]}>
+              {strings.exclusive.title}
+            </Text>
+          </View>
+          <View style={styles.TextBox}>
+            <TextInput
+              value={postTitle}
+              style={styles.InputTextBox}
+              multiline={true}
+              placeholder={strings.exclusive.titleHere}
+              onChangeText={setPostTitle}
+            />
+          </View>
+          <View style={styles.TextBoxDEsc}>
+            <TextInput
+              value={postDesc}
+              style={styles.InputTextBoxDEsc}
+              multiline={true}
+              placeholder={strings.exclusive.whatOnYourMind}
+              onChangeText={setPostDesc}
+            />
+          </View>
+        </View>
+      </ScrollView>
 
-    const OpenCamera = () => {
-        {
-            isImage == strings.exclusive.image
-                ? ImageCropPicker.openCamera({
-                    width: 300,
-                    height: 400,
-                    maxFiles: 3,
-                    cropping: false,
-                    compressImageQuality: 0.5,
-                })
-                    .then(image => {
-                        imageArray.push({
-                            id: nextId++,
-                            image: image.path,
-                            imageMime: image.mime,
-                            video: null,
-                        });
-                        setPostImg(image.path);
-                        setmimeType(image.mime);
-                        setModalVisible(!isModalVisible);
-                    })
-                    .catch(e => {
-                        console.log('Error: ' + e);
-                    })
-                : ImageCropPicker.openCamera({
-                    width: 300,
-                    height: 400,
-                    maxFiles: 3,
-                    cropping: false,
-                    mediaType: strings.exclusive.video,
-                    compressImageQuality: 0.5,
-                })
-                    .then(image => {
-                        imageArray.push({
-                            id: nextId++,
-                            image: null,
-                            video: image.path,
-                            videoMime: image.mime,
-                        });
-                        setPostImg(image.path);
-                        setmimeType(image.mime);
-                        setModalVisible(!isModalVisible);
-                    })
-                    .catch(e => {
-                        console.log('Error: ' + e);
-                    });
-        }
-    };
+      {/* {BttomContantLayout()} */}
+      <SelectedFiles imageArray={selectedMedias} onDelete={onDelete} />
 
-    const validation = () => {
+      <View style={styles.BottomFileContainer}>
+        <View style={styles.iconContainer}>
+          <Icon
+            icon={faImage}
+            size={ms(20)}
+            onPress={() => toggleModal() & setIsImage(strings.exclusive.image)}
+            style={styles.icon}
+          />
+          <Icon
+            icon={faVideoCamera}
+            size={ms(20)}
+            onPress={() => toggleModal() & setIsImage(strings.exclusive.video)}
+            style={styles.icon}
+          />
+        </View>
 
-        const params = {
-            userId: user?.id,
-            postTitle: postTitle,
-            postBody: postDesc,
-            imageArray: imageArray,
-            preImageArray: preImageArray,
-            id: DATA?.id
+        {/* button */}
 
-        }
+        <Button
+          title={strings.exclusive.next}
+          disabled={postDesc ? false : true}
+          opacity={postDesc ? 1 : 0.4}
+          onPress={validation}
+          style={styles.giveAwayButtom}
+        />
+        {/* </TouchableOpacity> */}
+      </View>
 
-        navigation.navigate(NAVIGATION.updateGiveawayOption, { prevData: params })
-    }
+      {/* Model */}
 
-    return (
-        <SafeAreaView style={styles.contianer}>
-            <View style={styles.header}>
-                <TopBackButton onPress={() => navigation.goBack()} />
-                <Text style={[styles.headerText, TextStyles.header]}>
-                    {strings.giveaway.createGiveaway}
-                </Text>
+      <Modal isVisible={isModalVisible}>
+        <View style={styles.modalBackground}>
+          <TouchableOpacity onPress={closeModal}>
+            <View style={styles.closeView}>
+              <Image source={close} style={styles.closeIcon} />
             </View>
-            <HorizontalLine />
-            <ScrollView>
-                <View style={styles.postContainer}>
-                    <View style={styles.title}>
-                        <Text style={[TextStyles.text, styles.postTextDesign]}>
-                            {strings.exclusive.title}
-                        </Text>
-                    </View>
-                    <View style={styles.TextBox}>
-                        <TextInput
-                            value={postTitle}
-                            style={styles.InputTextBox}
-                            multiline={true}
-                            placeholder={strings.exclusive.titleHere}
-                            onChangeText={setPostTitle}
-                        />
-                    </View>
-                    <View style={styles.TextBoxDEsc}>
-                        <TextInput
-                            value={postDesc}
-                            style={styles.InputTextBoxDEsc}
-                            multiline={true}
-                            placeholder={strings.exclusive.whatOnYourMind}
-                            onChangeText={setPostDesc}
-                        />
-                    </View>
-                </View>
-            </ScrollView>
-
-            {/* {BttomContantLayout()} */}
-            {FileUpload(imageArrayDisplay)}
-
-            <View style={styles.BottomFileContainer}>
-                <View style={styles.iconContainer}>
-                    <Icon
-                        icon={faImage}
-                        size={ms(20)}
-                        onPress={() => toggleModal() & setIsImage(strings.exclusive.image)}
-                        style={styles.icon}
-                    />
-                    <Icon
-                        icon={faVideoCamera}
-                        size={ms(20)}
-                        onPress={() => toggleModal() & setIsImage(strings.exclusive.video)}
-                        style={styles.icon}
-                    />
-                </View>
-
-                {/* button */}
-
-                <Button
-                    title={strings.exclusive.next}
-                    disabled={postDesc ? false : true}
-                    opacity={postDesc ? 1 : 0.4}
-                    onPress={validation}
-                    style={styles.giveAwayButtom}
-                />
-                {/* </TouchableOpacity> */}
-            </View>
-
-            {/* Model */}
-
-            <Modal isVisible={isModalVisible}>
-                <View style={styles.modalBackground}>
-                    <TouchableOpacity onPress={closeModal}>
-                        <View style={styles.closeView}>
-                            <Image source={close} style={styles.closeIcon} />
-                        </View>
-                    </TouchableOpacity>
-                    <Button
-                        title={strings.operations.imageFromCamera}
-                        onPress={OpenCamera}
-                    />
-                    <View style={styles.modelButtonContainer}>
-                        <Button
-                            title={strings.operations.imageFromGallery}
-                            onPress={OpenGallery}
-                        />
-                    </View>
-                </View>
-            </Modal>
-        </SafeAreaView >
-    );
+          </TouchableOpacity>
+          <Button
+            title={strings.operations.imageFromCamera}
+            onPress={() => {
+              OpenCamera({
+                isImage: isImage === strings.exclusive.image,
+                closeModal: closeModal,
+              });
+            }}
+          />
+          <View style={styles.modelButtonContainer}>
+            <Button
+              title={strings.operations.imageFromGallery}
+              onPress={() => {
+                OpenGallery({
+                  isImage: isImage === strings.exclusive.image,
+                  closeModal: closeModal,
+                });
+              }}
+            />
+          </View>
+        </View>
+      </Modal>
+    </SafeAreaView>
+  );
 }
 
 export const FileUpload = imageArray => {
-    return (
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            {imageArray ? (
-                <View style={styles.BottomVideoContainer}>
-                    <View style={styles.videoContainer}>
-                        {imageArray.map(item => {
-                            if (item == null) {
-                                return;
-                            } else {
-                                return item.image ? (
-                                    <View style={styles.fileSpacing} key={item.id}>
-                                        <Image
-                                            style={styles.thumbnail}
-                                            source={{ uri: item.image }}
-                                        />
-                                        <View style={styles.minus}>
-                                            <Text
-                                                style={styles.minusTxt}
-                                                onPress={() => {
-                                                    deleteFile(item.id);
-                                                }}
-                                            >
-                                                {strings.giveaway.minus}
-                                            </Text>
-                                        </View>
-                                    </View>
-                                ) : (
-                                    <View style={styles.fileSpacing} key={item.id}>
-                                        <Image
-                                            style={styles.thumbnail}
-                                            source={{ uri: item.image }}
-                                        />
-                                        <View style={styles.minus}>
-                                            <Text
-                                                style={styles.minusTxt}
-                                                onPress={() => {
-                                                    deleteFile(item.id);
-                                                }}
-                                            >
-                                                {strings.giveaway.minus}
-                                            </Text>
-                                        </View>
-                                        <View style={styles.videoPlayContainer}>
-                                            {/* {' '}
+  return (
+    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+      {imageArray ? (
+        <View style={styles.BottomVideoContainer}>
+          <View style={styles.videoContainer}>
+            {imageArray.map(item => {
+              if (item == null) {
+                return;
+              } else {
+                return item.image ? (
+                  <View style={styles.fileSpacing} key={item.id}>
+                    <Image
+                      style={styles.thumbnail}
+                      source={{ uri: item.image }}
+                    />
+                    <View style={styles.minus}>
+                      <Text
+                        style={styles.minusTxt}
+                        onPress={() => {
+                          deleteFile(item.id);
+                        }}
+                      >
+                        {strings.giveaway.minus}
+                      </Text>
+                    </View>
+                  </View>
+                ) : (
+                  <View style={styles.fileSpacing} key={item.id}>
+                    <Image
+                      style={styles.thumbnail}
+                      source={{ uri: item.image }}
+                    />
+                    <View style={styles.minus}>
+                      <Text
+                        style={styles.minusTxt}
+                        onPress={() => {
+                          deleteFile(item.id);
+                        }}
+                      >
+                        {strings.giveaway.minus}
+                      </Text>
+                    </View>
+                    <View style={styles.videoPlayContainer}>
+                      {/* {' '}
                                             <ActivityIndicator
                                                 animating={animating}
                                                 color={theme.light.colors.primary}
                                                 size="large"
                                                 style={styles.activityIndicator}
                                             /> */}
-                                            <FontAwesomeIcon
-                                                icon={faCircle}
-                                                size={ms(30)}
-                                                style={styles.videoPlay}
-                                            />
-                                            <FontAwesomeIcon
-                                                icon={faVideoCamera}
-                                                size={ms(15)}
-                                                style={styles.Play}
-                                            />
-                                        </View>
-                                    </View>
-                                );
-                            }
-                        })}
+                      <FontAwesomeIcon
+                        icon={faCircle}
+                        size={ms(30)}
+                        style={styles.videoPlay}
+                      />
+                      <FontAwesomeIcon
+                        icon={faVideoCamera}
+                        size={ms(15)}
+                        style={styles.Play}
+                      />
                     </View>
-                </View>
-            ) : null}
-        </ScrollView>
-    );
+                  </View>
+                );
+              }
+            })}
+          </View>
+        </View>
+      ) : null}
+    </ScrollView>
+  );
 };
 export const BttomContantLayout = () => {
-    return (
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            <View style={styles.BottomVideoContainer}>
-                {File.video.map(item => {
-                    if (item == null) {
-                        return;
-                    } else {
-                        return (
-                            <View style={styles.videoContainer} key={item.vID}>
-                                <Image
-                                    style={styles.thumbnail}
-                                    source={{ uri: item.videoLink }}
-                                />
-                                <View style={styles.minus}>
-                                    <Text style={styles.minusTxt}>{strings.giveaway.minus}</Text>
-                                </View>
-                                <View style={styles.videoPlayContainer}>
-                                    <FontAwesomeIcon
-                                        icon={faCircle}
-                                        size={ms(30)}
-                                        style={styles.videoPlay}
-                                    />
-                                    <FontAwesomeIcon
-                                        icon={faVideoCamera}
-                                        size={ms(15)}
-                                        style={styles.Play}
-                                    />
-                                </View>
-                            </View>
-                        );
-                    }
-                })}
+  return (
+    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+      <View style={styles.BottomVideoContainer}>
+        {File.video.map(item => {
+          if (item == null) {
+            return;
+          } else {
+            return (
+              <View style={styles.videoContainer} key={item.vID}>
+                <Image
+                  style={styles.thumbnail}
+                  source={{ uri: item.videoLink }}
+                />
+                <View style={styles.minus}>
+                  <Text style={styles.minusTxt}>{strings.giveaway.minus}</Text>
+                </View>
+                <View style={styles.videoPlayContainer}>
+                  <FontAwesomeIcon
+                    icon={faCircle}
+                    size={ms(30)}
+                    style={styles.videoPlay}
+                  />
+                  <FontAwesomeIcon
+                    icon={faVideoCamera}
+                    size={ms(15)}
+                    style={styles.Play}
+                  />
+                </View>
+              </View>
+            );
+          }
+        })}
 
-                {File.photo.map(item => {
-                    if (item == null) {
-                        return;
-                    } else {
-                        return (
-                            <View style={styles.videoContainer} key={item.pID}>
-                                <Image
-                                    style={styles.thumbnail}
-                                    source={{ uri: item.photoLink }}
-                                />
-                                <View style={styles.minus}>
-                                    <Text style={styles.minusTxt}>{strings.giveaway.minus}</Text>
-                                </View>
-                            </View>
-                        );
-                    }
-                })}
-            </View>
-        </ScrollView>
-    );
+        {File.photo.map(item => {
+          if (item == null) {
+            return;
+          } else {
+            return (
+              <View style={styles.videoContainer} key={item.pID}>
+                <Image
+                  style={styles.thumbnail}
+                  source={{ uri: item.photoLink }}
+                />
+                <View style={styles.minus}>
+                  <Text style={styles.minusTxt}>{strings.giveaway.minus}</Text>
+                </View>
+              </View>
+            );
+          }
+        })}
+      </View>
+    </ScrollView>
+  );
 };
 
 const styles = StyleSheet.create({
-    contianer: {
-        flex: 1,
-        backgroundColor: theme.light.colors.white,
-    },
-    header: {
-        padding: ms(15),
-    },
-    headerIcon: {
-        color: theme.light.colors.info,
-    },
-    headerText: {
-        marginTop: vs(10),
-        color: theme.light.colors.black,
-    },
-    postContainer: {
-        flex: 1,
-    },
-    title: {
-        padding: ms(10),
-    },
-    postTextDesign: {
-        fontFamily: FontFamily.BrandonGrotesque_bold,
-        textAlign: 'justify',
-        color: theme.light.colors.black,
-    },
-    InputTextBox: {
-        paddingLeft: ms(10),
-        borderWidth: 1,
-        borderRadius: 8,
-        borderColor: theme.light.colors.infoBgLight,
-        backgroundColor: theme.light.colors.inputFiled,
+  contianer: {
+    flex: 1,
+    backgroundColor: theme.light.colors.white,
+  },
+  header: {
+    padding: ms(15),
+  },
+  headerIcon: {
+    color: theme.light.colors.info,
+  },
+  headerText: {
+    marginTop: vs(10),
+    color: theme.light.colors.black,
+  },
+  postContainer: {
+    flex: 1,
+  },
+  title: {
+    padding: ms(10),
+  },
+  postTextDesign: {
+    fontFamily: FontFamily.BrandonGrotesque_bold,
+    textAlign: 'justify',
+    color: theme.light.colors.black,
+  },
+  InputTextBox: {
+    paddingLeft: ms(10),
+    borderWidth: 1,
+    borderRadius: 8,
+    borderColor: theme.light.colors.infoBgLight,
+    backgroundColor: theme.light.colors.inputFiled,
+  },
+  postInputDesign: {
+    fontFamily: FontFamily.BrandonGrotesque_regular,
+    textAlign: 'justify',
+    color: theme.light.colors.black,
+  },
+  TextBox: {
+    marginLeft: ms(10),
+    marginRight: vs(10),
+    marginBottom: vs(10),
+  },
+  TextBoxDEsc: {
+    width: '100%',
+    height: vs(300),
+    padding: ms(8),
+    borderWidth: 1,
+    borderColor: theme.light.colors.infoBgLight,
+  },
+  TextField: {
+    backgroundColor: theme.light.colors.white,
+  },
+  InputTextBoxDEsc: {
+    height: '100%',
+    textAlignVertical: 'top',
+    fontFamily: FontFamily.BrandonGrotesque_regular,
+    fontWeight: '400',
+    fontSize: 18,
+  },
 
+  //BottomLAyout of file contant
 
-    },
-    postInputDesign: {
-        fontFamily: FontFamily.BrandonGrotesque_regular,
-        textAlign: 'justify',
-        color: theme.light.colors.black,
-    },
-    TextBox: {
-        marginLeft: ms(10),
-        marginRight: vs(10),
-        marginBottom: vs(10),
-    },
-    TextBoxDEsc: {
-        width: '100%',
-        height: vs(300),
-        padding: ms(8),
-        borderWidth: 1,
-        borderColor: theme.light.colors.infoBgLight,
-    },
-    TextField: {
-        backgroundColor: theme.light.colors.white,
-    },
-    InputTextBoxDEsc: {
-        height: '100%',
-        textAlignVertical: 'top',
-    },
+  BottomVideoContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    marginBottom: vs(20),
+    paddingTop: ms(10),
+    // borderTopWidth: 1,
+    // borderColor: theme.light.colors.infoBgLight,
+  },
+  fileSpacing: {
+    padding: 10,
+  },
+  videoContainer: {
+    flex: 1,
+    width: '100%',
+    flexDirection: 'row',
+    marginLeft: ms(10),
+    marginRight: ms(15),
+    height: ms(110),
+    alignItems: 'center',
+  },
+  thumbnail: {
+    flex: 1,
+    maxWidth: ms(80),
+    minWidth: ms(80),
+    height: vs(80),
+    borderWidth: 1,
+    borderRadius: 8,
+    borderColor: theme.light.colors.infoBgLight,
+    backgroundColor: theme.light.colors.inputFiled,
+    // resizeMode: 'contain',
+  },
 
-    //BottomLAyout of file contant
+  //BottomLayout of file upload
 
-    BottomVideoContainer: {
-        width: '100%',
-        flexDirection: 'row',
-        marginBottom: vs(20),
-        paddingTop: ms(10),
-        // borderTopWidth: 1,
-        // borderColor: theme.light.colors.infoBgLight,
-    },
-    fileSpacing: {
-        padding: 10,
-    },
-    videoContainer: {
-        flex: 1,
-        width: '100%',
-        flexDirection: 'row',
-        marginLeft: ms(10),
-        marginRight: ms(15),
-        height: ms(110),
-        alignItems: 'center',
-    },
-    thumbnail: {
-        flex: 1,
-        maxWidth: ms(80),
-        minWidth: ms(80),
-        height: vs(80),
-        borderWidth: 1,
-        borderRadius: 8,
-        borderColor: theme.light.colors.infoBgLight,
-        backgroundColor: theme.light.colors.inputFiled,
-        // resizeMode: 'contain',
-    },
+  BottomFileContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    borderTopWidth: 1,
+    borderColor: theme.light.colors.infoBgLight,
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  iconContainer: {
+    flexDirection: 'row',
+    marginLeft: ms(10),
+    borderRightWidth: 1,
+    borderColor: theme.light.colors.infoBgLight,
+  },
+  icon: {
+    margin: ms(10),
+    color: theme.light.colors.secondary,
+  },
+  ButtonContainer: {
+    margin: ms(10),
+    borderRadius: 10,
+    padding: ms(8),
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: theme.light.colors.primary,
+    position: 'relative',
+    backgroundColor: theme.light.colors.primary,
+    width: ms(120),
+  },
+  giveAwayButtom: {
+    width: ms(100),
+    margin: ms(10),
+  },
 
-    //BottomLayout of file upload
+  // - circle
 
-    BottomFileContainer: {
-        width: '100%',
-        flexDirection: 'row',
-        borderTopWidth: 1,
-        borderColor: theme.light.colors.infoBgLight,
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-    },
-    iconContainer: {
-        flexDirection: 'row',
-        marginLeft: ms(10),
-        borderRightWidth: 1,
-        borderColor: theme.light.colors.infoBgLight,
-    },
-    icon: {
-        margin: ms(10),
-        color: theme.light.colors.secondary,
-    },
-    ButtonContainer: {
-        margin: ms(10),
-        borderRadius: 10,
-        padding: ms(8),
-        alignItems: 'center',
-        borderWidth: 2,
-        borderColor: theme.light.colors.primary,
-        position: 'relative',
-        backgroundColor: theme.light.colors.primary,
-        width: ms(120),
-    },
-    giveAwayButtom: {
-        width: ms(100),
-        margin: ms(10),
-    },
+  minus: {
+    width: ms(30),
+    height: ms(30),
+    backgroundColor: theme.light.colors.userBackgroundColor,
+    borderRadius: 50,
+    position: 'absolute',
+    marginLeft: ms(65),
+    top: 0,
+  },
+  minusTxt: {
+    fontFamily: FontFamily.Recoleta_bold,
+    color: theme.light.colors.primary,
+    fontSize: ms(23, 0.3),
+    textAlign: 'center',
+  },
+  //Video Icon
 
-    // - circle
+  videoPlayContainer: {
+    position: 'absolute',
+    marginLeft: '45%',
+    marginTop: '45%',
+  },
+  videoPlay: {
+    color: theme.light.colors.primary,
+  },
+  Play: {
+    position: 'absolute',
+    color: theme.light.colors.background,
+    marginLeft: ms(8),
+    marginTop: ms(8),
+  },
 
-    minus: {
-        width: ms(30),
-        height: ms(30),
-        backgroundColor: theme.light.colors.userBackgroundColor,
-        borderRadius: 50,
-        position: 'absolute',
-        marginLeft: ms(65),
-        top: 0,
-    },
-    minusTxt: {
-        fontFamily: FontFamily.Recoleta_bold,
-        color: theme.light.colors.primary,
-        fontSize: ms(23, 0.3),
-        textAlign: 'center',
-    },
-    //Video Icon
+  //File upload
 
-    videoPlayContainer: {
-        position: 'absolute',
-        marginLeft: '45%',
-        marginTop: '45%',
-    },
-    videoPlay: {
-        color: theme.light.colors.primary,
-    },
-    Play: {
-        position: 'absolute',
-        color: theme.light.colors.background,
-        marginLeft: ms(8),
-        marginTop: ms(8),
-    },
+  //modal
 
-    //File upload
+  modalBackground: {
+    padding: ms(30),
+    justifyContent: 'center',
+    backgroundColor: 'white',
+    borderRadius: 12,
+  },
+  closeView: {
+    alignItems: 'flex-end',
+    marginTop: -23,
+    marginBottom: vs(10),
+    marginRight: -22,
+  },
+  closeIcon: {
+    height: vs(20),
+    width: ms(20),
+  },
+  modelButtonContainer: { marginTop: vs(20) },
 
-    //modal
+  // loading
 
-    modalBackground: {
-        padding: ms(30),
-        justifyContent: 'center',
-        backgroundColor: 'white',
-        borderRadius: 12,
-    },
-    closeView: {
-        alignItems: 'flex-end',
-        marginTop: -23,
-        marginBottom: vs(10),
-        marginRight: -22,
-    },
-    closeIcon: {
-        height: vs(20),
-        width: ms(20),
-    },
-    modelButtonContainer: { marginTop: vs(20) },
-
-    // loading
-
-    activityIndicator: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: 80,
-    },
+  activityIndicator: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 80,
+  },
 });

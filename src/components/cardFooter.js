@@ -104,42 +104,34 @@ export const CardFooter = ({
       post.upVote = upVoteCount - 1;
     }
 
-    switch (postType) {
-      case POST_TYPE.SEARCH:
-        dispatch(searchAllPostSuccess([...postArray]));
-        break;
-      case POST_TYPE.SINGLE_POST:
-        dispatch(getPostByIdSuccess(post));
-        break;
-      case POST_TYPE.PROFILE:
-        dispatch(getAllPostByLoggedInUserSuccess([...postArray]));
-        break;
-      case POST_TYPE.USER_PROFILE:
-        dispatch(getAllPostByUserIdSuccess([...postArray]));
-        break;
-      default:
-        dispatch(
-          getAllPostSuccess({
-            data: postArray,
-          })
-        );
-    }
-    const a = await UserController.upVote(postID, userID);
-    console.log(
-      '============>adadada',
-      a,
-      postID,
-      userID,
-      '==========',
-      upVote,
-      downVote
-    );
+    // switch (postType) {
+    //   case POST_TYPE.SEARCH:
+    //     dispatch(searchAllPostSuccess(postArray));
+    //     break;
+    //   case POST_TYPE.SINGLE_POST:
+    //     dispatch(getPostByIdSuccess(post));
+    //     break;
+    //   case POST_TYPE.PROFILE:
+    //     dispatch(getAllPostByLoggedInUserSuccess(postArray));
+    //     break;
+    //   case POST_TYPE.USER_PROFILE:
+    //     dispatch(getAllPostByUserIdSuccess(postArray));
+    //     break;
+    //   default:
+    //     dispatch(
+    //       getAllPostSuccess({
+    //         data: postArray,
+    //       })
+    //     );
+    // }
+    UserController.upVote(postID, userID);
   };
 
   useEffect(() => {
     setUpVote(likeCount);
     setDownVote(disLikeCount);
   }, [postID]);
+
   const onDownVote = async (postID, userID) => {
     const post =
       postType === POST_TYPE.SINGLE_POST ? singlePost : postArray[postIndex];
@@ -161,28 +153,27 @@ export const CardFooter = ({
       post.has_downvoted = false;
       post.downVote = downVoteCount - 1;
     }
-    switch (postType) {
-      case POST_TYPE.SEARCH:
-        dispatch(searchAllPostSuccess([...postArray]));
-        break;
-      case POST_TYPE.SINGLE_POST:
-        dispatch(getPostByIdSuccess(post));
-        break;
-      case POST_TYPE.PROFILE:
-        dispatch(getAllPostByLoggedInUserSuccess([...postArray]));
-        break;
-      case POST_TYPE.USER_PROFILE:
-        dispatch(getAllPostByUserIdSuccess([...postArray]));
-        break;
-      default:
-        dispatch(
-          getAllPostSuccess({
-            data: postArray,
-          })
-        );
-    }
-    const a = await UserController.downVote(postID, userID);
-    console.log('Downvote ======', userID, '   ', postID);
+    // switch (postType) {
+    //   case POST_TYPE.SEARCH:
+    //     dispatch(searchAllPostSuccess(postArray));
+    //     break;
+    //   case POST_TYPE.SINGLE_POST:
+    //     dispatch(getPostByIdSuccess(post));
+    //     break;
+    //   case POST_TYPE.PROFILE:
+    //     dispatch(getAllPostByLoggedInUserSuccess(postArray));
+    //     break;
+    //   case POST_TYPE.USER_PROFILE:
+    //     dispatch(getAllPostByUserIdSuccess(postArray));
+    //     break;
+    //   default:
+    //     dispatch(
+    //       getAllPostSuccess({
+    //         data: postArray,
+    //       })
+    //     );
+    // }
+    UserController.downVote(postID, userID);
   };
   const generateLink = async () => {
     try {

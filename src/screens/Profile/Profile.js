@@ -21,6 +21,7 @@ import {
   HeaderTab,
   Icon,
   HorizontalLine,
+  NotificationIcon,
 } from '@/components';
 import { strings } from '@/localization';
 import { useSelector, useDispatch } from 'react-redux';
@@ -44,7 +45,9 @@ export function Profile({ navigation }) {
   const focus = useIsFocused();
 
   useEffect(() => {
-    dispatch(followers(user?.id, user.id));
+    if (focus) {
+      dispatch(followers(user?.id, user.id));
+    }
   }, [focus]);
 
   return (
@@ -70,22 +73,17 @@ export function Profile({ navigation }) {
         <View style={styles.iconContiner}>
           <Icon
             icon={faSliders}
-            size={ms(20)}
+            size={ms(22)}
             onPress={() => navigation.navigate(NAVIGATION.profileSetting)}
             style={styles.settingsIcon}
           />
           <Icon
             icon={faSearch}
-            size={ms(20)}
+            size={ms(22)}
             onPress={() => navigation.navigate(NAVIGATION.search)}
             style={styles.searchIcon}
           />
-          <Icon
-            icon={faBell}
-            size={ms(20)}
-            onPress={() => navigation.navigate(NAVIGATION.notification)}
-            style={styles.bellIcon}
-          />
+          <NotificationIcon />
           {/* <View style={styles.bellAlert} /> */}
         </View>
       </View>
@@ -131,7 +129,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    padding: ms(9),
+    padding: ms(10),
   },
   headerImageContainer: {
     flexDirection: 'row',
@@ -169,14 +167,10 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingTop: ms(18),
   },
-  bellIcon: {
-    marginRight: ms(6),
-  },
-  searchIcon: {
-    marginRight: ms(12),
-  },
+  bellIcon: { marginRight: ms(20), color: theme.light.colors.black },
+  searchIcon: { marginRight: ms(20), color: theme.light.colors.black },
   settingsIcon: {
-    marginRight: ms(12),
+    marginRight: ms(20),
   },
   bellAlert: {
     height: ms(10),

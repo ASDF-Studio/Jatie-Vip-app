@@ -39,7 +39,10 @@ import {
 } from '@/actions/PostActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
-import { isLoadingSelector } from '@/selectors/StatusSelectors';
+import {
+  isLoadingSelector,
+  successSelector,
+} from '@/selectors/StatusSelectors';
 import {
   faEllipsis,
   faFlag,
@@ -58,7 +61,7 @@ export default function PostDetails({ navigation, route }) {
   const giveAwayId = data.id;
   const user = useSelector(getUser);
   const userType = useSelector(state => state.userType);
-  const [showAlert, setShowAlert] = useState(false);
+  const [showAlert, setShowAlert] = useState(true);
   const { blink } = useBlinker();
 
   const [active, setActive] = useState(false);
@@ -70,6 +73,10 @@ export default function PostDetails({ navigation, route }) {
   );
   const withdrawGiveAwayLoading = useSelector(state =>
     isLoadingSelector([TYPES.WITHDRAW_GIVEAWAY], state)
+  );
+
+  const isShowSuccessAlert = useSelector(state =>
+    successSelector([TYPES.JOIN_GIVEAWAY], state)
   );
 
   const joinGiveAwayhandlePress = () => {
@@ -169,8 +176,18 @@ export default function PostDetails({ navigation, route }) {
                   },
                 ]}
               >
-                <Text>
-                  {strings.giveaway.EndsIn + ' '}
+                <Text
+                  style={{
+                    fontFamily: FontFamily.Recoleta_regular,
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: theme.light.colors.timerText,
+                    }}
+                  >
+                    {strings.giveaway.EndsIn + ' '}
+                  </Text>
                   <Text style={styles.EndTimeTxt}>
                     {moment.utc(data.postExpires).format('D/M/YY  hh:mm')}{' '}
                     {/* {item.postExpires} */}
@@ -318,7 +335,6 @@ export default function PostDetails({ navigation, route }) {
           iconColor={theme.light.colors.secondary}
         />
       </ModalDown>
-      {showAlert && <PopUpAlert />}
     </SafeAreaView>
   );
 }

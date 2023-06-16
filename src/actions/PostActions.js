@@ -7,9 +7,10 @@ import { strings } from '@/localization';
 import { navigate, navigationRef } from '@/navigation/RootNavigation';
 import { getUser } from '@/selectors/UserSelectors';
 import { StackActions } from '@react-navigation/native';
-import { showMessage } from 'react-native-flash-message';
+
 import { useSelector } from 'react-redux';
 import { globalReset } from './GlobalActions';
+import { customShowMessage } from '@/utils';
 
 export const TYPES = {
   CLEAR_STORE: 'CLEAR_STORE',
@@ -191,8 +192,8 @@ export const TYPES = {
 
   SEARCH_USER_BY_USERNAME: 'SEARCH_USER_BY_USERNAME',
   SEARCH_USER_BY_USERNAME_REQUEST: 'SEARCH_USER_BY_USERNAME_REQUEST',
-  SEARCH_USER_BY_USERNAME_SUCCESS: ' SEARCH_USER_BY_USERNAME_SUCCESS',
-  SEARCH_USER_BY_USERNAME_ERROR: ' SEARCH_USER_BY_USERNAME_ERROR',
+  SEARCH_USER_BY_USERNAME_SUCCESS: 'SEARCH_USER_BY_USERNAME_SUCCESS',
+  SEARCH_USER_BY_USERNAME_ERROR: 'SEARCH_USER_BY_USERNAME_ERROR',
 
   //  CREATE GIVEAWAY POST
 
@@ -228,23 +229,23 @@ export const TYPES = {
   GET_PAST_GIVEAWAY_PAGINATION_ERROR: 'GET_PAST_GIVEAWAY_PAGINATION_ERROR',
 
   GET_SINGLE_GIVEAWAY_BY_ID: 'GET_PAST_GIVEAWAY_BY_ID',
-  GET_SINGLE_GIVEAWAY_BY_ID_REQUEST: ' GET_SINGLE_GIVEAWAY_BY_ID_REQUEST',
-  GET_SINGLE_GIVEAWAY_BY_ID_SUCCESS: ' GET_SINGLE_GIVEAWAY_BY_ID_SUCCESS',
-  GET_SINGLE_GIVEAWAY_BY_ID_ERROR: ' GET_SINGLE_GIVEAWAY_BY_ID_ERROR',
+  GET_SINGLE_GIVEAWAY_BY_ID_REQUEST: 'GET_SINGLE_GIVEAWAY_BY_ID_REQUEST',
+  GET_SINGLE_GIVEAWAY_BY_ID_SUCCESS: 'GET_SINGLE_GIVEAWAY_BY_ID_SUCCESS',
+  GET_SINGLE_GIVEAWAY_BY_ID_ERROR: 'GET_SINGLE_GIVEAWAY_BY_ID_ERROR',
 
   UPDATE_GIVEAWAY: 'UPDATE_GIVEAWAY',
-  UPDATE_GIVEAWAY_REQUEST: ' UPDATE_GIVEAWAY_REQUEST',
-  UPDATE_GIVEAWAY_SUCCESS: ' UPDATE_GIVEAWAY_SUCCESS',
-  UPDATE_GIVEAWAY_ERROR: ' UPDATE_GIVEAWAY_ERROR',
+  UPDATE_GIVEAWAY_REQUEST: 'UPDATE_GIVEAWAY_REQUEST',
+  UPDATE_GIVEAWAY_SUCCESS: 'UPDATE_GIVEAWAY_SUCCESS',
+  UPDATE_GIVEAWAY_ERROR: 'UPDATE_GIVEAWAY_ERROR',
 
   DELETE_GIVEAWAY: 'DELETE_GIVEAWAY',
-  DELETE_GIVEAWAY_REQUEST: ' DELETE_GIVEAWAY_REQUEST',
-  DELETE_GIVEAWAY_SUCCESS: ' DELETE_GIVEAWAY_SUCCESS',
+  DELETE_GIVEAWAY_REQUEST: 'DELETE_GIVEAWAY_REQUEST',
+  DELETE_GIVEAWAY_SUCCESS: 'DELETE_GIVEAWAY_SUCCESS',
   DELETE_GIVEAWAY_ERROR: 'DELETE_GIVEAWAY_ERROR',
 
   END_GIVEAWAY: 'END_GIVEAWAY',
-  END_GIVEAWAY_REQUEST: ' END_GIVEAWAY_REQUEST',
-  END_GIVEAWAY_SUCCESS: ' END_GIVEAWAY_SUCCESS',
+  END_GIVEAWAY_REQUEST: 'END_GIVEAWAY_REQUEST',
+  END_GIVEAWAY_SUCCESS: 'END_GIVEAWAY_SUCCESS',
   END_GIVEAWAY_ERROR: 'END_GIVEAWAY_ERROR',
 
   //GET PAST GIVEAWAY
@@ -252,7 +253,7 @@ export const TYPES = {
   JOIN_GIVEAWAY: 'JOIN_GIVEAWAY',
   JOIN_GIVEAWAY_REQUEST: 'JOIN_GIVEAWAY_REQUEST',
   JOIN_GIVEAWAY_SUCCESS: 'JOIN_GIVEAWAY_SUCCESS',
-  JOIN_GIVEAWAY_ERROR: ' JOIN_GIVEAWAY_ERROR',
+  JOIN_GIVEAWAY_ERROR: 'JOIN_GIVEAWAY_ERROR',
 
   WITHDRAW_GIVEAWAY: 'WITHDRAW_GIVEAWAY',
   WITHDRAW_GIVEAWAY_REQUEST: 'WITHDRAW_GIVEAWAY_REQUEST',
@@ -910,7 +911,7 @@ export const createPost =
       );
       dispatch(createPostSuccess(user));
       if (screen == NAVIGATION.home) {
-        showMessage({
+        customShowMessage({
           message: strings.createPost.updatedSuccess,
           type: 'success',
         });
@@ -918,7 +919,7 @@ export const createPost =
         navigationRef.navigate(NAVIGATION.home);
       }
       if (screen == NAVIGATION.profile) {
-        showMessage({
+        customShowMessage({
           message: strings.createPost.updatedSuccess,
           type: 'success',
         });
@@ -926,7 +927,7 @@ export const createPost =
         navigationRef.navigate(NAVIGATION.profile);
       }
     } catch (error) {
-      showMessage({
+      customShowMessage({
         message: error?.message,
         type: 'danger',
       });
@@ -952,7 +953,7 @@ export const createPostByAdmin =
       );
       dispatch(createPostSuccess(user));
       if (screen == NAVIGATION.home) {
-        showMessage({
+        customShowMessage({
           message: strings.createPost.updatedSuccess,
           type: 'success',
         });
@@ -960,7 +961,7 @@ export const createPostByAdmin =
         navigationRef.navigate(NAVIGATION.home);
       }
       if (screen == NAVIGATION.profile) {
-        showMessage({
+        customShowMessage({
           message: strings.createPost.updatedSuccess,
           type: 'success',
         });
@@ -968,7 +969,7 @@ export const createPostByAdmin =
         navigationRef.navigate(NAVIGATION.profile);
       }
     } catch (error) {
-      showMessage({
+      customShowMessage({
         message: error?.message,
         type: 'danger',
       });
@@ -1010,7 +1011,7 @@ export const updatePost =
       );
       dispatch(updatePostSuccess(user));
       if (screen == NAVIGATION.home) {
-        showMessage({
+        customShowMessage({
           message: strings.updatePost.updatedSuccess,
           type: 'success',
         });
@@ -1018,7 +1019,7 @@ export const updatePost =
         navigationRef.navigate(NAVIGATION.home);
       }
       if (screen == NAVIGATION.profile) {
-        showMessage({
+        customShowMessage({
           message: strings.updatePost.updatedSuccess,
           type: 'success',
         });
@@ -1026,7 +1027,7 @@ export const updatePost =
         navigationRef.navigate(NAVIGATION.profile);
       }
     } catch (error) {
-      showMessage({
+      customShowMessage({
         message: error?.message,
         type: 'danger',
       });
@@ -1048,22 +1049,22 @@ export const deletePost =
         userType
       );
       dispatch(deletePostSuccess(user));
+      customShowMessage({
+        message: strings.deletePost.deletedSuccess,
+        type: 'success',
+      });
       if (screen == NAVIGATION.home) {
-        showMessage({
-          message: strings.deletePost.deletedSuccess,
-          type: 'success',
-        });
         navigationRef.navigate(NAVIGATION.home);
       }
       if (screen == NAVIGATION.profile) {
-        showMessage({
-          message: strings.deletePost.deletedSuccess,
-          type: 'success',
-        });
         navigationRef.navigate(NAVIGATION.profile);
       }
+
+      if (screen === NAVIGATION.manageReports) {
+        navigationRef.navigate(NAVIGATION.manageReports);
+      }
     } catch (error) {
-      showMessage({
+      customShowMessage({
         message: error?.message,
         type: 'danger',
       });
@@ -1074,6 +1075,7 @@ export const getAllPost =
   (userId, filterBy, isFollowingData, isVip, page) => async dispatch => {
     dispatch(getAllPostRequest());
     try {
+      console.log('request ================', filterBy);
       const post = await PostController.getAllPost(
         userId,
         filterBy,
@@ -1081,6 +1083,7 @@ export const getAllPost =
         isVip,
         page
       );
+      console.log('response ============', post);
       dispatch(getAllPostSuccess(post));
     } catch (error) {
       dispatch(getAllPostError(error));
@@ -1163,7 +1166,7 @@ export const deleteComment = (id, userId) => async dispatch => {
   dispatch(deleteCommentRequest());
   try {
     const comment = await PostController.DeleteComment(id, userId);
-    showMessage({
+    customShowMessage({
       message: strings.deleteCommentSuccsess.deletedSuccess,
       type: 'success',
     });
@@ -1183,7 +1186,7 @@ export const followUser = (followerId, followId, type) => async dispatch => {
       type: type,
     };
     dispatch(followUserSuccess(object));
-    // showMessage({
+    // customShowMessage({
     //     message: strings.userFollowedSuccsess.followedSuccess,
     //     type: "success"
     // })
@@ -1210,6 +1213,10 @@ export const blockUser = (blockedByUser, blockedUser) => async dispatch => {
   try {
     const user = await PostController.blockUser(blockedByUser, blockedUser);
     dispatch(blockUserSuccess(user));
+    customShowMessage({
+      message: strings.blockSuccess.blockSuccess,
+      type: 'success',
+    });
   } catch (error) {
     dispatch(blockUserError(error));
   }
@@ -1298,7 +1305,7 @@ export const giveAwayPost = params => async dispatch => {
     dispatch(getAllActiveGiveaway(data));
     navigate(NAVIGATION.giveaway);
   } catch (error) {
-    showMessage({
+    customShowMessage({
       message: error?.message,
       type: 'danger',
     });
@@ -1441,6 +1448,7 @@ export const createExclusivePost = data => async dispatch => {
     // dispatch(getAllExclusivePost(dataa))
     navigationRef.navigate(NAVIGATION.exclusive);
   } catch (error) {
+    console.log(error);
     dispatch(createExclusivePostError(error));
   }
 };

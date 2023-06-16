@@ -13,6 +13,7 @@ import { NAVIGATION } from '@/constants';
 import { showMessage } from 'react-native-flash-message';
 import { TextStyles, theme } from '@/theme';
 import { CustomErrorView } from '@/components/CustomErrorView';
+import { customShowMessage } from '@/utils';
 
 export function SetupUserId({ route }) {
   const { ID, number } = route.params;
@@ -30,32 +31,42 @@ export function SetupUserId({ route }) {
   );
 
   const validation = () => {
-    if (userId == "") {
-      showMessage({
+    if (userId == '') {
+      customShowMessage({
         message: strings.setupUserId.userNameValidation,
-        type: "danger"
-      })
+        type: 'danger',
+      });
     } else if (errors.length <= 0) {
-      navigationRef.navigate(NAVIGATION.signUp, { "username": userId, "ID": ID, number: number });
+      navigationRef.navigate(NAVIGATION.signUp, {
+        username: userId,
+        ID: ID,
+        number: number,
+      });
     }
-  }
+  };
   const handleSubmit = () => {
     validation();
   };
-  const OnChangehandler = (text) => {
-    setUserId(text)
-    dispatch(checkUserName(text))
-  }
+  const OnChangehandler = text => {
+    setUserId(text);
+    dispatch(checkUserName(text));
+  };
 
   const UserNameErrorView = () => {
     return (
-      <View style={{ marginBottom: 10, flexDirection: 'row', justifyContent: 'center' }}>
+      <View
+        style={{
+          marginBottom: 10,
+          flexDirection: 'row',
+          justifyContent: 'center',
+        }}
+      >
         <Text style={[TextStyles.error, { color: theme.light.colors.error }]}>
           {strings.setupUserId.chooseAnother}
         </Text>
       </View>
-    )
-  }
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -64,10 +75,16 @@ export function SetupUserId({ route }) {
 
       <TextField
         autoCapitalize="none"
-        onChangeText={(text) => { OnChangehandler(text) }}
+        onChangeText={text => {
+          OnChangehandler(text);
+        }}
         placeholder={strings.setupUserId.placeholder}
         value={userId}
-        style={errors.length > 0 ? { borderWidth: 0.8, borderColor: theme.light.colors.error } : {}}
+        style={
+          errors.length > 0
+            ? { borderWidth: 0.8, borderColor: theme.light.colors.error }
+            : {}
+        }
       />
 
       {errors.length > 0 && <UserNameErrorView />}

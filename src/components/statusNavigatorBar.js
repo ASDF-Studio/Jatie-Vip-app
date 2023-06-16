@@ -21,22 +21,17 @@ export function StatusNavigatorBar({
   showLock,
   onpress,
 }) {
-
-
-
   return (
     <View style={styles.statusContainer}>
       <View style={styles.status}>
-        <TouchableOpacity
-          onPress={() => setStatus(key1)}
-        >
+        <TouchableOpacity onPress={() => setStatus(key1)}>
           <Text
             style={
               status != key1
                 ? [
-                  styles.statusText,
-                  { color: theme.light.colors.primaryInactive },
-                ]
+                    styles.statusText,
+                    { color: theme.light.colors.primaryInactive },
+                  ]
                 : styles.statusText
             }
           >
@@ -48,24 +43,19 @@ export function StatusNavigatorBar({
         ) : (
           <View style={[styles.statusNaivigator, { left: ms(195) }]} /> //200
         )}
-
       </View>
       <View style={styles.status}>
-
-        <TouchableOpacity
-          onPress={() => setStatus(key2)}>
+        <TouchableOpacity onPress={() => setStatus(key2)}>
           <Text
             style={
               status != key2
                 ? [
-                  styles.statusText,
-                  { color: theme.light.colors.primaryInactive },
-                ]
+                    styles.statusText,
+                    { color: theme.light.colors.primaryInactive },
+                  ]
                 : styles.statusText
             }
-
           >
-
             {title2}
             {showLock ? (
               <FontAwesomeIcon
@@ -78,9 +68,7 @@ export function StatusNavigatorBar({
               />
             ) : null}
           </Text>
-
         </TouchableOpacity>
-
       </View>
     </View>
   );
@@ -105,7 +93,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     height: ms(40),
     marginBottom: vs(20),
-    paddingTop: ms(5),
+    paddingTop: ms(7),
   },
   statusText: {
     color: theme.light.colors.primary,

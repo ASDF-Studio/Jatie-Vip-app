@@ -83,6 +83,7 @@ export default function BirthDayToday({ navigation }) {
         <ModalList
           title={strings.operations.sendPrivateMessage}
           icon={faMessage}
+          disabled
           iconColor={theme.light.colors.success}
           iconBg={theme.light.colors.successBgLight}
           // onPress = {()=> Alert.alert("message")}

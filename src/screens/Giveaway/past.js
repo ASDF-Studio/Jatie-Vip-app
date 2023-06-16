@@ -99,8 +99,20 @@ export default function Past({ navigation, userType }) {
 
   let counter = 1;
   return (
-    <SafeAreaView>
-      <CustomLoader open={isLoading} />
+    <SafeAreaView
+      style={{
+        marginTop: Platform.OS === 'ios' ? -48 : 0,
+        marginBottom: Platform.OS === 'ios' ? -65 : 0,
+      }}
+    >
+      {isLoading && (
+        <ActivityIndicator
+          animating={isLoading}
+          size={'large'}
+          color={theme.light.colors.primary}
+          style={styles.loaderStyle}
+        />
+      )}
       <FlatList
         data={getdataOfPast ?? []}
         key={props => props?.id}
@@ -556,6 +568,11 @@ const styles = StyleSheet.create({
     color: theme.light.colors.black,
     fontSize: ms(14, 0.3),
   },
+  loaderStyle: {
+    alignSelf: 'center',
+    justifyContent: 'center',
+    marginTop: ms(50),
+  },
   thumbnailImage: {
     width: '100%',
     height: vs(180),
@@ -574,7 +591,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: theme.light.colors.primary,
     position: 'absolute',
-    bottom: '3%',
+    bottom: '7%',
     left: '3%',
     backgroundColor: theme.light.colors.primary,
     width: ms(130),

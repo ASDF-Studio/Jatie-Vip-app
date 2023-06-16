@@ -116,11 +116,7 @@ export default function Followers({ navigation, route }) {
                 <TouchableOpacity
                   style={styles.list}
                   onPress={() =>
-                    navigate(
-                      NAVIGATION.userProfile,
-                      { userId: item?.user?.id },
-                      console.log('check issue', item?.user?.id)
-                    )
+                    navigate(NAVIGATION.userProfile, { userId: item?.user?.id })
                   }
                 >
                   <Image
@@ -172,6 +168,7 @@ export default function Followers({ navigation, route }) {
         <ModalList
           title={strings.operations.sendPrivateMessage}
           icon={faMessage}
+          disabled
           iconColor={theme.light.colors.success}
           iconBg={theme.light.colors.successBgLight}
           // onPress = {()=> Alert.alert("message")}

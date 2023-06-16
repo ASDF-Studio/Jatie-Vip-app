@@ -1,10 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { TYPES } from '@/actions/UserActions';
 import { Button, CustomLoader, TextField } from '@/components';
@@ -25,10 +20,11 @@ import { faCalendar } from '@fortawesome/free-solid-svg-icons';
 import { theme } from '@/theme';
 import { faCheck } from '@fortawesome/pro-regular-svg-icons';
 import { navigationRef } from '@/navigation/RootNavigation';
+import { customShowMessage } from '@/utils';
 
 export function SignUp({ route }) {
   const { username, ID, number } = route.params;
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [birthday, setBirthday] = useState('');
@@ -307,18 +303,17 @@ export function SignUp({ route }) {
     shallowEqual
   );
   const handleSubmit = () => {
-    validation()
+    validation();
   };
 
   const onChange = selectedDate => {
     const formattedDate = moment(selectedDate).format('MMM DD, yyyy');
-    const birthDate = moment(selectedDate).format("yyyy/MM/DD");
+    const birthDate = moment(selectedDate).format('yyyy/MM/DD');
 
-    setBirthday(birthDate)
+    setBirthday(birthDate);
     setShow(false);
     setDate(selectedDate);
-    setFormatedDate(formattedDate)
-
+    setFormatedDate(formattedDate);
   };
 
   const showMode = currentMode => {
@@ -335,44 +330,47 @@ export function SignUp({ route }) {
   };
 
   const validation = () => {
-    if (name == "") {
-      showMessage({
+    if (name == '') {
+      customShowMessage({
         message: strings.SignUp.name,
-        type: "danger"
-      })
-    } else if (email == "") {
-      showMessage({
+        type: 'danger',
+      });
+    } else if (email == '') {
+      customShowMessage({
         message: strings.SignUp.emailPlaceHolder,
-        type: "danger"
-      })
-    }
-    else if (birthday == "") {
-      showMessage({
+        type: 'danger',
+      });
+    } else if (birthday == '') {
+      customShowMessage({
         message: strings.SignUp.dobPlaceHolder,
-        type: "danger"
-      })
-    }
-    else if (genderValue == null) {
-      showMessage({
+        type: 'danger',
+      });
+    } else if (genderValue == null) {
+      customShowMessage({
         message: strings.SignUp.genderPlaceHolder,
-        type: "danger"
-      })
-    }
-    else if (countryvalue == null) {
-      showMessage({
+        type: 'danger',
+      });
+    } else if (countryvalue == null) {
+      customShowMessage({
         message: strings.SignUp.countryPlaceHolder,
-        type: "danger"
-      })
-    }
-    else {
+        type: 'danger',
+      });
+    } else {
       var DATA = {
-        birthday, name, genderValue, ID, email, countryvalue, username, number,
-      }
+        birthday,
+        name,
+        genderValue,
+        ID,
+        email,
+        countryvalue,
+        username,
+        number,
+      };
       navigationRef.navigate(NAVIGATION.addProfilePicture, {
-        prevData: DATA
-      })
+        prevData: DATA,
+      });
     }
-  }
+  };
   return (
     <KeyboardAwareScrollView>
       <View style={styles.container}>
@@ -387,10 +385,7 @@ export function SignUp({ route }) {
           placeholderStyle={styles.dropdowntextstyle}
         />
         <Text style={styles.subTitle}>{strings.SignUp.email}</Text>
-        <CustomLoader
-          open={isLoading}
-
-        />
+        {isLoading && <CustomLoader open={isLoading} />}
         <TextField
           autoCapitalize="none"
           onChangeText={setEmail}
@@ -429,19 +424,18 @@ export function SignUp({ route }) {
             // locale = "fr"
             date={date}
             onConfirm={date => {
-              onChange(date)
-
+              onChange(date);
             }}
             onCancel={() => {
               setShow(false);
             }}
-          // onDateChange={onChange}
+            // onDateChange={onChange}
           />
         )}
 
         <Text style={styles.subTitle}>{strings.SignUp.gender}</Text>
         <DropDownPicker
-          dropDownDirection='TOP'
+          dropDownDirection="TOP"
           open={openGenderDropDown}
           value={genderValue}
           items={genderItems}

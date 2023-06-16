@@ -7,14 +7,14 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
-  ActivityIndicator,
 } from 'react-native';
 import {
-  AppSwitch,
   Button,
   CustomLoader,
   HorizontalLine,
   Icon,
+  PostInput,
+  SelectedFiles,
   TopBackButton,
 } from '@/components';
 import {
@@ -37,21 +37,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
 import { TYPES, updatePost } from '@/actions/UserActions';
 import { navigationRef } from '@/navigation/RootNavigation';
-// import { useIsFocused } from '@react-navigation/native';
-import { UserController } from '@/controllers';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { getAllPost } from '@/actions/PostActions';
 import { createThumbnail } from 'react-native-create-thumbnail';
-
-let nextId = 100;
-let preNextId = 100;
-let next = 10;
-let preNext = 10;
+import { customShowMessage } from '@/utils';
 
 export default function UpdatePost({ route, navigation }) {
   const { prevData } = route.params;
-
-  console.log('PrevData', prevData);
 
   const userType = useSelector(state => state.userType);
   const dispatch = useDispatch();
@@ -77,8 +69,6 @@ export default function UpdatePost({ route, navigation }) {
   const [preMimeType, setPreMimeType] = useState(null);
   const [actionType] = useState('Update');
 
-  // const focus = useIsFocused();
-
   useEffect(() => {
     getPostById(prevData);
   }, []);
@@ -89,51 +79,25 @@ export default function UpdatePost({ route, navigation }) {
     setUserId(user?.id);
     setPostTitle(data.postTitle);
     setPostBody(data.postBody);
-    // {
-    //   data?.postImg.map(item => (
-    //     preImageArray.push({
-    //       id: next--,
-    //       image: item,
-    //       imageMime: null,
-    //       video: null,
-    //     }),
-    //     imageArrayDisplay.push({
-    //       id: preNext--,
-    //       image: item,
-    //       imageMime: null,
-    //       video: null,
-    //     })
-    //   ))
-    //   setPrePostImg(data.postImg)
-    // }
 
-    {
-      data?.postMediaContent.map(
-        item => (
-          // preImageArray.push({
-          //   id: next--,
-          //   image: item.mimetype.split("/")[0] == "image" ? item.url : null,
-          //   imageMime: null,
-          //   video: item.mimetype.split("/")[0] == "video" ? item.url : null,
-          // }),
+    data?.postMediaContent.map(
+      item => (
+        preImageArray.push({
+          url: item.url,
+          mimetype: item.mimetype,
+          cover: item.cover,
+        }),
+        imageArray.push({
+          image: item.mimetype.split('/')[0] == 'image' ? item.url : null,
+          imageMime: null,
+          video: item.mimetype.split('/')[0] == 'video' ? item.url : null,
+          cover: item?.cover,
+          preContent: true,
+        })
+      )
+    );
 
-          preImageArray.push({
-            id: next--,
-            url: item.url,
-            mimetype: item.mimetype,
-            cover: item.cover,
-          }),
-          imageArrayDisplay.push({
-            id: preNext--,
-            image: item.mimetype.split('/')[0] == 'image' ? item.url : null,
-            imageMime: null,
-            video: item.mimetype.split('/')[0] == 'video' ? item.url : null,
-          })
-        )
-      );
-      // setPreImageArray(data?.postMediaContent)
-      setPrePostImg(data.postImg);
-    }
+    setPrePostImg(data.postImg);
   };
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.UPDATE_POST], state)
@@ -144,244 +108,197 @@ export default function UpdatePost({ route, navigation }) {
   const closeModal = () => {
     setModalVisible(!isModalVisible);
   };
-  deleteFile = id => {
-    setImageArrayDisplay(imageArrayDisplay.filter(a => a.id !== id));
-    if (id >= 100) {
-      setImageArray(imageArray.filter(a => a.id !== id));
-    } else {
-      setPreImageArray(preImageArray.filter(a => a.id !== id));
+  const deleteFile = (id, preContent, url) => {
+    setImageArray(imageArray.filter((_, index) => index !== id));
+
+    if (preContent) {
+      setPreImageArray(preImageArray.filter(x => x.url !== url));
     }
   };
 
   const OpenGallery = () => {
-    {
-      isImage == strings.exclusive.image
-        ? ImageCropPicker.openPicker({
-            width: 300,
-            height: 400,
-            maxFiles: 3,
-            mediaType: strings.exclusive.image,
-            multiple: true,
-            compressImageQuality: 0.5,
-          })
-            .then(images => {
-              images.forEach(item => {
-                imageArray.push({
-                  id: nextId++,
-                  image: item.path,
-                  imageMime: item.mime,
-                  video: null,
-                });
-                imageArrayDisplay.push({
-                  id: preNextId++,
-                  image: item.path,
-                  imageMime: item.mime,
-                  video: null,
-                });
-                postImg.push(item.path);
-                mimeType.push(item.mime);
-                setModalVisible(!isModalVisible);
+    isImage == strings.exclusive.image
+      ? ImageCropPicker.openPicker({
+          width: 300,
+          height: 400,
+          maxFiles: 3,
+          mediaType: strings.exclusive.image,
+          multiple: true,
+          compressImageQuality: 0.5,
+        })
+          .then(images => {
+            images.forEach(item => {
+              imageArray.push({
+                image: item.path,
+                imageMime: item.mime,
+                video: null,
               });
-            })
-            .catch(e => {
-              console.log('Error: ' + e);
-            })
-        : ImageCropPicker.openPicker({
-            width: 300,
-            height: 400,
-            mediaType: strings.exclusive.video,
-            multiple: true,
-            maxFiles: 3,
-            compressImageQuality: 0.5,
-            loadingLabelText: 'loading',
-          })
-            .then(video => {
-              // imageArray.push({
-              //   id: nextId++,
-              //   image: null,
-              //   video: video.path,
-              //   videoMime: video.mime,
-              // });
-              // imageArrayDisplay.push({
-              //   id: preNextId++,
-              //   image: null,
-              //   imageMime: video.mime,
-              //   video: null,
-              // });
-              // postImg.push(video.path);
-              // mimeType.push(video.mime);
-              // setModalVisible(!isModalVisible);
-              video.forEach(item => {
-                createThumbnail({
-                  url: item.path,
-                  timeStamp: 10000,
-                })
-                  .then(response => {
-                    imageArray.push({
-                      id: nextId++,
-                      image: null,
-                      video: item.path,
-                      videoMime: item.mime,
-                      videoPoster: response?.path,
-                    });
-                    imageArrayDisplay.push({
-                      id: nextId++,
-                      image: null,
-                      video: item.path,
-                      videoMime: item.mime,
-                      videoPoster: response?.path,
-                    });
-                  })
-                  .catch(err => console.log({ err }));
-                setPostImg(video.path);
-                setmimeType(video.mime);
-                setModalVisible(!isModalVisible);
-              });
-            })
-            .catch(e => {
-              console.log('Error: ' + e);
+              // postImg.push(item.path);
+              // mimeType.push(item.mime);
             });
-    }
+          })
+          .catch(e => {
+            console.log('Error: ' + e);
+          })
+          .finally(() => {
+            setImageArray([...imageArray]);
+            setModalVisible(!isModalVisible);
+          })
+      : ImageCropPicker.openPicker({
+          width: 300,
+          height: 400,
+          mediaType: strings.exclusive.video,
+          multiple: true,
+          maxFiles: 3,
+          compressImageQuality: 0.5,
+          loadingLabelText: 'loading',
+        })
+          .then(video => {
+            video.forEach(item => {
+              createThumbnail({
+                url: item.path,
+                timeStamp: 10000,
+              })
+                .then(response => {
+                  imageArray.push({
+                    image: null,
+                    video: item.path,
+                    videoMime: item.mime,
+                    videoPoster: response?.path,
+                    videoPostermime: response?.mime,
+                  });
+                  setImageArray([...imageArray]);
+                  setModalVisible(!isModalVisible);
+                })
+                .catch(err => console.log({ err }));
+              // setPostImg(video.path);
+              // setmimeType(video.mime);
+            });
+          })
+          .catch(e => {
+            console.log('Error: ' + e);
+          });
   };
 
   const OpenCamera = () => {
-    {
-      isImage == strings.exclusive.image
-        ? ImageCropPicker.openCamera({
-            width: 300,
-            height: 400,
-            cropping: false,
-            compressImageQuality: 0.5,
-          })
-            .then(image => {
-              imageArray.push({
-                id: nextId++,
-                image: image.path,
-                imageMime: image.mime,
-                video: null,
-              });
-              imageArrayDisplay.push({
-                id: preNextId++,
-                image: image.path,
-                imageMime: image.mime,
-                video: null,
-              });
-              postImg.push(image.path);
-              mimeType.push(image.mime);
-              setModalVisible(!isModalVisible);
-            })
-            .catch(e => {
-              console.log('Error: ' + e);
-            })
-        : ImageCropPicker.openCamera({
-            width: 300,
-            height: 400,
-            cropping: false,
-            mediaType: strings.exclusive.video,
-            compressImageQuality: 0.5,
-          })
-            .then(image => {
-              imageArray.push({
-                id: nextId++,
-                image: null,
-                video: image.path,
-                videoMime: image.mime,
-              });
-              imageArrayDisplay.push({
-                id: preNextId++,
-                image: null,
-                video: image.path,
-                videoMime: image.mime,
-              });
-              postImg.push(image.path);
-              mimeType.push(image.mime);
-              setModalVisible(!isModalVisible);
-            })
-            .catch(e => {
-              console.log('Error: ' + e);
+    isImage == strings.exclusive.image
+      ? ImageCropPicker.openCamera({
+          width: 300,
+          height: 400,
+          cropping: false,
+          compressImageQuality: 0.5,
+        })
+          .then(image => {
+            imageArray.push({
+              image: image.path,
+              imageMime: image.mime,
+              video: null,
             });
-    }
+            // postImg.push(image.path);
+            // mimeType.push(image.mime);
+          })
+          .catch(e => {
+            console.log('Error: ' + e);
+          })
+          .finally(() => {
+            setImageArray([...imageArray]);
+            setModalVisible(!isModalVisible);
+          })
+      : ImageCropPicker.openCamera({
+          width: 300,
+          height: 400,
+          cropping: false,
+          mediaType: strings.exclusive.video,
+          compressImageQuality: 0.5,
+        })
+          .then(video => {
+            console.log(video);
+            createThumbnail({
+              url: video.path,
+              timeStamp: 10000,
+            })
+              .then(response => {
+                imageArray.push({
+                  image: null,
+                  video: video.path,
+                  videoMime: video.mime,
+                  videoPoster: response?.path,
+                  videoPostermime: response?.mime,
+                });
+                setImageArray([...imageArray]);
+                setModalVisible(!isModalVisible);
+              })
+              .catch(err => console.log({ err }));
+          })
+          .catch(e => {
+            console.log('Error: ' + e);
+          });
   };
 
   const validation = () => {
     if (postBody == '') {
-      showMessage({
+      customShowMessage({
         message: strings.home.postBody,
         type: 'danger',
       });
-    }
-    // else if (postTitle == '') {
-    //   showMessage({
-    //     message: strings.home.postTitle,
-    //     type: "danger"
-    //   })
-    // }
-    // else if (postImg == "") {
-    //   showMessage({
-    //     message: strings.SignUp.dobPlaceHolder,
-    //     type: "danger"
-    //   })
-    // }
-    else {
-      let DATA = {
-        postId,
-        userId,
-        postTitle,
-        postBody,
-        postImg,
-        preImageArray,
-        mimeType,
-        preMimeType,
-        imageArray,
-        user_Type,
-        actionType,
-      };
-
-      {
-        userType.user !== strings.userType.admin &&
-          (dispatch(
-            updatePost(
-              postId,
-              userId,
-              postTitle,
-              postBody,
-              postImg,
-              preImageArray,
-              mimeType,
-              preMimeType,
-              imageArray,
-              user_Type,
-              NAVIGATION.home
-            )
-          ),
-          dispatch(
-            getAllPost(
-              user?.id,
-              prevData?.DATA?.sortBy,
-              prevData?.DATA?.follwingSwitch,
-              prevData?.DATA?.vipArea,
-              NAVIGATION?.home
-            )
-          ));
-      }
-      dispatch(getAllPost(user?.id, strings.sortBy.recent, false));
-      {
-        userType.user == strings.userType.admin &&
-          navigationRef.navigate(NAVIGATION.postOptions, {
-            prevData: DATA,
-          });
+    } else {
+      if (userType.user == strings.userType.free) {
+        dispatch(
+          updatePost(
+            postId,
+            userId,
+            postTitle,
+            postBody,
+            postImg,
+            preImageArray,
+            mimeType,
+            preMimeType,
+            imageArray.filter(x => !x?.preContent),
+            user_Type,
+            NAVIGATION.home
+          )
+        );
+        dispatch(getAllPost(user?.id, null, null, NAVIGATION.profile));
       }
 
-      // console.log("DATA", DATA)
-
-      // dispatch(createPost(user?.id, postTitle, postBody, postImg, mimeType, imageArray, NAVIGATION.profile))
-
-      // var DATA = {
-      //   postTitle, postBody, postImg, mimeType, imageArray
-      // }
-      // navigationRef.navigate(NAVIGATION.postOptions, {
-      //   prevData: DATA
-      // })
+      if (userType.user == strings.userType.vip) {
+        dispatch(
+          updatePost(
+            postId,
+            userId,
+            postTitle,
+            postBody,
+            postImg,
+            preImageArray,
+            mimeType,
+            preMimeType,
+            imageArray.filter(x => !x?.preContent),
+            user_Type,
+            NAVIGATION.home
+          )
+        );
+        dispatch(getAllPost(user?.id, null, null, NAVIGATION.profile));
+      } else {
+        dispatch(getAllPost(user?.id, strings.sortBy.recent, false));
+        {
+          userType.user == strings.userType.admin &&
+            navigationRef.navigate(NAVIGATION.postOptions, {
+              prevData: {
+                postId,
+                userId,
+                postTitle,
+                postBody,
+                postImg,
+                preImageArray,
+                mimeType,
+                preMimeType,
+                imageArray,
+                user_Type,
+                actionType,
+              },
+            });
+        }
+      }
     }
   };
   const onSave = () => {
@@ -396,18 +313,14 @@ export default function UpdatePost({ route, navigation }) {
         </Text>
       </View>
       <HorizontalLine />
-      <CustomLoader open={isLoading} />
+      {isLoading && <CustomLoader open={isLoading} />}
       <ScrollView>
         <View style={styles.postContainer}>
           <View style={styles.TextBoxDEsc}>
-            <TextInput
+            <PostInput
               placeholder={strings.home.whatOnYourMind}
-              style={styles.InputTextBoxDEsc}
               value={postBody}
-              onChangeText={val => setPostBody(val)}
-              editable
-              multiline
-              numberOfLines={6}
+              setValue={setPostBody}
             />
           </View>
         </View>
@@ -417,8 +330,7 @@ export default function UpdatePost({ route, navigation }) {
         {imageArray.length ? (
           <HorizontalLine color={theme.light.colors.infoBgLight} />
         ) : null}
-        {/* {FileUpload(imageArray)} */}
-        {FileUpload(imageArrayDisplay)}
+        <FileUpload imageArray={imageArray} onDelete={deleteFile} />
         <View style={styles.BottomFileContainer}>
           <View style={styles.iconContainer}>
             <Icon
@@ -527,75 +439,60 @@ export default function UpdatePost({ route, navigation }) {
   );
 }
 
-export const FileUpload = imageArray => {
+export const FileUpload = ({ imageArray = [], onDelete }) => {
   return (
     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-      {imageArray ? (
-        <View style={styles.BottomVideoContainer}>
-          <View style={styles.videoContainer}>
-            {imageArray.map(item => {
-              if (item == null) {
-                return;
-              } else {
-                return item.image ? (
-                  <View style={styles.fileSpacing} key={item.id}>
-                    <Image
-                      style={styles.thumbnail}
-                      source={{ uri: item.image }}
-                    />
-                    <View style={styles.minus}>
-                      <Text
-                        style={styles.minusTxt}
-                        onPress={() => {
-                          deleteFile(item.id);
-                        }}
-                      >
-                        {strings.giveaway.minus}
-                      </Text>
-                    </View>
-                  </View>
-                ) : (
-                  <View style={styles.fileSpacing} key={item.id}>
-                    <Image
-                      style={styles.thumbnail}
-                      source={{ uri: item.image }}
-                    />
-                    <View style={styles.minus}>
-                      <Text
-                        style={styles.minusTxt}
-                        onPress={() => {
-                          deleteFile(item.id);
-                        }}
-                      >
-                        {strings.giveaway.minus}
-                      </Text>
-                    </View>
-                    <View style={styles.videoPlayContainer}>
-                      {/* {' '}
-                      <ActivityIndicator
-                        animating={animating}
-                        color={theme.light.colors.primary}
-                        size="large"
-                        style={styles.activityIndicator}
-                      /> */}
-                      <FontAwesomeIcon
-                        icon={faCircle}
-                        size={ms(30)}
-                        style={styles.videoPlay}
-                      />
-                      <FontAwesomeIcon
-                        icon={faVideoCamera}
-                        size={ms(15)}
-                        style={styles.Play}
-                      />
-                    </View>
-                  </View>
-                );
-              }
-            })}
-          </View>
+      <View style={styles.BottomVideoContainer}>
+        <View style={styles.videoContainer}>
+          {imageArray.map((item, index) => {
+            console.log(item);
+            return item.image ? (
+              <View style={styles.fileSpacing} key={item.id}>
+                <Image style={styles.thumbnail} source={{ uri: item.image }} />
+                <View style={styles.minus}>
+                  <Text
+                    style={styles.minusTxt}
+                    onPress={() => {
+                      onDelete(index, item?.preContent, item.image);
+                    }}
+                  >
+                    {strings.giveaway.minus}
+                  </Text>
+                </View>
+              </View>
+            ) : (
+              <View style={styles.fileSpacing} key={item.id}>
+                <Image
+                  style={styles.thumbnail}
+                  source={{ uri: item?.cover || item?.videoPoster }}
+                />
+                <View style={styles.minus}>
+                  <Text
+                    style={styles.minusTxt}
+                    onPress={() => {
+                      onDelete(index, item?.preContent, item.video);
+                    }}
+                  >
+                    {strings.giveaway.minus}
+                  </Text>
+                </View>
+                <View style={styles.videoPlayContainer}>
+                  <FontAwesomeIcon
+                    icon={faCircle}
+                    size={ms(30)}
+                    style={styles.videoPlay}
+                  />
+                  <FontAwesomeIcon
+                    icon={faVideoCamera}
+                    size={ms(15)}
+                    style={styles.Play}
+                  />
+                </View>
+              </View>
+            );
+          })}
         </View>
-      ) : null}
+      </View>
     </ScrollView>
   );
 };
@@ -628,6 +525,9 @@ const styles = StyleSheet.create({
   InputTextBoxDEsc: {
     height: '100%',
     textAlignVertical: 'top',
+    fontFamily: FontFamily.BrandonGrotesque_regular,
+    fontWeight: '400',
+    fontSize: 18,
   },
   vipButton: {
     width: ms(100),
