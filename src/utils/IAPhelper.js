@@ -1,4 +1,5 @@
 // IAPHelper.js
+import { SKUS } from '@/constants/subscriptionConstant';
 import { Platform } from 'react-native';
 import {
     initConnection,
@@ -12,6 +13,7 @@ import {
     finishTransactionIOS,
 } from 'react-native-iap';
 
+import { InAppPurchase } from 'react-native-iap';
 // Initialize IAP module
 initConnection();
 
@@ -23,11 +25,12 @@ const purchaseErrorSubscription = purchaseErrorListener((error) => {
 // Add purchase updated listener
 const purchaseUpdatedSubscription = purchaseUpdatedListener(async (purchase) => {
     const receipt = purchase.transactionReceipt;
-
+    console.log("RECPOPOPO", receipt);
     if (receipt) {
         try {
             // Validate the receipt and process the purchase
             const validReceipt = await validateReceipt(receipt);
+            console.log("Reciptsss", validReceipt);
             if (validReceipt) {
                 // Process the purchase
                 processPurchase(purchase);
@@ -63,22 +66,25 @@ function processPurchase(purchase) {
 
     // Extract necessary information from the purchase object
     const { productId, transactionId, transactionDate } = purchase;
-
     // Perform any necessary actions based on the purchase
 
     console.log('Purchase processed:', productId, transactionId, transactionDate);
 }
 
 // Buy a subscription
-export async function buySubscription(productId) {
+export async function buySubscription(userProductSku) {
     try {
-        const products = await getProducts([productId]);
-        const product = products[0]; // Assuming there's only one product in the array
-
-        if (product) {
-            await requestSubscription(productId);
-        } else {
-            console.log('Product not found');
+        const products = await getProducts({ skus: Platform.OS == 'ios' ? SKUS.IOS : SKUS.ANDROID });
+        let productFound = false;
+        for (const product of products) {
+            if (product.productId === userProductSku) {
+                await requestSubscription({ sku: product.productId });
+                productFound = true;
+                break; // Stop checking for more products after finding a match
+            }
+        }
+        if (!productFound) {
+            console.log('Desired product not found');
         }
     } catch (error) {
         console.log('Error buying subscription:', error);
@@ -89,7 +95,6 @@ export async function buySubscription(productId) {
 export async function restorePurchases() {
     try {
         const purchases = await getAvailablePurchases();
-
         if (purchases && purchases.length > 0) {
             for (const purchase of purchases) {
                 if (purchase.transactionReceipt) {

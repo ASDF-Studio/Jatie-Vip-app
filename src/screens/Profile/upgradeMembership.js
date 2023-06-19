@@ -7,7 +7,6 @@ import { Button, TopBackButton } from '@/components';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { FontFamily } from '@/theme/Fonts';
-import { NAVIGATION } from '@/constants';
 import { strings } from '@/localization';
 import { navigationRef } from '@/navigation/RootNavigation';
 import RNIap, {
@@ -15,9 +14,12 @@ import RNIap, {
   getAvailablePurchases,
   getSubscriptions,
   initConnection,
+  getProducts,
+  requestSubscription,
 } from 'react-native-iap';
-import { useFocusEffect } from '@react-navigation/native';
 import { useEffect } from 'react';
+import { buySubscription, cleanupIAP, restorePurchases } from '@/utils/IAPhelper';
+import { SKUS } from '@/constants/subscriptionConstant';
 export default function UpgradeMembership({ navigation }) {
   useEffect(() => {
     initIAP();
@@ -29,27 +31,25 @@ export default function UpgradeMembership({ navigation }) {
       console.log('Failed to initialize in-app purchase:', error);
     }
   };
-
-
-  useEffect(() => { loadPurchases() }, [])
-
-
-
-  const loadPurchases = async () => {
+  // useEffect(() => { restorePurchases() }, [])
+  const buySubscription = async (userProductSku) => {
     try {
-      const availablePurchases = await getAvailablePurchases();
-      console.log("PURCHASEEEE", availablePurchases);
-
-      if (availablePurchases?.length <= 0) {
-        console.log('Available Purchases:', availablePurchases);
-
+      const products = await getProducts({ skus: Platform.OS == 'ios' ? SKUS.IOS : SKUS.ANDROID });
+      let productFound = false;
+      for (const product of products) {
+        if (product.productId === userProductSku) {
+          await requestSubscription({ sku: product.productId });
+          productFound = true;
+          break; // Stop checking for more products after finding a match
+        }
       }
-
+      if (!productFound) {
+        console.log('Desired product not found');
+      }
     } catch (error) {
-      console.log('Error loading purchases:', error);
+      console.log('Error buying subscription:', error);
     }
-  };
-
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -132,12 +132,11 @@ export default function UpgradeMembership({ navigation }) {
         <View style={styles.btnContainer}>
           <Button
             title={strings.profile.monthlyPlan}
-            onPress={() =>
-              navigation.navigate(NAVIGATION.monthlyUpgradeSuccess)
-            }
+            onPress={() => buySubscription(SKUS.ONE_MONTH)}
             style={styles.monthlyPlanButton}
           />
           <Button
+            onPress={() => buySubscription(SKUS.YEAR)}
             title={strings.profile.yearlyPlan}
             style={styles.yearlyPlanButton}
           />

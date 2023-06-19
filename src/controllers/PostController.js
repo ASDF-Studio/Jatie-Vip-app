@@ -286,7 +286,7 @@ export class PostController {
                 .then((response) => {
                     // console.log("POST_ADATA=-=-=-=-=New-=-=-", JSON.stringify(response.data));
                     resolve(response);
-                    console.log('response of all posts', response);
+                    // console.log('response of all posts', response);
                 })
                 .catch((error) => {
                     console.log("ERPOPOPo", error);

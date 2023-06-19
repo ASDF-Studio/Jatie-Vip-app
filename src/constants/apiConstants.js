@@ -1,5 +1,5 @@
 export const API_BASE_URL = "https://staging.jatievip.com/api/";
-
+export const PRIVACY_POLICY_URL = "https://www.jatievip.com/policies/privacy-policy";
 export const API_END_POINTS = {
     LOGIN: "auth/login",
     VERIFY_OTP: "auth/verifyotp",
