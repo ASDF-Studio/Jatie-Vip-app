@@ -1,13 +1,13 @@
 const SKUS = {
     ANDROID: [
-        'com.jatievip.air.onemonth',
+        'com.jatievip.air.permonth',
         'com.jatievip.air.year',
     ],
     IOS: [
-        'com.jatievip.air.onemonth',
+        'com.jatievip.air.permonth',
         'com.jatievip.air.year',
     ],
-    ONE_MONTH: 'com.jatievip.air.onemonth',
+    ONE_MONTH: 'com.jatievip.air.permonth',
     YEAR: 'com.jatievip.air.year'
 };
 

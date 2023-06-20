@@ -1,14 +1,15 @@
-import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, SafeAreaView, NativeModules, Linking, ScrollView } from 'react-native';
 import { TextStyles, theme } from '@/theme';
 import { Logo } from '@/assets';
 import { ms, vs } from 'react-native-size-matters';
-import { Button, TopBackButton } from '@/components';
+import { Button, CustomLoader, TopBackButton } from '@/components';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { FontFamily } from '@/theme/Fonts';
 import { strings } from '@/localization';
 import { navigationRef } from '@/navigation/RootNavigation';
+import { decode } from 'react-native-base64';
 import RNIap, {
   validateReceiptAndroid,
   getAvailablePurchases,
@@ -16,11 +17,18 @@ import RNIap, {
   initConnection,
   getProducts,
   requestSubscription,
+  IapIos,
+  purchaseUpdatedListener,
 } from 'react-native-iap';
-import { useEffect } from 'react';
 import { buySubscription, cleanupIAP, restorePurchases } from '@/utils/IAPhelper';
 import { SKUS } from '@/constants/subscriptionConstant';
+import { PRIVACY_POLICY_URL } from '@/constants/apiConstants';
+import { NAVIGATION } from '@/constants';
+
 export default function UpgradeMembership({ navigation }) {
+
+  const { RNBase64 } = NativeModules;
+  const [loading, setLoading] = useState(false)
   useEffect(() => {
     initIAP();
   }, []);
@@ -31,10 +39,11 @@ export default function UpgradeMembership({ navigation }) {
       console.log('Failed to initialize in-app purchase:', error);
     }
   };
-  // useEffect(() => { restorePurchases() }, [])
+
   const buySubscription = async (userProductSku) => {
+    setLoading(true);
     try {
-      const products = await getProducts({ skus: Platform.OS == 'ios' ? SKUS.IOS : SKUS.ANDROID });
+      const products = await getProducts({ skus: Platform.OS === 'ios' ? SKUS.IOS : SKUS.ANDROID });
       let productFound = false;
       for (const product of products) {
         if (product.productId === userProductSku) {
@@ -48,6 +57,32 @@ export default function UpgradeMembership({ navigation }) {
       }
     } catch (error) {
       console.log('Error buying subscription:', error);
+    } finally {
+      setLoading(false); // Hide loader regardless of success or failure
+    }
+  };
+
+  const purchaseUpdatedSubscription = purchaseUpdatedListener(async (purchase) => {
+    const receipt = purchase.transactionReceipt;
+
+    if (receipt) {
+      try {
+        await verifyReceipt(receipt);
+      } catch (error) {
+        console.log('Error validating receipt:', error);
+      }
+    }
+  });
+
+  async function verifyReceipt(receipt) {
+    try {
+      const isTestEnvironment = true; // Set this to true if testing in a sandbox environment
+      const result = await IapIos.validateReceiptIos({ receipt, isTestEnvironment });
+      navigation.navigate(NAVIGATION.home)
+      console.log("RESULT", result);
+    } catch (error) {
+      alert(error)
+      console.log("Error validating receipt:", error);
     }
   }
 
@@ -59,95 +94,105 @@ export default function UpgradeMembership({ navigation }) {
             onPress={() => navigationRef.goBack()}
             style={styles.TopBackButton}
           />
-
-
         </View>
-
+        <CustomLoader
+          open={loading}
+        />
       </View>
-      {/* <Text>
+      <ScrollView>
+        {/* <Text>
         Updated create post option of VIP users on newsfeed and myProfile section (In progress).
       </Text> */}
-      <View style={styles.logo}>
-        <Logo height={ms(100)} width={ms(100)} />
-      </View>
+        <View style={styles.logo}>
+          <Logo height={ms(100)} width={ms(100)} />
+        </View>
 
-      <View style={styles.headerTxtContainer}>
-        <Text style={TextStyles.header}> {strings.profile.upgradeTo} </Text>
-        <Text style={[TextStyles.header, styles.upgradeToHeader]}>
-          {' '}
-          {strings.profile.vipMemberShip}{' '}
-        </Text>
-      </View>
-
-      <View style={styles.card}>
-        <Text style={[TextStyles.header, styles.benefitsHeader]}>
-          {' '}
-          {strings.profile.benefits}{' '}
-        </Text>
-        <View style={styles.list}>
-          <View style={styles.iconContainer}>
-            <FontAwesomeIcon
-              icon={faCheck}
-              color={theme.light.colors.success}
-            />
-          </View>
-          <Text style={styles.listText}> {strings.profile.benefit_1} </Text>
-        </View>
-        <View style={styles.list}>
-          <View style={styles.iconContainer}>
-            <FontAwesomeIcon
-              icon={faCheck}
-              color={theme.light.colors.success}
-            />
-          </View>
-          <Text style={styles.listText}> {strings.profile.benefit_2} </Text>
-        </View>
-        <View style={styles.list}>
-          <View style={styles.iconContainer}>
-            <FontAwesomeIcon
-              icon={faCheck}
-              color={theme.light.colors.success}
-            />
-          </View>
-          <Text style={styles.listText}> {strings.profile.benefit_3} </Text>
-        </View>
-        <View style={styles.list}>
-          <View style={styles.iconContainer}>
-            <FontAwesomeIcon
-              icon={faCheck}
-              color={theme.light.colors.success}
-            />
-          </View>
-          <Text style={styles.listText}> {strings.profile.benefit_4}</Text>
-        </View>
-        <View style={styles.list}>
-          <View style={styles.iconContainer}>
-            <FontAwesomeIcon
-              icon={faCheck}
-              color={theme.light.colors.success}
-            />
-          </View>
-          <Text style={styles.listText}> {strings.profile.benefit_5} </Text>
-        </View>
-        <View style={styles.btnContainer}>
-          <Button
-            title={strings.profile.monthlyPlan}
-            onPress={() => buySubscription(SKUS.ONE_MONTH)}
-            style={styles.monthlyPlanButton}
-          />
-          <Button
-            onPress={() => buySubscription(SKUS.YEAR)}
-            title={strings.profile.yearlyPlan}
-            style={styles.yearlyPlanButton}
-          />
-        </View>
-        <View style={styles.footerTxtContainer}>
-          <Text style={styles.footerTxt}>
+        <View style={styles.headerTxtContainer}>
+          <Text style={TextStyles.header}> {strings.profile.upgradeTo} </Text>
+          <Text style={[TextStyles.header, styles.upgradeToHeader]}>
             {' '}
-            {strings.profile.saveByYearlyPlan}{' '}
+            {strings.profile.vipMemberShip}{' '}
           </Text>
         </View>
-      </View>
+
+        <View style={styles.card}>
+          <Text style={[TextStyles.header, styles.benefitsHeader]}>
+            {' '}
+            {strings.profile.benefits}{' '}
+          </Text>
+          <View style={styles.list}>
+            <View style={styles.iconContainer}>
+              <FontAwesomeIcon
+                icon={faCheck}
+                color={theme.light.colors.success}
+              />
+            </View>
+            <Text style={styles.listText}> {strings.profile.benefit_1} </Text>
+          </View>
+          <View style={styles.list}>
+            <View style={styles.iconContainer}>
+              <FontAwesomeIcon
+                icon={faCheck}
+                color={theme.light.colors.success}
+              />
+            </View>
+            <Text style={styles.listText}> {strings.profile.benefit_2} </Text>
+          </View>
+          <View style={styles.list}>
+            <View style={styles.iconContainer}>
+              <FontAwesomeIcon
+                icon={faCheck}
+                color={theme.light.colors.success}
+              />
+            </View>
+            <Text style={styles.listText}> {strings.profile.benefit_3} </Text>
+          </View>
+          <View style={styles.list}>
+            <View style={styles.iconContainer}>
+              <FontAwesomeIcon
+                icon={faCheck}
+                color={theme.light.colors.success}
+              />
+            </View>
+            <Text style={styles.listText}> {strings.profile.benefit_4}</Text>
+          </View>
+          <View style={styles.list}>
+            <View style={styles.iconContainer}>
+              <FontAwesomeIcon
+                icon={faCheck}
+                color={theme.light.colors.success}
+              />
+            </View>
+            <Text style={styles.listText}> {strings.profile.benefit_5} </Text>
+          </View>
+          <View style={styles.btnContainer}>
+            <Button
+              title={strings.profile.monthlyPlan}
+              onPress={() => buySubscription(SKUS.ONE_MONTH)}
+              style={styles.monthlyPlanButton}
+            />
+            <Button
+              onPress={() => buySubscription(SKUS.YEAR)}
+              title={strings.profile.yearlyPlan}
+              style={styles.yearlyPlanButton}
+            />
+          </View>
+          <View style={styles.footerTxtContainer}>
+            <Text style={styles.footerTxt}>
+              {' '}
+              {strings.profile.saveByYearlyPlan}{' '}
+            </Text>
+          </View>
+          <Text
+            onPress={() => { Linking.openURL(PRIVACY_POLICY_URL) }}
+            style={styles.termsAndConditionsStyle}>
+            <Text style={styles.linkColor}>{strings.login.termsAndConditions}</Text>
+            {strings.login.and}
+            <Text style={styles.linkColor}>{strings.login.privacyPolicy}</Text>
+          </Text>
+        </View>
+      </ScrollView>
+
     </SafeAreaView>
   );
 }
@@ -231,5 +276,17 @@ const styles = StyleSheet.create({
   footerTxt: {
     fontFamily: FontFamily.BrandonGrotesque_medium,
     color: theme.light.colors.black,
+  },
+  termsAndConditionsStyle: {
+    fontFamily: FontFamily.BrandonGrotesque_regular,
+    fontSize: ms(18, 0.3),
+    lineHeight: ms(22),
+    marginTop: ms(5),
+    color: theme.light.colors.activeTabLabel,
+    textAlign: 'center',
+  },
+  linkColor: {
+    color: theme.light.colors.hyperlink,
+    textDecorationLine: 'underline',
   },
 });
