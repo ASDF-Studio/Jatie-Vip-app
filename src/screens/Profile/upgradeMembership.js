@@ -77,7 +77,9 @@ export default function UpgradeMembership({ navigation }) {
   async function verifyReceipt(receipt) {
     try {
       const isTestEnvironment = true; // Set this to true if testing in a sandbox environment
-      const result = await IapIos.validateReceiptIos({ receipt, isTestEnvironment });
+      const result = await IapIos.validateReceiptIos({
+        'receipt-data': receipt, isTestEnvironment
+      });
       navigation.navigate(NAVIGATION.home)
       console.log("RESULT", result);
     } catch (error) {
