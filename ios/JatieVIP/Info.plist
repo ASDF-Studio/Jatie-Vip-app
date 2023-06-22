@@ -26,10 +26,10 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>com.jatievip.airly</string>
+			<string>com.jatievip.air</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.jatievip.airly</string>
+				<string>com.jatievip.air</string>
 			</array>
 		</dict>
 	</array>

@@ -125,14 +125,14 @@ export const CardFooter = ({
       var link = await dynamicLinks().buildShortLink(
         {
           link: `https://jattievip.page.link/H3Ed?postId=${postID}&postIndex=${postIndex}`,
-          domainUriPrefix: 'https://jatievip.page.link',
+          domainUriPrefix: 'https://jattievip.page.link',
           android: {
             packageName: 'com.airlystudio.jatievip',
             minimumVersion: '18',
           },
           ios: {
             appStoreId: '123456789',
-            bundleId: 'com.jatievip.airly',
+            bundleId: 'com.jatievip.air',
             minimumVersion: '18',
           },
         },

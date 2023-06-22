@@ -64,7 +64,7 @@ export default function UpgradeMembership({ navigation }) {
 
   const purchaseUpdatedSubscription = purchaseUpdatedListener(async (purchase) => {
     const receipt = purchase.transactionReceipt;
-
+    console.log('receipt', receipt);
     if (receipt) {
       try {
         await verifyReceipt(receipt);
