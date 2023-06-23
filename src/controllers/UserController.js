@@ -165,10 +165,10 @@ export class UserController {
       HttpClient.post(endpoint, data)
         .then(response => {
           resolve(response);
-          console.log(
-            'response of every single user',
-            JSON.stringify(response)
-          );
+          // console.log(
+          //   'response of every single user',
+          //   JSON.stringify(response)
+          // );
         })
         .catch(error => {
           reject(error);
@@ -187,7 +187,7 @@ export class UserController {
     imageArray,
     isVip
   ) {
-    console.log('first', imageArray);
+    // console.log('first', imageArray);
     return new Promise(async (resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.CREATE_POST;
       let data = new FormData();
@@ -211,7 +211,7 @@ export class UserController {
       data.append('isVIPonly', isVip);
 
       data.append('postImg', mimeType == null && file);
-      console.log('CREATE__POST', data);
+      // console.log('CREATE__POST', data);
 
       const headers = {
         'Content-Type': 'multipart/form-data',
@@ -220,7 +220,7 @@ export class UserController {
       await HttpClient.post(endpoint, data, { headers })
         .then(response => {
           resolve(response);
-          console.log('response of create post', response);
+          // console.log('response of create post', response);
         })
         .catch(error => {
           reject(error);
@@ -475,7 +475,7 @@ export class UserController {
       await HttpClient.post(endpoint, data, { headers })
         .then(response => {
           resolve(response);
-          console.log('response of create post', JSON.stringify(response));
+
         })
         .catch(error => {
           reject(error);
@@ -496,7 +496,6 @@ export class UserController {
       HttpClient.post(endpoint, data)
         .then(response => {
           resolve(response);
-          console.log('resonse of posts id   ', response);
         })
         .catch(error => {
           reject(new Error(error.message));
@@ -623,7 +622,6 @@ export class UserController {
       HttpClient.post(endpoint, data)
         .then(response => {
           resolve(response);
-          console.log('response of search user users', response);
         })
         .catch(error => {
           reject(new Error(error.message));
@@ -646,7 +644,6 @@ export class UserController {
       HttpClient.post(endpoint, data)
         .then(response => {
           resolve(response);
-          console.log('response of all activity', response);
         })
         .catch(error => {
           reject(new Error(error.message));
@@ -666,7 +663,6 @@ export class UserController {
         })
         .catch(error => {
           reject(new Error(error.message));
-          console.log('error of all manage Reports', error);
         });
     });
   }
@@ -678,7 +674,6 @@ export class UserController {
       HttpClient.post(endpoint)
         .then(response => {
           resolve(response);
-          console.log('response of all banned Users', response);
         })
         .catch(error => {
           reject(new Error(error.message));
@@ -696,7 +691,6 @@ export class UserController {
       HttpClient.post(endpoint, data)
         .then(response => {
           resolve(response);
-          console.log('response of unBanned User', response);
           showMessage({
             message: 'User Unbanned',
             type: 'success',
@@ -718,7 +712,6 @@ export class UserController {
       HttpClient.post(endpoint, data)
         .then(response => {
           resolve(response);
-          console.log('response of banned User', response);
           showMessage({
             message: 'User Banned',
             type: 'success',
@@ -743,10 +736,10 @@ export class UserController {
       HttpClient.post(endpoint, data)
         .then(response => {
           resolve(response);
-          console.log(
-            'response of All Notifications',
-            JSON.stringify(response)
-          );
+          // console.log(
+          //   'response of All Notifications',
+          //   JSON.stringify(response)
+          // );
         })
         .catch(error => {
           reject(new Error(error.message));
@@ -790,13 +783,13 @@ export class UserController {
         API_BASE_URL + API_END_POINTS.UPDATE_FCM_TOKEN;
 
       //  console.log("endPoint", endpoint)
-      var data = JSON.stringify({
+      var Data = JSON.stringify({
         "loggedInUserId": data.loggedInUserId,
         "fcm_token": data.fcmToken,
         "topic": "general",
         "userId": data.loggedInUserId
       });
-      HttpClient.post(endpoint, data)
+      HttpClient.post(endpoint, Data)
         .then(response => {
           resolve(response);
           console.log(
@@ -814,4 +807,59 @@ export class UserController {
         });
     });
   }
+
+
+
+  static async validateReceiptRequest(data) {
+
+    return new Promise((resolve, reject) => {
+      const endpoint =
+        API_BASE_URL + API_END_POINTS.VALIDATE_RECEIPT;
+      var DATA = JSON.stringify({
+        "receipt": data.receipt,
+        "userId": data.loggedInUserId
+      });
+      HttpClient.post(endpoint, DATA)
+        .then(response => {
+          resolve(response);
+          console.log(
+            'response of Validate receipt',
+            JSON.stringify(response)
+          );
+        })
+        .catch(error => {
+          reject(new Error(error.message));
+          console.log('error of Validate receipt', error);
+        });
+    });
+  }
+
+
+  static async updateUserTypeRequest(data) {
+
+    return new Promise((resolve, reject) => {
+      const endpoint =
+        API_BASE_URL + API_END_POINTS.UPDATE_USER_TYPE;
+      var DATA = JSON.stringify({
+        "isVIP": data.isVIP,
+        "userId": data.userId
+      });
+
+      HttpClient.post(endpoint, DATA)
+        .then(response => {
+          resolve(response);
+          console.log(
+            'response of update user type',
+            JSON.stringify(response)
+          );
+
+        })
+        .catch(error => {
+          reject(new Error(error.message));
+          console.log('error of update user type', error);
+        });
+    });
+  }
+
+
 }

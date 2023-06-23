@@ -256,14 +256,14 @@ export default function Notification({ navigation }) {
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.GET_ALL_NOTIFICATIONS], state)
   );
-  //console.log('data', notificationData?.data)
+
   useEffect(() => {
     dispatch(fetchAllNotifications(loggedInUser.id, read))
   }, [read])
 
   const singelPostHnadlePress = () => {
     dispatch(getPostById(item.objectId, loggedInUser?.id))
-    console.log(item.objectId, user?.id)
+
   }
   const markAllAsReadNotifications = () => {
     dispatch(markAllRead(loggedInUser?.id))

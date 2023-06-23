@@ -25,7 +25,6 @@ export default function MyActivity({ navigation }) {
   const focus = useIsFocused();
   const user = useSelector(getUser);
 
-  console.log("myactivity DAta", user?.MyActivityKey)
 
   useEffect(() => {
     if (focus) {

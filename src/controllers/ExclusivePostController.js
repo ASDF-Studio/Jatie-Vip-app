@@ -100,7 +100,7 @@ export class ExclusivePostController {
                 })
                 .catch((error) => {
                     reject(new Error(error.message));
-                    console.log("error", error)
+
                 });
         });
     }
@@ -108,7 +108,7 @@ export class ExclusivePostController {
     static async getExclusivePostById(data) {
 
         return new Promise((resolve, reject) => {
-            console.log('check data', data)
+
             const endpoint = API_BASE_URL + API_END_POINTS.GET_EXCLUSIVE_POST_BY_ID;
             const body = JSON.stringify({
                 "loggedInUserId": data.userId,
@@ -122,7 +122,7 @@ export class ExclusivePostController {
                 })
                 .catch((error) => {
                     reject(new Error(error.message));
-                    console.log("error of past giveaway", error)
+
                 });
         });
     }
@@ -143,7 +143,6 @@ export class ExclusivePostController {
                 })
                 .catch((error) => {
                     reject(new Error(error.message));
-                    console.log("error of past giveaway", error)
                 });
         });
     }
@@ -193,7 +192,7 @@ export class ExclusivePostController {
                 if (isVideo) {
                     data.append('videoPoster', videoPoster)
                 }
-                console.log("preImageArray=-=-=-=-=-", params.preImageArray);
+
 
             }
 
@@ -207,7 +206,6 @@ export class ExclusivePostController {
             data.append('isVIPonly', params.isVIPonly);
             data.append('isScheduled', params.schedulePost);
             data.append('scheduleDetails', params.scheduleDate);
-            console.log("update_exclisisadasdas", JSON.stringify(data));
 
 
 
@@ -221,7 +219,6 @@ export class ExclusivePostController {
                 })
                 .catch((error) => {
                     reject(error)
-                    console.log('errror', error)
                 });
         });
 
@@ -246,7 +243,6 @@ export class ExclusivePostController {
                 })
                 .catch((error) => {
                     reject(new Error(error.message));
-                    console.log("error", error)
                 });
         });
     }

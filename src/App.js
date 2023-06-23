@@ -31,11 +31,10 @@ export function App() {
       try {
         const fcmtoken = await messaging().getToken();
         if (fcmtoken) {
-          console.log("newtokennnnnnnn", fcmtoken);
           await AsyncStorage.setItem("fcmtoken", fcmtoken);
         }
       } catch (error) {
-        console.log("error in fcmtoken", error);
+
       }
     }
   }

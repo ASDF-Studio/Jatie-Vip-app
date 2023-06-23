@@ -8,7 +8,6 @@ export async function requestUserPermission() {
     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
   if (enabled) {
-    console.log("Authorization status:", authStatus);
 
   }
 }
@@ -20,11 +19,10 @@ export async function getFCMToken() {
     try {
       const fcmtoken = await messaging().getToken();
       if (fcmtoken) {
-        console.log("newtokennnnnnnn", fcmtoken);
+
         await AsyncStorage.setItem("fcmtoken", fcmtoken);
       }
     } catch (error) {
-      console.log("error in fcmtoken", error);
     }
   }
 }

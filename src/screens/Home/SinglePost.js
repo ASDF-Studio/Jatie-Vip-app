@@ -115,7 +115,6 @@ export default function SinglePost({ navigation, route }) {
     }
   }, [postData]);
 
-  console.log("postdata ----->", postData)
 
 
   let counter = 1;

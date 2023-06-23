@@ -29,7 +29,6 @@ export default function ManageReports({ navigation }) {
   const [status, setStatus] = useState(strings.reports.post);
   const user = useSelector(getUser)
   const reports = user.allReportsKeyKey
-  //console.log('reports', reports.data)
 
   useEffect(() => {
     if (focus) {

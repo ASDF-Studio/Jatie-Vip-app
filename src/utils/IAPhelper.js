@@ -19,18 +19,15 @@ initConnection();
 
 // Add purchase error listener
 const purchaseErrorSubscription = purchaseErrorListener((error) => {
-    console.log('Purchase Error:', error);
 });
 
 // Add purchase updated listener
 const purchaseUpdatedSubscription = purchaseUpdatedListener(async (purchase) => {
     const receipt = purchase.transactionReceipt;
-    console.log("RECPOPOPO", receipt);
     if (receipt) {
         try {
             // Validate the receipt and process the purchase
             const validReceipt = await validateReceipt(receipt);
-            console.log("Reciptsss", validReceipt);
             if (validReceipt) {
                 // Process the purchase
                 processPurchase(purchase);
@@ -41,11 +38,9 @@ const purchaseUpdatedSubscription = purchaseUpdatedListener(async (purchase) => 
                     await finishTransaction(purchase);
                 }
             } else {
-                // Receipt validation failed
-                console.log('Receipt validation failed');
+                // Receipt validation faile
             }
         } catch (error) {
-            console.log('Error validating receipt:', error);
         }
     }
 });
@@ -68,7 +63,6 @@ function processPurchase(purchase) {
     const { productId, transactionId, transactionDate } = purchase;
     // Perform any necessary actions based on the purchase
 
-    console.log('Purchase processed:', productId, transactionId, transactionDate);
 }
 
 // Buy a subscription
@@ -84,10 +78,9 @@ export async function buySubscription(userProductSku) {
             }
         }
         if (!productFound) {
-            console.log('Desired product not found');
         }
     } catch (error) {
-        console.log('Error buying subscription:', error);
+
     }
 }
 
@@ -108,10 +101,10 @@ export async function restorePurchases() {
                 }
             }
         } else {
-            console.log('No purchases to restore');
+
         }
     } catch (error) {
-        console.log('Error restoring purchases:', error);
+
     }
 }
 

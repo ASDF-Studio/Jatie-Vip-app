@@ -170,7 +170,32 @@ export const TYPES = {
   UPDATE_FCM_TOKEN_REQUEST: 'UPDATE_FCM_TOKEN_REQUEST',
   UPDATE_FCM_TOKEN_SUCCESS: 'UPDATE_FCM_TOKEN_SUCCESS',
   UPDATE_FCM_TOKEN_ERROR: 'UPDATE_FCM_TOKEN_ERROR',
+
+
+  //Update user type subscription
+  UPDATE_USER_TYPE: 'UPDATE_USER_TYPE',
+  UPDATE_USER_TYPE_REQUEST: 'UPDATE_USER_TYPE_REQUEST',
+  UPDATE_USER_TYPE_SUCCESS: 'UPDATE_USER_TYPE_SUCCESS',
+  UPDATE_USER_TYPE_ERROR: 'UPDATE_USER_TYPE_ERROR',
 };
+const updateUserTypeRequest = () => ({
+  type: TYPES.UPDATE_USER_TYPE_REQUEST,
+  payload: null,
+});
+
+const updateUserTypeError = error => ({
+  type: TYPES.UPDATE_USER_TYPE_ERROR,
+  payload: { error },
+});
+
+const updateUserTypeSuccess = user => ({
+  type: TYPES.UPDATE_USER_TYPE_SUCCESS,
+  payload: { user },
+});
+
+
+
+
 
 const loginRequest = () => ({
   type: TYPES.LOGIN_REQUEST,
@@ -819,22 +844,22 @@ export const createPostByAdmin =
     expireDate
   ) =>
     async dispatch => {
-      console.log(
-        'log in actions',
-        id,
-        postTitle,
-        postBody,
-        postImg,
-        mimeType,
-        imageArray,
-        vipOnly,
-        schedulePost,
-        scheduleDetails,
-        goingLIve,
-        ad,
-        publishDate,
-        expireDate
-      );
+      // console.log(
+      //   'log in actions',
+      //   id,
+      //   postTitle,
+      //   postBody,
+      //   postImg,
+      //   mimeType,
+      //   imageArray,
+      //   vipOnly,
+      //   schedulePost,
+      //   scheduleDetails,
+      //   goingLIve,
+      //   ad,
+      //   publishDate,
+      //   expireDate
+      // );
       dispatch(globalReset());
       dispatch(createPostRequest());
       try {
@@ -1203,7 +1228,21 @@ export const updateFCMToken = (data) => async dispatch => {
   try {
     const user = await UserController.updateFCMTokenRequest(data);
     dispatch(updateFcmTokenSuccess(user));
+    // navigation.reset({ index: 0, routes: [{ name: NAVIGATION.role }] })
   } catch (error) {
     dispatch(updateFcmTokenError(error));
+  }
+};
+
+
+export const updateUserType = (data) => async dispatch => {
+  dispatch(updateUserTypeRequest());
+  try {
+    const user = await UserController.updateUserTypeRequest(data);
+    let selectedValue = 'VIP';
+    dispatch(ChooseUser(selectedValue));
+    // dispatch(updateUserTypeSuccess(user));
+  } catch (error) {
+    dispatch(updateUserTypeError(error));
   }
 };

@@ -239,7 +239,6 @@ export function Home({ navigation }) {
       cropperCircleOverlay: true,
     })
       .then(image => {
-        console.log('check uploaded image', image);
         setreportImage(image);
       })
       .catch(error => console.log('report image picker error', error));
@@ -296,7 +295,6 @@ export function Home({ navigation }) {
 
   const onLoadMorePost = () => {
     const post = ALLPOST.slice(-1);
-    console.log('LAST_POST===', post[0].created_at);
     const page = post[0].created_at;
     dispatch(
       getAllPostPagination(
@@ -308,6 +306,7 @@ export function Home({ navigation }) {
       )
     );
   };
+  console.log("USER____TYPE", userType?.user);
   const renderFooterPost = () => {
     return (
       <View style={{}}>

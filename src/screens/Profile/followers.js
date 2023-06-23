@@ -38,8 +38,6 @@ export default function Followers({ navigation, route }) {
   const focus = useIsFocused()
   const { id } = route.params
   const { screenName } = route.params
-  //console.log("id in followers", id)
-  console.log(screenName)
   const { active } = route.params
 
   const [open, setOpen] = useState(false);
@@ -54,7 +52,6 @@ export default function Followers({ navigation, route }) {
 
   useEffect(() => {
     dispatch(followers(user?.id, id))
-    // console.log('followers list', user?.id, id)
 
   }, [focus]);
 
@@ -113,7 +110,7 @@ export default function Followers({ navigation, route }) {
               <View style={styles.listContainer}>
                 <TouchableOpacity
                   style={styles.list}
-                  onPress={() => navigate(NAVIGATION.userProfile, { userId: item?.user?.id, }, console.log('check issue', item?.user?.id))}
+                  onPress={() => navigate(NAVIGATION.userProfile, { userId: item?.user?.id, })}
 
                 >
                   <Image

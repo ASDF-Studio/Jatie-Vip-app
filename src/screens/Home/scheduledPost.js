@@ -35,7 +35,6 @@ export default function SchedulePost({ navigation }) {
   const user = useSelector(getUser);
   const dispatch = useDispatch()
   const postData = useSelector(getSchedulePostData)
-  console.log("POSOPOPOPO", postData);
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.GET_SCHEDULE_POST], state)
   );
@@ -47,7 +46,6 @@ export default function SchedulePost({ navigation }) {
   // }, [])
   const onLoadMorePost = () => {
     const post = ALLPOST.slice(-1)
-    console.log("LAST_POST===", post[0].created_at);
     const page = post[0].created_at
     dispatch(getAllPostPagination(user?.id, sortBy, follwingSwitch, vipArea == `${strings.home.newFeed}` ? false : true, page))
   }

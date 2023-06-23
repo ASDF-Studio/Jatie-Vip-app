@@ -57,7 +57,6 @@ export default function MyStatus({ navigation }) {
   const [editData, setEditdata] = useState({});
   const [postIndex, setPostIndex] = useState(0);
   const [fetchExclusivePost, setExclusivePost] = useState(true);
-  // console.log("PROFILE__DATA", user.getAllPostsByLoggedInUser);
   const userType = useSelector(state => state.userType);
 
   const [openReplace, setReplace] = useState(false);
@@ -140,7 +139,6 @@ export default function MyStatus({ navigation }) {
           onEndReachedThreshold={0.1}
           onEndReached={() => {
             if (!fetchExclusivePost) {
-              // console.log(onEndReachedCalledDuringMomentum)
               onLoadMorePost();
               setExclusivePost(true);
               // onEndReachedCalledDuringMomentum = true;
@@ -311,82 +309,82 @@ export default function MyStatus({ navigation }) {
                   </View>
                 ) : item?.postMediaContent?.length > 2 ? (
                   ((counter = 1),
-                  (
-                    <View style={styles.imageContainer}>
-                      {item?.postMediaContent?.map(data =>
-                        counter == 1
-                          ? ((counter = counter + 1),
-                            (
-                              <TouchableOpacity
-                                key={counter}
-                                style={styles.touchContainer}
-                                onPress={() => {
-                                  onViewImageVideo(item);
-                                }}
-                              >
-                                {data?.mimetype.split('/')[0] == 'image' ? (
-                                  <Image
-                                    source={{
-                                      uri: data.url,
-                                    }}
-                                    style={styles.image}
-                                  />
-                                ) : (
-                                  <ImageBackground
-                                    source={{
-                                      uri: data?.cover,
-                                    }}
-                                    key={counter}
-                                    style={[styles.image, styles.playButtonBg]}
-                                  >
-                                    <TouchableOpacity
-                                      // activeOpacity={1}
-                                      style={styles.playButton}
-                                      onPress={() => {
-                                        onViewImageVideo(item);
-                                      }}
-                                    >
-                                      <FontAwesomeIcon
-                                        icon={faPlay}
-                                        size={ms(15)}
-                                        style={styles.Play}
-                                      />
-                                    </TouchableOpacity>
-                                  </ImageBackground>
-                                )}
-                              </TouchableOpacity>
-                            ))
-                          : counter == 2
-                          ? ((counter = counter + 1),
-                            (
-                              <TouchableOpacity
-                                key={counter}
-                                style={styles.touchContainer}
-                                onPress={() => {
-                                  onViewImageVideo(item);
-                                }}
-                              >
-                                <ImageBackground
-                                  source={{
-                                    uri:
-                                      data?.mimetype.split('/')[0] == 'image'
-                                        ? data.url
-                                        : data?.cover,
-                                  }}
+                    (
+                      <View style={styles.imageContainer}>
+                        {item?.postMediaContent?.map(data =>
+                          counter == 1
+                            ? ((counter = counter + 1),
+                              (
+                                <TouchableOpacity
                                   key={counter}
-                                  style={[styles.image, styles.moreImage]}
+                                  style={styles.touchContainer}
+                                  onPress={() => {
+                                    onViewImageVideo(item);
+                                  }}
                                 >
+                                  {data?.mimetype.split('/')[0] == 'image' ? (
+                                    <Image
+                                      source={{
+                                        uri: data.url,
+                                      }}
+                                      style={styles.image}
+                                    />
+                                  ) : (
+                                    <ImageBackground
+                                      source={{
+                                        uri: data?.cover,
+                                      }}
+                                      key={counter}
+                                      style={[styles.image, styles.playButtonBg]}
+                                    >
+                                      <TouchableOpacity
+                                        // activeOpacity={1}
+                                        style={styles.playButton}
+                                        onPress={() => {
+                                          onViewImageVideo(item);
+                                        }}
+                                      >
+                                        <FontAwesomeIcon
+                                          icon={faPlay}
+                                          size={ms(15)}
+                                          style={styles.Play}
+                                        />
+                                      </TouchableOpacity>
+                                    </ImageBackground>
+                                  )}
+                                </TouchableOpacity>
+                              ))
+                            : counter == 2
+                              ? ((counter = counter + 1),
+                                (
                                   <TouchableOpacity
+                                    key={counter}
+                                    style={styles.touchContainer}
                                     onPress={() => {
                                       onViewImageVideo(item);
                                     }}
                                   >
-                                    <Text style={styles.extraImage}>
-                                      {strings.message.plus}
-                                      {item.postMediaContent?.length - 1}
-                                    </Text>
-                                  </TouchableOpacity>
-                                  {/* {data.mimetype.split("/")[0] == "video" &&
+                                    <ImageBackground
+                                      source={{
+                                        uri:
+                                          data?.mimetype.split('/')[0] == 'image'
+                                            ? data.url
+                                            : data?.cover,
+                                      }}
+                                      key={counter}
+                                      style={[styles.image, styles.moreImage]}
+                                    >
+                                      <TouchableOpacity
+                                        onPress={() => {
+                                          onViewImageVideo(item);
+                                        }}
+                                      >
+                                        <Text style={styles.extraImage}>
+                                          {strings.message.plus}
+                                          {item.postMediaContent?.length - 1}
+                                        </Text>
+                                      </TouchableOpacity>
+                                      {/* {data.mimetype.split("/")[0] == "video" &&
                                 <TouchableOpacity
                                   // activeOpacity={1}
                                   style={styles.playButton}
@@ -399,13 +397,13 @@ export default function MyStatus({ navigation }) {
 
                                 </TouchableOpacity>
                               } */}
-                                </ImageBackground>
-                              </TouchableOpacity>
-                            ))
-                          : null
-                      )}
-                    </View>
-                  ))
+                                    </ImageBackground>
+                                  </TouchableOpacity>
+                                ))
+                              : null
+                        )}
+                      </View>
+                    ))
                 ) : null}
 
                 <CardFooter
@@ -471,7 +469,7 @@ export default function MyStatus({ navigation }) {
               }),
                 setOpen(false);
             }}
-            // onPress={console.log(postId, user?.id)}
+
           />
           <HorizontalLine
             color={theme.light.colors.infoBgLight}
@@ -483,7 +481,7 @@ export default function MyStatus({ navigation }) {
             icon={faTrash}
             iconBg={theme.light.colors.infoBgLight}
             iconColor={theme.light.colors.secondary}
-            // onPress={console.log(postId, user?.id)}
+
             onPress={() => {
               setReplace(true), setOpen(false);
             }}

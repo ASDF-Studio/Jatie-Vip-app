@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, NativeModules, Linking, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, NativeModules, Linking, ScrollView, TouchableOpacity } from 'react-native';
 import { TextStyles, theme } from '@/theme';
 import { Logo } from '@/assets';
 import { ms, vs } from 'react-native-size-matters';
@@ -19,28 +19,78 @@ import RNIap, {
   requestSubscription,
   IapIos,
   purchaseUpdatedListener,
+  endConnection,
+  flushFailedPurchasesCachedAsPendingAndroid,
 } from 'react-native-iap';
 import { buySubscription, cleanupIAP, restorePurchases } from '@/utils/IAPhelper';
 import { SKUS } from '@/constants/subscriptionConstant';
 import { PRIVACY_POLICY_URL } from '@/constants/apiConstants';
 import { NAVIGATION } from '@/constants';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUser } from '@/selectors/UserSelectors';
+import { validateReceipt } from '@/actions/SubscriptionAction';
 
 export default function UpgradeMembership({ navigation }) {
-
+  const dispatch = useDispatch();
+  const user = useSelector(getUser);
   const { RNBase64 } = NativeModules;
   const [loading, setLoading] = useState(false)
   useEffect(() => {
     initIAP();
+    const purchaseUpdatedSubscription = purchaseUpdatedListener(async (purchase) => {
+      const receipt = purchase.transactionReceipt;
+      if (receipt) {
+        try {
+          await verifyReceipt(receipt);
+        } catch (error) {
+        }
+      }
+    });
+    return () => {
+      clearIAPListeners()
+    }
   }, []);
+  let purchaseUpdateSubscription;
+  let purchaseErrorSubscription;
+  const clearIAPListeners = async () => {
+    if (purchaseUpdateSubscription) {
+      purchaseUpdateSubscription.remove();
+      purchaseUpdateSubscription = null;
+    }
+    if (purchaseErrorSubscription) {
+      purchaseErrorSubscription.remove();
+      purchaseErrorSubscription = null;
+    }
+    await endConnection();
+  };
   const initIAP = async () => {
     try {
       await initConnection();
     } catch (error) {
-      console.log('Failed to initialize in-app purchase:', error);
     }
   };
 
   const buySubscription = async (userProductSku) => {
+    if (Platform.OS === 'ios') {
+      clearTransactionIOS()
+        .catch((error) => {
+          console.log({ error });
+        })
+        .then(async () => {
+          await handlePurchase(userProductSku);
+        });
+    } else {
+      flushFailedPurchasesCachedAsPendingAndroid()
+        .catch((error) => {
+          console.log({ error });
+        })
+        .then(async () => {
+          await handlePurchase(userProductSku);
+        });
+    }
+
+  };
+  const handlePurchase = async (userProductSku) => {
     setLoading(true);
     try {
       const products = await getProducts({ skus: Platform.OS === 'ios' ? SKUS.IOS : SKUS.ANDROID });
@@ -60,31 +110,31 @@ export default function UpgradeMembership({ navigation }) {
     } finally {
       setLoading(false); // Hide loader regardless of success or failure
     }
-  };
-
-  const purchaseUpdatedSubscription = purchaseUpdatedListener(async (purchase) => {
-    const receipt = purchase.transactionReceipt;
-    console.log('receipt', receipt);
-    if (receipt) {
-      try {
-        await verifyReceipt(receipt);
-      } catch (error) {
-        console.log('Error validating receipt:', error);
-      }
-    }
-  });
+  }
 
   async function verifyReceipt(receipt) {
+    const data = {
+      receipt: receipt,
+      loggedInUserId: user?.id,
+    }
+    dispatch(validateReceipt(data))
+  }
+
+  const restorePurchases = async () => {
+    setLoading(true);
     try {
-      const isTestEnvironment = true; // Set this to true if testing in a sandbox environment
-      const result = await IapIos.validateReceiptIos({
-        'receipt-data': receipt, isTestEnvironment
-      });
-      navigation.navigate(NAVIGATION.home)
-      console.log("RESULT", result);
+      const purchases = await getAvailablePurchases();
+      let restored = false;
+      for (const purchase of purchases) {
+        await requestSubscription({ sku: purchase.productId });
+        restored = true;
+        break; // Stop checking for more purchases after restoring one
+      }
+      if (!restored) {
+      }
     } catch (error) {
-      alert(error)
-      console.log("Error validating receipt:", error);
+    } finally {
+      setLoading(false); // Hide loader regardless of success or failure
     }
   }
 
@@ -97,10 +147,11 @@ export default function UpgradeMembership({ navigation }) {
             style={styles.TopBackButton}
           />
         </View>
-        <CustomLoader
-          open={loading}
-        />
+
       </View>
+      <CustomLoader
+        open={loading}
+      />
       <ScrollView>
         {/* <Text>
         Updated create post option of VIP users on newsfeed and myProfile section (In progress).
@@ -185,6 +236,22 @@ export default function UpgradeMembership({ navigation }) {
               {strings.profile.saveByYearlyPlan}{' '}
             </Text>
           </View>
+
+          <View style={styles.cancelTxtContainer}>
+            <Text style={styles.cancelSubscription}>
+              {' '}
+              {strings.subscription.cancelSubscription}{' '}
+            </Text>
+          </View>
+          <TouchableOpacity
+            onPress={() => { restorePurchases() }}>
+            <Text
+              style={styles.restorePurchases}>
+              {strings.subscription.restorePurchases}
+            </Text>
+          </TouchableOpacity>
+
+
           <Text
             onPress={() => { Linking.openURL(PRIVACY_POLICY_URL) }}
             style={styles.termsAndConditionsStyle}>
@@ -223,10 +290,12 @@ const styles = StyleSheet.create({
   TopBackButton: {
     paddingRight: ms(5),
     paddingLeft: ms(10),
+
   },
   left: {
     flexDirection: 'row',
     alignItems: 'center',
+
   },
   right: {
     flexDirection: 'row',
@@ -273,11 +342,24 @@ const styles = StyleSheet.create({
   },
   footerTxtContainer: {
     alignItems: 'center',
-    padding: ms(10),
+    marginVertical: ms(10)
+    // padding: ms(),
+  },
+  cancelTxtContainer: {
+    alignItems: 'center',
+    marginBottom: ms(10)
+
   },
   footerTxt: {
     fontFamily: FontFamily.BrandonGrotesque_medium,
     color: theme.light.colors.black,
+    fontSize: ms(14),
+  },
+  cancelSubscription: {
+    fontFamily: FontFamily.BrandonGrotesque_medium,
+    color: theme.light.colors.black,
+    textAlign: "center",
+    fontSize: ms(14),
   },
   termsAndConditionsStyle: {
     fontFamily: FontFamily.BrandonGrotesque_regular,
@@ -290,5 +372,13 @@ const styles = StyleSheet.create({
   linkColor: {
     color: theme.light.colors.hyperlink,
     textDecorationLine: 'underline',
+  },
+  restorePurchases: {
+    color: theme.light.colors.hyperlink,
+    fontFamily: FontFamily.BrandonGrotesque_bold,
+    fontSize: ms(17, 0.4),
+    // textDecorationLine: 'underline',
+    textAlign: "center",
+    marginBottom: ms(5),
   },
 });

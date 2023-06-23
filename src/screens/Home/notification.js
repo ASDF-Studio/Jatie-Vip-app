@@ -50,7 +50,6 @@ export default function Notification({ navigation }) {
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.GET_ALL_NOTIFICATIONS], state)
   );
-  console.log('data', notificationData?.data);
   useEffect(() => {
     dispatch(fetchAllNotifications(loggedInUser.id, read));
   }, [read]);
@@ -121,9 +120,9 @@ export default function Notification({ navigation }) {
               style={
                 item.seenByUser == true
                   ? [
-                      styles.notificationCard,
-                      { backgroundColor: theme.light.colors.white },
-                    ]
+                    styles.notificationCard,
+                    { backgroundColor: theme.light.colors.white },
+                  ]
                   : styles.notificationCard
               }
             >
@@ -166,7 +165,6 @@ export default function Notification({ navigation }) {
                       navigate(
                         NAVIGATION.singlePost,
                         { postId: item.objectId },
-                        console.log('lll', item.objectId)
                       )
                     }
                   >

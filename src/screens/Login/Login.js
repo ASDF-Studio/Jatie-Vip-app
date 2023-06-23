@@ -59,7 +59,6 @@ export function Login({ route }) {
     validation()
   };
   const send = () => {
-    console.log('send!');
     recaptcha.current.open();
   }
 

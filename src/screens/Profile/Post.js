@@ -44,13 +44,13 @@ let nextId = 0;
 export default function Post({ navigation }) {
   const userType = useSelector(state => state.userType);
 
-  // console.log('usertype', userType)
+
   const dispatch = useDispatch()
   const user = useSelector(getUser);
   const [imageArray, setImageArray] = useState([]);
   const [isModalVisible, setModalVisible] = useState(false);
   const [isImage, setIsImage] = useState();
-  // const [postTxt, setPostTxt] = useState('');
+
   const [vipOnly, setVipOnly] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -97,7 +97,6 @@ export default function Post({ navigation }) {
             });
           })
           .catch(e => {
-            console.log('Error: ' + e);
           })
         : ImageCropPicker.openPicker({
           width: 300,
@@ -119,7 +118,6 @@ export default function Post({ navigation }) {
             setModalVisible(!isModalVisible);
           })
           .catch(e => {
-            console.log('Error: ' + e);
           });
     }
   };
@@ -145,7 +143,6 @@ export default function Post({ navigation }) {
             setModalVisible(!isModalVisible);
           })
           .catch(e => {
-            console.log('Error: ' + e);
           })
         : ImageCropPicker.openCamera({
           width: 300,
@@ -166,7 +163,6 @@ export default function Post({ navigation }) {
             setModalVisible(!isModalVisible);
           })
           .catch(e => {
-            console.log('Error: ' + e);
           });
     }
   };
@@ -234,7 +230,7 @@ export default function Post({ navigation }) {
   }
   const onSave = () => {
     validation()
-    //console.log(userType.user, strings.userType.admin);
+
 
   }
   return (

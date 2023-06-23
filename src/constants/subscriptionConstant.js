@@ -11,4 +11,8 @@ const SKUS = {
     YEAR: 'com.jatievip.air.year'
 };
 
-export { SKUS, };
+const RECEIPT_STATUS = {
+    VALID_RECEIPT: "Valid Receipt",
+    INVALID_RECEIPT: "Invalid Receipt"
+}
+export { SKUS, RECEIPT_STATUS };

@@ -155,90 +155,88 @@ export default function UpdatePost({ route, navigation }) {
     {
       isImage == strings.exclusive.image
         ? ImageCropPicker.openPicker({
-            width: 300,
-            height: 400,
-            maxFiles: 3,
-            mediaType: strings.exclusive.image,
-            multiple: true,
-            compressImageQuality: 0.5,
-          })
-            .then(images => {
-              images.forEach(item => {
-                imageArray.push({
-                  id: nextId++,
-                  image: item.path,
-                  imageMime: item.mime,
-                  video: null,
-                });
-                imageArrayDisplay.push({
-                  id: preNextId++,
-                  image: item.path,
-                  imageMime: item.mime,
-                  video: null,
-                });
-                postImg.push(item.path);
-                mimeType.push(item.mime);
-                setModalVisible(!isModalVisible);
+          width: 300,
+          height: 400,
+          maxFiles: 3,
+          mediaType: strings.exclusive.image,
+          multiple: true,
+          compressImageQuality: 0.5,
+        })
+          .then(images => {
+            images.forEach(item => {
+              imageArray.push({
+                id: nextId++,
+                image: item.path,
+                imageMime: item.mime,
+                video: null,
               });
-            })
-            .catch(e => {
-              console.log('Error: ' + e);
-            })
-        : ImageCropPicker.openPicker({
-            width: 300,
-            height: 400,
-            mediaType: strings.exclusive.video,
-            multiple: true,
-            maxFiles: 3,
-            compressImageQuality: 0.5,
-            loadingLabelText: 'loading',
-          })
-            .then(video => {
-              // imageArray.push({
-              //   id: nextId++,
-              //   image: null,
-              //   video: video.path,
-              //   videoMime: video.mime,
-              // });
-              // imageArrayDisplay.push({
-              //   id: preNextId++,
-              //   image: null,
-              //   imageMime: video.mime,
-              //   video: null,
-              // });
-              // postImg.push(video.path);
-              // mimeType.push(video.mime);
-              // setModalVisible(!isModalVisible);
-              video.forEach(item => {
-                createThumbnail({
-                  url: item.path,
-                  timeStamp: 10000,
-                })
-                  .then(response => {
-                    imageArray.push({
-                      id: nextId++,
-                      image: null,
-                      video: item.path,
-                      videoMime: item.mime,
-                      videoPoster: response?.path,
-                    });
-                    imageArrayDisplay.push({
-                      id: nextId++,
-                      image: null,
-                      video: item.path,
-                      videoMime: item.mime,
-                      videoPoster: response?.path,
-                    });
-                  })
-                  .catch(err => console.log({ err }));
-                setPostImg(video.path);
-                setmimeType(video.mime);
-                setModalVisible(!isModalVisible);
+              imageArrayDisplay.push({
+                id: preNextId++,
+                image: item.path,
+                imageMime: item.mime,
+                video: null,
               });
-            })
-            .catch(e => {
-              console.log('Error: ' + e);
+              postImg.push(item.path);
+              mimeType.push(item.mime);
+              setModalVisible(!isModalVisible);
             });
+          })
+          .catch(e => {
+          })
+        : ImageCropPicker.openPicker({
+          width: 300,
+          height: 400,
+          mediaType: strings.exclusive.video,
+          multiple: true,
+          maxFiles: 3,
+          compressImageQuality: 0.5,
+          loadingLabelText: 'loading',
+        })
+          .then(video => {
+            // imageArray.push({
+            //   id: nextId++,
+            //   image: null,
+            //   video: video.path,
+            //   videoMime: video.mime,
+            // });
+            // imageArrayDisplay.push({
+            //   id: preNextId++,
+            //   image: null,
+            //   imageMime: video.mime,
+            //   video: null,
+            // });
+            // postImg.push(video.path);
+            // mimeType.push(video.mime);
+            // setModalVisible(!isModalVisible);
+            video.forEach(item => {
+              createThumbnail({
+                url: item.path,
+                timeStamp: 10000,
+              })
+                .then(response => {
+                  imageArray.push({
+                    id: nextId++,
+                    image: null,
+                    video: item.path,
+                    videoMime: item.mime,
+                    videoPoster: response?.path,
+                  });
+                  imageArrayDisplay.push({
+                    id: nextId++,
+                    image: null,
+                    video: item.path,
+                    videoMime: item.mime,
+                    videoPoster: response?.path,
+                  });
+                })
+                .catch(err => console.log({ err }));
+              setPostImg(video.path);
+              setmimeType(video.mime);
+              setModalVisible(!isModalVisible);
+            });
+          })
+          .catch(e => {
+          });
     }
   };
 
@@ -246,58 +244,56 @@ export default function UpdatePost({ route, navigation }) {
     {
       isImage == strings.exclusive.image
         ? ImageCropPicker.openCamera({
-            width: 300,
-            height: 400,
-            cropping: false,
-            compressImageQuality: 0.5,
-          })
-            .then(image => {
-              imageArray.push({
-                id: nextId++,
-                image: image.path,
-                imageMime: image.mime,
-                video: null,
-              });
-              imageArrayDisplay.push({
-                id: preNextId++,
-                image: image.path,
-                imageMime: image.mime,
-                video: null,
-              });
-              postImg.push(image.path);
-              mimeType.push(image.mime);
-              setModalVisible(!isModalVisible);
-            })
-            .catch(e => {
-              console.log('Error: ' + e);
-            })
-        : ImageCropPicker.openCamera({
-            width: 300,
-            height: 400,
-            cropping: false,
-            mediaType: strings.exclusive.video,
-            compressImageQuality: 0.5,
-          })
-            .then(image => {
-              imageArray.push({
-                id: nextId++,
-                image: null,
-                video: image.path,
-                videoMime: image.mime,
-              });
-              imageArrayDisplay.push({
-                id: preNextId++,
-                image: null,
-                video: image.path,
-                videoMime: image.mime,
-              });
-              postImg.push(image.path);
-              mimeType.push(image.mime);
-              setModalVisible(!isModalVisible);
-            })
-            .catch(e => {
-              console.log('Error: ' + e);
+          width: 300,
+          height: 400,
+          cropping: false,
+          compressImageQuality: 0.5,
+        })
+          .then(image => {
+            imageArray.push({
+              id: nextId++,
+              image: image.path,
+              imageMime: image.mime,
+              video: null,
             });
+            imageArrayDisplay.push({
+              id: preNextId++,
+              image: image.path,
+              imageMime: image.mime,
+              video: null,
+            });
+            postImg.push(image.path);
+            mimeType.push(image.mime);
+            setModalVisible(!isModalVisible);
+          })
+          .catch(e => {
+          })
+        : ImageCropPicker.openCamera({
+          width: 300,
+          height: 400,
+          cropping: false,
+          mediaType: strings.exclusive.video,
+          compressImageQuality: 0.5,
+        })
+          .then(image => {
+            imageArray.push({
+              id: nextId++,
+              image: null,
+              video: image.path,
+              videoMime: image.mime,
+            });
+            imageArrayDisplay.push({
+              id: preNextId++,
+              image: null,
+              video: image.path,
+              videoMime: image.mime,
+            });
+            postImg.push(image.path);
+            mimeType.push(image.mime);
+            setModalVisible(!isModalVisible);
+          })
+          .catch(e => {
+          });
     }
   };
 

@@ -65,10 +65,7 @@ export default function UserProfile({ navigation, route }) {
   const [postIndex, setPostIndex] = useState(0);
   const dispatch = useDispatch();
   const { userId } = route?.params;
-  // console.log('otherpersoId', userId)
   const userr = useSelector(getUser);
-  // console.log('MyId', userr.id)
-
   const getUserProfile = useSelector(getUser);
   const [active, setActive] = useState(false);
   const userType = useSelector(state => state.userType);
@@ -102,7 +99,7 @@ export default function UserProfile({ navigation, route }) {
 
   const loggedInId = useSelector(getUser);
 
-  console.log('user vip', user?.isVIP)
+
 
   useEffect(() => {
     dispatch(getUserProfileByUserId(userId, userr.id));
@@ -145,7 +142,7 @@ export default function UserProfile({ navigation, route }) {
     if (user?.is_following == true) {
       dispatch(unFollowUser(loggedInId.id, user.id));
       setOpenMore(false);
-      console.log('check', loggedInId.id, user.id);
+
       //setOpen(false)
       setTimeout(() => {
         dispatch(getUserProfileByUserId(userId, userr.id));
@@ -155,7 +152,7 @@ export default function UserProfile({ navigation, route }) {
       setOpenMore(false);
 
       // setOpen(false)
-      console.log('follower log', loggedInId.id, user.id);
+
 
       setTimeout(() => {
         dispatch(getUserProfileByUserId(userId, userr.id));
@@ -365,7 +362,6 @@ export default function UserProfile({ navigation, route }) {
                                 onPress={() => {
                                   setShowImageView(true),
                                     setFeedImages(item?.postImg);
-                                  // console.log(feedImages)
                                 }}
                               >
                                 <Image

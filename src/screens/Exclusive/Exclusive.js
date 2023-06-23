@@ -74,7 +74,6 @@ export function Exclusive({ navigation }) {
   const CheckIcon = (
     <FontAwesomeIcon icon={faCheck} color={theme.light.colors.primary} />
   );
-  console.log("DATA=-=-EXCLUSIVE=-=-=-", exclusiveData);
   useEffect(() => {
     const data = {
       userId: user?.id,

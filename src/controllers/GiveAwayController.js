@@ -53,7 +53,6 @@ export class GiveAwayController {
                     data.append('videoPoster', videoPoster)
                 }
                 // data.append('videoPoster', videoPoster);
-                console.log("VIDEEO___OPOSTER", videoPoster);
 
             }
 
@@ -68,7 +67,6 @@ export class GiveAwayController {
             data.append('isVIPonly', params.isVIPonly);
             data.append('isUSAonly', params.isUSAonly);
             data.append('numOfWinners', params.winnerCount);
-            console.log("GIVEATWA__BOSY", data);
             const headers = {
                 'Content-Type': 'multipart/form-data'
             }
@@ -76,11 +74,9 @@ export class GiveAwayController {
             await HttpClient.post(endpoint, data, { headers })
                 .then((response) => {
                     resolve(response)
-                    console.log('giveaway post response', JSON.stringify(response))
                 })
                 .catch((error) => {
                     reject(error)
-                    console.log('errror', error)
                 });
         });
 
@@ -100,11 +96,9 @@ export class GiveAwayController {
                 .then((response) => {
 
                     resolve(response)
-                    console.log('response of active giveaway JOIN', response)
                 })
                 .catch((error) => {
                     reject(new Error(error.message));
-                    console.log("error", error)
                 });
         });
     }
@@ -112,7 +106,6 @@ export class GiveAwayController {
     static async getAllPastGiveAwayPost(data) {
 
         return new Promise((resolve, reject) => {
-            console.log('check data', data)
             const endpoint = API_BASE_URL + API_END_POINTS.GET_PAST_GIVEAWAY;
             const body = JSON.stringify({
                 "loggedInUserId": data?.userId,
@@ -124,11 +117,9 @@ export class GiveAwayController {
                 .then((response) => {
 
                     resolve(response)
-                    console.log('response of past giveaway', JSON.stringify(response))
                 })
                 .catch((error) => {
                     reject(new Error(error.message));
-                    console.log("error of past giveaway", error)
                 });
         });
     }
@@ -142,12 +133,10 @@ export class GiveAwayController {
                 "giveawayId": data?.giveawayId,
                 "participantId": data?.participantId
             })
-            console.log("JOINNNNN", body);
             HttpClient.post(endpoint, body)
                 .then((response) => {
 
                     resolve(response)
-                    console.log('response of join giveaway', JSON.stringify(response))
 
                     {
                         response.status == "User already joined" ? showMessage({
@@ -162,7 +151,6 @@ export class GiveAwayController {
                 })
                 .catch((error) => {
                     reject(new Error(error.message));
-                    console.log("error of join giveaway", error)
                 });
         });
     }
@@ -214,7 +202,6 @@ export class GiveAwayController {
                 if (isVideo) {
                     data.append('videoPoster', videoPoster)
                 }
-                console.log("preImageArray=-=-=-=-=-", params.preImageArray);
 
             }
 
@@ -230,7 +217,6 @@ export class GiveAwayController {
             data.append('isVIPonly', params.isVIPonly);
             data.append('isUSAonly', params.isUSAonly);
             data.append('numOfWinners', params.winnerCount);
-            console.log("GIVEATWA__Update=-=-=-=", data);
             const headers = {
                 'Content-Type': 'multipart/form-data'
             }
@@ -238,11 +224,9 @@ export class GiveAwayController {
             await HttpClient.post(endpoint, data, { headers })
                 .then((response) => {
                     resolve(response)
-                    console.log('giveaway update response', JSON.stringify(response))
                 })
                 .catch((error) => {
                     reject(error)
-                    console.log('errror', error)
                 });
         });
 
@@ -259,7 +243,6 @@ export class GiveAwayController {
             data.append('id', params?.id);
             data.append('userId', params?.userId);
 
-            console.log("GIVEATWA__End", data);
             const headers = {
                 'Content-Type': 'multipart/form-data'
             }
@@ -267,11 +250,9 @@ export class GiveAwayController {
             await HttpClient.post(endpoint, data, { headers })
                 .then((response) => {
                     resolve(response)
-                    console.log('giveaway delete response', JSON.stringify(response))
                 })
                 .catch((error) => {
                     reject(error)
-                    console.log('errror', error)
                 });
         });
 
@@ -295,11 +276,9 @@ export class GiveAwayController {
             HttpClient.post(endpoint, body)
                 .then((response) => {
                     resolve(response)
-                    console.log('giveaway end responseeeee', JSON.stringify(response))
                 })
                 .catch((error) => {
                     reject(error)
-                    console.log('errror', error)
                 });
         });
 

@@ -263,7 +263,7 @@ export default function Notification({ navigation }) {
 
   const singelPostHnadlePress = () => {
     dispatch(getPostById(item.objectId, loggedInUser?.id))
-    console.log(item.objectId, user?.id)
+
   }
 
   const markAllAsReadNotifications = () => {

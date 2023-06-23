@@ -36,7 +36,7 @@ let nextId = 0;
 
 export default function UpdateExclusivePost({ navigation, route }) {
   const { DATA } = route.params
-  console.log("DATA=-=-POPOPOPOPOPOPOP=-", DATA);
+
   const user = useSelector(getUser);
   const dispatch = useDispatch()
   const [imageArray, setImageArray] = useState([]);

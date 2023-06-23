@@ -40,17 +40,14 @@ export default function ManageReportOnMessage({ navigation, route }) {
   const focus = useIsFocused();
   const [banValue, setBanvalue] = useState(item?.post?.user?.isBanned)
   const { item } = route.params
-  console.log('Item', item?.post?.user?.isBanned)
   const [open, setOpen] = useState(false);
   const user = useSelector(getUser)
   const postData = useSelector(getPostByIdData)
-  console.log("POST__DATAA In SELECTOR", JSON.stringify(postData?.is_following));
 
 
 
   useEffect(() => {
     dispatch(getPostById(item.objectId, user?.id))
-    console.log(item.objectId, user?.id)
 
 
     // setLikeCount(item?.upVote)
@@ -70,7 +67,6 @@ export default function ManageReportOnMessage({ navigation, route }) {
       dispatch(manageAllReports())
     }, 500);
 
-    // console.log('banned id', postData?.user?.id)
   }
   const unbannedHandlePress = () => {
     setOpen(true)
@@ -80,11 +76,9 @@ export default function ManageReportOnMessage({ navigation, route }) {
     setTimeout(() => {
       dispatch(manageAllReports())
     }, 500);
-    // console.log('banned id', postData?.user?.id)
   }
   const onbanPress = () => {
     banValue == true ? unbannedHandlePress() : bannedHandlePress()
-    // console.log('banned id', postData?.user?.id)
   }
 
   const onFollow = () => {
@@ -92,7 +86,6 @@ export default function ManageReportOnMessage({ navigation, route }) {
 
     if (postData?.is_following == true) {
       dispatch(unFollowUser(user?.id, postData?.userId))
-      // console.log(user?.id, postData?.userId)
       setOpen(false)
       setTimeout(() => {
         dispatch(getPostById(item.objectId, user?.id))
@@ -103,7 +96,6 @@ export default function ManageReportOnMessage({ navigation, route }) {
       dispatch(followUser(user?.id, postData?.userId))
       setOpen(false)
 
-      //console.log(user?.id, postData?.userId)
       setTimeout(() => {
         dispatch(getPostById(item.objectId, user?.id))
       }, 100);

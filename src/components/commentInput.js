@@ -26,7 +26,7 @@ export const CommentInput = React.forwardRef((props, ref,) => {
   const [searchedKeyword, setSearchedKeyword] = useState('')
   const searchUserSelector = useSelector((state) => state.post.searchedUsers)
 
-  console.log('llll', searchUserSelector)
+
   const singlePost = useSelector(getPostByIdData)
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.COMMENT_ON_POST], state)

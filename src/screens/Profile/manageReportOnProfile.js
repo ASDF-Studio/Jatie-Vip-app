@@ -73,21 +73,16 @@ export default function ManageReportOnMessage({ navigation, route }) {
   const [userPosts, setuserPosts] = useState([])
   const [postIndex, setPostIndex] = useState(0);
   const { item } = route.params
-  //console.log("item", item)
   const { reportedByUserDetails } = route.params
-  // console.log('data of card ', JSON.stringify(reportedByUserDetails))
   const dispatch = useDispatch()
 
   const getUserProfile = useSelector(getUser)
 
-  //console.log('userDataaaaaaaaa', user)
 
   const focus = useIsFocused()
-  //console.log('userPosts', user)
   const userr = useSelector(getUser)
   useEffect(() => {
     dispatch(getUserProfileByUserId(item, userr.id))
-    console.log('use eff')
     setTimeout(() => {
       getUserPostById(item)
     }, 100);
@@ -142,7 +137,6 @@ export default function ManageReportOnMessage({ navigation, route }) {
     else {
       dispatch(followUser(userr?.id, item))
       // setOpen(false)
-      console.log("follower log", userr?.id, item)
 
       setTimeout(() => {
         dispatch(getUserProfileByUserId(item, userr.id))
@@ -302,7 +296,6 @@ export default function ManageReportOnMessage({ navigation, route }) {
                           onPress={() => {
                             setShowImageView(true),
                               setFeedImages(item?.postImg);
-                            // console.log(feedImages)
                           }}
                         >
                           <Image

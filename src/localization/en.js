@@ -402,5 +402,9 @@ export const en = {
   reports: {
     post: "Reported Posts",
     users: "Reported Users"
+  },
+  subscription: {
+    restorePurchases: "Restore Purchases",
+    cancelSubscription: "Then subscription period applies cancel anytime up to 24hrs prior to end of trial"
   }
 };

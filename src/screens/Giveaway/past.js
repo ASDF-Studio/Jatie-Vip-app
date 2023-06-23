@@ -79,7 +79,6 @@ export default function Past({ navigation, userType }) {
       </View>
     );
   };
-  console.log("------->", getdataOfPast)
   let counter = 1;
   return (
     <SafeAreaView>
