@@ -1239,8 +1239,15 @@ export const updateUserType = (data) => async dispatch => {
   dispatch(updateUserTypeRequest());
   try {
     const user = await UserController.updateUserTypeRequest(data);
-    let selectedValue = 'VIP';
-    dispatch(ChooseUser(selectedValue));
+    if (data.isVIP) {
+      let selectedValue = 'VIP';
+      dispatch(ChooseUser(selectedValue));
+    }
+    else {
+      let selectedValue = 'FREE';
+      dispatch(ChooseUser(selectedValue));
+    }
+    // navigationRef.navigate(NAVIGATION.home, { reset: true });
     // dispatch(updateUserTypeSuccess(user));
   } catch (error) {
     dispatch(updateUserTypeError(error));

@@ -120,3 +120,13 @@ export function cleanupIAP() {
     // End IAP module connection
     // Note: The latest version of react-native-iap does not require explicit cleanup
 }
+
+export const checkSubscriptionAndReturnUser = async () => {
+    const availablePurchases = await getAvailablePurchases();
+    if (availablePurchases?.length <= 0) return;
+
+    availablePurchases.sort((a, b) => parseInt(a.transactionDate) - parseInt(b.transactionDate));
+    const latestPurchase = availablePurchases[availablePurchases?.length - 1];
+
+    return availablePurchases;
+};

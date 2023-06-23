@@ -51,6 +51,13 @@ export const validateReceipt = (data) => async dispatch => {
             }
             dispatch(updateUserType(Data))
         }
+        else {
+            const Data = {
+                "isVIP": false,
+                "userId": data.loggedInUserId
+            }
+            dispatch(updateUserType(Data))
+        }
 
     } catch (error) {
         dispatch(validateReceiptError(error));

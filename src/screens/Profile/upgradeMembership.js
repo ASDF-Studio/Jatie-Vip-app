@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, NativeModules, Linking, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, Linking, ScrollView, TouchableOpacity, Platform } from 'react-native';
 import { TextStyles, theme } from '@/theme';
 import { Logo } from '@/assets';
 import { ms, vs } from 'react-native-size-matters';
@@ -21,6 +21,7 @@ import RNIap, {
   purchaseUpdatedListener,
   endConnection,
   flushFailedPurchasesCachedAsPendingAndroid,
+  clearTransactionIOS,
 } from 'react-native-iap';
 import { buySubscription, cleanupIAP, restorePurchases } from '@/utils/IAPhelper';
 import { SKUS } from '@/constants/subscriptionConstant';
@@ -33,12 +34,16 @@ import { validateReceipt } from '@/actions/SubscriptionAction';
 export default function UpgradeMembership({ navigation }) {
   const dispatch = useDispatch();
   const user = useSelector(getUser);
-  const { RNBase64 } = NativeModules;
   const [loading, setLoading] = useState(false)
+  let purchaseUpdateSubscription;
+  let purchaseErrorSubscription;
+
+
   useEffect(() => {
     initIAP();
-    const purchaseUpdatedSubscription = purchaseUpdatedListener(async (purchase) => {
+    purchaseUpdateSubscription = purchaseUpdatedListener(async (purchase) => {
       const receipt = purchase.transactionReceipt;
+      // console.log("s", receipt);
       if (receipt) {
         try {
           await verifyReceipt(receipt);
@@ -50,8 +55,6 @@ export default function UpgradeMembership({ navigation }) {
       clearIAPListeners()
     }
   }, []);
-  let purchaseUpdateSubscription;
-  let purchaseErrorSubscription;
   const clearIAPListeners = async () => {
     if (purchaseUpdateSubscription) {
       purchaseUpdateSubscription.remove();
@@ -103,9 +106,11 @@ export default function UpgradeMembership({ navigation }) {
         }
       }
       if (!productFound) {
+        setLoading(false);
         console.log('Desired product not found');
       }
     } catch (error) {
+      setLoading(false);
       console.log('Error buying subscription:', error);
     } finally {
       setLoading(false); // Hide loader regardless of success or failure
