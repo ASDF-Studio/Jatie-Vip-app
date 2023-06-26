@@ -171,6 +171,7 @@ export const en = {
     monthlyPlan: '$12.99/Month',
     yearlyPlan: '$99/Year',
     upgradeYearlySubsription: 'Upgrade to Yearly Subscription',
+    donwgradeMonthlySubsription: 'Downgrade to Monthly Subscription',
     saveByYearlyPlan: 'Save $20.88 by choosing the Yearly plan',
     searchUser: 'Search Users...',
     searchForUsers: 'Search for the users...',
