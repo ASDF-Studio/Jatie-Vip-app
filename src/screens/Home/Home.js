@@ -103,7 +103,7 @@ export function Home({ navigation }) {
   const userType = useSelector(state => state.userType);
   const user = useSelector(getUser);
   const scheduledPostData = useSelector(getSchedulePostData);
-  // console.log("USERRR", user);
+
   const dispatch = useDispatch();
   const [vipArea, setVipArea] = useState(strings.home.newFeed);
   const [open, setOpen] = useState(false);
@@ -318,7 +318,7 @@ export function Home({ navigation }) {
       )
     );
   };
-  console.log("USER____TYPE", userType?.user);
+  // console.log("USER____TYPE", userType?.user);
   const renderFooterPost = () => {
     return (
       <View style={{}}>

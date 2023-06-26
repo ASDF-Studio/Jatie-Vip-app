@@ -18,6 +18,7 @@ import Share from 'react-native-share';
 import { cleanSingle } from 'react-native-image-crop-picker';
 import { POST_TYPE } from '@/constants/enums';
 import { getUser } from '@/selectors/UserSelectors';
+import { ANDROID, DOMAIN_URI, IOS } from '@/constants/dynamicLinksConstant';
 
 export const CardFooter = ({
   postID,
@@ -58,8 +59,7 @@ export const CardFooter = ({
 
   const onUpVote = async (postID, userID) => {
     const arr = postArray;
-    const post = postIndex ? arr[postIndex] : singlePost;
-
+    const post = postIndex !== undefined ? arr[postIndex] : singlePost;
     var upVotenumber = parseInt(post?.upVote);
     var downVoteNumber = parseInt(post?.downVote);
     if (!post.has_upvoted) {
@@ -79,20 +79,17 @@ export const CardFooter = ({
     const ob = {
       data: arr,
     };
-
     if (postIndex) {
       dispatch(getAllPostSuccess(ob));
     } else {
       dispatch(getPostByIdData({ ...singlePost }));
     }
-
     const apiData = await UserController.upVote(postID, userID);
   };
 
   const onDownVote = async (postID, userID) => {
     var arr = postArray;
-    const post = postIndex ? arr[postIndex] : singlePost;
-
+    const post = postIndex !== undefined ? arr[postIndex] : singlePost;
     var upVotenumber = parseInt(post?.upVote);
     var downVoteNumber = parseInt(post?.downVote);
     if (!post.has_downvoted) {
@@ -112,7 +109,6 @@ export const CardFooter = ({
     const ob = {
       data: arr,
     };
-
     if (postIndex) {
       dispatch(getAllPostSuccess(ob));
     } else {
@@ -124,17 +120,10 @@ export const CardFooter = ({
     try {
       var link = await dynamicLinks().buildShortLink(
         {
-          link: `https://jattievip.page.link/H3Ed?postId=${postID}&postIndex=${postIndex}`,
-          domainUriPrefix: 'https://jattievip.page.link',
-          android: {
-            packageName: 'com.airlystudio.jatievip',
-            minimumVersion: '18',
-          },
-          ios: {
-            appStoreId: '123456789',
-            bundleId: 'com.jatievip.air',
-            minimumVersion: '18',
-          },
+          link: DOMAIN_URI + `/H3Ed?postId=${postID}&postIndex=${postIndex}`,
+          domainUriPrefix: DOMAIN_URI,
+          android: ANDROID,
+          ios: IOS,
         },
         dynamicLinks.ShortLinkType.DEFAULT
       );
@@ -146,7 +135,6 @@ export const CardFooter = ({
 
   const shareUser = async () => {
     const getLink = await generateLink();
-    // console.log("get linkkk kdjfkdlfdf", getLink)
     const res = await Share.open({
       // message: 'Dummy message',
       url: getLink,

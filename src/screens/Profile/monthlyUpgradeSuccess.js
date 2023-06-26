@@ -9,8 +9,21 @@ import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontFamily } from '@/theme/Fonts';
 import { NAVIGATION } from '@/constants';
 import { strings } from '@/localization';
+import { useSelector } from 'react-redux';
+import { getAvailablePurchases } from 'react-native-iap';
+import { useEffect } from 'react';
 
 export default function MonthlyUpgradeSuccess({ navigation }) {
+  const userType = useSelector(state => state.userType);
+  console.log(userType);
+  // useEffect(() => { checkSubscriptionAndReturnUser() }, [])
+  // const checkSubscriptionAndReturnUser = async () => {
+  //   const availablePurchases = await getAvailablePurchases();
+  //   // console.log("pubsbdsdsdsdsd", availablePurchases);
+  //   if (availablePurchases?.length <= 0) return;
+  //   availablePurchases.sort((a, b) => parseInt(a.transactionDate) - parseInt(b.transactionDate));
+  //   const latestPurchase = availablePurchases[availablePurchases?.length - 1]
+  // };
   return (
     <SafeAreaView style={styles.container}>
       <TopBackButton
@@ -39,7 +52,10 @@ export default function MonthlyUpgradeSuccess({ navigation }) {
       </View>
 
       <View style={styles.footerBtnContainer}>
-        <Button title={strings.profile.upgradeYearlySubsription} />
+        <Button title={strings.profile.upgradeYearlySubsription}
+          onPress={() => navigation.navigate(NAVIGATION.upgradeMembership)}
+
+        />
         <Button
           title={strings.profile.cancelMemberShip}
           onPress={() => navigation.navigate(NAVIGATION.cancelMembership)}

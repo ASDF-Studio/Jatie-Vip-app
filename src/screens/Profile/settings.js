@@ -149,8 +149,9 @@ export default function Settings({ navigation }) {
         {userType.user == `${strings.userType.vip}` && (
           <TouchableOpacity
             // onPress={() => navigation.navigate(NAVIGATION.notificationSettings)}
-            onPress={() => navigation.navigate(NAVIGATION.upgradeMembership)}
+            // onPress={() => navigation.navigate(NAVIGATION.upgradeMembership)}
 
+            onPress={() => navigation.navigate(NAVIGATION.monthlyUpgradeSuccess)}
             style={styles.list}
           >
             <View style={styles.rawContainer}>

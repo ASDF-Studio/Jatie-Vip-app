@@ -1,6 +1,6 @@
 import { TextStyles, theme } from '@/theme';
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 import { ms } from 'react-native-size-matters';
 import { TopBackButton, Button, Card } from '@/components';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
