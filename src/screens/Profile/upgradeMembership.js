@@ -43,7 +43,6 @@ export default function UpgradeMembership({ navigation }) {
     initIAP();
     purchaseUpdateSubscription = purchaseUpdatedListener(async (purchase) => {
       const receipt = purchase.transactionReceipt;
-      // console.log("s", receipt);
       if (receipt) {
         try {
           await verifyReceipt(receipt);
@@ -91,7 +90,6 @@ export default function UpgradeMembership({ navigation }) {
           await handlePurchase(userProductSku);
         });
     }
-
   };
   const handlePurchase = async (userProductSku) => {
     setLoading(true);

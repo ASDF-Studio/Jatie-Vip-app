@@ -2,6 +2,7 @@ import { NAVIGATION } from '@/constants';
 import { UserController } from '@/controllers';
 import { strings } from '@/localization';
 import { navigationRef } from '@/navigation/RootNavigation';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StackActions } from '@react-navigation/native';
 import { showMessage } from 'react-native-flash-message';
 import { globalReset } from './GlobalActions';
@@ -192,6 +193,7 @@ const updateUserTypeSuccess = user => ({
   type: TYPES.UPDATE_USER_TYPE_SUCCESS,
   payload: { user },
 });
+
 
 
 
@@ -619,6 +621,7 @@ export const login = number => async dispatch => {
   try {
     const user = await UserController.login(number);
     dispatch(loginSuccess());
+
     navigationRef.navigate(NAVIGATION.enterOtp, {
       number,
       isRegistered: user?.isregistered,
@@ -634,6 +637,17 @@ export const verifyOtp = (number, Otp, isRegistered) => async dispatch => {
   try {
     // let selectedValue = "";
     const user = await UserController.verifyOtp(number, Otp);
+    // console.log("USER=-=-=-", JSON.stringify(user));
+    // // let fcmtoken = await AsyncStorage.getItem("fcmtoken");
+    // // console.log("FCM__TOsssEN", fcmtoken);
+    // // const DATA = {
+    // //   "loggedInUserId": user.id,
+    // //   "fcm_token": fcmtoken,
+    // //   "topic": "general",
+    // //   "userId": user.id
+    // // }
+
+    // dispatch(updateFCMToken(DATA))
     if (isRegistered == true) {
       dispatch(verifyOtpSuccess(user));
       if (user?.isAdmin == true) {

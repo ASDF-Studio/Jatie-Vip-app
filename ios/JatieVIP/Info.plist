@@ -80,6 +80,11 @@
 		<string>BrandonGrotesque-RegularItalic.otf</string>
 		<string>BrandonGrotesque-ThinItalic.otf</string>
 	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>BootSplash</string>
 	<key>UIMainStoryboardFile</key>

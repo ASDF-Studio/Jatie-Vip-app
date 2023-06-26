@@ -785,25 +785,22 @@ export class UserController {
       //  console.log("endPoint", endpoint)
       var Data = JSON.stringify({
         "loggedInUserId": data.loggedInUserId,
-        "fcm_token": data.fcmToken,
+        "fcm_token": data.fcm_token,
         "topic": "general",
         "userId": data.loggedInUserId
       });
+      console.log("FCM_DATA", Data);
       HttpClient.post(endpoint, Data)
         .then(response => {
           resolve(response);
           console.log(
-            'response of mark read Notifications',
+            'response of Update FCM TOKEN',
             JSON.stringify(response)
           );
-          showMessage({
-            message: 'All Notifications are read',
-            type: 'success',
-          });
         })
         .catch(error => {
           reject(new Error(error.message));
-          console.log('error of All notifications', error);
+          console.log('error of Update FCM TOKEN', error);
         });
     });
   }

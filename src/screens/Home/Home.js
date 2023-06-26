@@ -91,10 +91,11 @@ import SearchPost from './SearchPost';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import queryString from 'query-string';
 import { POST_TYPE } from '@/constants/enums';
-import { followers } from '@/actions/UserActions';
+import { followers, updateFCMToken } from '@/actions/UserActions';
 import { SwiperViewer } from '@/components/SwiperComponent';
 import { useRef } from 'react';
-
+import messaging from '@react-native-firebase/messaging';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 export function Home({ navigation }) {
   const ALLPOST = useSelector(getAllPostData);
   const SEARCH_DATA = useSelector(getSearchData);
@@ -176,6 +177,7 @@ export function Home({ navigation }) {
   }, [sortBy, follwingSwitch, vipArea]);
 
   useEffect(() => {
+    saveFCMToken()
     dynamicLinks()
       .getInitialLink()
       .then(link => {
@@ -186,7 +188,17 @@ export function Home({ navigation }) {
       linkingListener();
     };
   }, []);
-
+  const saveFCMToken = async () => {
+    let fcmtoken = await AsyncStorage.getItem("fcmtoken");
+    console.log("FCM__TOsssEN", fcmtoken);
+    const DATA = {
+      "loggedInUserId": user?.id,
+      "fcm_token": fcmtoken,
+      "topic": "general",
+      "userId": user?.id
+    }
+    dispatch(updateFCMToken(DATA))
+  }
   const handleDynamicLink = link => {
     if (!!link?.url) {
       const params = queryString.parse(link.url.split('?')[1]);
