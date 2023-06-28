@@ -158,6 +158,7 @@ export function Home({ navigation }) {
   // for delete
   const [openReplace, setReplace] = useState(false);
   const [isBanned, setIsBanned] = useState(false);
+  const [isScrolling, setIsScrolling] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -250,7 +251,7 @@ export function Home({ navigation }) {
   };
 
   const onLoadMorePost = () => {
-    if (isLoadingMore) return;
+    if (isLoadingMore || !isScrolling) return;
 
     const page = last(ALLPOST).created_at;
 
@@ -264,6 +265,8 @@ export function Home({ navigation }) {
       )
     );
   };
+
+  const getPaginate = () => {};
 
   const renderFooterPost = () => {
     return (
@@ -374,7 +377,13 @@ export function Home({ navigation }) {
             ListFooterComponent={renderFooterPost}
             onEndReached={onLoadMorePost}
             extraData={ALLPOST}
-            onEndReachedThreshold={0.2}
+            onEndReachedThreshold={0.5}
+            onMomentumScrollBegin={() => {
+              setIsScrolling(true);
+            }}
+            onMomentumScrollEnd={() => {
+              setIsScrolling(false);
+            }}
             data={ALLPOST}
             keyExtractor={(item, index) => `${item.id}${index}`}
             contentContainerStyle={{ flexGrow: 1 }}

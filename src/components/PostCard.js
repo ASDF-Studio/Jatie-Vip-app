@@ -19,8 +19,6 @@ const PostCard = ({ item, onViewImageVideo, onMorePress, index, vipArea }) => {
   const user = useSelector(getUser);
   const userType = useSelector(state => state.userType);
 
-  console.log('====>', item);
-
   return (
     <View style={styles.cardContainer}>
       {userType.user == `${strings.userType.free}` &&
