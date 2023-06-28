@@ -22,6 +22,7 @@ import { getUser } from '@/selectors/UserSelectors';
 import { createPostByAdmin, updatePost } from '@/actions/UserActions';
 import moment from 'moment';
 import { CustomSwitch } from '@/components/switch';
+import { useEffect } from 'react';
 
 export default function PostOptions({ route, navigation }) {
   const { prevData } = route.params;
@@ -47,6 +48,17 @@ export default function PostOptions({ route, navigation }) {
   const scheduleDetails = moment(postDate).format();
   const publishDate = moment(publishingDate).format();
   const expireDate = moment(expiringDate).format();
+
+  useEffect(() => {
+    if (prevData) {
+      if (prevData?.isScheduled) {
+        setSchedulePost(true);
+        setPostDate(new Date(prevData.scheduleDetails));
+      }
+      setVipOnly(prevData?.isVIPonly ? true : false);
+      setPinPost(prevData?.isPinned ? true : false);
+    }
+  }, [prevData]);
 
   const handleSubmit = () => {
     if (prevData?.actionType === 'Update') {

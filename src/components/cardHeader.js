@@ -5,7 +5,11 @@ import PropsType from 'prop-types';
 import { ms } from 'react-native-size-matters';
 import { FontFamily } from '@/theme/Fonts';
 import { Icon } from './Icon';
-import { faEllipsis, faThumbTack } from '@fortawesome/free-solid-svg-icons';
+import {
+  faArchive,
+  faEllipsis,
+  faThumbTack,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { strings } from '@/localization';
 import { navigationRef } from '@/navigation/RootNavigation';
@@ -23,6 +27,8 @@ export const CardHeader = ({
   userId,
   isProfile,
   showMore = false,
+  showArchive = false,
+  onArchivePress = () => console.log('archive pressed'),
   onMorePress = () => console.log('more pressed'),
 }) => {
   const user = useSelector(getUser);
@@ -100,6 +106,15 @@ export const CardHeader = ({
             />
           </TouchableOpacity>
         ) : null}
+        {showArchive && (
+          <TouchableOpacity onPress={onArchivePress} style={styles.pinIcon}>
+            <FontAwesomeIcon
+              icon={faArchive}
+              color={theme.light.colors.primary}
+              size={ms(13)}
+            />
+          </TouchableOpacity>
+        )}
         {showMore && (
           <Icon
             icon={faEllipsis}

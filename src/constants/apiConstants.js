@@ -55,6 +55,7 @@ export const API_END_POINTS = {
 
   // Report Post
   REPORT_POST: 'post/report',
+  ARCHIVE_REPORT: 'post/report_archive',
 
   // Search user by username
   SEARCH_USER_BY_USERNAME: 'user/search',

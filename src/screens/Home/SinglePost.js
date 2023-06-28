@@ -128,6 +128,8 @@ export default function SinglePost({ navigation, route }) {
     setShowImageView(true), setFeedImages(data.postMediaContent);
   };
 
+  console.log('===================', item);
+
   return (
     <SafeAreaView style={styles.container}>
       {!isLoading && (
@@ -319,6 +321,8 @@ export default function SinglePost({ navigation, route }) {
               likeCount={item?.upVote}
               disLikeCount={item?.downVote}
               commentCount={item?.comments_aggregate?.aggregate?.count}
+              isDownVoted={item?.has_downvoted}
+              isUpvoted={item?.has_upvoted}
               postData={item}
               commentPress={() =>
                 navigation.navigate(NAVIGATION.comments, {

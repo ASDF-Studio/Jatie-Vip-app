@@ -305,6 +305,10 @@ export default function UpdatePost({ route, navigation }) {
                 imageArray,
                 user_Type,
                 actionType,
+                isVIPonly: prevData.isVIPonly,
+                isPinned: prevData.isPinned,
+                scheduleDetails: prevData.scheduleDetails,
+                isScheduled: prevData.isScheduled,
               },
             });
         }

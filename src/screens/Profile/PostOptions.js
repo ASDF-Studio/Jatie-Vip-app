@@ -48,6 +48,17 @@ export default function PostOptions({ route, navigation }) {
   const publishDate = moment(publishingDate).format();
   const expireDate = moment(expiringDate).format();
 
+  useEffect(() => {
+    if (prevData) {
+      if (prevData?.isScheduled) {
+        setSchedulePost(true);
+        setPostDate(new Date(prevData.scheduleDetails));
+      }
+      setVipOnly(prevData?.isVIPonly ? true : false);
+      setPinPost(prevData?.isPinned ? true : false);
+    }
+  }, [prevData]);
+
   const handleSubmit = () => {
     if (prevData?.actionType === 'Update') {
       dispatch(

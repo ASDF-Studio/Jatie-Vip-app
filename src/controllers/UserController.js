@@ -771,4 +771,30 @@ export class UserController {
         });
     });
   }
+
+  static async archiveReport({ reportID }) {
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.ARCHIVE_REPORT;
+
+      //  console.log("endPoint", endpoint)
+
+      var data = JSON.stringify({
+        id: reportID,
+      });
+
+      HttpClient.post(endpoint, data)
+        .then(response => {
+          resolve(response);
+          console.log(JSON.stringify(response));
+          customShowMessage({
+            message: 'Report Archived Successfully',
+            type: 'success',
+          });
+        })
+        .catch(error => {
+          reject(new Error(error.message));
+          console.log('error of All notifications', error);
+        });
+    });
+  }
 }

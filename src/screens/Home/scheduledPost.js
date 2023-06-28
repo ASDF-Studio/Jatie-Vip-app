@@ -16,6 +16,7 @@ import {
   CardBody,
   CardHeader,
   CustomLoader,
+  Icon,
   MediaContainer,
   TopBackButton,
 } from '@/components';
@@ -25,6 +26,7 @@ import {
   faClock,
   faLock,
   faPen,
+  faPenAlt,
   faPlay,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -39,6 +41,8 @@ import { useRef } from 'react';
 import { getUser } from '@/selectors/UserSelectors';
 import { useState } from 'react';
 import { SwiperViewer } from '@/components/SwiperComponent';
+import { navigationRef } from '@/navigation/RootNavigation';
+import { NAVIGATION } from '@/constants';
 
 export default function SchedulePost({ navigation }) {
   const flatListRef = useRef();
@@ -249,19 +253,23 @@ export default function SchedulePost({ navigation }) {
                           color={theme.light.colors.white}
                         />
                         <Text style={styles.timeTxt}>
-                          {' '}
                           {Moment.utc(item.created_at).format(
                             'hh:mm A  MMM D, YYYY'
-                          )}{' '}
+                          )}
                         </Text>
                       </View>
-                      {/* <TouchableOpacity style={styles.penIcon}>
-                        <FontAwesomeIcon
-                          icon={faPen}
-                          size={ms(13)}
-                          color={theme.light.colors.black}
-                        />
-                      </TouchableOpacity> */}
+                      <Icon
+                        icon={faPen}
+                        size={ms(13)}
+                        color={theme.light.colors.black}
+                        onPress={() => {
+                          navigationRef.navigate(NAVIGATION.updatePost, {
+                            prevData: item,
+                          });
+                        }}
+
+                        // style={styles.penIcon}
+                      />
                     </View>
                   </Card>
                 )}
@@ -313,7 +321,8 @@ const styles = StyleSheet.create({
   },
   cardFooter: {
     backgroundColor: theme.light.colors.infoBgLight,
-    padding: ms(5),
+    padding: ms(7),
+    paddingHorizontal: ms(10),
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -322,10 +331,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: theme.light.colors.info,
-    borderRadius: 10,
+    borderRadius: 13,
     padding: ms(3),
     paddingLeft: ms(8),
-    paddingRight: ms(8),
+    paddingRight: ms(17),
   },
   penIcon: {
     marginRight: ms(9),
@@ -333,7 +342,7 @@ const styles = StyleSheet.create({
   timeTxt: {
     color: theme.light.colors.white,
     fontFamily: FontFamily.Recoleta_semibold,
-    paddingLeft: ms(2),
+    paddingLeft: ms(5),
     fontSize: ms(13, 0.3),
   },
   bgImage: {

@@ -373,6 +373,8 @@ export default function ManageReportOnMessage({ navigation, route }) {
                   userID={userr?.id}
                   postType={POST_TYPE.REGULAR}
                   postData={item}
+                  isDownVoted={item?.has_downvoted}
+                  isUpvoted={item?.has_upvoted}
                   postIndex={index}
                   commentCount={item?.comments_aggregate?.aggregate?.count ?? 0}
                   commentPress={() =>

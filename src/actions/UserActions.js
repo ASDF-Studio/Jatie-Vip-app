@@ -1258,3 +1258,12 @@ export const markSingleNotifRead = async (userId, notifId) => {
     console.log(error);
   }
 };
+
+export const ArchiveReport = async ({ reportID }) => {
+  try {
+    await UserController.archiveReport({ reportID });
+    console.log('report archived successfully');
+  } catch (err) {
+    console.log(err);
+  }
+};

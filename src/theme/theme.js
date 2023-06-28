@@ -51,6 +51,7 @@ export const theme = {
       toastBorderError: '',
       toastIconSuccess: '#5BD46F',
       toastIconError: '',
+      background: 'rgb(253, 251, 244)',
     },
   },
   dark: {

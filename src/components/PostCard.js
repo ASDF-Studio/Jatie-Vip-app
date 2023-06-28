@@ -19,6 +19,8 @@ const PostCard = ({ item, onViewImageVideo, onMorePress, index, vipArea }) => {
   const user = useSelector(getUser);
   const userType = useSelector(state => state.userType);
 
+  console.log('====>', item);
+
   return (
     <View style={styles.cardContainer}>
       {userType.user == `${strings.userType.free}` &&
@@ -50,6 +52,8 @@ const PostCard = ({ item, onViewImageVideo, onMorePress, index, vipArea }) => {
             postUserID={item?.userId}
             userID={user?.id}
             likeCount={item?.upVote}
+            isDownVoted={item?.has_downvoted}
+            isUpvoted={item?.has_upvoted}
             disLikeCount={item?.downVote}
             commentCount={item?.comments_aggregate?.aggregate?.count}
             postData={item}

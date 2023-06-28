@@ -177,6 +177,8 @@ export default function MyStatus({ navigation }) {
                       type: POST_TYPE.PROFILE,
                     })
                   }
+                  isDownVoted={item?.has_downvoted}
+                  isUpvoted={item?.has_upvoted}
                   commentCount={item?.comments_aggregate?.aggregate?.count ?? 0}
                   sharePress={() => console.log('share')}
                   morePress={() => {

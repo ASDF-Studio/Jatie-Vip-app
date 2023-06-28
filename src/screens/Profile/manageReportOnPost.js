@@ -40,7 +40,11 @@ import {
   faUserPlus,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
-import { bannedUserById, unBannedUserById } from '@/actions/UserActions';
+import {
+  ArchiveReport,
+  bannedUserById,
+  unBannedUserById,
+} from '@/actions/UserActions';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { TYPES } from '../../actions/PostActions';
 import { manageAllReports } from '@/actions/UserActions';
@@ -54,17 +58,11 @@ export default function ManageReportOnMessage({ navigation, route }) {
   const focus = useIsFocused();
   const [banValue, setBanvalue] = useState(item?.post?.user?.isBanned);
   const { item } = route.params;
-  console.log('Item', item?.post?.user?.isBanned);
   const [open, setOpen] = useState(false);
   const user = useSelector(getUser);
   const postData = useSelector(getPostByIdData);
   const [openReplace, setReplace] = useState(false);
   const userType = useSelector(state => state.userType);
-
-  console.log(
-    'POST__DATAA In SELECTOR',
-    JSON.stringify(postData?.is_following)
-  );
 
   useEffect(() => {
     dispatch(getPostById(item.objectId, user?.id));
@@ -147,6 +145,8 @@ export default function ManageReportOnMessage({ navigation, route }) {
         profilePic={item.user.profilePic}
         time={item.created_at}
         userId={item?.user.id}
+        showArchive
+        onArchivePress={() => ArchiveReport({ reportID: item.id })}
       />
       <View style={styles.activity}>
         <View style={styles.textContainer}>
@@ -161,8 +161,9 @@ export default function ManageReportOnMessage({ navigation, route }) {
         </View>
       </View>
       <View style={styles.body}>
-        <Card>
-          <View style={styles.reportBound}>
+        <View style={styles.shadow} />
+        <View style={styles.reportBound}>
+          <Card>
             <CardHeader
               fullName={postData?.user.fullName}
               userName={postData?.user.username}
@@ -173,44 +174,29 @@ export default function ManageReportOnMessage({ navigation, route }) {
             <CardBody
               text={postData?.postBody || strings.message.postIsDeleted}
             />
-          </View>
-          {/* <CommentContainer
-            seeAllPress={() =>
-              navigation.navigate(NAVIGATION.manageReportOnPostAllComments)
-            }
-          > */}
-          {/* <CommentCard
-              name={card.name}
-              userName={card.userName}
-              imageUrl={card.imageUrl}
-              time={card.name}
-              commentTxt={card.commentTxt}
-              likeCount={card.likeCount}
-              // likePress = {}
-              disLikeCount={card.disLikeCount}
-            // disLikePress = {}
-            /> */}
-          {/* </CommentContainer> */}
-          <CardFooter
-            morePress={() => {
-              setOpen(true);
-            }}
-            disable={isEmpty(postData)}
-            postIndex={0}
-            userID={user?.id}
-            postID={postData?.id}
-            likeCount={postData?.upVote}
-            disLikeCount={postData?.downVote}
-            commentCount={postData?.comments_aggregate.aggregate.count}
-            commentPress={() =>
-              navigation.navigate(NAVIGATION.comments, {
-                DATA: item.post,
-                POST_INDEX: 0,
-              })
-            }
-          />
-        </Card>
 
+            <CardFooter
+              morePress={() => {
+                setOpen(true);
+              }}
+              disable={isEmpty(postData)}
+              postIndex={0}
+              userID={user?.id}
+              postID={postData?.id}
+              likeCount={postData?.upVote}
+              isDownVoted={postData?.has_downvoted}
+              isUpvoted={postData?.has_upvoted}
+              disLikeCount={postData?.downVote}
+              commentCount={postData?.comments_aggregate.aggregate.count}
+              commentPress={() =>
+                navigation.navigate(NAVIGATION.comments, {
+                  DATA: item.post,
+                  POST_INDEX: 0,
+                })
+              }
+            />
+          </Card>
+        </View>
         <ModalDown open={open} setOpen={setOpen}>
           <ModalList
             onPress={() => {
@@ -249,12 +235,7 @@ export default function ManageReportOnMessage({ navigation, route }) {
                 setReplace(true), setOpen(false);
               }}
             />
-            {/* <ModalList
-              title={strings.operations.block + ' @' + postData?.user.username}
-              icon={faXmark}
-              iconColor={theme.light.colors.secondary}
-              iconBg={theme.light.colors.infoBgLight}
-            /> */}
+
             <ModalList
               onPress={() => onbanPress()}
               title={
@@ -309,6 +290,7 @@ const styles = StyleSheet.create({
     padding: ms(10),
     alignItems: 'center',
     justifyContent: 'space-between',
+    paddingBottom: ms(18),
   },
   textContainer: {
     flexDirection: 'row',
@@ -339,24 +321,35 @@ const styles = StyleSheet.create({
     fontSize: ms(11, 0.3),
     color: theme.light.colors.black,
   },
+  shadow: {
+    width: '100%',
+    height: 1,
+    left: 0,
+    position: 'absolute',
+    top: 0,
+    // IOS
+    zIndex: 10,
+    shadowOffset: { width: 0, height: 20 },
+    shadowColor: theme.light.colors.secondary,
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    borderRadius: 10,
+    // android
+    elevation: 5,
+  },
   body: {
+    position: 'relative',
     flex: 1,
     backgroundColor: theme.light.colors.primaryBgLight,
-    //IOS
-    shadowOffset: { width: -2, height: 4 },
-    shadowColor: theme.light.colors.secondary,
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-
-    //android
-    elevation: 5,
-    padding: ms(8),
   },
   reportBound: {
     borderWidth: 1,
     borderRadius: 10,
+    padding: ms(10),
     borderColor: theme.light.colors.primary,
     backgroundColor: theme.light.colors.primaryBgLightest,
+    overflow: 'hidden',
+    margin: ms(8),
   },
 
   //delete

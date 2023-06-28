@@ -53,6 +53,7 @@ const ReportedPosts = ({ navigation }) => {
         key={item => item.id}
         renderItem={({ item }) => (
           <View style={styles.list}>
+            {console.log('=============   ', item)}
             <CardHeader
               fullName={item.user.fullName}
               userName={item.user.username}
@@ -73,8 +74,7 @@ const ReportedPosts = ({ navigation }) => {
                   }}
                 >
                   <Text style={styles.reactOnTxt}>
-                    this {''}
-                    {item.reportedContent}
+                    {`this ${item.reportedContent}`}
                   </Text>
                 </TouchableOpacity>
               </View>

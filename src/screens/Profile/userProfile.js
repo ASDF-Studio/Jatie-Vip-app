@@ -241,36 +241,6 @@ export default function UserProfile({ navigation, route }) {
   //   }
   // }, [openMore]);
 
-  console.log('==================  ', user);
-
-  const a = {
-    contact: 18181828211,
-    created_at: '2023-03-09T13:42:02.714804+00:00',
-    dob: '1981-06-09',
-    followerListsByFollowinguserid: [
-      { followerUserId: '9c20a34e-43ec-4d5b-8487-9a4eb1cf936d' },
-      { followerUserId: 'eb58c2b7-24af-4cb7-bb80-34fbc9825da4' },
-      { followerUserId: 'b9902993-ca3f-4a2f-9de8-397bf6f4767e' },
-      { followerUserId: '7fed4129-b3da-46ff-9b48-89cdc8e5b896' },
-    ],
-    follower_lists: [
-      { followingUserId: 'bc29a04b-8862-469b-bafa-3db299bd1e4b' },
-      { followingUserId: '6aae7065-5341-45b1-b717-0c3e3256dc2f' },
-    ],
-    fullName: 'Team Airly1',
-    gender: 'Male',
-    id: 'ce656365-b90f-4b5f-aab6-b436051171f5',
-    isAdmin: false,
-    isBanned: true,
-    isVIP: true,
-    is_following: false,
-    location: 'United States',
-    primaryEmail: 'John@hbo.comm',
-    profilePic: 'https://d2wwqw32p0xkid.cloudfront.net/photo-1679142507829.jpg',
-    profileRole: null,
-    username: 'Jane',
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       {loading && <CustomLoader open={loading} />}
@@ -559,6 +529,8 @@ export default function UserProfile({ navigation, route }) {
                 userID={userr?.id}
                 likeCount={item?.upVote}
                 disLikeCount={item?.downVote}
+                isDownVoted={item?.has_downvoted}
+                isUpvoted={item?.has_upvoted}
                 commentCount={item.comments_aggregate?.aggregate.count || 0}
                 commentPress={() =>
                   navigation.navigate(NAVIGATION.comments, {

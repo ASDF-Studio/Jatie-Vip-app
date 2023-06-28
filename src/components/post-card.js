@@ -131,6 +131,8 @@ const PostCard = props => {
             postUserID={userId}
             userID={signedInUser?.id}
             likeCount={upVote}
+            isDownVoted={item?.has_downvoted}
+            isUpvoted={item?.has_upvoted}
             disLikeCount={downVote}
             commentCount={comments_aggregate?.aggregate?.count}
             postData={item}
