@@ -128,8 +128,6 @@ export default function SinglePost({ navigation, route }) {
     setShowImageView(true), setFeedImages(data.postMediaContent);
   };
 
-  console.log('===================', item);
-
   return (
     <SafeAreaView style={styles.container}>
       {!isLoading && (

@@ -74,7 +74,8 @@ export default function PostOptions({ route, navigation }) {
           prevData?.preMimeType,
           prevData?.imageArray.filter(x => !x?.preContent),
           prevData?.user_Type,
-          NAVIGATION.profile
+          NAVIGATION.profile,
+          pinPost
         )
       );
     } else {

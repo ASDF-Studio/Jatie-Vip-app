@@ -240,7 +240,7 @@ export class UserController {
     preMimeType,
     imageArray,
     userType,
-    isPinned,
+    isPinned = false,
   }) {
     return new Promise(async (resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.UPDATE_POST;
@@ -274,7 +274,7 @@ export class UserController {
         'postMediaContent',
         preImageArray.length > 0 ? JSON.stringify(preImageArray) : ''
       );
-
+      console.log('ispinned =====', isPinned);
       data.append('id', id);
       data.append('userId', userId);
       data.append('postTitle', postTitle);

@@ -73,65 +73,6 @@ export default function UpdatePost({ route, navigation }) {
     getPostById(prevData);
   }, []);
 
-  console.log('========', prevData);
-
-  const a = {
-    created_at: '2023-06-25T04:35:47.958572+00:00',
-    downVote: 0,
-    downVoteUserId: [],
-    id: 'c9e65633-c416-41f2-b5cf-1c3841a34554',
-    isAdminPost: true,
-    isExclusive: true,
-    isGiveaway: false,
-    isPinned: false,
-    isReported: false,
-    isScheduled: true,
-    isUSAonly: false,
-    isVIPonly: true,
-    isVisible: false,
-    postBody: 'Test123',
-    postExpires: null,
-    postImg: [
-      'https://d2wwqw32p0xkid.cloudfront.net/photo-1687667747644',
-      'https://d2wwqw32p0xkid.cloudfront.net/photo-1687667747734',
-      'https://d2wwqw32p0xkid.cloudfront.net/photo-1687667747838',
-    ],
-    postMediaContent: [
-      {
-        cover: '',
-        mimetype: 'image/jpeg',
-        url: 'https://d2wwqw32p0xkid.cloudfront.net/photo-1687667747644',
-      },
-      {
-        cover: '',
-        mimetype: 'image/jpeg',
-        url: 'https://d2wwqw32p0xkid.cloudfront.net/photo-1687667747734',
-      },
-      {
-        cover: '',
-        mimetype: 'image/jpeg',
-        url: 'https://d2wwqw32p0xkid.cloudfront.net/photo-1687667747838',
-      },
-    ],
-    postTitle: 'Test123',
-    postVideo: '[]',
-    scheduleDetails: '2023-06-27T04:35:00+00:00',
-    shared: 0,
-    sharedUserId: [],
-    upVote: 0,
-    upVoteUserId: [],
-    updated_at: '2023-06-25T04:35:47.958572+00:00',
-    user: {
-      followers: [],
-      following: ['ce656365-b90f-4b5f-aab6-b436051171f5'],
-      fullName: 'JatieVIP',
-      profilePic:
-        'https://d2wwqw32p0xkid.cloudfront.net/photo-1679288548479.jpg',
-      username: 'jatieVIP',
-    },
-    userId: '6aae7065-5341-45b1-b717-0c3e3256dc2f',
-  };
-
   const getPostById = async data => {
     setPostDetails(data);
     setPostId(data.id);

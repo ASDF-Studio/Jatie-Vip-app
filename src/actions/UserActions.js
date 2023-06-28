@@ -904,13 +904,15 @@ export const updatePost =
     preMimeType,
     imageArray,
     userType,
-    screen
+    screen,
+    isPinned
   ) =>
   async dispatch => {
     dispatch(globalReset());
     dispatch(updatePostRequest());
+
     try {
-      const user = await UserController.updatePost(
+      const user = await UserController.updatePost({
         id,
         userId,
         postTitle,
@@ -920,8 +922,9 @@ export const updatePost =
         mimeType,
         preMimeType,
         imageArray,
-        userType
-      );
+        userType,
+        isPinned,
+      });
       dispatch(updatePostSuccess(user));
       if (screen == NAVIGATION.home) {
         customShowMessage({
