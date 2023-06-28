@@ -22,6 +22,7 @@ import { getUser } from '@/selectors/UserSelectors';
 import { createPostByAdmin, updatePost } from '@/actions/UserActions';
 import moment from 'moment';
 import { CustomSwitch } from '@/components/switch';
+import { useEffect } from 'react';
 
 export default function PostOptions({ route, navigation }) {
   const { prevData } = route.params;
