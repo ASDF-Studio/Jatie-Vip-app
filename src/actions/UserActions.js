@@ -836,14 +836,15 @@ export const createPostByAdmin =
     goingLIve,
     ad,
     publishDate,
-    expireDate
+    expireDate,
+    pinPost
   ) =>
   async dispatch => {
     dispatch(globalReset());
     dispatch(createPostRequest());
 
     try {
-      const user = await UserController.createPostByAdmin(
+      const user = await UserController.createPostByAdmin({
         id,
         postTitle,
         postBody,
@@ -857,8 +858,11 @@ export const createPostByAdmin =
         goingLIve,
         ad,
         publishDate,
-        expireDate
-      );
+        expireDate,
+        isPinned: pinPost,
+      });
+
+      console.log('user ====================', user);
 
       dispatch(createPostSuccess(user));
       if (screen == NAVIGATION.home) {

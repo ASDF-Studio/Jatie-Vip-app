@@ -229,7 +229,7 @@ export class UserController {
     });
   }
   //update post
-  static async updatePost(
+  static async updatePost({
     id,
     userId,
     postTitle,
@@ -239,13 +239,12 @@ export class UserController {
     mimeType,
     preMimeType,
     imageArray,
-    userType
-  ) {
+    userType,
+    isPinned,
+  }) {
     return new Promise(async (resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.UPDATE_POST;
       let data = new FormData();
-
-      console.log('===================== ', preImageArray.length);
 
       imageArray.forEach(item => {
         const fileName = item.video
@@ -280,6 +279,7 @@ export class UserController {
       data.append('userId', userId);
       data.append('postTitle', postTitle);
       data.append('postBody', postBody);
+      data.append('isPinned', isPinned);
       // data.append('postImg', preFile);
       data.append('userType', userType);
 
@@ -362,7 +362,7 @@ export class UserController {
 
   // create post by admin
 
-  static async createPostByAdmin(
+  static async createPostByAdmin({
     id,
     postTitle,
     postBody,
@@ -376,8 +376,9 @@ export class UserController {
     goingLIve,
     ad,
     publishDate,
-    expireDate
-  ) {
+    expireDate,
+    isPinned,
+  }) {
     return new Promise(async (resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.CREATE_POST_ADMIN;
       let data = new FormData();
@@ -406,20 +407,25 @@ export class UserController {
         }
       });
 
+      data.append('isPinned', isPinned);
       data.append('userId', id);
       data.append('postTitle', postTitle);
       data.append('postBody', postBody);
-      data.append('postImg', mimeType == null && file);
+      // data.append('postImg', mimeType == null && file);
       data.append('isVIPonly', vipOnly);
 
-      schedulePost && data.append('isScheduled', schedulePost);
-      data.append('scheduleDetails', scheduleDetails);
+      if (schedulePost) {
+        data.append('isScheduled', schedulePost);
+        data.append('scheduleDetails', scheduleDetails);
+      }
 
       data.append('goingLive', goingLIve);
 
-      ad && data.append('isAdvertisement', ad);
-      data.append('publishDate', publishDate);
-      data.append('expiryDate', expireDate);
+      if (ad) {
+        data.append('isAdvertisement', ad);
+        data.append('publishDate', publishDate);
+        data.append('expiryDate', expireDate);
+      }
 
       const headers = {
         'Content-Type': 'multipart/form-data',

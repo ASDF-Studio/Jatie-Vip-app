@@ -94,7 +94,8 @@ export default function PostOptions({ route, navigation }) {
           goingLIve,
           ad,
           publishDate,
-          expireDate
+          expireDate,
+          pinPost
         )
       );
     }
