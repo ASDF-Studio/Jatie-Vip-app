@@ -27,6 +27,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { getUser } from '@/selectors/UserSelectors';
+import { CustomSwitch } from '@/components/switch';
 export default function AdminPostOption({ navigation, route }) {
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.GIVE_AWAY_POST], state)
@@ -84,9 +85,18 @@ export default function AdminPostOption({ navigation, route }) {
         <View style={styles.optionContainer}>
           <View style={styles.list}>
             <View style={styles.left}>
-              <Text style={styles.listTxt}>{strings.giveaway.startDate} </Text>
+              <Text
+                style={[
+                  styles.listTxt,
+                  {
+                    width: ms(80),
+                  },
+                ]}
+              >
+                {strings.giveaway.startDate}{' '}
+              </Text>
               <View style={styles.postSwitch}>
-                <AppSwitch
+                <CustomSwitch
                   value={startSwitch}
                   onChange={() => setStartSwitch(!startSwitch)}
                 />
@@ -96,12 +106,18 @@ export default function AdminPostOption({ navigation, route }) {
               {/* Date picker  */}
               <View>
                 <TextField
-                  style={styles.rightTextFild}
+                  style={{
+                    ...styles.rightTextFild,
+                    backgroundColor: startSwitch
+                      ? theme.light.colors.textFieldBackgroundColor
+                      : theme.light.colors.white,
+                  }}
                   editable={false}
-                  value={moment(postDate).format('MM-D-YYYY')}
+                  value={moment(postDate).format('hh:mm A DD/MM/YYYY')}
                   placeholder={strings.home.selectTimeAndDate}
                 />
                 <TouchableOpacity
+                  disabled={!startSwitch}
                   style={styles.datePickerIcon}
                   onPress={() => setOpenPostDatePicker(true)}
                 >
@@ -114,7 +130,7 @@ export default function AdminPostOption({ navigation, route }) {
                 <DatePicker
                   minimumDate={new Date()}
                   modal
-                  mode="date"
+                  mode="datetime"
                   open={openPostDatePicker}
                   // locale = "fr"
                   date={postDate}
@@ -134,9 +150,18 @@ export default function AdminPostOption({ navigation, route }) {
 
           <View style={styles.list}>
             <View style={styles.left}>
-              <Text style={styles.listTxt}>{strings.giveaway.endDate} </Text>
+              <Text
+                style={[
+                  styles.listTxt,
+                  {
+                    width: ms(80),
+                  },
+                ]}
+              >
+                {strings.giveaway.endDate}{' '}
+              </Text>
               <View style={styles.postSwitch}>
-                <AppSwitch
+                <CustomSwitch
                   value={endSwitch}
                   onChange={() => setEndSwitch(!endSwitch)}
                 />
@@ -146,12 +171,18 @@ export default function AdminPostOption({ navigation, route }) {
               {/* Date picker  */}
               <View>
                 <TextField
-                  style={styles.rightTextFild}
+                  style={{
+                    ...styles.rightTextFild,
+                    backgroundColor: endSwitch
+                      ? theme.light.colors.textFieldBackgroundColor
+                      : theme.light.colors.white,
+                  }}
                   editable={false}
-                  value={moment(endDate).format('MM-D-YYYY')}
+                  value={moment(endDate).format('hh:mm A DD/MM/YYYY')}
                   placeholder={strings.home.selectTimeAndDate}
                 />
                 <TouchableOpacity
+                  disabled={!endSwitch}
                   style={styles.datePickerIcon}
                   onPress={() => setopenEndDatePicker(true)}
                 >
@@ -164,7 +195,7 @@ export default function AdminPostOption({ navigation, route }) {
                 <DatePicker
                   minimumDate={postDate}
                   modal
-                  mode="date"
+                  mode="datetime"
                   open={openEndDatePicker}
                   date={endDate}
                   onConfirm={date => {
@@ -205,7 +236,7 @@ export default function AdminPostOption({ navigation, route }) {
                 {strings.giveaway.forVIPsOnly}{' '}
               </Text>
               <View style={styles.vipSwitch}>
-                <AppSwitch
+                <CustomSwitch
                   value={vipOnly}
                   onChange={() => setVipOnly(prev => !prev)}
                 />
@@ -216,7 +247,7 @@ export default function AdminPostOption({ navigation, route }) {
             <View style={styles.left}>
               <Text style={styles.listTxt}>{strings.giveaway.usOnly} </Text>
               <View style={styles.pinSwitch}>
-                <AppSwitch
+                <CustomSwitch
                   value={pinPost}
                   onChange={() => setPinPost(prev => !prev)}
                 />
@@ -267,11 +298,17 @@ const styles = StyleSheet.create({
   },
   datePickerIcon: {
     position: 'absolute',
-    top: ms(30),
+    top: ms(14),
     right: ms(10),
   },
   rightTextFild: {
-    width: ms(170),
+    width: ms(190),
+    marginVertical: 0,
+    height: ms(40),
+    // fontSize: 15,
+    borderWidth: 1,
+    borderColor: theme.light.colors.textFieldBorderColor,
+    borderRadius: 8,
   },
   left: {
     flexDirection: 'row',

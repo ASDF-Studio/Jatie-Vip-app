@@ -32,6 +32,7 @@ import { ms } from 'react-native-size-matters';
 import { useDispatch, useSelector } from 'react-redux';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { getUser } from '@/selectors/UserSelectors';
+import { CustomSwitch } from '@/components/switch';
 export default function UpdateExclusiveOption({ navigation, route }) {
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.UPDATE_EXCLUSIVE_POST], state)
@@ -94,7 +95,7 @@ export default function UpdateExclusiveOption({ navigation, route }) {
                 {strings.exclusive.schedulePost}{' '}
               </Text>
               <View style={styles.postSwitch}>
-                <AppSwitch
+                <CustomSwitch
                   value={schedulePost}
                   onChange={() => setSchedulePost(prev => !prev)}
                 />
@@ -104,9 +105,14 @@ export default function UpdateExclusiveOption({ navigation, route }) {
               {/* Date picker  */}
               <View>
                 <TextField
-                  style={styles.rightTextField}
+                  style={{
+                    ...styles.rightTextField,
+                    backgroundColor: schedulePost
+                      ? theme.light.colors.textFieldBackgroundColor
+                      : theme.light.colors.white,
+                  }}
                   editable={false}
-                  value={moment(postDate).format('DD-MM-YYYY')}
+                  value={moment(postDate).format('hh:mm A DD/MM/YYYY')}
                   placeholder={strings.home.selectTimeAndDate}
                 />
                 <TouchableOpacity
@@ -144,7 +150,7 @@ export default function UpdateExclusiveOption({ navigation, route }) {
             <View style={styles.left}>
               <Text style={styles.listTxt}>{strings.home.forVIPsOnly} </Text>
               <View style={styles.vipSwitch}>
-                <AppSwitch
+                <CustomSwitch
                   value={vipOnly}
                   onChange={() => setVipOnly(prev => !prev)}
                 />
@@ -155,7 +161,7 @@ export default function UpdateExclusiveOption({ navigation, route }) {
             <View style={styles.left}>
               <Text style={styles.listTxt}>{strings.home.pinThisPost} </Text>
               <View style={styles.pinSwitch}>
-                <AppSwitch
+                <CustomSwitch
                   value={pinPost}
                   onChange={() => setPinPost(prev => !prev)}
                 />
@@ -208,11 +214,17 @@ const styles = StyleSheet.create({
   },
   datePickerIcon: {
     position: 'absolute',
-    top: ms(30),
+    top: ms(14),
     right: ms(10),
   },
   rightTextField: {
-    width: ms(170),
+    width: ms(190),
+    marginVertical: 0,
+    height: ms(40),
+    // fontSize: 15,
+    borderWidth: 1,
+    borderColor: theme.light.colors.textFieldBorderColor,
+    borderRadius: 8,
   },
   left: {
     flexDirection: 'row',

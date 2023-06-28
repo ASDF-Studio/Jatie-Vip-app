@@ -119,6 +119,8 @@ export default function PostDetails({ navigation, route }) {
     return secondsLeft;
   }
 
+  console.log('POST DATA -------', data);
+
   return (
     <SafeAreaView style={styles.contianer}>
       <CustomLoader

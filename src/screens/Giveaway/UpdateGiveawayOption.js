@@ -27,33 +27,28 @@ import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { getUser } from '@/selectors/UserSelectors';
+import { CustomSwitch } from '@/components/switch';
 export default function UpdateGiveawayOption({ navigation, route }) {
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.UPDATE_GIVEAWAY], state)
   );
-
+  const finalData = route.params.prevData;
   const dispatch = useDispatch();
   const [schedulePost, setSchedulePost] = useState(false);
   const user = useSelector(getUser);
   const [vipOnly, setVipOnly] = useState(false);
   const [pinPost, setPinPost] = useState(false);
   const [startSwitch, setStartSwitch] = useState(false);
+
   const [endSwitch, setEndSwitch] = useState(false);
   const [postDate, setPostDate] = useState(new Date());
   const [endDate, SetEndDate] = useState(new Date());
   const [openEndDatePicker, setopenEndDatePicker] = useState(false);
   const [openPostDatePicker, setOpenPostDatePicker] = useState(false);
   const [winnerCount, setWinnerCount] = useState(0);
-  const finalData = route.params.prevData;
-  const data = {
-    postExpires: moment(endDate).format(),
-    startDate: moment(postDate).format(),
-    endDate: moment(endDate).format(),
-    isVIPonly: vipOnly,
-    isUSAonly: pinPost,
-    winnerCount: winnerCount,
-    userId: user?.id,
-  };
+
+  console.log(finalData);
+
   const onCount = type => {
     var count = winnerCount;
     if (type == 'Minus') {
@@ -84,7 +79,6 @@ export default function UpdateGiveawayOption({ navigation, route }) {
     dispatch(updateGiveaway(data));
   };
 
-  console.log('============> ', isLoading);
   return (
     <SafeAreaView style={styles.container}>
       {isLoading && <CustomLoader open={isLoading} />}
@@ -104,7 +98,7 @@ export default function UpdateGiveawayOption({ navigation, route }) {
             <View style={styles.left}>
               <Text style={styles.listTxt}>{strings.giveaway.startDate} </Text>
               <View style={styles.postSwitch}>
-                <AppSwitch
+                <CustomSwitch
                   value={startSwitch}
                   onChange={() => setStartSwitch(!startSwitch)}
                 />
@@ -114,9 +108,14 @@ export default function UpdateGiveawayOption({ navigation, route }) {
               {/* Date picker  */}
               <View>
                 <TextField
-                  style={styles.rightTextFild}
+                  style={{
+                    ...styles.rightTextFild,
+                    backgroundColor: startSwitch
+                      ? theme.light.colors.textFieldBackgroundColor
+                      : theme.light.colors.white,
+                  }}
                   editable={false}
-                  value={moment(postDate).format('MM-D-YYYY')}
+                  value={moment(postDate).format('hh:mm A DD/MM/YYYY')}
                   placeholder={strings.home.selectTimeAndDate}
                 />
                 <TouchableOpacity
@@ -154,7 +153,7 @@ export default function UpdateGiveawayOption({ navigation, route }) {
             <View style={styles.left}>
               <Text style={styles.listTxt}>{strings.giveaway.endDate} </Text>
               <View style={styles.postSwitch}>
-                <AppSwitch
+                <CustomSwitch
                   value={endSwitch}
                   onChange={() => setEndSwitch(!endSwitch)}
                 />
@@ -164,13 +163,19 @@ export default function UpdateGiveawayOption({ navigation, route }) {
               {/* Date picker  */}
               <View>
                 <TextField
-                  style={styles.rightTextFild}
+                  style={{
+                    ...styles.rightTextFild,
+                    backgroundColor: endSwitch
+                      ? theme.light.colors.textFieldBackgroundColor
+                      : theme.light.colors.white,
+                  }}
                   editable={false}
-                  value={moment(endDate).format('MM-D-YYYY')}
+                  value={moment(endDate).format('hh:mm A DD/MM/YYYY')}
                   placeholder={strings.home.selectTimeAndDate}
                 />
                 <TouchableOpacity
                   style={styles.datePickerIcon}
+                  disabled={!endSwitch}
                   onPress={() => setopenEndDatePicker(true)}
                 >
                   <FontAwesomeIcon
@@ -223,7 +228,7 @@ export default function UpdateGiveawayOption({ navigation, route }) {
                 {strings.giveaway.forVIPsOnly}{' '}
               </Text>
               <View style={styles.vipSwitch}>
-                <AppSwitch
+                <CustomSwitch
                   value={vipOnly}
                   onChange={() => setVipOnly(prev => !prev)}
                 />
@@ -234,7 +239,7 @@ export default function UpdateGiveawayOption({ navigation, route }) {
             <View style={styles.left}>
               <Text style={styles.listTxt}>{strings.giveaway.usOnly} </Text>
               <View style={styles.pinSwitch}>
-                <AppSwitch
+                <CustomSwitch
                   value={pinPost}
                   onChange={() => setPinPost(prev => !prev)}
                 />
@@ -256,7 +261,6 @@ export default function UpdateGiveawayOption({ navigation, route }) {
     </SafeAreaView>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -287,11 +291,17 @@ const styles = StyleSheet.create({
   },
   datePickerIcon: {
     position: 'absolute',
-    top: ms(30),
+    top: ms(14),
     right: ms(10),
   },
   rightTextFild: {
-    width: ms(170),
+    width: ms(190),
+    marginVertical: 0,
+    height: ms(40),
+    // fontSize: 15,
+    borderWidth: 1,
+    borderColor: theme.light.colors.textFieldBorderColor,
+    borderRadius: 8,
   },
   left: {
     flexDirection: 'row',

@@ -388,10 +388,10 @@ const styles = StyleSheet.create({
     width: ms(110),
   },
   datePicketTextField: {
-    width: ms(170),
+    width: ms(190),
     marginVertical: 0,
     height: ms(40),
-    fontSize: 15,
+    // fontSize: 15,
     borderWidth: 1,
     borderColor: theme.light.colors.textFieldBorderColor,
     borderRadius: 8,

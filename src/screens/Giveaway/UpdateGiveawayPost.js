@@ -72,6 +72,8 @@ export default function UpdateGiveawayPost({ navigation, route }) {
     setModalVisible(!isModalVisible);
   };
 
+  console.log(Data);
+
   const validation = () => {
     const params = {
       userId: user?.id,
@@ -90,7 +92,7 @@ export default function UpdateGiveawayPost({ navigation, route }) {
       <View style={styles.header}>
         <TopBackButton onPress={() => navigation.goBack()} />
         <Text style={[styles.headerText, TextStyles.header]}>
-          {strings.giveaway.createGiveaway}
+          {strings.giveaway.updateGiveaway}
         </Text>
       </View>
       <HorizontalLine />
