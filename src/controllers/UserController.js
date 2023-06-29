@@ -823,4 +823,38 @@ export class UserController {
         });
     });
   }
+
+  static async ReportUser({
+    reportedUserId,
+    loggedInUserId,
+    reportTitle,
+    reportBody,
+    reportImg,
+  }) {
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.USER_REPORT_CREATE;
+
+      const data = JSON.stringify({
+        userId: reportedUserId,
+        reportedBy: loggedInUserId,
+        reportTitle,
+        reportBody,
+        reportImg,
+      });
+
+      HttpClient.post(endpoint, data)
+        .then(response => {
+          resolve(response);
+          console.log(JSON.stringify(response));
+          // customShowMessage({
+          //   message: 'User Reported Successfully',
+          //   type: 'success',
+          // });
+        })
+        .catch(error => {
+          reject(new Error(error.message));
+          console.log('error of All notifications', error);
+        });
+    });
+  }
 }

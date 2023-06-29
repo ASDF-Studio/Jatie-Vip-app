@@ -59,6 +59,7 @@ export const API_END_POINTS = {
 
   // Search user by username
   SEARCH_USER_BY_USERNAME: 'user/search',
+  USER_REPORT_CREATE: 'user/report_create',
 
   //Get user profile by user id
   GET_USER_PROFILE_BY_USER_ID: 'user/user_by_userId',
@@ -127,4 +128,8 @@ export const API_END_POINTS = {
   MARK_ALL_READ_NOTIFICATIONS: 'user/notification_mark_as_read',
 
   MARK_SINGLE_READ_NOTIFICATIONS: 'user/single_notification_read',
+
+  //PIN_POST
+  CREATE_PINNED_POST: 'post/create_pinned_post',
+  REMOVE_PINNED_POST: 'post/remove_pinned_post',
 };

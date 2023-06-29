@@ -1522,3 +1522,28 @@ export const getSchedulePost = () => async dispatch => {
     dispatch(getSchedulePostError(error));
   }
 };
+
+export const pinPost = async ({ postId }) => {
+  try {
+    await PostController.pinPost({ postId });
+    customShowMessage({
+      message: 'Post Pinned Successfully',
+      type: 'success',
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const unPinPost = async ({ postId }) => {
+  try {
+    const res = await PostController.unPinPost({ postId });
+    console.log('========================', res);
+    customShowMessage({
+      message: 'Post Unpinned Successfully',
+      type: 'success',
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};

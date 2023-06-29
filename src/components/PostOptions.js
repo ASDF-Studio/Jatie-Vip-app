@@ -10,6 +10,7 @@ import {
   faImage,
   faMessage,
   faPen,
+  faThumbTack,
   faThumbsUp,
   faTrash,
   faUserPlus,
@@ -32,7 +33,13 @@ import { ms } from 'react-native-size-matters';
 import { FontFamily } from '@/theme/Fonts';
 import { PopUp } from './popUp';
 import { Button } from './Button';
-import { getAllPost, reportPost } from '@/actions/PostActions';
+import {
+  getAllPost,
+  pinPost,
+  reportPost,
+  reportPostSuccess,
+  unPinPost,
+} from '@/actions/PostActions';
 import { ReportOnPostModal } from './ReportOnPostModal';
 import { TopBackButton } from './topBackButton';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -44,6 +51,7 @@ import { successSelector } from '@/selectors/StatusSelectors';
 import { TYPES } from '@/actions/PostActions';
 import { globalReset } from '@/actions/GlobalActions';
 import { POST_TYPE } from '@/constants/enums';
+import { ReportUser } from '@/actions/UserActions';
 
 export const UserPostOptions = ({
   open,
@@ -104,6 +112,48 @@ export const UserPostOptions = ({
     }
   };
 
+  const handlePinPost = () => {
+    if (selectedPostData.isPinned) {
+      unPinPost({
+        postId: selectedPostData.id,
+      });
+    } else {
+      pinPost({
+        postId: selectedPostData.id,
+      });
+    }
+
+    setTimeout(() => {
+      if (postType === POST_TYPE.REGULAR) {
+        dispatch(getAllPost(user?.id, sortBy, follwingSwitch, vipArea, ''));
+      }
+    }, 100);
+  };
+
+  const onReport = () => {
+    if (selectedPostData.id) {
+      dispatch(
+        reportPost({
+          objectId: selectedPostData?.id,
+          reportedBy: user?.id,
+          reportTitle: reportOptionValue,
+          reportBody: reportComment,
+          reportImg: reportImage,
+        })
+      );
+      setOpenReport(false);
+      setOpen(false);
+    } else {
+      ReportUser({
+        loggedInUserId: user.id,
+        reportedUserId: userId,
+        reportBody: reportComment,
+        reportTitle: reportOptionValue,
+        reportImg: reportImage,
+      }).then(() => dispatch(reportPostSuccess()));
+    }
+  };
+
   const onBanCallBack = () => {
     setOpen(false);
 
@@ -134,6 +184,22 @@ export const UserPostOptions = ({
       {/* <ModalDown></ModalDown> */}
       {isMine && (
         <ModalDown open={open} setOpen={setOpen}>
+          {userType.user === `${strings.userType.admin}` && (
+            <ModalList
+              title={
+                selectedPostData.isPinned
+                  ? strings.exclusive.unPinThisPost
+                  : strings.exclusive.pinThisPost
+              }
+              icon={faThumbTack}
+              iconBg={theme.light.colors.primaryBgLight}
+              iconColor={theme.light.colors.primary}
+              onPress={() => {
+                handlePinPost();
+                setOpen(false);
+              }}
+            />
+          )}
           <ModalList
             title={strings.profile.editPost}
             icon={faPen}
@@ -254,8 +320,13 @@ export const UserPostOptions = ({
                     paddingTop={15}
                     paddingBottom={8}
                   />
+
                   <ModalList
-                    title={strings.home.report}
+                    title={
+                      selectedPostData?.id
+                        ? strings.home.report
+                        : `${strings.operations.report} @${selectedPostData?.user?.username}`
+                    }
                     icon={faFlag}
                     iconColor={theme.light.colors.secondary}
                     iconBg={theme.light.colors.infoBgLight}
@@ -266,6 +337,7 @@ export const UserPostOptions = ({
                       setreportImage(null);
                     }}
                   />
+
                   <ModalList
                     onPress={() => {
                       setOpen(false);
@@ -448,15 +520,7 @@ export const UserPostOptions = ({
                 opacity={reportOptionValue ? 1 : 0.4}
                 style={styles.reportPostButton}
                 onPress={() => {
-                  dispatch(
-                    reportPost({
-                      objectId: selectedPostData?.id,
-                      reportedBy: user?.id,
-                      reportTitle: reportOptionValue,
-                      reportBody: reportComment,
-                      reportImg: reportImage,
-                    })
-                  );
+                  onReport();
                   setOpenReport(false);
                   setOpen(false);
                 }}

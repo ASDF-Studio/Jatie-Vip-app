@@ -57,6 +57,7 @@ export const en = {
     offical: 'Official',
     DummyUser: ' @songbaobo',
     report: 'Report this post',
+    reportUser: 'Report this user',
     deletePost: 'Delete Post',
     reportPost: 'Report Post',
 
@@ -267,6 +268,7 @@ export const en = {
     schedulePost: 'Schedule Post',
     forVIPsOnly: 'For VIPs Only',
     pinThisPost: 'Pin this Post',
+    unPinThisPost: 'Unpin this Post',
     vipOnly: 'VIP Only',
     remove: 'Remove',
     edit: 'Edit',

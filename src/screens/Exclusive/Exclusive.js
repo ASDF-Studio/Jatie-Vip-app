@@ -369,7 +369,7 @@ export function Exclusive({ navigation }) {
                         userId={item?.userId}
                         showPin={item?.isPinned}
                         isOfficial={true}
-                        showMore={true}
+                        showMore={userType.user == `${strings.userType.admin}`}
                         onMorePress={() => {
                           setOpen(true), setPostData(item);
                         }}

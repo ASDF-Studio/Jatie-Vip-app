@@ -1286,3 +1286,23 @@ export const ArchiveReport = async ({ reportID }) => {
     console.log(err);
   }
 };
+
+export const ReportUser = async ({
+  loggedInUserId,
+  reportedUserId,
+  reportTitle,
+  reportBody,
+  reportImg,
+}) => {
+  try {
+    await UserController.ReportUser({
+      loggedInUserId,
+      reportedUserId,
+      reportBody,
+      reportTitle,
+      reportImg,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};

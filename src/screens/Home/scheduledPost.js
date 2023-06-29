@@ -253,7 +253,7 @@ export default function SchedulePost({ navigation }) {
                           color={theme.light.colors.white}
                         />
                         <Text style={styles.timeTxt}>
-                          {Moment.utc(item.created_at).format(
+                          {Moment(item.scheduleDetails).format(
                             'hh:mm A  MMM D, YYYY'
                           )}
                         </Text>
