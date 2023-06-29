@@ -62,7 +62,6 @@ import {
 import { SwiperViewer } from '@/components/SwiperComponent';
 import { POST_TYPE } from '@/constants/enums';
 import { globalReset } from '@/actions/GlobalActions';
-import { showMessage } from 'react-native-flash-message';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { isEmpty } from 'lodash';
 

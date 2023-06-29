@@ -862,8 +862,6 @@ export const createPostByAdmin =
         isPinned: pinPost,
       });
 
-      console.log('user ====================', user);
-
       dispatch(createPostSuccess(user));
       if (screen == NAVIGATION.home) {
         customShowMessage({
@@ -905,7 +903,14 @@ export const updatePost =
     imageArray,
     userType,
     screen,
-    isPinned
+    isPinned,
+    vipOnly,
+    schedulePost,
+    scheduleDetails,
+    goingLIve,
+    ad,
+    publishDate,
+    expireDate
   ) =>
   async dispatch => {
     dispatch(globalReset());
@@ -924,6 +929,13 @@ export const updatePost =
         imageArray,
         userType,
         isPinned,
+        vipOnly,
+        schedulePost,
+        scheduleDetails,
+        goingLIve,
+        ad,
+        publishDate,
+        expireDate,
       });
       dispatch(updatePostSuccess(user));
       if (screen == NAVIGATION.home) {

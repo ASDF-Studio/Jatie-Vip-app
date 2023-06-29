@@ -440,7 +440,7 @@ export default function Active({ navigation, userType }) {
                           ? [
                               styles.btn,
                               {
-                                marginBottom: '3%',
+                                marginVertical: '3%',
                                 position: 'relative',
                               },
                             ]

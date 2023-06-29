@@ -241,6 +241,13 @@ export class UserController {
     imageArray,
     userType,
     isPinned = false,
+    vipOnly,
+    schedulePost = false,
+    scheduleDetails,
+    goingLIve = false,
+    ad = false,
+    publishDate,
+    expireDate,
   }) {
     return new Promise(async (resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.UPDATE_POST;
@@ -282,6 +289,19 @@ export class UserController {
       data.append('isPinned', isPinned);
       // data.append('postImg', preFile);
       data.append('userType', userType);
+
+      if (schedulePost) {
+        data.append('isScheduled', schedulePost);
+        data.append('scheduleDetails', scheduleDetails);
+      }
+
+      data.append('goingLive', goingLIve);
+
+      if (ad) {
+        data.append('isAdvertisement', ad);
+        data.append('publishDate', publishDate);
+        data.append('expiryDate', expireDate);
+      }
 
       // return false
       const headers = {
