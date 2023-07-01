@@ -289,29 +289,26 @@ export default function UpdatePost({ route, navigation }) {
         );
         dispatch(getAllPost(user?.id, null, null, NAVIGATION.profile));
       } else {
-        dispatch(getAllPost(user?.id, strings.sortBy.recent, false));
-        {
-          userType.user == strings.userType.admin &&
-            navigationRef.navigate(NAVIGATION.postOptions, {
-              prevData: {
-                postId,
-                userId,
-                postTitle,
-                postBody,
-                postImg,
-                preImageArray,
-                mimeType,
-                preMimeType,
-                imageArray,
-                user_Type,
-                actionType,
-                isVIPonly: prevData.isVIPonly,
-                isPinned: prevData.isPinned,
-                scheduleDetails: prevData.scheduleDetails,
-                isScheduled: prevData.isScheduled,
-              },
-            });
-        }
+        userType.user == strings.userType.admin &&
+          navigationRef.navigate(NAVIGATION.postOptions, {
+            prevData: {
+              postId,
+              userId,
+              postTitle,
+              postBody,
+              postImg,
+              preImageArray,
+              mimeType,
+              preMimeType,
+              imageArray,
+              user_Type,
+              actionType,
+              isVIPonly: prevData.isVIPonly,
+              isPinned: prevData.isPinned,
+              scheduleDetails: prevData.scheduleDetails,
+              isScheduled: prevData.isScheduled,
+            },
+          });
       }
     }
   };

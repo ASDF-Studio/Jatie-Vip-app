@@ -1205,15 +1205,17 @@ export const getAllActivityByUserId = id => async dispatch => {
   }
 };
 
-export const manageAllReports = () => async dispatch => {
-  dispatch(manageAllReportsRequest());
-  try {
-    const user = await UserController.manageAllreportsRequestApi();
-    dispatch(manageAllReportsSuccess(user));
-  } catch (error) {
-    dispatch(manageAllReportsError(error));
-  }
-};
+export const manageAllReports =
+  ({ filter }) =>
+  async dispatch => {
+    dispatch(manageAllReportsRequest());
+    try {
+      const user = await UserController.manageAllreportsRequestApi(filter);
+      dispatch(manageAllReportsSuccess(user));
+    } catch (error) {
+      dispatch(manageAllReportsError(error));
+    }
+  };
 
 export const bannedUsers = () => async dispatch => {
   dispatch(getBannedUsersRequest());
@@ -1301,6 +1303,17 @@ export const ReportUser = async ({
       reportBody,
       reportTitle,
       reportImg,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const MarkSingleReportRead = async ({ reportId }) => {
+  try {
+    console.log('marking single report read =====', reportId);
+    await UserController.MarkSingleReportRead({
+      reportId,
     });
   } catch (err) {
     console.log(err);

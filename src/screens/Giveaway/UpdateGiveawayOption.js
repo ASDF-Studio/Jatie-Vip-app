@@ -28,6 +28,7 @@ import moment from 'moment';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { getUser } from '@/selectors/UserSelectors';
 import { CustomSwitch } from '@/components/switch';
+import { useEffect } from 'react';
 export default function UpdateGiveawayOption({ navigation, route }) {
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.UPDATE_GIVEAWAY], state)
@@ -47,7 +48,22 @@ export default function UpdateGiveawayOption({ navigation, route }) {
   const [openPostDatePicker, setOpenPostDatePicker] = useState(false);
   const [winnerCount, setWinnerCount] = useState(0);
 
-  console.log(finalData);
+  useEffect(() => {
+    if (finalData) {
+      if (finalData?.startDate) {
+        setStartSwitch(true);
+        setPostDate(new Date(finalData?.startDate));
+      }
+      if (finalData?.endDate) {
+        setEndSwitch(true);
+        SetEndDate(new Date(finalData?.endDate));
+      }
+
+      setVipOnly(finalData?.isVIPonly ? true : false);
+      setPinPost(finalData?.isPinned ? true : false);
+      setWinnerCount(finalData?.numOfWinners);
+    }
+  }, [finalData]);
 
   const onCount = type => {
     var count = winnerCount;
@@ -131,7 +147,7 @@ export default function UpdateGiveawayOption({ navigation, route }) {
                 <DatePicker
                   minimumDate={new Date()}
                   modal
-                  mode="date"
+                  mode="datetime"
                   open={openPostDatePicker}
                   // locale = "fr"
                   date={postDate}
@@ -187,7 +203,7 @@ export default function UpdateGiveawayOption({ navigation, route }) {
                 <DatePicker
                   minimumDate={postDate}
                   modal
-                  mode="date"
+                  mode="datetime"
                   open={openEndDatePicker}
                   date={endDate}
                   onConfirm={date => {

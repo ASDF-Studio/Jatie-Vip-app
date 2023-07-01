@@ -11,7 +11,13 @@ import { strings } from '@/localization';
 import { HorizontalLine } from './horizontalLine';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
-import { TYPES, manageAllReports } from '@/actions/UserActions';
+import {
+  ArchiveReport,
+  MarkSingleReportRead,
+  TYPES,
+  manageAllReports,
+  markSingleNotifRead,
+} from '@/actions/UserActions';
 import { theme } from '@/theme';
 import { ms } from 'react-native-size-matters';
 import { FontFamily } from '@/theme/Fonts';
@@ -21,45 +27,51 @@ import { NAVIGATION } from '@/constants';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { CustomLoader } from './CustomLoader';
 import { useState } from 'react';
+import { size } from 'lodash';
 
-const ReportedPosts = ({ navigation }) => {
-  // const isLoading = useSelector(state =>
-  //   isLoadingSelector([TYPES.MANAGE_ALL_REPORTS], state)
-  // );
-
+const ReportedPosts = ({ navigation, onArchiveReport }) => {
   const [loading, setLoading] = useState(false);
 
   const user = useSelector(getUser);
   const reports = user.allReportsKeyKey;
-  const focus = useIsFocused();
 
-  const customReq = async () => {
-    setLoading(true);
-    await manageAllReports()(dispatch);
-    setLoading(false);
-  };
+  // const customReq = async () => {
+  //   setLoading(true);
+  //   await manageAllReports()(dispatch);
+  //   setLoading(false);
+  // };
 
-  const dispatch = useDispatch();
-  useEffect(() => {
-    if (focus) {
-      customReq();
-    }
-  }, [focus]);
+  // const dispatch = useDispatch();
+  // useEffect(() => {
+  //   if (focus) {
+  //     customReq();
+  //   }
+  // }, [focus]);
+
   return (
     <View style={styles.body}>
-      {loading && <CustomLoader open={loading} />}
       <FlatList
-        data={reports?.data?.reported_post}
+        data={reports?.data?.reported_post || []}
         key={item => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.list}>
-            {console.log('=============   ', item)}
+        renderItem={({ item, index }) => (
+          <View
+            style={[
+              styles.list,
+              !item?.isReadByAdmin && {
+                backgroundColor: theme.light.colors.primaryBgSolid,
+              },
+            ]}
+          >
             <CardHeader
               fullName={item.user.fullName}
-              userName={item.user.username}
               profilePic={item.user?.profilePic}
+              userName={`@${item.user.username}`}
               time={item.created_at}
               userId={item?.user.id}
+              showArchive={!item?.isArchived}
+              onArchivePress={() => {
+                onArchiveReport(item.id);
+              }}
             />
             <View style={styles.activity}>
               <View style={styles.textContainer}>
@@ -67,6 +79,7 @@ const ReportedPosts = ({ navigation }) => {
                 <TouchableOpacity
                   onPress={() => {
                     {
+                      MarkSingleReportRead({ reportId: item.id });
                       navigation.navigate(NAVIGATION.manageReportOnPost, {
                         item: item,
                       });
@@ -79,15 +92,17 @@ const ReportedPosts = ({ navigation }) => {
                 </TouchableOpacity>
               </View>
               <View style={styles.reasonContainer}>
-                <Text style={styles.reasonTxt}>
+                <Text style={[styles.reasonTxt]} numberOfLines={1}>
                   {strings.profile.reason} {item.reportTitle}
                 </Text>
               </View>
             </View>
-            <HorizontalLine
-              color={theme.light.colors.infoBg}
-              paddingBottom={12}
-            />
+            {size(reports?.data?.reported_post) - 1 !== index && (
+              <HorizontalLine
+                color={theme.light.colors.infoBg}
+                paddingBottom={12}
+              />
+            )}
           </View>
         )}
       />
@@ -144,6 +159,7 @@ export const styles = StyleSheet.create({
     padding: ms(5),
     paddingHorizontal: 10,
     marginLeft: ms(10),
+    maxWidth: '60%',
   },
   reasonTxt: {
     fontFamily: FontFamily.BrandonGrotesque_bold,

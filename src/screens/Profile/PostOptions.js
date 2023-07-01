@@ -75,7 +75,14 @@ export default function PostOptions({ route, navigation }) {
           prevData?.imageArray.filter(x => !x?.preContent),
           prevData?.user_Type,
           NAVIGATION.profile,
-          pinPost
+          pinPost,
+          vipOnly,
+          schedulePost,
+          scheduleDetails,
+          goingLIve,
+          ad,
+          publishDate,
+          expireDate
         )
       );
     } else {

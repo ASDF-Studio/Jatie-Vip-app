@@ -72,8 +72,6 @@ export default function UpdateGiveawayPost({ navigation, route }) {
     setModalVisible(!isModalVisible);
   };
 
-  console.log(Data);
-
   const validation = () => {
     const params = {
       userId: user?.id,
@@ -82,6 +80,11 @@ export default function UpdateGiveawayPost({ navigation, route }) {
       imageArray: selectedMedias.filter(x => !x?.preMedia),
       preImageArray: selectedMedias.filter(x => x?.preMedia),
       id: DATA?.id,
+      numOfWinners: DATA?.numOfWinners,
+      startDate: DATA?.startDate,
+      endDate: DATA?.endDate,
+      isUSAonly: DATA?.isUSAonly,
+      isVIPonly: DATA?.isVIPonly,
     };
 
     navigation.navigate(NAVIGATION.updateGiveawayOption, { prevData: params });

@@ -241,7 +241,7 @@ export class UserController {
     imageArray,
     userType,
     isPinned = false,
-    vipOnly,
+    vipOnly = false,
     schedulePost = false,
     scheduleDetails,
     goingLIve = false,
@@ -252,6 +252,22 @@ export class UserController {
     return new Promise(async (resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.UPDATE_POST;
       let data = new FormData();
+      console.log(
+        '=======================',
+        id,
+        userId,
+        postTitle,
+        postBody,
+        preImageArray,
+        imageArray,
+        isPinned,
+        vipOnly,
+        schedulePost,
+        scheduleDetails,
+        goingLIve,
+        ad,
+        '======================='
+      );
 
       imageArray.forEach(item => {
         const fileName = item.video
@@ -287,8 +303,10 @@ export class UserController {
       data.append('postTitle', postTitle);
       data.append('postBody', postBody);
       data.append('isPinned', isPinned);
+      data.append('isVIPonly', vipOnly);
+      data.append('isVisible', true);
       // data.append('postImg', preFile);
-      data.append('userType', userType);
+      // data.append('userType', userType);
 
       if (schedulePost) {
         data.append('isScheduled', schedulePost);
@@ -307,12 +325,14 @@ export class UserController {
       const headers = {
         'Content-Type': 'multipart/form-data',
       };
-
+      console.log('  ======', data);
       await HttpClient.post(endpoint, data, { headers })
         .then(response => {
+          console.log('resonse -================', response);
           resolve(response);
         })
         .catch(error => {
+          console.log('error ================', error);
           reject(error);
         });
     });
@@ -450,8 +470,6 @@ export class UserController {
       const headers = {
         'Content-Type': 'multipart/form-data',
       };
-
-      console.log('=========================   ', data);
 
       await HttpClient.post(endpoint, data, { headers })
         .then(response => {
@@ -639,11 +657,21 @@ export class UserController {
     });
   }
 
-  static async manageAllreportsRequestApi() {
+  static async manageAllreportsRequestApi({
+    isArchived,
+    viewStatus,
+    dateCursor,
+  }) {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.MANAGE_ALL_REPORTS;
 
-      HttpClient.post(endpoint)
+      const body = JSON.stringify({
+        isArchived,
+        viewStatus: viewStatus ? 'unread' : 'all',
+        dateCursor,
+      });
+
+      HttpClient.post(endpoint, body)
         .then(response => {
           resolve(response);
           // console.log('response of all managereports', response.data)
@@ -840,6 +868,29 @@ export class UserController {
         reportTitle,
         reportBody,
         reportImg,
+      });
+
+      HttpClient.post(endpoint, data)
+        .then(response => {
+          resolve(response);
+          console.log(JSON.stringify(response));
+          // customShowMessage({
+          //   message: 'User Reported Successfully',
+          //   type: 'success',
+          // });
+        })
+        .catch(error => {
+          reject(new Error(error.message));
+          console.log('error of All notifications', error);
+        });
+    });
+  }
+  static async MarkSingleReportRead({ reportId }) {
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.SINGLE_REPORT_READ;
+
+      const data = JSON.stringify({
+        reportId,
       });
 
       HttpClient.post(endpoint, data)

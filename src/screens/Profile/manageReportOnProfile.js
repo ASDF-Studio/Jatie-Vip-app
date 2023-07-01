@@ -8,6 +8,7 @@ import {
   FlatList,
   SafeAreaView,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { theme, TextStyles } from '@/theme';
 import { FontFamily } from '@/theme/Fonts';
@@ -26,6 +27,8 @@ import {
   Button,
   CustomLoader,
   AppImageViewer,
+  MediaContainer,
+  UserPostOptions,
 } from '@/components';
 import { moderateScale, ms, vs } from 'react-native-size-matters';
 import {
@@ -48,6 +51,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import {
   bannedUserById,
+  getAllPostsByUserid,
   getUserProfileByUserId,
   TYPES,
   unBannedUserById,
@@ -62,6 +66,7 @@ import { NAVIGATION } from '@/constants';
 import { useIsFocused } from '@react-navigation/native';
 import { followUser } from '@/actions/PostActions';
 import { unFollowUser } from '@/actions/PostActions';
+import PostOptions from './PostOptions';
 
 export default function ManageReportOnMessage({ navigation, route }) {
   let counter = 1;
@@ -77,10 +82,11 @@ export default function ManageReportOnMessage({ navigation, route }) {
   const [user, setUser] = useState(null);
   const [userPosts, setuserPosts] = useState([]);
   const [postIndex, setPostIndex] = useState(0);
+  const [selectedPost, setSelectedPost] = useState();
   const { item } = route.params;
-  //console.log("item", item)
+  const [loading, setLoading] = useState(false);
+
   const { reportedByUserDetails } = route.params;
-  // console.log('data of card ', JSON.stringify(reportedByUserDetails))
   const dispatch = useDispatch();
 
   const getUserProfile = useSelector(getUser);
@@ -88,41 +94,23 @@ export default function ManageReportOnMessage({ navigation, route }) {
   //console.log('userDataaaaaaaaa', user)
 
   const focus = useIsFocused();
-  //console.log('userPosts', user)
   const userr = useSelector(getUser);
+
   useEffect(() => {
     dispatch(getUserProfileByUserId(item, userr.id));
-    console.log('use eff');
     setTimeout(() => {
       getUserPostById(item);
     }, 100);
   }, [focus]);
+
   useEffect(() => {
     setUser(getUserProfile?.getUserByUserId);
   }, [getUserProfile, focus]);
 
   const getUserPostById = async id => {
-    const data = await UserController.postByUserId(id);
-    if (data) {
-      //setLoader(false);
-      setuserPosts(data.data);
-    }
-  };
-
-  const banUnBanHandlePress = () => {
-    if (user?.isBanned == true) {
-      dispatch(unBannedUserById(item));
-      setOpenBan(false);
-      setTimeout(() => {
-        dispatch(getUserProfileByUserId(item));
-      }, 100);
-    } else {
-      dispatch(bannedUserById(item));
-      setOpenBan(false);
-      setTimeout(() => {
-        dispatch(getUserProfileByUserId(item));
-      }, 100);
-    }
+    setLoading(true);
+    await getAllPostsByUserid(id, userr.id)(dispatch);
+    setLoading(false);
   };
 
   const onFollow = () => {
@@ -142,6 +130,11 @@ export default function ManageReportOnMessage({ navigation, route }) {
         dispatch(getUserProfileByUserId(item, userr.id));
       }, 100);
     }
+  };
+
+  const onViewImageVideo = data => {
+    setShowImageView(true);
+    setFeedImages(data.postMediaContent);
   };
 
   return (
@@ -210,7 +203,6 @@ export default function ManageReportOnMessage({ navigation, route }) {
             }
             title1={strings.profile.followers}
             count1={user?.followerListsByFollowinguserid?.length}
-            // onPress1 = {()=>Alert.alert('press 1')}
             title2={strings.profile.following}
             count2={user?.follower_lists?.length}
             onPress2={() =>
@@ -235,8 +227,7 @@ export default function ManageReportOnMessage({ navigation, route }) {
                   color={theme.light.colors.success}
                 />
                 <Text style={styles.messageBtnTxt}>
-                  {' '}
-                  {strings.profile.message}{' '}
+                  {strings.profile.message}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -256,7 +247,19 @@ export default function ManageReportOnMessage({ navigation, route }) {
               </TouchableOpacity>
             </View>
             <TouchableOpacity
-              onPress={() => setOpenMore(true)}
+              onPress={() => {
+                setSelectedPost({
+                  isAdminPost: user?.isAdmin,
+                  user: {
+                    id: user.id,
+                    profilePic: user?.profilePic,
+                    username: user?.username,
+                  },
+                  userId: user.id,
+                });
+
+                setOpenMore(true);
+              }}
               style={styles.moreIconContainer}
             >
               <FontAwesomeIcon icon={faEllipsis} />
@@ -264,260 +267,80 @@ export default function ManageReportOnMessage({ navigation, route }) {
           </View>
           <HorizontalLine />
         </View>
-        <FlatList
-          data={userPosts || []}
-          key={props => props.id}
-          renderItem={({ item, index }) => (
-            <View style={styles.cardContainer}>
-              <Card>
-                <CardHeader
-                  fullName={user?.fullName}
-                  userName={user?.username}
-                  profilePic={user?.profilePic}
-                  time={item.created_at}
-                />
-                <CardBody text={item?.postBody} />
+        {loading ? (
+          <ActivityIndicator
+            animating={loading}
+            color={theme.light.colors.primary}
+            size="large"
+            style={styles.activityIndicator}
+          />
+        ) : (
+          <FlatList
+            data={userr?.getAllPostsByUserId || []}
+            key={props => props.id}
+            renderItem={({ item, index }) => (
+              <View style={styles.cardContainer}>
+                <Card>
+                  <CardHeader
+                    fullName={user?.fullName}
+                    userName={user?.username}
+                    profilePic={user?.profilePic}
+                    time={item.created_at}
+                  />
+                  <CardBody text={item?.postBody} />
+                  <MediaContainer
+                    contents={item?.postMediaContent}
+                    onPress={() => {
+                      onViewImageVideo(item);
+                    }}
+                    borderBottom={false}
+                  />
 
-                {item?.postImg?.length <= 2 ? (
-                  <View style={styles.imageContainer}>
-                    {item?.postImg?.map(
-                      data => (
-                        (counter = counter + 1),
-                        (
-                          <TouchableOpacity
-                            key={counter}
-                            style={styles.touchContainer}
-                            onPress={() => {
-                              setShowImageView(true),
-                                setFeedImages(item?.postImg);
-                            }}
-                          >
-                            <Image
-                              source={{
-                                uri: data,
-                              }}
-                              style={styles.image}
-                            />
-                          </TouchableOpacity>
-                        )
-                      )
-                    )}
-                  </View>
-                ) : item?.postImg?.length > 2 ? (
-                  ((counter = 1),
-                  (
-                    <View style={styles.imageContainer}>
-                      {item?.postImg?.map(data =>
-                        counter == 1
-                          ? ((counter = counter + 1),
-                            (
-                              <TouchableOpacity
-                                key={counter}
-                                style={styles.touchContainer}
-                                onPress={() => {
-                                  setShowImageView(true),
-                                    setFeedImages(item?.postImg);
-                                  // console.log(feedImages)
-                                }}
-                              >
-                                <Image
-                                  source={{
-                                    uri: data,
-                                  }}
-                                  key={counter}
-                                  style={styles.image}
-                                />
-                              </TouchableOpacity>
-                            ))
-                          : counter == 2
-                          ? ((counter = counter + 1),
-                            (
-                              <TouchableOpacity
-                                key={counter}
-                                style={styles.touchContainer}
-                                onPress={() => {
-                                  setShowImageView(true),
-                                    setFeedImages(item?.postImg);
-                                }}
-                              >
-                                <ImageBackground
-                                  source={{
-                                    uri: data,
-                                  }}
-                                  key={counter}
-                                  style={[styles.image, styles.moreImage]}
-                                >
-                                  <TouchableOpacity
-                                    onPress={() => {
-                                      setShowImageView(true),
-                                        setFeedImages(item?.postImg);
-                                    }}
-                                  >
-                                    <Text style={styles.extraImage}>
-                                      {strings.message.plus}
-                                      {item?.postImg?.length - 1}
-                                    </Text>
-                                  </TouchableOpacity>
-                                </ImageBackground>
-                              </TouchableOpacity>
-                            ))
-                          : null
-                      )}
-                    </View>
-                  ))
-                ) : null}
-                <CardFooter
-                  likeCount={item?.upVote}
-                  disLikeCount={item?.downVote}
-                  postID={user.id}
-                  userID={userr?.id}
-                  postType={POST_TYPE.REGULAR}
-                  postData={item}
-                  isDownVoted={item?.has_downvoted}
-                  isUpvoted={item?.has_upvoted}
-                  postIndex={index}
-                  commentCount={item?.comments_aggregate?.aggregate?.count ?? 0}
-                  commentPress={() =>
-                    navigation.navigate(NAVIGATION.comments, {
-                      DATA: item,
-                      POST_INDEX: index,
-                    })
-                  }
-                  // sharePress = {()=> Alert.alert("share")}
-                  morePress={() => {
-                    setPostIndex(index);
-                    // setIsAdminPost(item?.isAdminPost),
-                    //setPostUserName(item?.user?.username)
-                    //   setOpen(true);
-                    // setPostUserId(item?.userId);
-                    // setpostId(item?.id);
-                    //setPostTitle(item?.postTitle)
-                    //   setPostBody(item?.postBody);
-                    //  setPostImg(item?.postImg);
-                  }}
-                />
-              </Card>
-            </View>
-          )}
-        />
-        {openMore && (
-          <ModalDown open={openMore} setOpen={setOpenMore}>
-            <ModalList
-              onPress={onFollow}
-              title={
-                user?.is_following == true
-                  ? strings.operations.unFollow + ' @' + user?.username
-                  : strings.operations.follow + ' @' + user?.username
-              }
-              icon={faUserPlus}
-              iconColor={theme.light.colors.primary}
-              iconBg={theme.light.colors.primaryBgLight}
-            />
-            <ModalList
-              title={strings.profile.sendPrivateMessage}
-              icon={faMessage}
-              iconColor={theme.light.colors.success}
-              iconBg={theme.light.colors.successBgLight}
-              // onPress = {()=> Alert.alert("working")}
-            />
-            <HorizontalLine
-              color={theme.light.colors.infoBgLight}
-              paddingTop={10}
-            />
-            <ModalList
-              title={strings.operations.remove}
-              icon={faTrash}
-              iconColor={theme.light.colors.secondary}
-              iconBg={theme.light.colors.infoBgLight}
-            />
-            {/* <ModalList
-              title={strings.operations.block + ' @' + user?.username}
-              icon={faXmark}
-              iconColor={theme.light.colors.secondary}
-              iconBg={theme.light.colors.infoBgLight}
-            /> */}
-            <ModalList
-              title={
-                user?.isBanned == true
-                  ? strings.operations.unBan + ' @' + user?.username
-                  : strings.operations.ban + ' @' + user?.username
-              }
-              icon={faFlag}
-              iconColor={theme.light.colors.secondary}
-              iconBg={theme.light.colors.infoBgLight}
-              onPress={() => {
-                setOpenBan(true), setOpenMore(false);
-              }}
-            />
-          </ModalDown>
-        )}
-        {openEdit && (
-          <ModalDown open={openEdit} setOpen={setOpenEdit}>
-            <ModalList
-              title={strings.operations.edit}
-              icon={faPen}
-              iconBg={theme.light.colors.infoBgLight}
-              iconColor={theme.light.colors.info}
-            />
-            <ModalList
-              title={strings.operations.remove}
-              icon={faTrash}
-              iconBg={theme.light.colors.infoBgLight}
-              iconColor={theme.light.colors.secondary}
-            />
-          </ModalDown>
-        )}
-
-        <PopUp open={openBan} setOpen={setOpenBan}>
-          <View>
-            <Text style={[TextStyles.header, styles.headerColor]}>
-              {user?.isBanned
-                ? strings.profile.areYouSureWantToUnBan
-                : strings.profile.areYouSureWantToBan}
-            </Text>
-            <View style={styles.imageViewContainer}>
-              <Image
-                source={{
-                  uri: user?.profilePic,
-                }}
-                style={styles.imageDesign}
-              />
-              <View>
-                <Text style={[TextStyles.header, styles.headerFullname]}>
-                  {user?.fullName}
-                </Text>
-                <Text> {`@${user?.username}`.toLowerCase()}</Text>
-                <Text style={styles.freeMemberText}>
-                  {strings.profile.freeMember}
-                </Text>
+                  <CardFooter
+                    likeCount={item?.upVote}
+                    disLikeCount={item?.downVote}
+                    postID={item.id}
+                    userID={user?.id}
+                    postData={item}
+                    isDownVoted={item?.has_downvoted}
+                    isUpvoted={item?.has_upvoted}
+                    postIndex={index}
+                    commentCount={
+                      item?.comments_aggregate?.aggregate?.count ?? 0
+                    }
+                    commentPress={() =>
+                      navigation.navigate(NAVIGATION.comments, {
+                        DATA: item,
+                        POST_INDEX: index,
+                      })
+                    }
+                    postType={POST_TYPE.USER_PROFILE}
+                    morePress={() => {
+                      setPostIndex(index);
+                      setSelectedPost({
+                        ...item,
+                        index: index,
+                        user: user,
+                      });
+                      setOpenMore(true);
+                    }}
+                  />
+                </Card>
               </View>
-            </View>
-            <View>
-              <Button
-                onPress={banUnBanHandlePress}
-                title={
-                  user?.isBanned
-                    ? strings.profile.yeaUnBan
-                    : strings.profile.yesBan
-                }
-                style={styles.yesBanButton}
-                textStyle={{
-                  color: theme.light.colors.primary,
-                }}
-              />
-              <Button
-                onPress={() => setOpenBan(false)}
-                title={
-                  user?.isBanned
-                    ? strings.profile.DoNotUnBan
-                    : strings.profile.DoNotBan
-                }
-                style={styles.DoNotBanButton}
-              />
-            </View>
-          </View>
-        </PopUp>
+            )}
+          />
+        )}
       </View>
+
+      <UserPostOptions
+        selectedPostData={selectedPost}
+        open={openMore}
+        setOpen={setOpenMore}
+        callBack={() => {
+          getUserPostById(user.id);
+        }}
+        postType={POST_TYPE.USER_PROFILE}
+      />
 
       {/*  image view modal */}
       {showImageView && (
@@ -748,5 +571,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     overflow: 'hidden',
     width: '100%',
+  },
+  activityIndicator: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 80,
   },
 });

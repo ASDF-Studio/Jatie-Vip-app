@@ -5,6 +5,7 @@ import {
   Text,
   TouchableOpacity,
   FlatList,
+  ActivityIndicator,
 } from 'react-native';
 import { TextStyles, theme } from '@/theme';
 import { FontFamily } from '@/theme/Fonts';
@@ -17,8 +18,6 @@ import {
   TopBackButton,
   VerticalLine,
 } from '@/components';
-import { NAVIGATION } from '@/constants';
-import { Data } from './ProfileData/manageReportData';
 import { useIsFocused } from '@react-navigation/native';
 import { ArchiveReport, manageAllReports } from '@/actions/UserActions';
 import { useEffect } from 'react';
@@ -28,44 +27,39 @@ import { useState } from 'react';
 import ReportedPosts from '@/components/ReportedPosts';
 import ReportedUsers from '@/components/ReportedUsers';
 import { CustomSwitch } from '@/components/switch';
-import { merge, orderBy } from 'lodash';
 
 export default function ManageReports({ navigation }) {
   const focus = useIsFocused();
   const dispatch = useDispatch();
   const [status, setStatus] = useState(strings.reports.post);
   const user = useSelector(getUser);
-  const reports = user.allReportsKeyKey;
-  const [isArchive, setIsArchive] = useState(false);
-  const [isUnread, setIsUnread] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const [filter, setFilter] = useState({
+    isArchived: false,
+    viewStatus: false,
+    dateCursor: '',
+  });
 
   useEffect(() => {
     if (focus) {
-      dispatch(manageAllReports());
+      getReportReq();
     }
-  }, [focus, isUnread, isArchive]);
+  }, [focus, filter]);
 
-  const a = {
-    created_at: '2023-05-30T06:32:21.355579+00:00',
-    id: '21e11e31-5bfe-49a7-93bf-fd0814ec9d59',
-    isArchived: false,
-    objectId: null,
-    post: null,
-    reportBody: 'This post looks like it is a spam post. Please look into this',
-    reportImg: [
-      'https://d2wwqw32p0xkid.cloudfront.net/report_photo-1685428336659',
-    ],
-    reportTitle: 'Explicit Content',
-    reportedBy: 'ce656365-b90f-4b5f-aab6-b436051171f5',
-    reportedContent: 'post',
-    updated_at: '2023-05-30T06:32:21.355579+00:00',
-    user: {
-      fullName: 'Team Airly1',
-      id: 'ce656365-b90f-4b5f-aab6-b436051171f5',
-      profilePic:
-        'https://d2wwqw32p0xkid.cloudfront.net/photo-1679142507829.jpg',
-      username: 'Jane',
-    },
+  const getReportReq = async () => {
+    setLoading(true);
+    await manageAllReports({ filter })(dispatch);
+    setLoading(false);
+  };
+
+  const onArchiveReport = reportId => {
+    ArchiveReport({
+      reportID: reportId,
+    });
+    setTimeout(() => {
+      getReportReq();
+    }, 100);
   };
 
   return (
@@ -96,7 +90,15 @@ export default function ManageReports({ navigation }) {
           >
             {strings.profile.unreadOnly}
           </Text>
-          <CustomSwitch value={isUnread} onChange={val => setIsUnread(val)} />
+          <CustomSwitch
+            value={filter.viewStatus}
+            onChange={val =>
+              setFilter({
+                ...filter,
+                viewStatus: val,
+              })
+            }
+          />
         </View>
 
         <View
@@ -118,58 +120,45 @@ export default function ManageReports({ navigation }) {
           >
             {strings.message.archive}
           </Text>
-          <CustomSwitch value={isArchive} onChange={val => setIsArchive(val)} />
+          <CustomSwitch
+            value={filter.isArchived}
+            onChange={val =>
+              setFilter({
+                ...filter,
+                isArchived: val,
+              })
+            }
+          />
         </View>
       </View>
+      <StatusNavigatorBar
+        title1={strings.reports.post}
+        key1={strings.reports.post}
+        title2={strings.reports.users}
+        key2={strings.reports.users}
+        status={status}
+        setStatus={setStatus}
+      />
       <HorizontalLine color={theme.light.colors.primaryBg} />
-      <View
-        style={{
-          backgroundColor: theme.light.colors.background,
-          flex: 1,
-        }}
-      >
-        <FlatList
-          data={reports?.data?.reported_post}
-          key={item => item.id}
-          renderItem={({ item, index }) => (
-            <View style={styles.list}>
-              <CardHeader
-                fullName={item.user.fullName}
-                userName={`@${item.user.username}`}
-                profilePic={item.user?.profilePic}
-                time={item.created_at}
-                userId={item?.user.id}
-                showArchive
-                onArchivePress={() => ArchiveReport({ reportID: item.id })}
-              />
-              <View style={styles.activity}>
-                <View style={styles.textContainer}>
-                  <Text style={styles.statsTxt}>
-                    {strings.profile.reported}
-                  </Text>
-                  <TouchableOpacity
-                    onPress={() => {
-                      navigation.navigate(NAVIGATION.manageReportOnPost, {
-                        item: item,
-                      });
-                    }}
-                  >
-                    <Text style={styles.reactOnTxt}>
-                      {`this ${item.reportedContent}`}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.reasonContainer}>
-                  <Text style={styles.reasonTxt}>
-                    {strings.profile.reason} {item.reportTitle}
-                  </Text>
-                </View>
-              </View>
-              <HorizontalLine color={theme.light.colors.infoBg} />
-            </View>
-          )}
+      {loading ? (
+        <ActivityIndicator
+          size={'large'}
+          color={theme.light.colors.activeTabIcon}
+          style={{ alignSelf: 'center', marginTop: 50 }}
+          animating={loading}
         />
-      </View>
+      ) : status == `${strings.reports.post}` ? (
+        <ReportedPosts
+          navigation={navigation}
+          onArchiveReport={onArchiveReport}
+        />
+      ) : (
+        <ReportedUsers
+          navigation={navigation}
+          onArchiveReport={onArchiveReport}
+        />
+      )}
+
       {/* {status == `${strings.reports.post}` ? (
         <ReportedPosts navigation={navigation} />
       ) : (

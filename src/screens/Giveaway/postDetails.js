@@ -52,7 +52,6 @@ import {
 import { NAVIGATION } from '@/constants';
 import moment from 'moment';
 import CountDown from 'react-native-countdown-component';
-import { useEffect } from 'react';
 import { useBlinker } from '@/hooks';
 
 export default function PostDetails({ navigation, route }) {
@@ -118,8 +117,6 @@ export default function PostDetails({ navigation, route }) {
     const secondsLeft = Math.floor(timeDifference / 1000);
     return secondsLeft;
   }
-
-  console.log('POST DATA -------', data);
 
   return (
     <SafeAreaView style={styles.contianer}>

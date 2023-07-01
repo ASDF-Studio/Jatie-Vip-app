@@ -145,7 +145,7 @@ export default function ManageReportOnMessage({ navigation, route }) {
         profilePic={item.user.profilePic}
         time={item.created_at}
         userId={item?.user.id}
-        showArchive
+        showArchive={!item?.isArchived}
         onArchivePress={() => ArchiveReport({ reportID: item.id })}
       />
       <View style={styles.activity}>

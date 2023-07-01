@@ -111,6 +111,7 @@ export const API_END_POINTS = {
 
   //Manage All Reports
   MANAGE_ALL_REPORTS: 'post/all_report',
+  SINGLE_REPORT_READ: '/post/single_report_read',
 
   //GET All Banned Users
   GET_ALL_BANNED_USERS: 'user/all_banned',

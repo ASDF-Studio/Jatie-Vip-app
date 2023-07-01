@@ -447,6 +447,7 @@ export const UserPostOptions = ({
       {isShowReportToast && (
         <Toast
           open={isShowReportToast}
+          setOpen={() => console.log('presssed')}
           icon={faThumbsUp}
           message={strings.home.reportMessage}
           onPressOk={() => dispatch(globalReset())}

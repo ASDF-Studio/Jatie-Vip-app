@@ -1075,7 +1075,14 @@ export const getAllPost =
   (userId, filterBy, isFollowingData, isVip, page) => async dispatch => {
     dispatch(getAllPostRequest());
     try {
-      console.log('request ================', filterBy);
+      console.log(
+        'request ================',
+        userId,
+        filterBy,
+        isFollowingData,
+        isVip,
+        page
+      );
       const post = await PostController.getAllPost(
         userId,
         filterBy,
@@ -1387,6 +1394,10 @@ export const updateGiveaway = data => async dispatch => {
       userId: data?.userId,
     };
     dispatch(getAllActiveGiveaway(Data));
+    customShowMessage({
+      message: 'Giveaway Updated Successfully',
+      type: 'success',
+    });
     navigationRef.navigate(NAVIGATION.giveaway);
   } catch (error) {
     dispatch(updateGiveawayError(error));

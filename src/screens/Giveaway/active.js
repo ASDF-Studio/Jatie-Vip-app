@@ -134,7 +134,6 @@ export default function Active({ navigation, userType }) {
                 </View>
                 <Timer item={item} />
                 <CardBody text={item.postBody} />
-
                 {/* VIP only */}
                 {userType.user == `${strings.userType.free}` &&
                 item.isVIPonly ? (
@@ -419,19 +418,10 @@ export default function Active({ navigation, userType }) {
                         ))
                       ) : null}
                     </>
-
                     <TouchableOpacity
                       onPress={() =>
                         navigation.navigate(NAVIGATION.giveawayPostDetails, {
-                          key: {
-                            id: item.id,
-                            postTitle: item.postTitle,
-                            postBody: item.postBody,
-                            postExpires: item.postExpires,
-                            postImg: item.postImg,
-                            has_Joined: item.has_Joined,
-                            postMediaContent: item.postMediaContent,
-                          },
+                          key: item,
                           DATA: item,
                         })
                       }
