@@ -96,7 +96,7 @@ const ReportedUsers = ({ navigation, onArchiveReport }) => {
             {size(reports?.data?.reported_user) - 1 !== index && (
               <HorizontalLine
                 color={theme.light.colors.infoBg}
-                paddingBottom={12}
+                // paddingBottom={12}
               />
             )}
           </View>
