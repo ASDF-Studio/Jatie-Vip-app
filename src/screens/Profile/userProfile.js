@@ -132,29 +132,10 @@ export default function UserProfile({ navigation, route }) {
     useState(true);
 
   const [selectedPost, setSelectedPost] = useState(null);
-  const [openReplace, setReplace] = useState(false);
-
-  const [openBan, setOpenBan] = useState(false);
 
   // const userFollower = user.followersDatainReducer?.data;
 
-  const isBanned = !isEmpty(
-    userr?.getAllBannedUsersKey?.data.filter(x => x?.userId === userId)
-  );
-
   let counter = 1;
-
-  const focus = useIsFocused();
-
-  const isFollowSuccess = useSelector(state =>
-    isLoadingSelector([TYPES.FOLLOW_USER], state)
-  );
-  const isunFollowSuccess = useSelector(state =>
-    isLoadingSelector([TYPES.UN_FOLLOW_USER], state)
-  );
-  const isShowReportToast = useSelector(state =>
-    successSelector([TYPES.REPORT_POST], state)
-  );
 
   const userType = useSelector(state => state.userType);
 
@@ -243,8 +224,6 @@ export default function UserProfile({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      {loading && <CustomLoader open={loading} />}
-
       <View style={styles.header}>
         <View style={styles.left}>
           <TopBackButton
@@ -364,197 +343,208 @@ export default function UserProfile({ navigation, route }) {
         </TouchableOpacity>
       </View>
       <HorizontalLine />
-      <FlatList
-        data={userr?.getAllPostsByUserId || []}
-        onEndReached={getPostPagination}
-        onEndReachedThreshold={0.5}
-        ListFooterComponent={renderFooterPost}
-        onMomentumScrollBegin={() => setEndReachedDuringMomentum(false)}
-        key={props => props.id}
-        renderItem={({ item, index }) => (
-          <TouchableOpacity
-            onPress={() =>
-              userType?.user == `${strings.userType.free}` &&
-              item?.isVIPonly &&
-              navigation.navigate(NAVIGATION.upgradeMembership)
-            }
-            key={item?.id}
-            style={styles.cardContainer}
-          >
-            <Card>
-              <CardHeader
-                fullName={user?.fullName}
-                userName={user?.username}
-                profilePic={user?.profilePic}
-                time={item.created_at}
-                isProfile
-              />
+      {loading ? (
+        <ActivityIndicator
+          size={'large'}
+          color={theme.light.colors.activeTabIcon}
+          style={{ alignSelf: 'center', marginTop: 50 }}
+          animating={loading}
+        />
+      ) : (
+        <FlatList
+          data={userr?.getAllPostsByUserId || []}
+          onEndReached={getPostPagination}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={renderFooterPost}
+          onMomentumScrollBegin={() => setEndReachedDuringMomentum(false)}
+          key={props => props.id}
+          renderItem={({ item, index }) => (
+            <TouchableOpacity
+              onPress={() =>
+                userType?.user == `${strings.userType.free}` &&
+                item?.isVIPonly &&
+                navigation.navigate(NAVIGATION.upgradeMembership)
+              }
+              key={item?.id}
+              style={styles.cardContainer}
+            >
+              <Card>
+                <CardHeader
+                  fullName={user?.fullName}
+                  userName={user?.username}
+                  profilePic={user?.profilePic}
+                  time={item.created_at}
+                  isProfile
+                />
 
-              <CardBody
-                VIPKEY={!userr?.isVIP && item?.isVIPonly}
-                text={item?.postBody}
-              />
-              {/* <MediaContainer contents  /> */}
-              {item?.postMediaContent.length <= 2 ? (
-                <View style={styles.imageContainer}>
-                  {item?.postMediaContent.map(
-                    (data, index) => (
-                      (counter = counter + 1),
-                      (
-                        <TouchableOpacity
-                          key={index}
-                          style={styles.touchContainer}
-                          onPress={() => {
-                            if (!(!userr?.isVIP && item?.isVIPonly)) {
-                              setShowImageView(true),
-                                setFeedImages(item?.postMediaContent);
-                            } else {
-                              navigation.navigate(NAVIGATION.upgradeMembership);
-                            }
-                          }}
-                        >
-                          {!userr?.isVIP && item?.isVIPonly ? (
-                            <View
-                              style={{
-                                flex: 1,
-                                position: 'relative',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                marginLeft: index == 1 ? ms(3) : 0,
-                              }}
-                            >
-                              <Image
-                                blurRadius={20}
-                                style={styles.thumbnailImage}
-                                source={{
-                                  uri:
-                                    item?.postMediaContent[0]?.mimetype?.split(
-                                      '/'
-                                    )[0] == 'image'
-                                      ? item?.postMediaContent[0]?.url
-                                      : item?.postMediaContent[0]?.cover,
-                                }}
-                              />
-                              <View style={styles.vipOnlyContainer}>
-                                <FontAwesomeIcon
-                                  icon={faLock}
-                                  size={ms(10)}
-                                  style={styles.lock}
-                                />
-                                <Text style={styles.vipOnlyText}>
-                                  {strings.giveaway.vipOnly}
-                                </Text>
-                              </View>
-                            </View>
-                          ) : (
-                            <Image
-                              source={{
-                                uri: data.url,
-                              }}
-                              style={styles.image}
-                            />
-                          )}
-                        </TouchableOpacity>
-                      )
-                    )
-                  )}
-                </View>
-              ) : item?.postMediaContent.length > 2 ? (
-                ((counter = 1),
-                (
+                <CardBody
+                  VIPKEY={!userr?.isVIP && item?.isVIPonly}
+                  text={item?.postBody}
+                />
+                {/* <MediaContainer contents  /> */}
+                {item?.postMediaContent.length <= 2 ? (
                   <View style={styles.imageContainer}>
-                    {item?.postMediaContent.map((data, index) =>
-                      counter == 1
-                        ? ((counter = counter + 1),
-                          (
-                            <TouchableOpacity
-                              key={index}
-                              style={styles.touchContainer}
-                              onPress={() => {
+                    {item?.postMediaContent.map(
+                      (data, index) => (
+                        (counter = counter + 1),
+                        (
+                          <TouchableOpacity
+                            key={index}
+                            style={styles.touchContainer}
+                            onPress={() => {
+                              if (!(!userr?.isVIP && item?.isVIPonly)) {
                                 setShowImageView(true),
                                   setFeedImages(item?.postMediaContent);
-                              }}
-                            >
+                              } else {
+                                navigation.navigate(
+                                  NAVIGATION.upgradeMembership
+                                );
+                              }
+                            }}
+                          >
+                            {!userr?.isVIP && item?.isVIPonly ? (
+                              <View
+                                style={{
+                                  flex: 1,
+                                  position: 'relative',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                  marginLeft: index == 1 ? ms(3) : 0,
+                                }}
+                              >
+                                <Image
+                                  blurRadius={20}
+                                  style={styles.thumbnailImage}
+                                  source={{
+                                    uri:
+                                      item?.postMediaContent[0]?.mimetype?.split(
+                                        '/'
+                                      )[0] == 'image'
+                                        ? item?.postMediaContent[0]?.url
+                                        : item?.postMediaContent[0]?.cover,
+                                  }}
+                                />
+                                <View style={styles.vipOnlyContainer}>
+                                  <FontAwesomeIcon
+                                    icon={faLock}
+                                    size={ms(10)}
+                                    style={styles.lock}
+                                  />
+                                  <Text style={styles.vipOnlyText}>
+                                    {strings.giveaway.vipOnly}
+                                  </Text>
+                                </View>
+                              </View>
+                            ) : (
                               <Image
                                 source={{
                                   uri: data.url,
                                 }}
-                                key={counter}
                                 style={styles.image}
                               />
-                            </TouchableOpacity>
-                          ))
-                        : counter == 2
-                        ? ((counter = counter + 1),
-                          (
-                            <TouchableOpacity
-                              key={counter}
-                              style={styles.touchContainer}
-                              onPress={() => {
-                                setShowImageView(true),
-                                  setFeedImages(item?.postMediaContent);
-                              }}
-                            >
-                              <ImageBackground
-                                source={{
-                                  uri: data.url,
-                                }}
-                                key={counter}
-                                style={[styles.image, styles.moreImage]}
-                              >
-                                <TouchableOpacity
-                                  onPress={() => {
-                                    setShowImageView(true),
-                                      setFeedImages(item?.postMediaContent);
-                                  }}
-                                >
-                                  <Text style={styles.extraImage}>
-                                    {strings.message.plus}
-                                    {item?.postMediaContent.length - 1}
-                                  </Text>
-                                </TouchableOpacity>
-                              </ImageBackground>
-                            </TouchableOpacity>
-                          ))
-                        : null
+                            )}
+                          </TouchableOpacity>
+                        )
+                      )
                     )}
                   </View>
-                ))
-              ) : null}
-              <CardFooter
-                postType={POST_TYPE.USER_PROFILE}
-                postIndex={index}
-                postID={item?.id}
-                postUserID={item?.userId}
-                userID={userr?.id}
-                likeCount={item?.upVote}
-                disLikeCount={item?.downVote}
-                isDownVoted={item?.has_downvoted}
-                isUpvoted={item?.has_upvoted}
-                commentCount={item.comments_aggregate?.aggregate.count || 0}
-                commentPress={() =>
-                  navigation.navigate(NAVIGATION.comments, {
-                    DATA: item,
-                    POST_INDEX: index,
-                    type: POST_TYPE.USER_PROFILE,
-                  })
-                }
-                sharePress={() => console.log('share')}
-                morePress={() => {
-                  setOpenMore(true);
-                  setpostId(item?.id);
-                  setPostUserId(item?.userId);
-                  setPostTitle(item?.postTitle);
-                  setPostBody(item?.postBody);
-                  setPostImg(item?.postImg);
-                  setIsAdminPost(item?.isAdminPost);
-                  setSelectedPost({ ...item, index: index, user: user });
-                }}
-              />
-            </Card>
-          </TouchableOpacity>
-        )}
-      />
+                ) : item?.postMediaContent.length > 2 ? (
+                  ((counter = 1),
+                  (
+                    <View style={styles.imageContainer}>
+                      {item?.postMediaContent.map((data, index) =>
+                        counter == 1
+                          ? ((counter = counter + 1),
+                            (
+                              <TouchableOpacity
+                                key={index}
+                                style={styles.touchContainer}
+                                onPress={() => {
+                                  setShowImageView(true),
+                                    setFeedImages(item?.postMediaContent);
+                                }}
+                              >
+                                <Image
+                                  source={{
+                                    uri: data.url,
+                                  }}
+                                  key={counter}
+                                  style={styles.image}
+                                />
+                              </TouchableOpacity>
+                            ))
+                          : counter == 2
+                          ? ((counter = counter + 1),
+                            (
+                              <TouchableOpacity
+                                key={counter}
+                                style={styles.touchContainer}
+                                onPress={() => {
+                                  setShowImageView(true),
+                                    setFeedImages(item?.postMediaContent);
+                                }}
+                              >
+                                <ImageBackground
+                                  source={{
+                                    uri: data.url,
+                                  }}
+                                  key={counter}
+                                  style={[styles.image, styles.moreImage]}
+                                >
+                                  <TouchableOpacity
+                                    onPress={() => {
+                                      setShowImageView(true),
+                                        setFeedImages(item?.postMediaContent);
+                                    }}
+                                  >
+                                    <Text style={styles.extraImage}>
+                                      {strings.message.plus}
+                                      {item?.postMediaContent.length - 1}
+                                    </Text>
+                                  </TouchableOpacity>
+                                </ImageBackground>
+                              </TouchableOpacity>
+                            ))
+                          : null
+                      )}
+                    </View>
+                  ))
+                ) : null}
+                <CardFooter
+                  postType={POST_TYPE.USER_PROFILE}
+                  postIndex={index}
+                  postID={item?.id}
+                  postUserID={item?.userId}
+                  userID={userr?.id}
+                  likeCount={item?.upVote}
+                  disLikeCount={item?.downVote}
+                  isDownVoted={item?.has_downvoted}
+                  isUpvoted={item?.has_upvoted}
+                  commentCount={item.comments_aggregate?.aggregate.count || 0}
+                  commentPress={() =>
+                    navigation.navigate(NAVIGATION.comments, {
+                      DATA: item,
+                      POST_INDEX: index,
+                      type: POST_TYPE.USER_PROFILE,
+                    })
+                  }
+                  sharePress={() => console.log('share')}
+                  morePress={() => {
+                    setOpenMore(true);
+                    setpostId(item?.id);
+                    setPostUserId(item?.userId);
+                    setPostTitle(item?.postTitle);
+                    setPostBody(item?.postBody);
+                    setPostImg(item?.postImg);
+                    setIsAdminPost(item?.isAdminPost);
+                    setSelectedPost({ ...item, index: index, user: user });
+                  }}
+                />
+              </Card>
+            </TouchableOpacity>
+          )}
+        />
+      )}
 
       {showImageView && (
         <SwiperViewer

@@ -236,7 +236,8 @@ export default function Comments({ navigation, route }) {
       </View>
       <HorizontalLine color={theme.light.colors.infoBgLight} paddingTop={15} />
       <KeyboardAvoidingView
-        behavior={Platform.OS == 'ios' ? 'padding' : null}
+        behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={20}
         style={{ flex: 1 }}
       >
         <View style={styles.commentContainer}>
