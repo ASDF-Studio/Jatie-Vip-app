@@ -52,8 +52,8 @@ export function App() {
   const onMessageReceived = React.useCallback(async message => {
     console.log('Notificatiohn=-=-=-terterterterter', JSON.stringify(message));
     await notifee.displayNotification({
-      title: message?.message?.data?.text,
-      body: message?.message?.data?.text,
+      title: message?.message?.data?.text ?? "New Notification",
+      body: message?.message?.data?.text ?? "",
       sound: 'default',
       ios: {
         badgeCount: 0,
