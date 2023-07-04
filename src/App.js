@@ -52,8 +52,8 @@ export function App() {
   const onMessageReceived = React.useCallback(async message => {
     console.log('Notificatiohn=-=-=-terterterterter', JSON.stringify(message));
     await notifee.displayNotification({
-      title: message?.notification?.title,
-      body: message?.notification?.body,
+      title: message?.message?.data?.text,
+      body: message?.message?.data?.text,
       sound: 'default',
       ios: {
         badgeCount: 0,
@@ -62,26 +62,24 @@ export function App() {
         criticalAlert: true,
         foregroundPresentationOptions: {
           alert: true,
-          badge: true,
+          badge: false,
           sound: true,
         },
         backgroundPresentationOptions: {
           alert: true,
-          badge: true,
+          badge: false,
           sound: true,
         },
       },
     });
   }, []);
   useEffect(() => {
-
     messaging().onMessage(onMessageReceived);
     messaging().setBackgroundMessageHandler(onMessageReceived);
   }, [])
   return (
     <Sentry.ErrorBoundary>
       <Provider store={store}>
-
         <PersistGate onBeforeLift={hide} persistor={persistor}>
           <RootNavigator />
         </PersistGate>
