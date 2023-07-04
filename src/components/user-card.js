@@ -7,6 +7,7 @@ import { View, TouchableOpacity, Image, Text, StyleSheet } from 'react-native';
 import { ms, vs } from 'react-native-size-matters';
 import { useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
+import { DefaultProfile } from '@/assets';
 
 export const UserCard = ({ item }) => {
   const user = useSelector(getUser);
@@ -24,9 +25,13 @@ export const UserCard = ({ item }) => {
         }
       >
         <Image
-          source={{
-            uri: item?.profilePic == '' ? null : item?.profilePic,
-          }}
+          source={
+            item?.profilePic
+              ? {
+                  uri: item?.profilePic,
+                }
+              : DefaultProfile
+          }
           style={styles.profileImage}
         />
 

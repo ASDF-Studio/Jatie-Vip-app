@@ -8,6 +8,7 @@ import { Icon } from './Icon';
 import { faThumbTack } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { strings } from '@/localization';
+import { DefaultProfile } from '@/assets';
 
 export const CommentHeader = ({
   fullName,
@@ -22,9 +23,13 @@ export const CommentHeader = ({
       <View style={{ flexDirection: 'row' }}>
         <Image
           style={styles.Image}
-          source={{
-            uri: profilePic,
-          }}
+          source={
+            profilePic
+              ? {
+                  uri: profilePic,
+                }
+              : DefaultProfile
+          }
         />
         <View style={{ paddingLeft: ms(5) }}>
           <Text style={styles.fullNameTxt}> {fullName} </Text>

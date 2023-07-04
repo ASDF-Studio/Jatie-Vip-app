@@ -67,6 +67,7 @@ import { useIsFocused } from '@react-navigation/native';
 import { followUser } from '@/actions/PostActions';
 import { unFollowUser } from '@/actions/PostActions';
 import PostOptions from './PostOptions';
+import { DefaultProfile } from '@/assets';
 
 export default function ManageReportOnMessage({ navigation, route }) {
   let counter = 1;
@@ -173,9 +174,13 @@ export default function ManageReportOnMessage({ navigation, route }) {
             <View style={styles.headerImageContainer}>
               <Image
                 style={styles.headerImage}
-                source={{
-                  uri: user?.profilePic || null,
-                }}
+                source={
+                  user?.profilePic
+                    ? {
+                        uri: user?.profilePic,
+                      }
+                    : DefaultProfile
+                }
               />
               <View style={styles.profileLogoContainer}>
                 <FontAwesomeIcon

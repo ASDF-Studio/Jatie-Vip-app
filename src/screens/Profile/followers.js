@@ -39,6 +39,7 @@ import { followUser } from '@/actions/PostActions';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { getAllPostData } from '@/selectors/PostSelectors';
 import { navigate } from '@/navigation/RootNavigation';
+import { DefaultProfile } from '@/assets';
 export default function Followers({ navigation, route }) {
   const dispatch = useDispatch();
   const focus = useIsFocused();
@@ -120,12 +121,13 @@ export default function Followers({ navigation, route }) {
                   }
                 >
                   <Image
-                    source={{
-                      uri:
-                        item.userByFollowinguserid?.profilePic == ''
-                          ? null
-                          : item.user?.profilePic,
-                    }}
+                    source={
+                      item.user?.profilePic
+                        ? {
+                            uri: item.user?.profilePic,
+                          }
+                        : DefaultProfile
+                    }
                     style={styles.profileImage}
                   />
                   <View style={styles.nameContainer}>

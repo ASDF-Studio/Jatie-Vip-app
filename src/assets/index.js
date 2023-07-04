@@ -5,3 +5,7 @@ export { default as close } from '@/assets/close_icon/ic_close.png';
 
 // SVG Assets
 export { default as Logo } from '@/assets/svgs/Logo.svg';
+
+//images
+
+export { default as DefaultProfile } from '@/assets/images/profile_default.png';

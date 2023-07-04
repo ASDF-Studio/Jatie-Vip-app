@@ -31,6 +31,7 @@ import { useEffect } from 'react';
 import { useIsFocused } from '@react-navigation/native';
 import { getUser } from '@/selectors/UserSelectors';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
+import { DefaultProfile } from '@/assets';
 
 export default function Notification({ navigation }) {
   const [open, setOpen] = useState(false);
@@ -101,7 +102,11 @@ export default function Notification({ navigation }) {
                 <View style={styles.listContainer}>
                   <TouchableOpacity style={styles.list}>
                     <Image
-                      source={{ uri: item.user.profilePic }}
+                      source={
+                        item.user.profilePic
+                          ? { uri: item.user.profilePic }
+                          : DefaultProfile
+                      }
                       style={styles.profileImage}
                     />
                     <View style={styles.nameContainer}>

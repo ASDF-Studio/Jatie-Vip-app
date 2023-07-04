@@ -254,6 +254,7 @@ import { getUser } from '@/selectors/UserSelectors';
 import { getPostById } from '@/actions/PostActions';
 import { navigate } from '@/navigation/RootNavigation';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
+import { DefaultProfile } from '@/assets';
 
 export default function Notification({ navigation }) {
   const [read, setRead] = useState(false);
@@ -287,9 +288,13 @@ export default function Notification({ navigation }) {
       <View style={styles.header}>
         <View style={styles.left}>
           <Image
-            source={{
-              uri: loggedInUser.profilePic,
-            }}
+            source={
+              loggedInUser.profilePic
+                ? {
+                    uri: loggedInUser.profilePic,
+                  }
+                : DefaultProfile
+            }
             style={styles.profilePic}
           />
           <Text

@@ -51,23 +51,22 @@ import { followers } from '@/actions/UserActions';
 import { navigationRef } from '@/navigation/RootNavigation';
 import { showMessage } from 'react-native-flash-message';
 import { useMemo } from 'react';
+import { DefaultProfile } from '@/assets';
 
 export default function PastDetails({ navigation, route }) {
   const dispatch = useDispatch();
   const { DATA } = route.params;
   const userType = useSelector(state => state.userType);
   const user = useSelector(getUser);
-  const { followersDatainReducer } = user
-
+  const { followersDatainReducer } = user;
 
   const giveawayData = useSelector(getSingleGiveAwayData);
   const [open, setOpen] = useState(false);
   const [showUserModal, setShowUserModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [isFollowing, setIsFollowing] = useState(false)
+  const [isFollowing, setIsFollowing] = useState(false);
 
-  const userFollower = useMemo(() => followersDatainReducer?.data, [user])
-
+  const userFollower = useMemo(() => followersDatainReducer?.data, [user]);
 
   useEffect(() => {
     const data = {
@@ -93,13 +92,13 @@ export default function PastDetails({ navigation, route }) {
   const onFollow = () => {
     if (isFollowing) {
       dispatch(unFollowUser(user.id, selectedUser.id));
-      setShowUserModal(false)
+      setShowUserModal(false);
     } else {
       dispatch(followUser(user.id, selectedUser.id));
-      setShowUserModal(false)
+      setShowUserModal(false);
     }
     setTimeout(() => {
-      dispatch(followers(user?.id, user.id))
+      dispatch(followers(user?.id, user.id));
     }, 100);
   };
 
@@ -109,8 +108,6 @@ export default function PastDetails({ navigation, route }) {
       type: 'info',
     });
   };
-
-
 
   return (
     <SafeAreaView style={styles.contianer}>
@@ -171,7 +168,11 @@ export default function PastDetails({ navigation, route }) {
                     <View style={styles.listContainer} key={item.id}>
                       <View style={styles.leftContainer}>
                         <Image
-                          source={{ uri: item?.profilePic }}
+                          source={
+                            item?.profilePic
+                              ? { uri: item?.profilePic }
+                              : DefaultProfile
+                          }
                           style={styles.profileImage}
                         />
                         <TouchableOpacity
@@ -190,21 +191,24 @@ export default function PastDetails({ navigation, route }) {
                           </View>
                         </TouchableOpacity>
                       </View>
-                      {
-                        user?.id !== selectedUser?.id && <View>
+                      {user?.id !== selectedUser?.id && (
+                        <View>
                           <Icon
                             icon={faEllipsis}
                             size={ms(15)}
                             color={theme.light.colors.info}
                             onPress={() => {
-                              setSelectedUser({ ...item })
-                              setIsFollowing(userFollower?.following_List.filter(el => el.followingUserId === item?.id).length === 1)
-                              setShowUserModal(true)
+                              setSelectedUser({ ...item });
+                              setIsFollowing(
+                                userFollower?.following_List.filter(
+                                  el => el.followingUserId === item?.id
+                                ).length === 1
+                              );
+                              setShowUserModal(true);
                             }}
                           />
                         </View>
-                      }
-
+                      )}
                     </View>
                   );
                 }

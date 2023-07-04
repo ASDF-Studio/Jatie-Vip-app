@@ -36,6 +36,7 @@ import { COUNTRY_LIST, NAVIGATION } from '@/constants';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { TYPES } from '@/actions/UserActions';
 import { customShowMessage } from '@/utils';
+import { DefaultProfile } from '@/assets';
 
 export default function EditProfile({ navigation }) {
   const userNameInput_ref = useRef();
@@ -439,9 +440,13 @@ export default function EditProfile({ navigation }) {
         <View style={styles.ScrollViewContainer}>
           <View>
             <Image
-              source={{
-                uri: profileImage,
-              }}
+              source={
+                profileImage
+                  ? {
+                      uri: profileImage,
+                    }
+                  : DefaultProfile
+              }
               style={styles.profileImage}
             />
           </View>

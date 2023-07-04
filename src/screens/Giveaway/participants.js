@@ -25,9 +25,10 @@ import { ms } from 'react-native-size-matters';
 import { FontFamily } from '@/theme/Fonts';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Data } from './giveawayData/participantsData';
+import { DefaultProfile } from '@/assets';
 
 export default function Participants({ navigation, route }) {
-  const { DATA } = route.params
+  const { DATA } = route.params;
   const [open, setOpen] = useState(false);
 
   return (
@@ -57,12 +58,16 @@ export default function Participants({ navigation, route }) {
                   onPress={() => navigation.navigate(NAVIGATION.userProfile)}
                 >
                   <Image
-                    source={{ uri: item?.user?.profilePic }}
+                    source={
+                      item?.user?.profilePic
+                        ? { uri: item?.user?.profilePic }
+                        : DefaultProfile
+                    }
                     style={styles.profileImage}
                   />
                   <View style={styles.nameContainer}>
                     <Text style={styles.nameTxt}> {item?.user?.fullName} </Text>
-                    <Text> {"@" + item?.user?.username} </Text>
+                    <Text> {'@' + item?.user?.username} </Text>
                   </View>
                 </TouchableOpacity>
                 <Icon

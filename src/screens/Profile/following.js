@@ -38,6 +38,7 @@ import { useIsFocused } from '@react-navigation/native';
 import { blockUser, unFollowUser } from '@/actions/PostActions';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { TYPES } from '@/actions/UserActions';
+import { DefaultProfile } from '@/assets';
 
 export default function Following({ navigation, route }) {
   const dispatch = useDispatch();
@@ -107,12 +108,13 @@ export default function Following({ navigation, route }) {
                   }
                 >
                   <Image
-                    source={{
-                      uri:
-                        item.userByFollowinguserid?.profilePic == ''
-                          ? null
-                          : item.userByFollowinguserid?.profilePic,
-                    }}
+                    source={
+                      item.userByFollowinguserid?.profilePic
+                        ? {
+                            uri: item.userByFollowinguserid?.profilePic,
+                          }
+                        : DefaultProfile
+                    }
                     style={styles.profileImage}
                   />
                   <View style={styles.nameContainer}>
@@ -156,7 +158,7 @@ export default function Following({ navigation, route }) {
           icon={faMessage}
           iconColor={theme.light.colors.success}
           iconBg={theme.light.colors.successBgLight}
-        // onPress = {()=> Alert.alert("message")}
+          // onPress = {()=> Alert.alert("message")}
         />
         <HorizontalLine
           color={theme.light.colors.infoBgLight}
@@ -168,7 +170,7 @@ export default function Following({ navigation, route }) {
           icon={faFlag}
           iconColor={theme.light.colors.secondary}
           iconBg={theme.light.colors.infoBgLight}
-        // onPress = {()=> Alert.alert("report")}
+          // onPress = {()=> Alert.alert("report")}
         />
         <ModalList
           title={strings.profile.block + '  ' + username}

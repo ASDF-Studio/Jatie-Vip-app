@@ -32,6 +32,7 @@ import { getUser } from '@/selectors/UserSelectors';
 import { useEffect } from 'react';
 import { followers } from '@/actions/UserActions';
 import { useIsFocused } from '@react-navigation/native';
+import { DefaultProfile } from '@/assets';
 
 export function Profile({ navigation }) {
   const user = useSelector(getUser);
@@ -57,9 +58,13 @@ export function Profile({ navigation }) {
         <View style={styles.headerImageContainer}>
           <Image
             style={styles.headerImage}
-            source={{
-              uri: user?.profilePic == null ? '' : user?.profilePic,
-            }}
+            source={
+              user?.profilePic
+                ? {
+                    uri: user?.profilePic,
+                  }
+                : DefaultProfile
+            }
           />
           <View style={styles.headerText}>
             <Text numberOfLines={1} style={styles.nameTxt}>

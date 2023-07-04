@@ -31,6 +31,7 @@ import { TYPES, blockUsersList } from '@/actions/UserActions';
 import { useFocusEffect } from '@react-navigation/native';
 import { unBlockUser } from '@/actions/PostActions';
 import { useCallback } from 'react';
+import { DefaultProfile } from '@/assets';
 
 export default function BlockedUsers({ navigation }) {
   const [open, setOpen] = useState(false);
@@ -102,7 +103,11 @@ export default function BlockedUsers({ navigation }) {
                     // onPress={() => navigation.navigate(NAVIGATION.userProfile)}
                   >
                     <Image
-                      source={{ uri: item.userByBlockeduser.profilePic }}
+                      source={
+                        item?.userByBlockeduser?.profilePic
+                          ? { uri: item.userByBlockeduser.profilePic }
+                          : DefaultProfile
+                      }
                       style={styles.profileImage}
                     />
                     <View style={styles.nameContainer}>

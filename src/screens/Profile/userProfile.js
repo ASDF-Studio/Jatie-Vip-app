@@ -94,6 +94,7 @@ import { useCallback } from 'react';
 import { customShowMessage } from '@/utils';
 import { isEmpty, last } from 'lodash';
 import PostOptions from '../Home/PostOptions';
+import { DefaultProfile } from '@/assets';
 
 export default function UserProfile({ navigation, route }) {
   const [postIndex, setPostIndex] = useState(0);
@@ -148,6 +149,7 @@ export default function UserProfile({ navigation, route }) {
 
   useFocusEffect(
     useCallback(() => {
+      console.log('use effect called: ============');
       dispatch(getUserProfileByUserId(userId, userr.id));
       customReq();
 
@@ -237,9 +239,13 @@ export default function UserProfile({ navigation, route }) {
         <View style={styles.headerImageContainer}>
           <Image
             style={styles.headerImage}
-            source={{
-              uri: user?.profilePic || null,
-            }}
+            source={
+              user?.profilePic
+                ? {
+                    uri: user?.profilePic || null,
+                  }
+                : DefaultProfile
+            }
           />
           {user?.isVIP && user?.isAdmin && (
             <View style={styles.profileLogoContainer}>

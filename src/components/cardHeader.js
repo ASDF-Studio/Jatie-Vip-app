@@ -16,6 +16,7 @@ import { navigationRef } from '@/navigation/RootNavigation';
 import { NAVIGATION } from '@/constants';
 import { useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
+import { DefaultProfile } from '@/assets';
 
 export const CardHeader = ({
   fullName,
@@ -77,9 +78,13 @@ export const CardHeader = ({
       <View style={{ flexDirection: 'row' }}>
         <Image
           style={styles.Image}
-          source={{
-            uri: profilePic || null,
-          }}
+          source={
+            profilePic
+              ? {
+                  uri: profilePic,
+                }
+              : DefaultProfile
+          }
         />
         <TouchableOpacity
           onPress={() => !isProfile && navigateToUserProfile()}
