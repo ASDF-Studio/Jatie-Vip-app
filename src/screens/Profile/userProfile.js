@@ -29,6 +29,7 @@ import { TextStyles, theme } from '@/theme';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+
 import {
   Card,
   CardHeader,

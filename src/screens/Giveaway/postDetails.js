@@ -19,6 +19,7 @@ import {
   ModalDown,
   ModalList,
   PopUpAlert,
+  Timer,
   TopBackButton,
 } from '@/components';
 import { TextStyles, theme } from '@/theme';
@@ -162,51 +163,7 @@ export default function PostDetails({ navigation, route }) {
               <View>
                 <Text style={styles.title}> {data.postTitle} </Text>
               </View>
-              <View
-                style={[
-                  styles.officialTxt,
-                  {
-                    backgroundColor: blink
-                      ? theme.light.colors.primaryBg
-                      : theme.light.colors.primaryBgSolid,
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  },
-                ]}
-              >
-                <Text
-                  style={{
-                    fontFamily: FontFamily.Recoleta_regular,
-                  }}
-                >
-                  <Text
-                    style={{
-                      color: theme.light.colors.timerText,
-                    }}
-                  >
-                    {strings.giveaway.EndsIn + ' '}
-                  </Text>
-                  <Text style={styles.EndTimeTxt}>
-                    {moment.utc(data.postExpires).format('D/M/YY  hh:mm')}{' '}
-                    {/* {item.postExpires} */}
-                  </Text>
-                </Text>
-
-                <CountDown
-                  running={true}
-                  until={item?.remainingTime ?? getSeconds(data.postExpires)}
-                  separatorStyle={{ color: 'black', fontSize: 20 }}
-                  size={20}
-                  showSeparator={true}
-                  timeToShow={['D', 'H', 'S']}
-                  digitTxtStyle={{
-                    fontSize: ms(11, 0.3),
-                    color: 'black',
-                    fontFamily: FontFamily.Recoleta_medium,
-                  }}
-                />
-              </View>
+              <Timer item={data} />
               <CardBody text={data.postBody} />
               {link(item.link)}
               {/* <CardBody text={item.MoreDesc} /> */}

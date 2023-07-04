@@ -1,35 +1,24 @@
 import { strings } from '@/localization';
 import React, { memo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import Moment from 'moment';
-import CountDown from 'react-native-countdown-component';
+import Moment, { min } from 'moment';
 import { theme } from '@/theme';
 import { FontFamily } from '@/theme/Fonts';
-import { useCallback } from 'react';
 import { ms } from 'react-native-size-matters';
-import { useBlinker } from '@/hooks';
+import { useCountdown } from '@/hooks/useCountDown';
+import { useCallback } from 'react';
 
 export const Timer = memo(({ item }) => {
-  const { blink } = useBlinker();
+  const [days, hours, minutes, seconds] = useCountdown(item?.endDate);
 
-  const getSeconds = useCallback(date => {
-    const dateString = date;
-    const dateObj = new Date(dateString);
-    const currentTime = new Date();
-    const timeDifference = dateObj.getTime() - currentTime.getTime();
-    const secondsLeft = Math.floor(timeDifference / 1000);
-    //   console.log("Seconds left:=-=-=-", secondsLeft);
-    return secondsLeft;
-  });
+  const isOdd = useCallback(number => number % 2 === 0, []);
 
   return (
     <View
       style={[
         styles.officialTxt,
         {
-          backgroundColor: blink
-            ? theme.light.colors.primaryBg
-            : theme.light.colors.primaryBgSolid,
+          backgroundColor: theme.light.colors.primaryBgSolid,
           flexDirection: 'row',
           justifyContent: 'space-between',
           alignItems: 'center',
@@ -49,23 +38,102 @@ export const Timer = memo(({ item }) => {
           {strings.giveaway.EndsIn + ' '}
         </Text>
         <Text style={styles.EndTimeTxt}>
-          {Moment.utc(item.postExpires).format('D/M/YY  hh:mm')}{' '}
-          {/* {item.postExpires} */}
+          {Moment.utc(item.endDate).format('D/M/YY  hh:mm A')}{' '}
         </Text>
       </Text>
-      <CountDown
-        running={true}
-        until={item?.remainingTime ?? getSeconds(item.postExpires)}
-        separatorStyle={{ color: 'black', fontSize: 20 }}
-        size={20}
-        showSeparator={true}
-        timeToShow={['D', 'H', 'S']}
-        digitTxtStyle={{
-          fontSize: ms(11, 0.3),
-          color: 'black',
-          fontFamily: FontFamily.Recoleta_medium,
-        }}
-      />
+      <View
+        style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}
+      >
+        <View style={{ flexDirection: 'row' }}>
+          <Text
+            style={{
+              fontSize: ms(12, 0.3),
+              color: 'black',
+              fontFamily: FontFamily.Recoleta_medium,
+              width: ms(16),
+              textAlign: 'right',
+            }}
+          >
+            {`${days}`}
+          </Text>
+          <Text
+            style={{
+              fontSize: ms(12, 0.3),
+              color: 'black',
+              fontFamily: FontFamily.Recoleta_medium,
+              width: ms(25),
+            }}
+          >{` Day`}</Text>
+        </View>
+        <Text
+          style={{
+            fontSize: ms(12, 0.3),
+            color: 'black',
+            fontFamily: FontFamily.Recoleta_medium,
+            marginBottom: 2,
+            textAlign: 'center',
+            width: 5,
+          }}
+        >
+          :
+        </Text>
+        <View style={{ flexDirection: 'row' }}>
+          <Text
+            style={{
+              fontSize: ms(12, 0.3),
+              color: 'black',
+              fontFamily: FontFamily.Recoleta_medium,
+              width: ms(16),
+              textAlign: 'right',
+            }}
+          >
+            {`${hours}`}
+          </Text>
+
+          <Text
+            style={{
+              fontSize: ms(12, 0.3),
+              color: 'black',
+              fontFamily: FontFamily.Recoleta_medium,
+              width: ms(25),
+            }}
+          >{` Hrs`}</Text>
+        </View>
+        <Text
+          style={{
+            fontSize: ms(12, 0.3),
+            color: isOdd(seconds) ? 'black' : 'transparent',
+            fontFamily: FontFamily.Recoleta_medium,
+            marginBottom: 2,
+            textAlign: 'center',
+            width: 5,
+          }}
+        >
+          :
+        </Text>
+
+        <View style={{ flexDirection: 'row' }}>
+          <Text
+            style={{
+              fontSize: ms(12, 0.3),
+              color: 'black',
+              fontFamily: FontFamily.Recoleta_medium,
+              width: ms(16),
+              textAlign: 'right',
+            }}
+          >
+            {`${seconds}`}
+          </Text>
+          <Text
+            style={{
+              fontSize: ms(12, 0.3),
+              color: 'black',
+              fontFamily: FontFamily.Recoleta_medium,
+              width: ms(25),
+            }}
+          >{` Sec`}</Text>
+        </View>
+      </View>
     </View>
   );
 });
@@ -80,6 +148,7 @@ const styles = StyleSheet.create({
     borderColor: theme.light.colors.primaryBg,
     borderRadius: 20,
     overflow: 'hidden',
+    alignItems: 'center',
     padding: ms(8),
     fontSize: ms(11, 0.3),
     marginHorizontal: ms(15),
@@ -89,5 +158,6 @@ const styles = StyleSheet.create({
   },
   EndTimeTxt: {
     color: theme.light.colors.black,
+    fontSize: ms(12),
   },
 });
