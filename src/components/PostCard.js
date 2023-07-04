@@ -38,8 +38,8 @@ const PostCard = ({ item, onViewImageVideo, onMorePress, index, vipArea }) => {
 
           <MediaContainer
             contents={item?.postMediaContent}
-            onPress={() => {
-              onViewImageVideo(item);
+            onPress={index => {
+              onViewImageVideo(item, index);
             }}
             borderBottom={false}
           />

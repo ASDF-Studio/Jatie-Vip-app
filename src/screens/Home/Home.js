@@ -140,6 +140,7 @@ export function Home({ navigation }) {
   const [reportComment, setReportCommnet] = useState('');
   const [isFollowing, setIsFollowing] = useState(false);
   const userFollower = user.followersDatainReducer?.data;
+  const [index, setIndex] = useState(null);
 
   const [selectedPost, setSelectedPost] = useState(null);
 
@@ -234,7 +235,8 @@ export function Home({ navigation }) {
     isLoadingSelector([TYPES.GET_ALL_POST_PAGINATION], state)
   );
 
-  const onViewImageVideo = data => {
+  const onViewImageVideo = (data, index) => {
+    setIndex(index);
     setShowImageView(true);
     setFeedImages(data.postMediaContent);
   };
@@ -459,6 +461,7 @@ export function Home({ navigation }) {
           visible={showImageView}
           setVisible={() => setShowImageView(false)}
           images={feedImages}
+          index={index}
         />
       )}
       {/*  Slide up for follow, edit , review  */}

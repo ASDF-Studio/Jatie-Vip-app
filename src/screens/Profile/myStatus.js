@@ -55,6 +55,7 @@ export default function MyStatus({ navigation }) {
   const [postIndex, setPostIndex] = useState(0);
   const [fetchExclusivePost, setExclusivePost] = useState(true);
   const userType = useSelector(state => state.userType);
+  const [index, setIndex] = useState(null);
   const [openReplace, setReplace] = useState(false);
 
   useFocusEffect(
@@ -92,8 +93,10 @@ export default function MyStatus({ navigation }) {
     postBody,
     postImg,
   };
-  const onViewImageVideo = data => {
-    setShowImageView(true), setFeedImages(data.postMediaContent);
+  const onViewImageVideo = (data, index) => {
+    setIndex(index);
+    setShowImageView(true);
+    setFeedImages(data.postMediaContent);
   };
   const onLoadMorePost = useCallback(() => {
     const post = user.getAllPostsByLoggedInUser.slice(-1);
@@ -155,8 +158,8 @@ export default function MyStatus({ navigation }) {
                 <CardBody text={item?.postBody} />
                 <MediaContainer
                   contents={item?.postMediaContent}
-                  onPress={() => {
-                    onViewImageVideo(item);
+                  onPress={index => {
+                    onViewImageVideo(item, index);
                   }}
                   borderBottom={false}
                 />
@@ -202,6 +205,7 @@ export default function MyStatus({ navigation }) {
           visible={showImageView}
           setVisible={() => setShowImageView(false)}
           images={feedImages}
+          index={index}
         />
       )}
 

@@ -106,6 +106,7 @@ export default function Search({ navigation }) {
     successSelector([TYPES.REPORT_POST], state)
   );
   const userFollower = user.followersDatainReducer?.data;
+  const [index, setIndex] = useState();
 
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.SEARCH_USER], state)
@@ -291,9 +292,10 @@ export default function Search({ navigation }) {
               )}
               renderItem={({ item, index }) => (
                 <MemoPostCard
-                  onImagePress={() => {
+                  onImagePress={index => {
                     setImageFeed(item.postMediaContent);
                     setShowImageView(true);
+                    setIndex(index);
                   }}
                   onMorePress={() => {
                     setSelectedPost({ ...item, index: index });
@@ -327,6 +329,7 @@ export default function Search({ navigation }) {
           visible={showImageView}
           setVisible={() => setShowImageView(false)}
           images={imageFeed}
+          index={index}
         />
       )}
       <UserPostOptions

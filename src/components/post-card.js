@@ -122,7 +122,7 @@ const PostCard = props => {
           <CardBody text={item.postBody} />
           <MediaContainer
             contents={postMediaContent}
-            onPress={onImagePress}
+            onPress={index => onImagePress(index)}
             borderBottom={false}
           />
           <CardFooter

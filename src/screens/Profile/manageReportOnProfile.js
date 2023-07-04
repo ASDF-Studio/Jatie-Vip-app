@@ -91,6 +91,7 @@ export default function ManageReportOnMessage({ navigation, route }) {
   const dispatch = useDispatch();
 
   const getUserProfile = useSelector(getUser);
+  const [index, setIndex] = useState();
 
   //console.log('userDataaaaaaaaa', user)
 
@@ -133,7 +134,8 @@ export default function ManageReportOnMessage({ navigation, route }) {
     }
   };
 
-  const onViewImageVideo = data => {
+  const onViewImageVideo = (data, index) => {
+    setIndex(index);
     setShowImageView(true);
     setFeedImages(data.postMediaContent);
   };
@@ -295,8 +297,8 @@ export default function ManageReportOnMessage({ navigation, route }) {
                   <CardBody text={item?.postBody} />
                   <MediaContainer
                     contents={item?.postMediaContent}
-                    onPress={() => {
-                      onViewImageVideo(item);
+                    onPress={index => {
+                      onViewImageVideo(item, index);
                     }}
                     borderBottom={false}
                   />
@@ -349,10 +351,11 @@ export default function ManageReportOnMessage({ navigation, route }) {
 
       {/*  image view modal */}
       {showImageView && (
-        <AppImageViewer
+        <SwiperViewer
           visible={showImageView}
           setVisible={() => setShowImageView(false)}
           images={feedImages}
+          index={index}
         />
       )}
     </SafeAreaView>

@@ -97,6 +97,7 @@ export default function SinglePost({ navigation, route }) {
   const [openReplace, setReplace] = useState(false);
   const [reportImage, setreportImage] = useState(null);
   const [item, setItem] = useState(postData);
+  const [index, setIndex] = useState();
 
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.GET_POST_BY_ID], state)
@@ -123,8 +124,10 @@ export default function SinglePost({ navigation, route }) {
 
   let counter = 1;
 
-  const onViewImageVideo = data => {
-    setShowImageView(true), setFeedImages(data.postMediaContent);
+  const onViewImageVideo = (data, index) => {
+    setIndex(index);
+    setShowImageView(true);
+    setFeedImages(data.postMediaContent);
   };
 
   return (
@@ -161,152 +164,19 @@ export default function SinglePost({ navigation, route }) {
               showPin={item?.isPinned}
             />
             <CardBody text={item?.postBody || strings.message.postIsDeleted} />
-            {item?.postMediaContent?.length <= 2 ? (
-              <View style={styles.imageContainer}>
-                {item?.postMediaContent?.map(
-                  data => (
-                    (counter = counter + 1),
-                    (
-                      <TouchableOpacity
-                        key={counter}
-                        style={styles.touchContainer}
-                        onPress={() => {
-                          onViewImageVideo(item);
-                        }}
-                      >
-                        {data?.mimetype?.split('/')[0] == 'image' ? (
-                          <Image
-                            source={{
-                              uri: data.url,
-                            }}
-                            style={styles.image}
-                          />
-                        ) : (
-                          <ImageBackground
-                            source={{
-                              uri: data?.cover,
-                            }}
-                            key={counter}
-                            style={[styles.image, styles.playButtonBg]}
-                          >
-                            <TouchableOpacity
-                              // activeOpacity={1}
-                              style={styles.playButton}
-                              onPress={() => {
-                                onViewImageVideo(item);
-                              }}
-                            >
-                              <FontAwesomeIcon
-                                icon={faPlay}
-                                size={ms(15)}
-                                style={styles.Play}
-                              />
-                            </TouchableOpacity>
-                          </ImageBackground>
-                        )}
-                      </TouchableOpacity>
-                    )
-                  )
-                )}
-              </View>
-            ) : item?.postMediaContent?.length > 2 ? (
-              ((counter = 1),
-              (
-                <View style={styles.imageContainer}>
-                  {item?.postMediaContent?.map(data =>
-                    counter == 1
-                      ? ((counter = counter + 1),
-                        (
-                          <TouchableOpacity
-                            key={counter}
-                            style={styles.touchContainer}
-                            onPress={() => {
-                              onViewImageVideo(item);
-                            }}
-                          >
-                            {data?.mimetype?.split('/')[0] == 'image' ? (
-                              <Image
-                                source={{
-                                  uri: data.url,
-                                }}
-                                style={styles.image}
-                              />
-                            ) : (
-                              <ImageBackground
-                                source={{
-                                  uri: data?.cover,
-                                }}
-                                key={counter}
-                                style={[styles.image, styles.playButtonBg]}
-                              >
-                                <TouchableOpacity
-                                  // activeOpacity={1}
-                                  style={styles.playButton}
-                                  onPress={() => {
-                                    onViewImageVideo(item);
-                                  }}
-                                >
-                                  <FontAwesomeIcon
-                                    icon={faPlay}
-                                    size={ms(15)}
-                                    style={styles.Play}
-                                  />
-                                </TouchableOpacity>
-                              </ImageBackground>
-                            )}
-                          </TouchableOpacity>
-                        ))
-                      : counter == 2
-                      ? ((counter = counter + 1),
-                        (
-                          <TouchableOpacity
-                            key={counter}
-                            style={styles.touchContainer}
-                            onPress={() => {
-                              onViewImageVideo(item);
-                            }}
-                          >
-                            <ImageBackground
-                              source={{
-                                uri:
-                                  data?.mimetype?.split('/')[0] == 'image'
-                                    ? data.url
-                                    : data?.cover,
-                              }}
-                              key={counter}
-                              style={[styles.image, styles.moreImage]}
-                            >
-                              <TouchableOpacity
-                                onPress={() => {
-                                  onViewImageVideo(item);
-                                }}
-                              >
-                                <Text style={styles.extraImage}>
-                                  {strings.message.plus}
-                                  {item.postMediaContent?.length - 1}
-                                </Text>
-                              </TouchableOpacity>
-                              {/* {data.mimetype.split("/")[0] == "video" &&
-              <TouchableOpacity
-                // activeOpacity={1}
-                style={styles.playButton}
-              >
-                <FontAwesomeIcon
-                  icon={faPlay}
-                  size={ms(15)}
-                  style={styles.Play}
-                />
-
-              </TouchableOpacity>
-            } */}
-                            </ImageBackground>
-                          </TouchableOpacity>
-                        ))
-                      : null
-                  )}
-                </View>
-              ))
-            ) : null}
+            <View
+              style={{
+                height: 200,
+              }}
+            >
+              <MediaContainer
+                borderBottom={false}
+                contents={item?.postMediaContent}
+                onPress={index => {
+                  onViewImageVideo(item, index);
+                }}
+              />
+            </View>
 
             <CardFooter
               postType={POST_TYPE.SINGLE_POST}
@@ -346,6 +216,7 @@ export default function SinglePost({ navigation, route }) {
           visible={showImageView}
           setVisible={() => setShowImageView(false)}
           images={feedImages}
+          index={index}
         />
       )}
       {open &&

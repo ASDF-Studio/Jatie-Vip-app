@@ -20,7 +20,8 @@ export const MediaContainer = props => {
   const { contents, onPress, borderBottom = true } = props;
 
   const isImage = useCallback(
-    item => item?.mimetype?.split('/')[0] === 'image'
+    item => item?.mimetype?.split('/')[0] === 'image',
+    []
   );
 
   if (isEmpty(contents)) {
@@ -39,7 +40,11 @@ export const MediaContainer = props => {
     >
       {contents.slice(0, 2).map((item, index) => {
         return (
-          <TouchableOpacity onPress={onPress} style={{ flex: 1 }} key={index}>
+          <TouchableOpacity
+            onPress={() => onPress(size(contents) > 2 ? 0 : index)}
+            style={{ flex: 1 }}
+            key={index}
+          >
             {index === 1 && size(contents) > 2 ? (
               <ImageBackground
                 source={{

@@ -80,6 +80,7 @@ export function Exclusive({ navigation }) {
   const [postData, setPostData] = useState({});
   const [postIndex, setPostIndex] = useState(0);
   const [fetchExclusivePost, setExclusivePost] = useState(true);
+  const [index, setIndex] = useState();
   let counter = 1;
   const CheckIcon = (
     <FontAwesomeIcon icon={faCheck} color={theme.light.colors.primary} />
@@ -110,8 +111,10 @@ export function Exclusive({ navigation }) {
 
     dispatch(deleteExclusivePost(data));
   };
-  const onViewImageVideo = data => {
-    setShowImageView(true), setFeedImages(data.postMediaContent);
+  const onViewImageVideo = (data, index) => {
+    setIndex(index);
+    setShowImageView(true);
+    setFeedImages(data.postMediaContent);
   };
   const onLoadMorePost = () => {
     const post = exclusiveData.slice(-1);
@@ -395,7 +398,9 @@ export function Exclusive({ navigation }) {
                     </View>
                     <MediaContainer
                       contents={item?.postMediaContent}
-                      onPress={() => onViewImageVideo(item)}
+                      onPress={index => {
+                        onViewImageVideo(item, index);
+                      }}
                     />
                   </Card>
                 )}
@@ -437,6 +442,7 @@ export function Exclusive({ navigation }) {
           visible={showImageView}
           setVisible={() => setShowImageView(false)}
           images={feedImages}
+          index={index}
         />
       )}
       {userType.user == `${strings.userType.admin}` && (

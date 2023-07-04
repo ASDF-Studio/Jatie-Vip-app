@@ -19,11 +19,19 @@ import { AppVideoPlayer } from './VideoPlayer';
 import { SwiperFlatList } from 'react-native-swiper-flatlist';
 import { FontFamily } from '@/theme/Fonts';
 const { width } = Dimensions.get('window');
-export const SwiperViewer = ({ visible, setVisible, images }) => {
-  const [swipeIndex, setWipeIndex] = useState(0);
+export const SwiperViewer = ({ visible, setVisible, images, index = null }) => {
+  const [swipeIndex, setWipeIndex] = useState(index || 0);
   const swipeRef = useRef(null);
 
-  const onPlayVideo = data => {};
+  useEffect(() => {
+    if (swipeRef.current && index) {
+      swipeRef.current.scrollToIndex({
+        animated: false,
+        index: index,
+      });
+    }
+  }, [swipeRef, index]);
+
   return (
     <View>
       <Modal visible={visible} transparent={true}>

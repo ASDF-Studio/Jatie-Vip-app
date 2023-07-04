@@ -54,6 +54,7 @@ export default function SchedulePost({ navigation }) {
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.GET_SCHEDULE_POST], state)
   );
+  const [index, setIndex] = useState();
 
   const [showImageView, setShowImageView] = useState(false);
   const [feedImages, setFeedImages] = useState([]);
@@ -85,9 +86,12 @@ export default function SchedulePost({ navigation }) {
   //     </View>
   //   );
   // };
-  const onViewImageVideo = data => {
-    setShowImageView(true), setFeedImages(data.postMediaContent);
+  const onViewImageVideo = (data, index) => {
+    setIndex(index);
+    setShowImageView(true);
+    setFeedImages(data.postMediaContent);
   };
+
   let counter = 1;
   return (
     <SafeAreaView style={styles.container}>
@@ -240,8 +244,8 @@ export default function SchedulePost({ navigation }) {
                     <MediaContainer
                       borderBottom={false}
                       contents={item?.postMediaContent}
-                      onPress={() => {
-                        onViewImageVideo(item);
+                      onPress={index => {
+                        onViewImageVideo(item, index);
                       }}
                     />
 
@@ -283,6 +287,7 @@ export default function SchedulePost({ navigation }) {
           visible={showImageView}
           setVisible={() => setShowImageView(false)}
           images={feedImages}
+          index={index}
         />
       )}
     </SafeAreaView>
