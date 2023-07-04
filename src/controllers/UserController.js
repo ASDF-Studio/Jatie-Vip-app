@@ -908,4 +908,43 @@ export class UserController {
         });
     });
   }
+
+  static async UpdateNotificationSettings({
+    loggedInUserId,
+    notifyForJatieLive,
+    notifyForJatiePost,
+    notifyOneHourBeforeJatieLive,
+    notifyForSomeOneReactPost,
+    notifyForSomeoneCommentsOnMyPost,
+    notifyForFollowingUserPost,
+  }) {
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.USER_NOTIFICATION_SETTINGS;
+
+      const data = JSON.stringify({
+        loggedInUserId,
+        notify_for_jatie_live: notifyForJatieLive,
+        notify_for_jatie_post: notifyForJatiePost,
+        notify_for_one_hour_beofre_jatie_live: notifyOneHourBeforeJatieLive,
+        notify_for_someone_react_on_my_post: notifyForSomeOneReactPost,
+        notify_for_someone_comments_on_my_post:
+          notifyForSomeoneCommentsOnMyPost,
+        notify_for_following_user_post: notifyForFollowingUserPost,
+      });
+
+      HttpClient.post(endpoint, data)
+        .then(response => {
+          resolve(response);
+          console.log(JSON.stringify(response));
+          // customShowMessage({
+          //   message: 'User Reported Successfully',
+          //   type: 'success',
+          // });
+        })
+        .catch(error => {
+          reject(new Error(error.message));
+          console.log('error of All notifications', error);
+        });
+    });
+  }
 }

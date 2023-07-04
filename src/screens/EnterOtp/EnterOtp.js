@@ -38,45 +38,67 @@ export function EnterOtp({ route }) {
 
   const validation = () => {
     if (code.length < 5) {
-      setCodeError(true)
+      setCodeError(true);
+    } else {
+      setCodeError(false);
+      dispatch(verifyOtp(number, code, isRegistered));
     }
-    else {
-      setCodeError(false)
-      dispatch(verifyOtp(number, code, isRegistered))
-    }
-  }
+  };
 
   const handleSubmit = () => {
-    validation()
+    validation();
   };
 
   const OTPErrorView = () => {
     return (
-      <View style={{ marginBottom: 10, flexDirection: 'row', justifyContent: 'center' }}>
+      <View
+        style={{
+          marginBottom: 10,
+          flexDirection: 'row',
+          justifyContent: 'center',
+        }}
+      >
         <Text style={[TextStyles.error, { color: theme.light.colors.error }]}>
-          {errors[0].message === "otp invalid" ? strings.enterOtp.sorryCodeDidnotMatch : errors[0].message}{' '}
+          {errors[0].message === "Sorry, the code didn't match"
+            ? strings.enterOtp.sorryCodeDidnotMatch
+            : errors[0].message === 'user banned'
+            ? strings.enterOtp.thisAccountBlocked
+            : errors[0].message}{' '}
         </Text>
-        <TouchableOpacity onPress={() => {
-          setCode('')
-          dispatch(login(number))
-        }}>
-          <Text style={[TextStyles.error, { color: theme.light.colors.error, textDecorationLine: 'underline', fontFamily: FontFamily.BrandonGrotesque_medium }]}>
-            {strings.enterOtp.resend}
+        <TouchableOpacity
+          onPress={() => {
+            setCode('');
+            dispatch(login(number));
+          }}
+        >
+          <Text
+            style={[
+              TextStyles.error,
+              {
+                color: theme.light.colors.error,
+                textDecorationLine: 'underline',
+                fontFamily: FontFamily.BrandonGrotesque_medium,
+              },
+            ]}
+          >
+            {errors[0].message === "Sorry, the code didn't match"
+              ? strings.enterOtp.resend
+              : strings.enterOtp.contactSupport}
           </Text>
         </TouchableOpacity>
       </View>
-    )
-  }
+    );
+  };
 
   return (
     <View style={styles.container}>
       <AuthHeader title={strings.enterOtp.title} />
       <Text style={styles.subTitle}>
-        {strings.enterOtp.enterTheVerificationCode + " " + number}
+        {strings.enterOtp.enterTheVerificationCode + ' ' + number}
         {'   '}
-        <Text
-          onPress={() => navigationRef.goBack()}
-          style={styles.editBtn}>{strings.enterOtp.edit}</Text>
+        <Text onPress={() => navigationRef.goBack()} style={styles.editBtn}>
+          {strings.enterOtp.edit}
+        </Text>
       </Text>
 
       <SmoothPinCodeInput
@@ -86,8 +108,20 @@ export function EnterOtp({ route }) {
         autoFocus
         onTextChange={code => (setCode(code), setCodeError(false))}
         containerStyle={styles.otpContainer}
-        cellStyle={[styles.otpCell, { borderColor: codeError || errors.length > 0 ? theme.light.colors.error : null }]}
-        cellStyleFocused={[styles.otpCellFocused, { borderColor: codeError || errors.length > 0 ? theme.light.colors.error : null }]}
+        cellStyle={[
+          styles.otpCell,
+          {
+            borderColor:
+              codeError || errors.length > 0 ? theme.light.colors.error : null,
+          },
+        ]}
+        cellStyleFocused={[
+          styles.otpCellFocused,
+          {
+            borderColor:
+              codeError || errors.length > 0 ? theme.light.colors.error : null,
+          },
+        ]}
         textStyle={styles.otpText}
       />
 
@@ -101,7 +135,6 @@ export function EnterOtp({ route }) {
           ErrorScreen={NAVIGATION.enterOtp}
         />
       } */}
-
 
       <Button
         onPress={handleSubmit}

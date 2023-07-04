@@ -1319,3 +1319,31 @@ export const MarkSingleReportRead = async ({ reportId }) => {
     console.log(err);
   }
 };
+
+export const UpdateNotifactionSettings = async ({
+  loggedInUserId,
+  notifyForJatieLive,
+  notifyForJatiePost,
+  notifyOneHourBeforeJatieLive,
+  notifyForSomeOneReactPost,
+  notifyForSomeoneCommentsOnMyPost,
+  notifyForFollowingUserPost,
+}) => {
+  try {
+    await UserController.UpdateNotificationSettings({
+      loggedInUserId,
+      notifyForJatieLive,
+      notifyForJatiePost,
+      notifyOneHourBeforeJatieLive,
+      notifyForSomeOneReactPost,
+      notifyForSomeoneCommentsOnMyPost,
+      notifyForFollowingUserPost,
+    });
+    customShowMessage({
+      message: 'Notification Updated Successfully',
+      type: 'success',
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};

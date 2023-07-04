@@ -150,7 +150,6 @@ export default function UserProfile({ navigation, route }) {
 
   useFocusEffect(
     useCallback(() => {
-      console.log('use effect called: ============');
       dispatch(getUserProfileByUserId(userId, userr.id));
       customReq();
 

@@ -107,6 +107,8 @@ export const en = {
     edit: 'Edit',
     sorryCodeDidnotMatch: 'Sorry, the code didn’t match.',
     resend: 'Resend',
+    thisAccountBlocked: 'This account is blocked.',
+    contactSupport: 'Contact Support',
   },
   setupUserId: {
     title: 'Setup your \nUser ID',
@@ -183,7 +185,7 @@ export const en = {
     analytics: 'Analytics',
     bannedUsers: 'Banned Users',
     reported: 'Reported',
-    reason: 'Reasion :',
+    reason: 'Reason :',
     ban: 'Ban',
     unban: 'Unban',
     upvoted: 'Upvoted',

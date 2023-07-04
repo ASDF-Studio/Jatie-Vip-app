@@ -133,4 +133,7 @@ export const API_END_POINTS = {
   //PIN_POST
   CREATE_PINNED_POST: 'post/create_pinned_post',
   REMOVE_PINNED_POST: 'post/remove_pinned_post',
+
+  //notification settings
+  USER_NOTIFICATION_SETTINGS: 'user/notification_settings',
 };
