@@ -38,13 +38,15 @@ export default function AdminPostOption({ navigation, route }) {
   const user = useSelector(getUser);
   const [vipOnly, setVipOnly] = useState(false);
   const [pinPost, setPinPost] = useState(false);
-  const [startSwitch, setStartSwitch] = useState(false);
-  const [endSwitch, setEndSwitch] = useState(false);
+  const [startSwitch, setStartSwitch] = useState(true);
+  const [endSwitch, setEndSwitch] = useState(true);
   const [postDate, setPostDate] = useState(new Date());
-  const [endDate, SetEndDate] = useState(new Date());
+  const [endDate, SetEndDate] = useState(
+    moment(new Date()).add(1, 'hour').toDate()
+  );
   const [openEndDatePicker, setopenEndDatePicker] = useState(false);
   const [openPostDatePicker, setOpenPostDatePicker] = useState(false);
-  const [winnerCount, setWinnerCount] = useState(0);
+  const [winnerCount, setWinnerCount] = useState(1);
   const finalData = route.params.prevData;
 
   const data = {
@@ -59,7 +61,7 @@ export default function AdminPostOption({ navigation, route }) {
   const onCount = type => {
     var count = winnerCount;
     if (type == 'Minus') {
-      if (count > 0) {
+      if (count > 1) {
         count = count - 1;
         setWinnerCount(count);
       }
@@ -193,7 +195,7 @@ export default function AdminPostOption({ navigation, route }) {
                   />
                 </TouchableOpacity>
                 <DatePicker
-                  minimumDate={postDate}
+                  minimumDate={new Date()}
                   modal
                   mode="datetime"
                   open={openEndDatePicker}
@@ -257,6 +259,8 @@ export default function AdminPostOption({ navigation, route }) {
 
           <View style={styles.PostButtonContainer}>
             <Button
+              opacity={endSwitch && startSwitch ? 1 : 0.7}
+              disabled={!endSwitch || !startSwitch}
               onPress={() => dispatch(giveAwayPost({ ...finalData, ...data }))}
               style={styles.PostButton}
               title={strings.exclusive.postButton}

@@ -122,8 +122,6 @@ export default function SinglePost({ navigation, route }) {
     }
   }, [postData]);
 
-  let counter = 1;
-
   const onViewImageVideo = (data, index) => {
     setIndex(index);
     setShowImageView(true);

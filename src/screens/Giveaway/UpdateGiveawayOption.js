@@ -46,7 +46,7 @@ export default function UpdateGiveawayOption({ navigation, route }) {
   const [endDate, SetEndDate] = useState(new Date());
   const [openEndDatePicker, setopenEndDatePicker] = useState(false);
   const [openPostDatePicker, setOpenPostDatePicker] = useState(false);
-  const [winnerCount, setWinnerCount] = useState(0);
+  const [winnerCount, setWinnerCount] = useState(1);
 
   useEffect(() => {
     if (finalData) {
@@ -68,7 +68,7 @@ export default function UpdateGiveawayOption({ navigation, route }) {
   const onCount = type => {
     var count = winnerCount;
     if (type == 'Minus') {
-      if (count > 0) {
+      if (count > 1) {
         count = count - 1;
         setWinnerCount(count);
       }
@@ -265,6 +265,8 @@ export default function UpdateGiveawayOption({ navigation, route }) {
 
           <View style={styles.PostButtonContainer}>
             <Button
+              opacity={endSwitch && startSwitch ? 1 : 0.7}
+              disabled={!endSwitch || !startSwitch}
               onPress={() => {
                 onUpdateGiveaway();
               }}

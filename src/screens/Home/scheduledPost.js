@@ -50,7 +50,6 @@ export default function SchedulePost({ navigation }) {
   const user = useSelector(getUser);
   const dispatch = useDispatch();
   const postData = useSelector(getSchedulePostData);
-  console.log('POSOPOPOPO', postData);
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.GET_SCHEDULE_POST], state)
   );
@@ -58,9 +57,7 @@ export default function SchedulePost({ navigation }) {
 
   const [showImageView, setShowImageView] = useState(false);
   const [feedImages, setFeedImages] = useState([]);
-  // useEffect(() => {
-  //   dispatch(getSchedulePost())
-  // }, [])
+
   const onLoadMorePost = () => {
     const post = ALLPOST.slice(-1);
     console.log('LAST_POST===', post[0].created_at);
@@ -92,7 +89,6 @@ export default function SchedulePost({ navigation }) {
     setFeedImages(data.postMediaContent);
   };
 
-  let counter = 1;
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
@@ -102,9 +98,7 @@ export default function SchedulePost({ navigation }) {
         />
         <Text style={styles.headerTxt}>{strings.home.scheduledPost} </Text>
       </View>
-      {/* <CustomLoader
-        open={isLoading}
-      /> */}
+
       {/* <View style={styles.postContainer}>
         <View style={styles.cardContainer}>
           <Card>

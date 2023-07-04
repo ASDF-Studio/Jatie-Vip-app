@@ -134,6 +134,7 @@ export default function UserProfile({ navigation, route }) {
     useState(true);
 
   const [selectedPost, setSelectedPost] = useState(null);
+  const [index, setIndex] = useState();
 
   // const userFollower = user.followersDatainReducer?.data;
 
@@ -372,6 +373,12 @@ export default function UserProfile({ navigation, route }) {
                 item?.isVIPonly &&
                 navigation.navigate(NAVIGATION.upgradeMembership)
               }
+              disabled={
+                !(
+                  userType?.user == `${strings.userType.free}` &&
+                  item?.isVIPonly
+                )
+              }
               key={item?.id}
               style={styles.cardContainer}
             >
@@ -388,135 +395,52 @@ export default function UserProfile({ navigation, route }) {
                   VIPKEY={!userr?.isVIP && item?.isVIPonly}
                   text={item?.postBody}
                 />
-                {/* <MediaContainer contents  /> */}
-                {item?.postMediaContent.length <= 2 ? (
-                  <View style={styles.imageContainer}>
-                    {item?.postMediaContent.map(
-                      (data, index) => (
-                        (counter = counter + 1),
-                        (
-                          <TouchableOpacity
-                            key={index}
-                            style={styles.touchContainer}
-                            onPress={() => {
-                              if (!(!userr?.isVIP && item?.isVIPonly)) {
-                                setShowImageView(true),
-                                  setFeedImages(item?.postMediaContent);
-                              } else {
-                                navigation.navigate(
-                                  NAVIGATION.upgradeMembership
-                                );
-                              }
-                            }}
-                          >
-                            {!userr?.isVIP && item?.isVIPonly ? (
-                              <View
-                                style={{
-                                  flex: 1,
-                                  position: 'relative',
-                                  justifyContent: 'center',
-                                  alignItems: 'center',
-                                  marginLeft: index == 1 ? ms(3) : 0,
-                                }}
-                              >
-                                <Image
-                                  blurRadius={20}
-                                  style={styles.thumbnailImage}
-                                  source={{
-                                    uri:
-                                      item?.postMediaContent[0]?.mimetype?.split(
-                                        '/'
-                                      )[0] == 'image'
-                                        ? item?.postMediaContent[0]?.url
-                                        : item?.postMediaContent[0]?.cover,
-                                  }}
-                                />
-                                <View style={styles.vipOnlyContainer}>
-                                  <FontAwesomeIcon
-                                    icon={faLock}
-                                    size={ms(10)}
-                                    style={styles.lock}
-                                  />
-                                  <Text style={styles.vipOnlyText}>
-                                    {strings.giveaway.vipOnly}
-                                  </Text>
-                                </View>
-                              </View>
-                            ) : (
-                              <Image
-                                source={{
-                                  uri: data.url,
-                                }}
-                                style={styles.image}
-                              />
-                            )}
-                          </TouchableOpacity>
-                        )
-                      )
-                    )}
-                  </View>
-                ) : item?.postMediaContent.length > 2 ? (
-                  ((counter = 1),
-                  (
-                    <View style={styles.imageContainer}>
-                      {item?.postMediaContent.map((data, index) =>
-                        counter == 1
-                          ? ((counter = counter + 1),
-                            (
-                              <TouchableOpacity
-                                key={index}
-                                style={styles.touchContainer}
-                                onPress={() => {
-                                  setShowImageView(true),
-                                    setFeedImages(item?.postMediaContent);
-                                }}
-                              >
-                                <Image
-                                  source={{
-                                    uri: data.url,
-                                  }}
-                                  key={counter}
-                                  style={styles.image}
-                                />
-                              </TouchableOpacity>
-                            ))
-                          : counter == 2
-                          ? ((counter = counter + 1),
-                            (
-                              <TouchableOpacity
-                                key={counter}
-                                style={styles.touchContainer}
-                                onPress={() => {
-                                  setShowImageView(true),
-                                    setFeedImages(item?.postMediaContent);
-                                }}
-                              >
-                                <ImageBackground
-                                  source={{
-                                    uri: data.url,
-                                  }}
-                                  key={counter}
-                                  style={[styles.image, styles.moreImage]}
-                                >
-                                  <TouchableOpacity
-                                    onPress={() => {
-                                      setShowImageView(true),
-                                        setFeedImages(item?.postMediaContent);
-                                    }}
-                                  >
-                                    <Text style={styles.extraImage}>
-                                      {strings.message.plus}
-                                      {item?.postMediaContent.length - 1}
-                                    </Text>
-                                  </TouchableOpacity>
-                                </ImageBackground>
-                              </TouchableOpacity>
-                            ))
-                          : null
-                      )}
+                {userType?.user == `${strings.userType.free}` &&
+                item?.isVIPonly &&
+                !isEmpty(item?.postMediaContent) ? (
+                  <View
+                    style={{
+                      flex: 1,
+                      position: 'relative',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      marginLeft: index == 1 ? ms(3) : 0,
+                    }}
+                  >
+                    <Image
+                      blurRadius={20}
+                      style={styles.thumbnailImage}
+                      source={{
+                        uri:
+                          item?.postMediaContent[0]?.mimetype?.split('/')[0] ==
+                          'image'
+                            ? item?.postMediaContent[0]?.url
+                            : item?.postMediaContent[0]?.cover,
+                      }}
+                    />
+                    <View style={styles.vipOnlyContainer}>
+                      <FontAwesomeIcon
+                        icon={faLock}
+                        size={ms(10)}
+                        style={styles.lock}
+                      />
+                      <Text style={styles.vipOnlyText}>
+                        {strings.giveaway.vipOnly}
+                      </Text>
                     </View>
-                  ))
-                ) : null}
+                  </View>
+                ) : (
+                  <MediaContainer
+                    contents={item?.postMediaContent}
+                    onPress={index => {
+                      setIndex(index);
+                      setShowImageView(true);
+                      setFeedImages(item.postMediaContent);
+                    }}
+                    borderBottom={false}
+                  />
+                )}
+
                 <CardFooter
                   postType={POST_TYPE.USER_PROFILE}
                   postIndex={index}
@@ -558,6 +482,7 @@ export default function UserProfile({ navigation, route }) {
           visible={showImageView}
           setVisible={() => setShowImageView(false)}
           images={feedImages || []}
+          index={index}
         />
       )}
       <UserPostOptions
@@ -741,6 +666,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  lock: {
+    color: theme.light.colors.background,
+  },
+  vipOnlyText: {
+    fontFamily: FontFamily.BrandonGrotesque_medium,
+    color: theme.light.colors.background,
+    paddingLeft: ms(10),
   },
   reportPostContainer: {
     // backgroundColor: theme.light.colors.white,
