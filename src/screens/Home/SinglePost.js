@@ -162,19 +162,21 @@ export default function SinglePost({ navigation, route }) {
               showPin={item?.isPinned}
             />
             <CardBody text={item?.postBody || strings.message.postIsDeleted} />
-            <View
-              style={{
-                height: 200,
-              }}
-            >
-              <MediaContainer
-                borderBottom={false}
-                contents={item?.postMediaContent}
-                onPress={index => {
-                  onViewImageVideo(item, index);
+            {!isEmpty(item?.postMediaContent) && (
+              <View
+                style={{
+                  height: 200,
                 }}
-              />
-            </View>
+              >
+                <MediaContainer
+                  borderBottom={false}
+                  contents={item?.postMediaContent}
+                  onPress={index => {
+                    onViewImageVideo(item, index);
+                  }}
+                />
+              </View>
+            )}
 
             <CardFooter
               postType={POST_TYPE.SINGLE_POST}
