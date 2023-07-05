@@ -136,7 +136,12 @@ export default function UserProfile({ navigation, route }) {
   const [selectedPost, setSelectedPost] = useState(null);
   const [index, setIndex] = useState();
 
-  // const userFollower = user.followersDatainReducer?.data;
+  const isFollowSuccess = useSelector(state =>
+    isLoadingSelector([TYPES.FOLLOW_USER], state)
+  );
+  const isunFollowSuccess = useSelector(state =>
+    isLoadingSelector([TYPES.UN_FOLLOW_USER], state)
+  );
 
   let counter = 1;
 
@@ -317,7 +322,11 @@ export default function UserProfile({ navigation, route }) {
             />
             <Text style={[styles.IconBoxColor]}>{strings.profile.message}</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={onFollow} style={styles.IconBox}>
+          <TouchableOpacity
+            onPress={onFollow}
+            style={styles.IconBox}
+            disabled={isFollowSuccess || isunFollowSuccess}
+          >
             <FontAwesomeIcon
               icon={faUserPlus}
               color={theme.light.colors.primary}
