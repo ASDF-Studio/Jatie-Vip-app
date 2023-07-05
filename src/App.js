@@ -21,7 +21,7 @@ Sentry.init({
 });
 export function App() {
   useEffect(() => {
-    // requestUserPermission()
+    requestUserPermission()
     getFCMToken1()
   }, [])
   async function requestUserPermission() {
@@ -50,10 +50,10 @@ export function App() {
     }
   }
   const onMessageReceived = React.useCallback(async message => {
-    console.log('Notificatiohn=-=-=-terterterterter', JSON.stringify(message));
+    // console.log('Notificatiohn=-=-=-terterterterter', JSON.stringify(message));
     await notifee.displayNotification({
-      title: message?.message?.data?.text ?? "New Notification",
-      body: message?.message?.data?.text ?? "",
+      title: message?.notification?.title,
+      body: message?.notification?.body,
       sound: 'default',
       ios: {
         badgeCount: 0,
