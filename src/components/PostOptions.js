@@ -113,7 +113,7 @@ export const UserPostOptions = ({
   };
 
   const handlePinPost = () => {
-    if (selectedPostData.isPinned) {
+    if (selectedPostData?.isPinned) {
       unPinPost({
         postId: selectedPostData.id,
       });
@@ -187,7 +187,7 @@ export const UserPostOptions = ({
           {userType.user === `${strings.userType.admin}` && (
             <ModalList
               title={
-                selectedPostData.isPinned
+                selectedPostData?.isPinned
                   ? strings.exclusive.unPinThisPost
                   : strings.exclusive.pinThisPost
               }

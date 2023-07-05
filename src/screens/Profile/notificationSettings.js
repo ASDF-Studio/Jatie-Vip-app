@@ -13,8 +13,11 @@ import { ms, vs } from 'react-native-size-matters';
 import { strings } from '@/localization';
 import { CustomSwitch } from '@/components/switch';
 import { UpdateNotifactionSettings } from '@/actions/UserActions';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
+import { useEffect } from 'react';
+import { useCallback } from 'react';
+import { keys } from 'lodash';
 
 export default function NotificationSettings({ navigation }) {
   const [isEnabled, setIsEnabled] = useState(false);
@@ -22,36 +25,66 @@ export default function NotificationSettings({ navigation }) {
   const [loading, setLoading] = useState(false);
   const user = useSelector(getUser);
   const userType = useSelector(state => state.userType);
+  const dispatch = useDispatch();
+
+  const checkMasterConfig = useCallback(
+    () =>
+      user?.notify_for_someone_react_on_my_post &&
+      user?.notify_for_someone_comments_on_my_post &&
+      user?.notify_for_following_user_post &&
+      user?.notify_for_jatie_post &&
+      user?.notify_for_jatie_live &&
+      user?.notify_for_one_hour_beofre_jatie_live,
+    []
+  );
 
   const [config, setConfig] = useState({
-    masterConfig: false,
-    postReact: false,
-    postComment: false,
-    postFollowing: false,
-    jatiePost: false,
-    jatieLive: false,
-    oneHourBeforeLive: false,
+    masterConfig: checkMasterConfig(),
+    postReact: user?.notify_for_someone_react_on_my_post,
+    postComment: user?.notify_for_someone_comments_on_my_post,
+    postFollowing: user?.notify_for_following_user_post,
+    jatiePost: user?.notify_for_jatie_post,
+    jatieLive: user?.notify_for_jatie_live,
+    oneHourBeforeLive: user?.notify_for_one_hour_beofre_jatie_live,
   });
 
   const handleSubmit = async () => {
     setLoading(true);
-    await UpdateNotifactionSettings({
-      loggedInUserId: user.id,
-      notifyForJatieLive: config.masterConfig || config.jatieLive,
-      notifyForJatiePost: config.masterConfig || config.jatiePost,
-      notifyOneHourBeforeJatieLive:
-        config.masterConfig || config.oneHourBeforeLive,
-      notifyForSomeOneReactPost: config.masterConfig || config.postReact,
-      notifyForSomeoneCommentsOnMyPost:
-        config.masterConfig || config.postComment,
-      notifyForFollowingUserPost: config.masterConfig || config.postFollowing,
-    });
+    await UpdateNotifactionSettings(
+      {
+        loggedInUserId: user.id,
+        notifyForJatieLive: config.masterConfig || config.jatieLive,
+        notifyForJatiePost: config.masterConfig || config.jatiePost,
+        notifyOneHourBeforeJatieLive:
+          config.masterConfig || config.oneHourBeforeLive,
+        notifyForSomeOneReactPost: config.masterConfig || config.postReact,
+        notifyForSomeoneCommentsOnMyPost:
+          config.masterConfig || config.postComment,
+        notifyForFollowingUserPost: config.masterConfig || config.postFollowing,
+      },
+      dispatch
+    );
     setLoading(false);
   };
 
-  const handleSwitch = key => setConfig({ ...config, [key]: !config[key] });
+  const handleSwitch = key => {
+    config[key] = !config[key];
 
-  console.log(userType?.user, '====');
+    if (key !== 'masterConfig') {
+      const isAllOn = keys(config).reduce((acc, cur) => {
+        if (cur === 'masterConfig') {
+          return true;
+        }
+        return acc && config[cur];
+      }, true);
+
+      config.masterConfig = isAllOn;
+    }
+
+    setConfig({
+      ...config,
+    });
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -83,7 +116,7 @@ export default function NotificationSettings({ navigation }) {
         <View style={styles.list}>
           <Text style={styles.listTxt}> {strings.profile.reactTo} </Text>
           <CustomSwitch
-            value={config.masterConfig || config.postReact}
+            value={config.postReact || config.masterConfig}
             onChange={() => handleSwitch('postReact')}
           />
           {/* <AppSwitch /> */}
@@ -91,24 +124,16 @@ export default function NotificationSettings({ navigation }) {
         <View style={styles.list}>
           <Text style={styles.listTxt}> {strings.profile.commentsOn} </Text>
           <CustomSwitch
-            value={config.masterConfig || config.postComment}
+            value={config.postComment || config.masterConfig}
             onChange={() => handleSwitch('postComment')}
           />
-          {/* <AppSwitch
-          value={config.masterConfig || config.postComment}
-          onChange={() => handleSwitch('postComment')}
-        /> */}
         </View>
         <View style={styles.list}>
           <Text style={styles.listTxt}> {strings.profile.ImFollowing} </Text>
           <CustomSwitch
-            value={config.masterConfig || config.postFollowing}
+            value={config.postFollowing || config.masterConfig}
             onChange={() => handleSwitch('postFollowing')}
           />
-          {/* <AppSwitch
-          value={config.masterConfig || config.postFollowing}
-          onChange={() => handleSwitch('postFollowing')}
-        /> */}
         </View>
 
         {userType?.user !== `${strings.userType.admin}` && (
@@ -122,35 +147,23 @@ export default function NotificationSettings({ navigation }) {
             <View style={styles.list}>
               <Text style={styles.listTxt}> {strings.profile.jatiePost} </Text>
               <CustomSwitch
-                value={config.masterConfig || config.jatiePost}
+                value={config.jatiePost || config.masterConfig}
                 onChange={() => handleSwitch('jatiePost')}
               />
-              {/* <AppSwitch
-          value={config.masterConfig || config.jatiePost}
-          onChange={() => handleSwitch('jatiePost')}
-        /> */}
             </View>
             <View style={styles.list}>
               <Text style={styles.listTxt}> {strings.profile.JatieLive} </Text>
               <CustomSwitch
-                value={config.masterConfig || config.jatieLive}
+                value={config.jatieLive || config.masterConfig}
                 onChange={() => handleSwitch('jatieLive')}
               />
-              {/* <AppSwitch
-          value={config.masterConfig || config.jatieLive}
-          onChange={() => handleSwitch('jatieLive')}
-        /> */}
             </View>
             <View style={styles.list}>
               <Text style={styles.listTxt}> {strings.profile.beforeLive} </Text>
               <CustomSwitch
-                value={config.masterConfig || config.oneHourBeforeLive}
+                value={config.oneHourBeforeLive || config.masterConfig}
                 onChange={() => handleSwitch('oneHourBeforeLive')}
               />
-              {/* <AppSwitch
-          value={config.masterConfig || config.oneHourBeforeLive}
-          onChange={() => handleSwitch('oneHourBeforeLive')}
-        /> */}
             </View>
           </>
         )}

@@ -177,6 +177,9 @@ export const TYPES = {
   MARK_ALL_READ_NOTIFICATIONS_REQUEST: 'MARK_ALL_READ_NOTIFICATIONS_REQUEST',
   MARK_ALL_READ_NOTIFICATIONS_SUCCESS: 'MARK_ALL_READ_NOTIFICATIONS_SUCCESS',
   MARK_ALL_READ_NOTIFICATIONS_ERROR: 'MARK_ALL_READ_NOTIFICATIONS_ERROR',
+
+  // Update user notif data
+  UPDATE_USER_NOTIF_SETTINGS: 'UPDATE_USER_NOTIF_SETTINGS',
 };
 
 const loginRequest = () => ({
@@ -1320,28 +1323,26 @@ export const MarkSingleReportRead = async ({ reportId }) => {
   }
 };
 
-export const UpdateNotifactionSettings = async ({
-  loggedInUserId,
-  notifyForJatieLive,
-  notifyForJatiePost,
-  notifyOneHourBeforeJatieLive,
-  notifyForSomeOneReactPost,
-  notifyForSomeoneCommentsOnMyPost,
-  notifyForFollowingUserPost,
-}) => {
+export const UpdateNotifactionSettings = async (params, dispatch) => {
   try {
-    await UserController.UpdateNotificationSettings({
-      loggedInUserId,
-      notifyForJatieLive,
-      notifyForJatiePost,
-      notifyOneHourBeforeJatieLive,
-      notifyForSomeOneReactPost,
-      notifyForSomeoneCommentsOnMyPost,
-      notifyForFollowingUserPost,
-    });
+    await UserController.UpdateNotificationSettings(params);
     customShowMessage({
       message: 'Notification Updated Successfully',
       type: 'success',
+    });
+
+    dispatch({
+      type: TYPES.UPDATE_USER_NOTIF_SETTINGS,
+      payload: {
+        notify_for_someone_react_on_my_post: params.notifyForSomeOneReactPost,
+        notify_for_someone_comments_on_my_post:
+          params.notifyForSomeoneCommentsOnMyPost,
+        notify_for_following_user_post: params.notifyForFollowingUserPost,
+        notify_for_jatie_post: params.notifyForJatiePost,
+        notify_for_jatie_live: params.notifyForJatieLive,
+        notify_for_one_hour_beofre_jatie_live:
+          params.notifyOneHourBeforeJatieLive,
+      },
     });
   } catch (err) {
     console.log(err);

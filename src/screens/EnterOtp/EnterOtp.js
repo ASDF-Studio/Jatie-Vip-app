@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { login, TYPES, verifyOtp } from '@/actions/UserActions';
-import { Button, ErrorView } from '@/components';
+import { Button, ErrorView, PopUpAlert } from '@/components';
 import { strings } from '@/localization';
 import { styles } from '@/screens/EnterOtp/EnterOtp.styles';
 import { errorsSelector } from '@/selectors/ErrorSelectors';
@@ -18,6 +18,8 @@ import { globalReset } from '@/actions/GlobalActions';
 import { FontFamily } from '@/theme/Fonts';
 import { CustomErrorView } from '@/components/CustomErrorView';
 import { getUser } from '@/selectors/UserSelectors';
+import { useEffect } from 'react';
+import { isEmpty } from 'lodash';
 
 export function EnterOtp({ route }) {
   const { number, isRegistered } = route.params;
@@ -25,6 +27,7 @@ export function EnterOtp({ route }) {
   const dispatch = useDispatch();
   const [code, setCode] = useState('');
   const [codeError, setCodeError] = useState(false);
+  const [showPopUp, setShowPopUp] = useState(false);
 
   const user = useSelector(getUser);
 
@@ -35,6 +38,15 @@ export function EnterOtp({ route }) {
     state => errorsSelector([TYPES.VERIFY_OTP], state),
     shallowEqual
   );
+
+  useEffect(() => {
+    if (
+      !isEmpty(errors) &&
+      errors[0].message === 'Something went wrong! Please try again later'
+    ) {
+      setShowPopUp(true);
+    }
+  }, [errors]);
 
   const validation = () => {
     if (code.length < 5) {
@@ -61,8 +73,6 @@ export function EnterOtp({ route }) {
         <Text style={[TextStyles.error, { color: theme.light.colors.error }]}>
           {errors[0].message === "Sorry, the code didn't match"
             ? strings.enterOtp.sorryCodeDidnotMatch
-            : errors[0].message === 'user banned'
-            ? strings.enterOtp.thisAccountBlocked
             : errors[0].message}{' '}
         </Text>
         <TouchableOpacity
@@ -81,11 +91,18 @@ export function EnterOtp({ route }) {
               },
             ]}
           >
-            {errors[0].message === "Sorry, the code didn't match"
-              ? strings.enterOtp.resend
-              : strings.enterOtp.contactSupport}
+            {strings.enterOtp.resend}
           </Text>
         </TouchableOpacity>
+        <PopUpAlert
+          isOpen={showPopUp}
+          onPress={() => {
+            navigationRef.goBack();
+          }}
+          isSuccess={false}
+          title="Error"
+          body="Something went wrong! Please try again later."
+        />
       </View>
     );
   };

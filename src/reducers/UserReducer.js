@@ -1,4 +1,5 @@
 import { TYPES } from '@/actions/UserActions';
+import { keys } from 'lodash';
 
 export const userReducer = (state = {}, { payload, type }) => {
   switch (type) {
@@ -44,6 +45,14 @@ export const userReducer = (state = {}, { payload, type }) => {
       return { ...state, allReportsKeyKey: payload.user };
     case TYPES.GET_ALL_NOTIFICATIONS_SUCCESS:
       return { ...state, notificationKey: payload.user };
+    case TYPES.UPDATE_USER_NOTIF_SETTINGS:
+      keys(payload).forEach(keys => {
+        state[keys] = payload[keys];
+      });
+
+      return {
+        ...state,
+      };
     case TYPES.CLEAR_STORE:
       return {};
     default:

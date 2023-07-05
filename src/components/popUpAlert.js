@@ -36,6 +36,7 @@ export const PopUpAlert = ({
   body = '',
   isOpen = false,
   isSuccess = true,
+  onPress,
 }) => {
   const [state, setState] = useState(isOpen);
 
@@ -51,6 +52,7 @@ export const PopUpAlert = ({
           title={strings.operations.gotIT}
           style={styles.alertButton}
           onPress={() => {
+            onPress && onPress();
             setState(false);
           }}
         />
