@@ -64,13 +64,11 @@ import { POST_TYPE } from '@/constants/enums';
 import { globalReset } from '@/actions/GlobalActions';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { isEmpty } from 'lodash';
-import { showMessage } from 'react-native-flash-message';
 
 export default function SinglePost({ navigation, route }) {
   const { postId } = route.params || {};
   const userType = useSelector(state => state.userType);
   const dispatch = useDispatch();
-  const ALLPOST = useSelector(getAllPostData);
   const user = useSelector(getUser);
   const postData = useSelector(getPostByIdData);
   const [showImageView, setShowImageView] = useState(false);
@@ -130,12 +128,8 @@ export default function SinglePost({ navigation, route }) {
     setFeedImages(data.postMediaContent);
   };
 
-
-  let counter = 1;
-
   return (
     <SafeAreaView style={styles.container}>
-      <CustomLoader open={isLoading} />
       {!isLoading && (
         <View style={styles.header}>
           <View style={styles.left}>
@@ -791,5 +785,3 @@ const styles = StyleSheet.create({
     marginTop: ms(50),
   },
 });
-
-
