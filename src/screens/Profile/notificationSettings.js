@@ -27,25 +27,35 @@ export default function NotificationSettings({ navigation }) {
   const userType = useSelector(state => state.userType);
   const dispatch = useDispatch();
 
-  const checkMasterConfig = useCallback(
-    () =>
-      user?.notify_for_someone_react_on_my_post &&
-      user?.notify_for_someone_comments_on_my_post &&
-      user?.notify_for_following_user_post &&
-      user?.notify_for_jatie_post &&
-      user?.notify_for_jatie_live &&
-      user?.notify_for_one_hour_beofre_jatie_live,
-    []
-  );
+  const checkMasterConfig = useCallback(() => {
+    if (userType?.user !== `${strings.userType.admin}`) {
+      return (
+        user?.notify_for_someone_react_on_my_post &&
+        user?.notify_for_someone_comments_on_my_post &&
+        user?.notify_for_following_user_post &&
+        user?.notify_for_jatie_post &&
+        user?.notify_for_jatie_live &&
+        user?.notify_for_one_hour_beofre_jatie_live
+      );
+    } else {
+      return (
+        user?.notify_for_someone_react_on_my_post &&
+        user?.notify_for_someone_comments_on_my_post &&
+        user?.notify_for_following_user_post
+      );
+    }
+  }, []);
 
   const [config, setConfig] = useState({
     masterConfig: checkMasterConfig(),
     postReact: user?.notify_for_someone_react_on_my_post,
     postComment: user?.notify_for_someone_comments_on_my_post,
     postFollowing: user?.notify_for_following_user_post,
-    jatiePost: user?.notify_for_jatie_post,
-    jatieLive: user?.notify_for_jatie_live,
-    oneHourBeforeLive: user?.notify_for_one_hour_beofre_jatie_live,
+    ...(userType?.user !== `${strings.userType.admin}` && {
+      jatiePost: user?.notify_for_jatie_post,
+      jatieLive: user?.notify_for_jatie_live,
+      oneHourBeforeLive: user?.notify_for_one_hour_beofre_jatie_live,
+    }),
   });
 
   const handleSubmit = async () => {
@@ -53,10 +63,12 @@ export default function NotificationSettings({ navigation }) {
     await UpdateNotifactionSettings(
       {
         loggedInUserId: user.id,
-        notifyForJatieLive: config.masterConfig || config.jatieLive,
-        notifyForJatiePost: config.masterConfig || config.jatiePost,
-        notifyOneHourBeforeJatieLive:
-          config.masterConfig || config.oneHourBeforeLive,
+        ...(userType?.user !== `${strings.userType.admin}` && {
+          notifyForJatieLive: config.masterConfig || config.jatieLive,
+          notifyForJatiePost: config.masterConfig || config.jatiePost,
+          notifyOneHourBeforeJatieLive:
+            config.masterConfig || config.oneHourBeforeLive,
+        }),
         notifyForSomeOneReactPost: config.masterConfig || config.postReact,
         notifyForSomeoneCommentsOnMyPost:
           config.masterConfig || config.postComment,
@@ -79,6 +91,16 @@ export default function NotificationSettings({ navigation }) {
       }, true);
 
       config.masterConfig = isAllOn;
+    } else {
+      if (config[key]) {
+        keys(config).forEach(key => {
+          config[key] = true;
+        });
+      } else {
+        keys(config).forEach(key => {
+          config[key] = false;
+        });
+      }
     }
 
     setConfig({
