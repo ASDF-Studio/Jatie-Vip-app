@@ -1,36 +1,30 @@
-import React, { useState ,useEffect} from 'react';
-import {
-  View,
-  FlatList,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  Image,
-  ImageBackground,
-  Alert,
-} from 'react-native';
-import { theme } from '@/theme';
-import { faEllipsis, faFlag, faLock, faMessage, faPlay, faTrash, faUserPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
-import { Card, CardBody, CustomLoader, HorizontalLine, Icon, MediaContainer, ModalDown, ModalList } from '@/components';
-import { ms, vs } from 'react-native-size-matters';
-import { FontFamily } from '@/theme/Fonts';
-import { strings } from '@/localization';
+import { Card, CardBody, HorizontalLine, MediaContainer, ModalDown, ModalList } from '@/components';
 import { NAVIGATION } from '@/constants';
+import { strings } from '@/localization';
+import { theme } from '@/theme';
+import { FontFamily } from '@/theme/Fonts';
+import { faFlag, faLock, faMessage, faTrash, faUserPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { useEffect, useState } from 'react';
+import {
+  Alert, FlatList, Image, StyleSheet,
+  Text,
+  TouchableOpacity, View
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { ms, vs } from 'react-native-size-matters';
 
-import { useDispatch, useSelector } from 'react-redux';
-import { geAllPastGiveAwayData } from '@/selectors/PostSelectors';
 import {
   getAllPastGiveaway,
   getAllPastGiveawayPagination,
-  TYPES,
+  TYPES
 } from '@/actions/PostActions';
-import { getUser } from '@/selectors/UserSelectors';
-import { useIsFocused } from '@react-navigation/native';
+import { geAllPastGiveAwayData } from '@/selectors/PostSelectors';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
+import { getUser } from '@/selectors/UserSelectors';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { useIsFocused } from '@react-navigation/native';
 import { ActivityIndicator } from 'react-native';
-import { getUserProfileByUserId } from '@/actions/UserActions';
+import { useDispatch, useSelector } from 'react-redux';
 export default function Past({ navigation, userType }) {
   const getdataOfPast = useSelector(geAllPastGiveAwayData);
   // console.log('selector data', getdataOfPast)
