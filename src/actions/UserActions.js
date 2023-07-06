@@ -1249,6 +1249,17 @@ export const searchUser = searchuservalue => async dispatch => {
   }
 };
 
+export const updateFCMToken = (data) => async dispatch => {
+  dispatch(updateFcmTokenRequest());
+
+  try {
+    const user = await UserController.updateFCMTokenRequest(data);
+    dispatch(updateFcmTokenSuccess(user));
+    // navigation.reset({ index: 0, routes: [{ name: NAVIGATION.role }] })
+  } catch (error) {
+    dispatch(updateFcmTokenError(error));
+  }
+};
 //Unblock User By id
 // export const unblockUserById = (data) => async dispatch => {
 //   dispatch(unblockUserByIdRequest());

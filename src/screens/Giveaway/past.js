@@ -1,10 +1,10 @@
+import React,{ useEffect, useState } from 'react';
 import { Card, CardBody, HorizontalLine, MediaContainer, ModalDown, ModalList } from '@/components';
 import { NAVIGATION } from '@/constants';
 import { strings } from '@/localization';
 import { theme } from '@/theme';
 import { FontFamily } from '@/theme/Fonts';
 import { faFlag, faLock, faMessage, faTrash, faUserPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
-import { useEffect, useState } from 'react';
 import {
   Alert, FlatList, Image, StyleSheet,
   Text,
