@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 import { View, StyleSheet, TouchableOpacity, Pressable, Text, Platform, ScrollView } from 'react-native';
 import { TextField } from '@/components';
 import { theme } from '@/theme';
@@ -9,7 +9,6 @@ import { strings } from '@/localization';
 import { faPaperPlaneTop } from '@fortawesome/pro-regular-svg-icons';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { showMessage } from 'react-native-flash-message';
 import {
   commentOnPost,
   editComment,
@@ -21,20 +20,13 @@ import {
 } from '@/actions/PostActions';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { Loader } from './Loader';
-import { useEffect } from 'react';
-import { ScrollView } from 'react-native';
+
 import {
   getAllPostData,
   getPostByIdData,
   getSearchData,
 } from '@/selectors/PostSelectors';
 import { showMessage } from "react-native-flash-message";
-import { commentOnPost, editComment, getAllPostSuccess, getPostById, getPostByIdSuccess, searchUserbyUserName, TYPES } from '@/actions/PostActions';
-import { isLoadingSelector } from '@/selectors/StatusSelectors';
-import { Loader } from './Loader';
-import { useEffect } from 'react';
-
-import { getAllPostData, getPostByIdData } from '@/selectors/PostSelectors';
 import { FontFamily } from '@/theme/Fonts';
 import { POST_TYPE } from '@/constants/enums';
 import { getUser } from '@/selectors/UserSelectors';

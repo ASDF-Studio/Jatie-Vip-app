@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect} from 'react';
 import {
   View,
   FlatList,
@@ -10,28 +10,8 @@ import {
   Alert,
 } from 'react-native';
 import { theme } from '@/theme';
-import {
-  faEllipsis,
-  faFlag,
-  faLock,
-  faMessage,
-  faPlay,
-  faTrash,
-  faUserPlus,
-  faXmark,
-} from '@fortawesome/free-solid-svg-icons';
-import {
-  Card,
-  CardBody,
-  CustomLoader,
-  HorizontalLine,
-  Icon,
-  MediaContainer,
-  ModalDown,
-  ModalList,
-} from '@/components';
 import { faEllipsis, faFlag, faLock, faMessage, faPlay, faTrash, faUserPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
-import { Card, CardBody, CustomLoader, HorizontalLine, Icon, ModalDown, ModalList } from '@/components';
+import { Card, CardBody, CustomLoader, HorizontalLine, Icon, MediaContainer, ModalDown, ModalList } from '@/components';
 import { ms, vs } from 'react-native-size-matters';
 import { FontFamily } from '@/theme/Fonts';
 import { strings } from '@/localization';
@@ -40,7 +20,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { geAllPastGiveAwayData } from '@/selectors/PostSelectors';
-import { useEffect } from 'react';
 import {
   getAllPastGiveaway,
   getAllPastGiveawayPagination,

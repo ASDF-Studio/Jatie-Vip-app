@@ -16,13 +16,6 @@ import {
   getPostByIdData,
   getSearchData,
 } from '@/selectors/PostSelectors';
-import {
-  getAllPostSuccess,
-  getPostByIdSuccess,
-  searchAllPost,
-  searchAllPostSuccess,
-} from '@/actions/PostActions';
-import { getAllPostData, getPostByIdData } from '@/selectors/PostSelectors';
 import { getAllPostSuccess, getPostById } from '@/actions/PostActions';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import Share from 'react-native-share';

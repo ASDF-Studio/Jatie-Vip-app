@@ -1,26 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useRef } from 'react';
 import { strings } from '@/localization';
 import { theme, TextStyles } from '@/theme';
 import { ms, vs } from 'react-native-size-matters';
 import {
   faCheck,
   faChevronDown,
-  faFlag,
-  faImage,
-  faMessage,
-  faThumbsUp,
-  faTrash,
-  faUserPlus,
-  faXmark,
-  faPen,
-  faPlay,
-  faLock,
 } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { FontFamily } from '@/theme/Fonts';
 import { NAVIGATION } from '@/constants';
-import DropDownPicker from 'react-native-dropdown-picker';
 import {
   Text,
   View,
@@ -92,26 +81,16 @@ import { globalReset } from '@/actions/GlobalActions';
 import SearchPost from './SearchPost';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import queryString from 'query-string';
-import {
-  bannedUserById,
-  bannedUsers,
-  followers,
-  getUserProfileByUserId,
-  unBannedUserById,
-} from '@/actions/UserActions';
 import { SwiperViewer } from '@/components/SwiperComponent';
-import { useRef } from 'react';
+
 import { isEmpty, last } from 'lodash';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
 import { MemoPostcard } from '@/components/PostCard';
 import { CustomSwitch } from '@/components/switch';
 import PostOptions from './PostOptions';
-
 import { POST_TYPE } from '@/constants/enums';
 import { followers, updateFCMToken } from '@/actions/UserActions';
-import { SwiperViewer } from '@/components/SwiperComponent';
-import { useRef } from 'react';
 import messaging from '@react-native-firebase/messaging';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 export function Home({ navigation }) {
