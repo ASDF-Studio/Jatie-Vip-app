@@ -27,6 +27,7 @@ import { TopBackButton } from '@/components';
 import { ms, s, vs } from 'react-native-size-matters';
 import { strings } from '@/localization';
 import ImagePicker from 'react-native-image-crop-picker';
+// import { ScrollView } from 'react-native-gesture-handler';
 import { faCheck } from '@fortawesome/pro-regular-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
@@ -465,7 +466,7 @@ export default function EditProfile({ navigation }) {
               }}
             />
           </View>
-        </View>
+        </View> 
         <View style={styles.formContainer}>
           <View style={styles.textFiledContainer}>
             <Text style={styles.textFieldLebel}>

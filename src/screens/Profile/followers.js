@@ -41,13 +41,11 @@ import { getAllPostData } from '@/selectors/PostSelectors';
 import { navigate } from '@/navigation/RootNavigation';
 import { DefaultProfile } from '@/assets';
 export default function Followers({ navigation, route }) {
-  const dispatch = useDispatch();
-  const focus = useIsFocused();
-  const { id } = route.params;
-  const { screenName } = route.params;
-  //console.log("id in followers", id)
-  console.log(screenName);
-  const { active } = route.params;
+  const dispatch = useDispatch()
+  const focus = useIsFocused()
+  const { id } = route.params
+  const { screenName } = route.params
+  const { active } = route.params
 
   const [open, setOpen] = useState(false);
   const [followId, setfollowId] = useState('');

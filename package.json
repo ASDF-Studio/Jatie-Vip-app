@@ -38,10 +38,12 @@
     "deprecated-react-native-prop-types": "^4.0.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
+    "npm": "^9.7.1",
     "patch-package": "^6.5.0",
     "prop-types": "^15.8.1",
     "react": "18.0.0",
     "react-native": "0.69.4",
+    "react-native-base64": "^0.2.1",
     "react-native-bootsplash": "^4.3.2",
     "react-native-calendars": "^1.1292.0",
     "react-native-config": "^1.4.6",
@@ -54,6 +56,7 @@
     "react-native-flash-message": "^0.4.0",
     "react-native-gesture-handler": "^2.10.1",
     "react-native-gifted-chat": "^2.0.1",
+    "react-native-iap": "^12.10.5",
     "react-native-image-crop-picker": "^0.39.0",
     "react-native-image-crop-tools": "^1.6.2",
     "react-native-image-zoom-viewer": "^3.0.1",
@@ -72,6 +75,7 @@
     "react-native-size-matters": "^0.4.0",
     "react-native-smooth-pincode-input": "^1.0.9",
     "react-native-svg": "^13.6.0",
+    "react-native-swipe-gestures": "^1.0.5",
     "react-native-swiper-flatlist": "^3.2.2",
     "react-native-switch": "^1.5.1",
     "react-native-thumbnail-video": "^0.1.2",
@@ -81,7 +85,8 @@
     "react-redux": "^8.0.2",
     "redux": "^4.2.0",
     "redux-persist": "^6.0.0",
-    "redux-thunk": "^2.4.1"
+    "redux-thunk": "^2.4.1",
+    "sharp": "^0.32.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

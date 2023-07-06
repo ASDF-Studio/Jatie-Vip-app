@@ -30,6 +30,8 @@ import {
   ModalDown,
   ModalList,
 } from '@/components';
+import { faEllipsis, faFlag, faLock, faMessage, faPlay, faTrash, faUserPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { Card, CardBody, CustomLoader, HorizontalLine, Icon, ModalDown, ModalList } from '@/components';
 import { ms, vs } from 'react-native-size-matters';
 import { FontFamily } from '@/theme/Fonts';
 import { strings } from '@/localization';
@@ -56,7 +58,7 @@ export default function Past({ navigation, userType }) {
   const [showImageView, setShowImageView] = useState(false);
   const [feedImages, setFeedImages] = useState([]);
   const [fetchPastGiveaway, setFetchPastGiveaway] = useState(true);
-  const [showUserModal, setShowUserModal] = useState(false);
+  const [showUserModal, setShowUserModal] = useState(false)
   const user = useSelector(getUser);
   const focus = useIsFocused();
 
@@ -447,3 +449,137 @@ const styles = StyleSheet.create({
     borderColor: theme.light.colors.infoBgLight,
   },
 });
+
+const a = {
+  data: [
+    {
+      id: '609cb5b1-33f0-4278-a52a-62a14ab23be6',
+      userId: '6aae7065-5341-45b1-b717-0c3e3256dc2f',
+      postTitle: '',
+      postBody: 'Desk setup for 2023 Testing',
+      postImg: [],
+      postVideo: '[]',
+      postMediaContent: [
+        {
+          id: 10,
+          url: 'https://d2wwqw32p0xkid.cloudfront.net/photo-1685347379632',
+          mimetype: 'image/jpeg',
+          cover: '',
+        },
+      ],
+      isExclusive: false,
+      isGiveaway: true,
+      isGiveawayActive: false,
+      isPinned: false,
+      isReported: false,
+      isUSAonly: false,
+      isVIPonly: false,
+      upVote: 0,
+      upVoteUserId: [],
+      downVote: 1,
+      downVoteUserId: ['043b316e-1f48-4353-a451-4b8942237708'],
+      shared: 0,
+      sharedUserId: [],
+      postExpires: '2023-06-26T11:57:19+00:00',
+      created_at: '2023-05-25T08:31:42.300487+00:00',
+      updated_at: '2023-05-25T08:31:42.300487+00:00',
+      giveaway_participants: [
+        {
+          participantId: 'b9902993-ca3f-4a2f-9de8-397bf6f4767e',
+          participantRank: 0,
+          user: {
+            id: 'b9902993-ca3f-4a2f-9de8-397bf6f4767e',
+            username: 'vipUser001',
+            fullName: 'Chris Holland1',
+            profilePic:
+              'https://d2wwqw32p0xkid.cloudfront.net/photo-1685424207848.jpg',
+          },
+        },
+      ],
+      winner_lists: [
+        {
+          id: '44bb9b27-35a0-41e4-81dd-966feb308aac',
+          winnerList: [],
+          giveawayId: '609cb5b1-33f0-4278-a52a-62a14ab23be6',
+        },
+      ],
+      has_Joined: true,
+    },
+    {
+      id: '5a5afe32-ccb2-45bc-9d2b-9ad6bc9f9041',
+      userId: '6aae7065-5341-45b1-b717-0c3e3256dc2f',
+      postTitle: 'Giveaway for this month!',
+      postBody:
+        'The wait is over! Your giveaway is coming bakc this year with more excitement and fun. You gonna love the challenges. ',
+      postImg: ['https://d2wwqw32p0xkid.cloudfront.net/photo-1684838431855'],
+      postVideo:
+        '[{"url":"https://d2wwqw32p0xkid.cloudfront.net/photo-1685104437346","cover":"https://d2wwqw32p0xkid.cloudfront.net/photo-1685104437609"}]',
+      postMediaContent: [
+        {
+          url: 'https://d2wwqw32p0xkid.cloudfront.net/photo-1685349841954',
+          mimetype: 'video/mp4',
+          cover: 'https://d2wwqw32p0xkid.cloudfront.net/photo-1685349852423',
+        },
+      ],
+      isExclusive: false,
+      isGiveaway: true,
+      isGiveawayActive: false,
+      isPinned: false,
+      isReported: false,
+      isUSAonly: true,
+      isVIPonly: true,
+      upVote: 0,
+      upVoteUserId: [],
+      downVote: 0,
+      downVoteUserId: [],
+      shared: 0,
+      sharedUserId: [],
+      postExpires: '2023-05-17T08:28:04.405+00:00',
+      created_at: '2023-05-23T10:40:31.941029+00:00',
+      updated_at: '2023-05-23T10:40:31.941029+00:00',
+      giveaway_participants: [
+        {
+          participantId: '043b316e-1f48-4353-a451-4b8942237708',
+          participantRank: 0,
+          user: {
+            id: '043b316e-1f48-4353-a451-4b8942237708',
+            username: 'mantu.kumar',
+            fullName: 'Mantu',
+            profilePic:
+              'https://d2wwqw32p0xkid.cloudfront.net/photo-1680687126672.jpg',
+          },
+        },
+        {
+          participantId: 'b9902993-ca3f-4a2f-9de8-397bf6f4767e',
+          participantRank: 0,
+          user: {
+            id: 'b9902993-ca3f-4a2f-9de8-397bf6f4767e',
+            username: 'vipUser001',
+            fullName: 'Chris Holland1',
+            profilePic:
+              'https://d2wwqw32p0xkid.cloudfront.net/photo-1685424207848.jpg',
+          },
+        },
+        {
+          participantId: '6aae7065-5341-45b1-b717-0c3e3256dc2f',
+          participantRank: 0,
+          user: {
+            id: '6aae7065-5341-45b1-b717-0c3e3256dc2f',
+            username: 'jatieVIP',
+            fullName: 'JatieVIP',
+            profilePic:
+              'https://d2wwqw32p0xkid.cloudfront.net/photo-1679288548479.jpg',
+          },
+        },
+      ],
+      winner_lists: [
+        {
+          id: '8638f9e9-4585-45b7-b893-01744822f7ac',
+          winnerList: ['043b316e-1f48-4353-a451-4b8942237708'],
+          giveawayId: '5a5afe32-ccb2-45bc-9d2b-9ad6bc9f9041',
+        },
+      ],
+      has_Joined: true,
+    },
+  ],
+};

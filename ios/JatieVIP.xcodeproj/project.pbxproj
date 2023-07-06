@@ -31,9 +31,9 @@
 		8FD1C2AD4726C1D402000964 /* libPods-JatieVIPCommonPods-JatieVIPStaging.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B1ED3DD9578FA01F1EFB654E /* libPods-JatieVIPCommonPods-JatieVIPStaging.a */; };
 		9AAE3D4D26A74506B0FFA598 /* Recoleta-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D5D6D3F684884F0F8E02EB25 /* Recoleta-SemiBold.ttf */; };
 		9E4BC4D2E3DC4FC09F6754B8 /* BrandonGrotesque-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = A522AB3D3458474FA71A76AD /* BrandonGrotesque-Medium.otf */; };
-		A281300A2A1DD84B00297154 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A28130092A1DD84B00297154 /* GoogleService-Info.plist */; };
-		A281300B2A1DD84B00297154 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A28130092A1DD84B00297154 /* GoogleService-Info.plist */; };
-		A281300C2A1DD84B00297154 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A28130092A1DD84B00297154 /* GoogleService-Info.plist */; };
+		A2EB04782A4976BC00E674E8 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A2EB04772A4976BC00E674E8 /* GoogleService-Info.plist */; };
+		A2EB04792A4976BC00E674E8 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A2EB04772A4976BC00E674E8 /* GoogleService-Info.plist */; };
+		A2EB047A2A4976BC00E674E8 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A2EB04772A4976BC00E674E8 /* GoogleService-Info.plist */; };
 		A63541382C890B5B1EE9B6B7 /* libPods-JatieVIPCommonPods-JatieVIPDev.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FAF6C860D4CD94CB50D37C7 /* libPods-JatieVIPCommonPods-JatieVIPDev.a */; };
 		B591AB09DE7E4D5BA144D6D2 /* Recoleta-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 29FCAB1F02C14E359CB1E64C /* Recoleta-Light.ttf */; };
 		BC6D0DFD8D83488E8CC225EB /* BrandonGrotesque-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = EAEA88FD91234D14883E3B8B /* BrandonGrotesque-Bold.otf */; };
@@ -80,6 +80,7 @@
 		434813FA0E253FABF68DCB5D /* Pods-JatieVIPCommonPods-JatieVIP.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JatieVIPCommonPods-JatieVIP.debug.xcconfig"; path = "Target Support Files/Pods-JatieVIPCommonPods-JatieVIP/Pods-JatieVIPCommonPods-JatieVIP.debug.xcconfig"; sourceTree = "<group>"; };
 		4FAF6C860D4CD94CB50D37C7 /* libPods-JatieVIPCommonPods-JatieVIPDev.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-JatieVIPCommonPods-JatieVIPDev.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		53185D5D3AFA118955DFA49A /* Pods-JatieVIPCommonPods-JatieVIP.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JatieVIPCommonPods-JatieVIP.release.xcconfig"; path = "Target Support Files/Pods-JatieVIPCommonPods-JatieVIP/Pods-JatieVIPCommonPods-JatieVIP.release.xcconfig"; sourceTree = "<group>"; };
+		58AC98BB2A4960840035DA69 /* JatieVIPRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = JatieVIPRelease.entitlements; path = JatieVIP/JatieVIPRelease.entitlements; sourceTree = "<group>"; };
 		59718F5FBC4F4B5EA0F22C54 /* Recoleta-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Recoleta-Regular.ttf"; path = "../src/assets/fonts/Recoleta-Regular.ttf"; sourceTree = "<group>"; };
 		663E97D2F6E64EBDBCA3F6E0 /* BrandonGrotesque-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BrandonGrotesque-Regular.otf"; path = "../src/assets/fonts/BrandonGrotesque-Regular.otf"; sourceTree = "<group>"; };
 		66CA798C1C394B98A23DAC8A /* Recoleta-Black.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Recoleta-Black.ttf"; path = "../src/assets/fonts/Recoleta-Black.ttf"; sourceTree = "<group>"; };
@@ -89,8 +90,8 @@
 		957283147564A9FC798D540F /* Pods-JatieVIPCommonPods-JatieVIPTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JatieVIPCommonPods-JatieVIPTests.release.xcconfig"; path = "Target Support Files/Pods-JatieVIPCommonPods-JatieVIPTests/Pods-JatieVIPCommonPods-JatieVIPTests.release.xcconfig"; sourceTree = "<group>"; };
 		965DA0119491402B81B92B98 /* BrandonGrotesque-Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BrandonGrotesque-Light.otf"; path = "../src/assets/fonts/BrandonGrotesque-Light.otf"; sourceTree = "<group>"; };
 		9BBD4796F9F34EC392C52D1C /* Recoleta-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Recoleta-Bold.ttf"; path = "../src/assets/fonts/Recoleta-Bold.ttf"; sourceTree = "<group>"; };
-		A28130092A1DD84B00297154 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A29C96622A02609D004CCC3C /* JatieVIP.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = JatieVIP.entitlements; path = JatieVIP/JatieVIP.entitlements; sourceTree = "<group>"; };
+		A2EB04772A4976BC00E674E8 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A3EA4C1D7B36031F37E3BF30 /* libPods-JatieVIPCommonPods-JatieVIP.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-JatieVIPCommonPods-JatieVIP.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A522AB3D3458474FA71A76AD /* BrandonGrotesque-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BrandonGrotesque-Medium.otf"; path = "../src/assets/fonts/BrandonGrotesque-Medium.otf"; sourceTree = "<group>"; };
 		A52A7BFAF960F29BF6666E18 /* Pods-JatieVIPCommonPods-JatieVIPDev.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JatieVIPCommonPods-JatieVIPDev.release.xcconfig"; path = "Target Support Files/Pods-JatieVIPCommonPods-JatieVIPDev/Pods-JatieVIPCommonPods-JatieVIPDev.release.xcconfig"; sourceTree = "<group>"; };
@@ -161,7 +162,8 @@
 		13B07FAE1A68108700A75B9A /* JatieVIP */ = {
 			isa = PBXGroup;
 			children = (
-				A28130092A1DD84B00297154 /* GoogleService-Info.plist */,
+				A2EB04772A4976BC00E674E8 /* GoogleService-Info.plist */,
+				58AC98BB2A4960840035DA69 /* JatieVIPRelease.entitlements */,
 				A29C96622A02609D004CCC3C /* JatieVIP.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
@@ -402,7 +404,7 @@
 			files = (
 				0BE752FD2948A131003E42AA /* Images.xcassets in Resources */,
 				0BE752FE2948A131003E42AA /* BootSplash.storyboard in Resources */,
-				A281300B2A1DD84B00297154 /* GoogleService-Info.plist in Resources */,
+				A2EB04792A4976BC00E674E8 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -412,7 +414,7 @@
 			files = (
 				0BE753102948A689003E42AA /* Images.xcassets in Resources */,
 				0BE753112948A689003E42AA /* BootSplash.storyboard in Resources */,
-				A281300C2A1DD84B00297154 /* GoogleService-Info.plist in Resources */,
+				A2EB047A2A4976BC00E674E8 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -437,7 +439,7 @@
 				9E4BC4D2E3DC4FC09F6754B8 /* BrandonGrotesque-Medium.otf in Resources */,
 				72A91A90E7B64AF6B1C9FB9D /* BrandonGrotesque-MediumItalic.otf in Resources */,
 				F5BDE58CCECD4335811FBEFC /* BrandonGrotesque-Regular.otf in Resources */,
-				A281300A2A1DD84B00297154 /* GoogleService-Info.plist in Resources */,
+				A2EB04782A4976BC00E674E8 /* GoogleService-Info.plist in Resources */,
 				BD4592894E5F45E5A935AF49 /* BrandonGrotesque-RegularItalic.otf in Resources */,
 				5C0E443350C04DCABB3522F0 /* BrandonGrotesque-ThinItalic.otf in Resources */,
 			);
@@ -986,7 +988,7 @@
 				CODE_SIGN_ENTITLEMENTS = JatieVIP/JatieVIP.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 25;
 				DEVELOPMENT_TEAM = SW6B2UY5KY;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
@@ -995,7 +997,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1004,6 +1006,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.jatievip.air;
 				PRODUCT_NAME = JatieVIP;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -1017,20 +1022,18 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = JatieVIP/JatieVIP.entitlements;
+				CODE_SIGN_ENTITLEMENTS = JatieVIP/JatieVIPRelease.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = SW6B2UY5KY;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 25;
+				DEVELOPMENT_TEAM = SW6B2UY5KY;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				INFOPLIST_FILE = JatieVIP/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1039,7 +1042,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.jatievip.air;
 				PRODUCT_NAME = JatieVIP;
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = JatieProv;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";

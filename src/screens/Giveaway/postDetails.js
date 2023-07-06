@@ -166,7 +166,10 @@ export default function PostDetails({ navigation, route }) {
               <Timer item={data} />
               <CardBody text={data.postBody} />
               {link(item.link)}
-              {/* <CardBody text={item.MoreDesc} /> */}
+              <CardBody text={item.MoreDesc} />
+              <Text style={styles.EndTimeTxt}>
+                {/* {item.postExpires} */}
+              </Text>
               <View style={styles.thumbnailContainer}>
                 {/* map function for images */}
                 {data.postMediaContent.map(item => {
@@ -186,11 +189,9 @@ export default function PostDetails({ navigation, route }) {
                   );
                 })}
                 <View>
-                  {/* <View style={styles.PostButtonContainer}>
-                    <TouchableOpacity
-
-
-                    >
+                  <View>
+                    {/* <View style={styles.PostButtonContainer}>
+                    <TouchableOpacity>
                       <Button onPress={() => { joinGiveAwayhandlePress(), setActive(false) }}
                         title={strings.giveaway.joinThisGiveaway}
                         style={styles.joinBtn} />
@@ -251,6 +252,7 @@ export default function PostDetails({ navigation, route }) {
                     {/* {termsAndCondition(strings.giveaway.onlyUS)} */}
                   </View>
                 </View>
+              </View>
               </View>
             </Card>
           </View>
@@ -351,6 +353,8 @@ const styles = StyleSheet.create({
   PostButtonContainer: {
     margin: ms(10),
     marginBottom: ms(0),
+    marginHorizontal: ms(10),
+    marginTop: ms(10)
   },
   termsAndConsition: {
     paddingLeft: ms(20),

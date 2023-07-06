@@ -170,9 +170,10 @@ export const en = {
     benefit_3: 'Private message from Josh and Katie',
     benefit_4: 'VIP Member only feed',
     benefit_5: 'VIP only live streams and one-on-one',
-    monthlyPlan: '$9.99/Month',
+    monthlyPlan: '$12.99/Month',
     yearlyPlan: '$99/Year',
     upgradeYearlySubsription: 'Upgrade to Yearly Subscription',
+    donwgradeMonthlySubsription: 'Downgrade to Monthly Subscription',
     saveByYearlyPlan: 'Save $20.88 by choosing the Yearly plan',
     searchUser: 'Search Users...',
     searchForUsers: 'Search for the users...',
@@ -425,4 +426,8 @@ export const en = {
     post: 'Reported Posts',
     users: 'Reported Users',
   },
+  subscription: {
+    restorePurchases: "Restore Purchases",
+    cancelSubscription: "Then subscription period applies cancel anytime up to 24hrs prior to end of trial"
+  }
 };

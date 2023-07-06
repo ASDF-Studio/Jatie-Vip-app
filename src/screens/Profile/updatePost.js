@@ -148,7 +148,6 @@ export default function UpdatePost({ route, navigation }) {
             });
           })
           .catch(e => {
-            console.log('Error: ' + e);
           })
           .finally(() => {
             setImageArray([...imageArray]);
@@ -186,7 +185,6 @@ export default function UpdatePost({ route, navigation }) {
             });
           })
           .catch(e => {
-            console.log('Error: ' + e);
           });
   };
 
@@ -208,7 +206,6 @@ export default function UpdatePost({ route, navigation }) {
             // mimeType.push(image.mime);
           })
           .catch(e => {
-            console.log('Error: ' + e);
           })
           .finally(() => {
             setImageArray([...imageArray]);
@@ -241,7 +238,6 @@ export default function UpdatePost({ route, navigation }) {
               .catch(err => console.log({ err }));
           })
           .catch(e => {
-            console.log('Error: ' + e);
           });
   };
 
@@ -251,7 +247,34 @@ export default function UpdatePost({ route, navigation }) {
         message: strings.home.postBody,
         type: 'danger',
       });
-    } else {
+    } 
+    // else if (postTitle == '') {
+    //   showMessage({
+    //     message: strings.home.postTitle,
+    //     type: "danger"
+    //   })
+    // }
+    // else if (postImg == "") {
+    //   showMessage({
+    //     message: strings.SignUp.dobPlaceHolder,
+    //     type: "danger"
+    //   })
+    // }
+    else {
+      let DATA = {
+        postId,
+        userId,
+        postTitle,
+        postBody,
+        postImg,
+        preImageArray,
+        mimeType,
+        preMimeType,
+        imageArray,
+        user_Type,
+        actionType,
+      };
+
       if (userType.user == strings.userType.free) {
         dispatch(
           updatePost(
@@ -309,6 +332,13 @@ export default function UpdatePost({ route, navigation }) {
               isScheduled: prevData.isScheduled,
             },
           });
+        dispatch(getAllPost(user?.id, strings.sortBy.recent, false));
+        {
+          userType.user == strings.userType.admin &&
+            navigationRef.navigate(NAVIGATION.postOptions, {
+              prevData: DATA,
+            });
+        }
       }
     }
   };

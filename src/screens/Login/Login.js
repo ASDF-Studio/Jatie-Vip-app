@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Text, TouchableOpacity, View, Keyboard } from 'react-native';
+import { Text, TouchableOpacity, View, Keyboard, Linking } from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { TYPES, login } from '@/actions/UserActions';
 import { Button, ErrorView, TextField } from '@/components';
@@ -16,6 +16,7 @@ import Recaptcha from 'react-native-recaptcha-that-works';
 import { CountryPicker } from 'react-native-country-codes-picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { customShowMessage } from '@/utils';
+import { PRIVACY_POLICY_URL } from '@/constants/apiConstants';
 export function Login({ route }) {
   const recaptcha = useRef();
   const { postId, postIndex } = route.params || {};
@@ -54,7 +55,6 @@ export function Login({ route }) {
     validation();
   };
   const send = () => {
-    console.log('send!');
     recaptcha.current.open();
   };
 
@@ -136,7 +136,9 @@ export function Login({ route }) {
           style={styles.submitButton}
           title={isLoading ? strings.common.loading : strings.login.continue}
         />
-        <Text style={styles.termsAndConditionsStyle}>
+        <Text
+          onPress={() => { Linking.openURL(PRIVACY_POLICY_URL) }}
+          style={styles.termsAndConditionsStyle}>
           {strings.login.byContinue}
           <Text style={styles.linkColor}>
             {strings.login.termsAndConditions}

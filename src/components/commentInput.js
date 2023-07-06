@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Pressable,
-  Text,
-  Platform,
-} from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Pressable, Text, Platform, ScrollView } from 'react-native';
 import { TextField } from '@/components';
 import { theme } from '@/theme';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -35,6 +28,13 @@ import {
   getPostByIdData,
   getSearchData,
 } from '@/selectors/PostSelectors';
+import { showMessage } from "react-native-flash-message";
+import { commentOnPost, editComment, getAllPostSuccess, getPostById, getPostByIdSuccess, searchUserbyUserName, TYPES } from '@/actions/PostActions';
+import { isLoadingSelector } from '@/selectors/StatusSelectors';
+import { Loader } from './Loader';
+import { useEffect } from 'react';
+
+import { getAllPostData, getPostByIdData } from '@/selectors/PostSelectors';
 import { FontFamily } from '@/theme/Fonts';
 import { POST_TYPE } from '@/constants/enums';
 import { getUser } from '@/selectors/UserSelectors';
@@ -60,7 +60,7 @@ export const CommentInput = React.forwardRef((props, ref) => {
   }, [searchedKeyword]);
   // Create config as static object out of function component
   // Or memoize it inside FC using `useMemo`
-  const triggersConfig: TriggersConfig<'mention'> = {
+  const triggersConfig = {
     mention: {
       // Symbol that will trigger keyword change
       trigger: '@',
@@ -76,7 +76,6 @@ export const CommentInput = React.forwardRef((props, ref) => {
   const { textInputProps, triggers, mentionState } = useMentions({
     value: comment,
     onChange: setComment,
-
     // Add the config here
     triggersConfig,
   });

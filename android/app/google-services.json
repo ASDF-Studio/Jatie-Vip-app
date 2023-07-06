@@ -29,6 +29,13 @@
             {
               "client_id": "901601336384-holt0bs6gcgga3hef9ndhvnb4in73aor.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "901601336384-ddiohnickvtra0pbps3qod2s17lc2kid.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.jatievip.air"
+              }
             }
           ]
         }

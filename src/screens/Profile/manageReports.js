@@ -40,6 +40,7 @@ export default function ManageReports({ navigation }) {
     viewStatus: false,
     dateCursor: '',
   });
+  const reports = user?.allReportsKeyKey
 
   useEffect(() => {
     if (focus) {

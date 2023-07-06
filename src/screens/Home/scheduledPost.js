@@ -59,19 +59,10 @@ export default function SchedulePost({ navigation }) {
   const [feedImages, setFeedImages] = useState([]);
 
   const onLoadMorePost = () => {
-    const post = ALLPOST.slice(-1);
-    console.log('LAST_POST===', post[0].created_at);
-    const page = post[0].created_at;
-    dispatch(
-      getAllPostPagination(
-        user?.id,
-        sortBy,
-        follwingSwitch,
-        vipArea == `${strings.home.newFeed}` ? false : true,
-        page
-      )
-    );
-  };
+    const post = ALLPOST.slice(-1)
+    const page = post[0].created_at
+    dispatch(getAllPostPagination(user?.id, sortBy, follwingSwitch, vipArea == `${strings.home.newFeed}` ? false : true, page))
+  }
   // const renderFooterPost = () => {
   //   return (
   //     <View style={{}}>

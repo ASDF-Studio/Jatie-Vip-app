@@ -1,5 +1,5 @@
-export const API_BASE_URL = 'https://staging.jatievip.com/api/';
-
+export const API_BASE_URL = "https://staging.jatievip.com/api/";
+export const PRIVACY_POLICY_URL = "https://www.jatievip.com/policies/privacy-policy";
 export const API_END_POINTS = {
   LOGIN: 'auth/login',
   VERIFY_OTP: 'auth/verifyotp',
@@ -135,5 +135,17 @@ export const API_END_POINTS = {
   REMOVE_PINNED_POST: 'post/remove_pinned_post',
 
   //notification settings
-  USER_NOTIFICATION_SETTINGS: 'user/notification_settings',
+    USER_NOTIFICATION_SETTINGS: 'user/notification_settings',
+    //baned User By ID
+    BANNED_USER_BY_ID: 'user/ban_user',
+
+    //GET ALL NOTIFICATIONS
+    GET_ALL_NOTIFICATIONS: 'user/all_notification_by_user_id',
+
+    //MARK_ALL_READ_NOTIFICATIONS
+    MARK_ALL_READ_NOTIFICATIONS: 'user/notification_mark_as_read',
+    UPDATE_FCM_TOKEN: 'user/save_fcm_token',
+    UPDATE_USER_TYPE: 'vip/update_user_type',
+    VALIDATE_RECEIPT: 'vip/receipt_validation'
+
 };

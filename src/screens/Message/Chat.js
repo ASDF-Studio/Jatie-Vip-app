@@ -126,7 +126,7 @@ export default function Chat({ navigation, route }) {
         });
       })
       .catch(e => {
-        console.log('Error: ' + e);
+
       });
   };
 
@@ -143,7 +143,7 @@ export default function Chat({ navigation, route }) {
             _id: documentSnapshot.id,
           });
         });
-        console.log('Messages retrieved!', kmessages);
+
         setMessages([...kmessages]);
       });
 
@@ -156,8 +156,7 @@ export default function Chat({ navigation, route }) {
 
   const onSend = (messages = []) => {
     const chatMessage = messages[0].text
-    console.log('check message', chatMessage)
-    console.log('check images -->', imageArray)
+
 
     const getMessageType = () => {
       if (imageArray.length > 0 && chatMessage) {
@@ -186,7 +185,6 @@ export default function Chat({ navigation, route }) {
     firestore()
       .collection(CHATS).doc(`dummyuser-${user?.id}`).collection(MESSAGES).add(messagePayload)
       .then(() => {
-        console.log('Message added!');
         // setImageArray([])
       });
     setText('')

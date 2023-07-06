@@ -260,6 +260,7 @@ export default function Comments({ navigation, route }) {
                   }
                   name={item?.user?.fullName}
                   userId={USER?.id}
+                  commentUserId={item?.userId}
                   commentData={item}
                   commentIndex={index}
                   commentUserId={item?.userId}

@@ -138,7 +138,6 @@ export default function UpdatePost({ route, navigation }) {
             });
           })
           .catch(e => {
-            console.log('Error: ' + e);
           })
           .finally(() => {
             setImageArray([...imageArray]);
@@ -176,7 +175,6 @@ export default function UpdatePost({ route, navigation }) {
             });
           })
           .catch(e => {
-            console.log('Error: ' + e);
           });
   };
 
@@ -198,7 +196,6 @@ export default function UpdatePost({ route, navigation }) {
             // mimeType.push(image.mime);
           })
           .catch(e => {
-            console.log('Error: ' + e);
           })
           .finally(() => {
             setImageArray([...imageArray]);
@@ -231,7 +228,6 @@ export default function UpdatePost({ route, navigation }) {
               .catch(err => console.log({ err }));
           })
           .catch(e => {
-            console.log('Error: ' + e);
           });
   };
 

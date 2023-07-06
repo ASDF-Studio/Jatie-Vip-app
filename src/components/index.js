@@ -38,3 +38,4 @@ export * from '@/components/fileScroller';
 export * from '@/components/PostCard';
 export * from '@/components/Input';
 export * from '@/components/PostOptions';
+export * from "@/components/Divider"

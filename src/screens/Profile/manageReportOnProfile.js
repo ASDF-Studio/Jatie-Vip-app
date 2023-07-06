@@ -86,20 +86,18 @@ export default function ManageReportOnMessage({ navigation, route }) {
   const [selectedPost, setSelectedPost] = useState();
   const { item } = route.params;
   const [loading, setLoading] = useState(false);
-
+  const dispatch = useDispatch()
   const { reportedByUserDetails } = route.params;
-  const dispatch = useDispatch();
+
 
   const getUserProfile = useSelector(getUser);
   const [index, setIndex] = useState();
 
-  //console.log('userDataaaaaaaaa', user)
 
-  const focus = useIsFocused();
-  const userr = useSelector(getUser);
-
+  const focus = useIsFocused()
+  const userr = useSelector(getUser)
   useEffect(() => {
-    dispatch(getUserProfileByUserId(item, userr.id));
+    dispatch(getUserProfileByUserId(item, userr.id))
     setTimeout(() => {
       getUserPostById(item);
     }, 100);
@@ -126,7 +124,6 @@ export default function ManageReportOnMessage({ navigation, route }) {
     } else {
       dispatch(followUser(userr?.id, item));
       // setOpen(false)
-      console.log('follower log', userr?.id, item);
 
       setTimeout(() => {
         dispatch(getUserProfileByUserId(item, userr.id));

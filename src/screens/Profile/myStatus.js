@@ -3,6 +3,9 @@ import {
   View,
   FlatList,
   StyleSheet,
+  Image,
+  TouchableOpacity,
+  ImageBackground,
   Text,
   SafeAreaView,
   ActivityIndicator,
@@ -134,7 +137,6 @@ export default function MyStatus({ navigation }) {
           onEndReachedThreshold={0.1}
           onEndReached={() => {
             if (!fetchExclusivePost) {
-              // console.log(onEndReachedCalledDuringMomentum)
               onLoadMorePost();
               setExclusivePost(true);
               // onEndReachedCalledDuringMomentum = true;
@@ -182,6 +184,7 @@ export default function MyStatus({ navigation }) {
                   }
                   isDownVoted={item?.has_downvoted}
                   isUpvoted={item?.has_upvoted}
+                   
                   commentCount={item?.comments_aggregate?.aggregate?.count ?? 0}
                   sharePress={() => console.log('share')}
                   morePress={() => {
@@ -235,6 +238,7 @@ export default function MyStatus({ navigation }) {
             iconBg={theme.light.colors.infoBgLight}
             iconColor={theme.light.colors.secondary}
             // onPress={console.log(postId, user?.id)}
+
             onPress={() => {
               setReplace(true), setOpen(false);
             }}

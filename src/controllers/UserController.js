@@ -188,7 +188,7 @@ export class UserController {
     imageArray,
     isVip
   ) {
-    console.log('first', imageArray);
+    // console.log('first', imageArray);
     return new Promise(async (resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.CREATE_POST;
       let data = new FormData();
@@ -212,7 +212,7 @@ export class UserController {
       data.append('isVIPonly', isVip);
 
       data.append('postImg', mimeType == null && file);
-      console.log('CREATE__POST', data);
+      // console.log('CREATE__POST', data);
 
       const headers = {
         'Content-Type': 'multipart/form-data',
@@ -221,7 +221,7 @@ export class UserController {
       await HttpClient.post(endpoint, data, { headers })
         .then(response => {
           resolve(response);
-          console.log('response of create post', response);
+          // console.log('response of create post', response);
         })
         .catch(error => {
           reject(error);
@@ -325,14 +325,12 @@ export class UserController {
       const headers = {
         'Content-Type': 'multipart/form-data',
       };
-      console.log('  ======', data);
+
       await HttpClient.post(endpoint, data, { headers })
         .then(response => {
-          console.log('resonse -================', response);
           resolve(response);
         })
         .catch(error => {
-          console.log('error ================', error);
           reject(error);
         });
     });
@@ -470,11 +468,10 @@ export class UserController {
       const headers = {
         'Content-Type': 'multipart/form-data',
       };
-
       await HttpClient.post(endpoint, data, { headers })
         .then(response => {
           resolve(response);
-          console.log('response of create post', JSON.stringify(response));
+
         })
         .catch(error => {
           reject(error);
@@ -678,7 +675,6 @@ export class UserController {
         })
         .catch(error => {
           reject(new Error(error.message));
-          console.log('error of all manage Reports', error);
         });
     });
   }
@@ -690,7 +686,6 @@ export class UserController {
       HttpClient.post(endpoint)
         .then(response => {
           resolve(response);
-          console.log('response of all banned Users', response);
         })
         .catch(error => {
           reject(new Error(error.message));
@@ -755,10 +750,10 @@ export class UserController {
       HttpClient.post(endpoint, data)
         .then(response => {
           resolve(response);
-          console.log(
-            'response of All Notifications',
-            JSON.stringify(response)
-          );
+          // console.log(
+          //   'response of All Notifications',
+          //   JSON.stringify(response)
+          // );
         })
         .catch(error => {
           reject(new Error(error.message));
@@ -947,4 +942,87 @@ export class UserController {
         });
     });
   }
+  static async updateFCMTokenRequest(data) {
+
+    return new Promise((resolve, reject) => {
+      const endpoint =
+        API_BASE_URL + API_END_POINTS.UPDATE_FCM_TOKEN;
+
+      //  console.log("endPoint", endpoint)
+      var Data = JSON.stringify({
+        "loggedInUserId": data.loggedInUserId,
+        "fcm_token": data.fcm_token,
+        "topic": "general",
+        "userId": data.loggedInUserId
+      });
+      console.log("FCM_DATA", Data);
+      HttpClient.post(endpoint, Data)
+        .then(response => {
+          resolve(response);
+          console.log(
+            'response of Update FCM TOKEN',
+            JSON.stringify(response)
+          );
+        })
+        .catch(error => {
+          reject(new Error(error.message));
+          console.log('error of Update FCM TOKEN', error);
+        });
+    });
+  }
+
+
+
+  static async validateReceiptRequest(data) {
+
+    return new Promise((resolve, reject) => {
+      const endpoint =
+        API_BASE_URL + API_END_POINTS.VALIDATE_RECEIPT;
+      var DATA = JSON.stringify({
+        "receipt": data.receipt,
+        "userId": data.loggedInUserId
+      });
+      HttpClient.post(endpoint, DATA)
+        .then(response => {
+          resolve(response);
+          console.log(
+            'response of Validate receipt',
+            JSON.stringify(response)
+          );
+        })
+        .catch(error => {
+          reject(new Error(error.message));
+          console.log('error of Validate receipt', error);
+        });
+    });
+  }
+
+
+  static async updateUserTypeRequest(data) {
+
+    return new Promise((resolve, reject) => {
+      const endpoint =
+        API_BASE_URL + API_END_POINTS.UPDATE_USER_TYPE;
+      var DATA = JSON.stringify({
+        "isVIP": data.isVIP,
+        "userId": data.userId
+      });
+
+      HttpClient.post(endpoint, DATA)
+        .then(response => {
+          resolve(response);
+          console.log(
+            'response of update user type',
+            JSON.stringify(response)
+          );
+
+        })
+        .catch(error => {
+          reject(new Error(error.message));
+          console.log('error of update user type', error);
+        });
+    });
+  }
+
+
 }

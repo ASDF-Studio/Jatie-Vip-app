@@ -77,7 +77,6 @@ export default function AdminGroupChat({ navigation, route }) {
         });
       })
       .catch(e => {
-        console.log('Error: ' + e);
       });
   };
 
@@ -163,10 +162,10 @@ export default function AdminGroupChat({ navigation, route }) {
                   {item.sendingImages.length == 1
                     ? imageCountSize(200)
                     : item.sendingImages.length == 2
-                    ? imageCountSize(140)
-                    : item.sendingImages.length >= 3
-                    ? imageCountSize(100)
-                    : null}
+                      ? imageCountSize(140)
+                      : item.sendingImages.length >= 3
+                        ? imageCountSize(100)
+                        : null}
 
                   {item.sendingImages.length <= 3 ? (
                     <View style={styles.imageContainer}>

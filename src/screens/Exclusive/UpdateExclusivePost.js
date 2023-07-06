@@ -43,8 +43,8 @@ import { useMedia } from '@/hooks';
 let nextId = 0;
 
 export default function UpdateExclusivePost({ navigation, route }) {
-  const { DATA } = route.params;
-  console.log('DATA=-=-POPOPOPOPOPOPOP=-', DATA);
+  const { DATA } = route.params
+
   const user = useSelector(getUser);
   const dispatch = useDispatch();
   const { selectedMedias, onDelete, OpenCamera, OpenGallery } = useMedia({

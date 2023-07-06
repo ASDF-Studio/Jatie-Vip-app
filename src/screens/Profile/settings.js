@@ -149,7 +149,10 @@ export default function Settings({ navigation }) {
         {/* This feature is for VIP user */}
         {userType.user == `${strings.userType.vip}` && (
           <TouchableOpacity
-            onPress={() => navigation.navigate(NAVIGATION.notificationSettings)}
+            // onPress={() => navigation.navigate(NAVIGATION.notificationSettings)}
+            // onPress={() => navigation.navigate(NAVIGATION.upgradeMembership)}
+
+            onPress={() => navigation.navigate(NAVIGATION.monthlyUpgradeSuccess)}
             style={styles.list}
           >
             <View style={styles.rawContainer}>

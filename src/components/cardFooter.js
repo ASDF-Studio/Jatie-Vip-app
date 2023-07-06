@@ -22,6 +22,8 @@ import {
   searchAllPost,
   searchAllPostSuccess,
 } from '@/actions/PostActions';
+import { getAllPostData, getPostByIdData } from '@/selectors/PostSelectors';
+import { getAllPostSuccess, getPostById } from '@/actions/PostActions';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import Share from 'react-native-share';
 import { cleanSingle } from 'react-native-image-crop-picker';
@@ -33,6 +35,7 @@ import {
   getAllPostByUserIdSuccess,
 } from '@/actions/UserActions';
 import { memo } from 'react';
+import { ANDROID, DOMAIN_URI, IOS } from '@/constants/dynamicLinksConstant';
 
 export const CardFooter = ({
   postID,
@@ -132,64 +135,114 @@ export const CardFooter = ({
     setDownVote(disLikeCount);
   }, [postID]);
 
+  // const onDownVote = async (postID, userID) => {
+  //   const post =
+  //     postType === POST_TYPE.SINGLE_POST ? singlePost : postArray[postIndex];
+
+  //   const upVoteCount = post.upVote;
+  //   const downVoteCount = post.downVote;
+
+  //   if (!post.has_downvoted) {
+  //     setDownVote(downVoteCount + 1);
+  //     post.has_downvoted = true;
+  //     post.downVote = downVoteCount + 1;
+  //     if (post?.has_upvoted) {
+  //       post.has_upvoted = false;
+  //       post.upVote = upVoteCount - 1;
+  //       setUpVote(upVoteCount - 1);
+  //     }
+  //   } else {
+  //     setDownVote(downVoteCount - 1);
+  //     post.has_downvoted = false;
+  //     post.downVote = downVoteCount - 1;
+  //   }
+  //   // switch (postType) {
+  //   //   case POST_TYPE.SEARCH:
+  //   //     dispatch(searchAllPostSuccess(postArray));
+  //   //     break;
+  //   //   case POST_TYPE.SINGLE_POST:
+  //   //     dispatch(getPostByIdSuccess(post));
+  //   //     break;
+  //   //   case POST_TYPE.PROFILE:
+  //   //     dispatch(getAllPostByLoggedInUserSuccess(postArray));
+  //   //     break;
+  //   //   case POST_TYPE.USER_PROFILE:
+  //   //     dispatch(getAllPostByUserIdSuccess(postArray));
+  //   //     break;
+  //   //   default:
+  //   //     dispatch(
+  //   //       getAllPostSuccess({
+  //   //         data: postArray,
+  //   //       })
+  //   //     );
+  //   // }
+  //   UserController.downVote(postID, userID);
+  //   const arr = postArray;
+  //   const post = postIndex !== undefined ? arr[postIndex] : singlePost;
+  //   var upVotenumber = parseInt(post?.upVote);
+  //   var downVoteNumber = parseInt(post?.downVote);
+  //   if (!post.has_upvoted) {
+  //     setUpVote(upVotenumber + 1);
+  //     post.has_upvoted = true;
+  //     post.upVote = upVotenumber + 1;
+  //     if (post?.has_downvoted) {
+  //       post.has_downvoted = false;
+  //       post.downVote = downVoteNumber - 1;
+  //       setDownVote(downVoteNumber - 1);
+  //     }
+  //   } else {
+  //     setUpVote(upVotenumber - 1);
+  //     post.has_upvoted = false;
+  //     post.upVote = upVotenumber - 1;
+  //   }
+  //   const ob = {
+  //     data: arr,
+  //   };
+  //   if (postIndex) {
+  //     dispatch(getAllPostSuccess(ob));
+  //   } else {
+  //     dispatch(getPostByIdData({ ...singlePost }));
+  //   }
+  //   const apiData = await UserController.upVote(postID, userID);
+  // };
+
   const onDownVote = async (postID, userID) => {
-    const post =
-      postType === POST_TYPE.SINGLE_POST ? singlePost : postArray[postIndex];
-
-    const upVoteCount = post.upVote;
-    const downVoteCount = post.downVote;
-
+    var arr = postArray;
+    const post = postIndex !== undefined ? arr[postIndex] : singlePost;
+    var upVotenumber = parseInt(post?.upVote);
+    var downVoteNumber = parseInt(post?.downVote);
     if (!post.has_downvoted) {
-      setDownVote(downVoteCount + 1);
+      setDownVote(downVoteNumber + 1);
       post.has_downvoted = true;
-      post.downVote = downVoteCount + 1;
+      post.downVote = downVoteNumber + 1;
       if (post?.has_upvoted) {
         post.has_upvoted = false;
-        post.upVote = upVoteCount - 1;
-        setUpVote(upVoteCount - 1);
+        post.upVote = upVotenumber - 1;
+        setUpVote(upVotenumber - 1);
       }
     } else {
-      setDownVote(downVoteCount - 1);
+      setDownVote(downVoteNumber - 1);
       post.has_downvoted = false;
-      post.downVote = downVoteCount - 1;
+      post.downVote = downVoteNumber - 1;
     }
-    // switch (postType) {
-    //   case POST_TYPE.SEARCH:
-    //     dispatch(searchAllPostSuccess(postArray));
-    //     break;
-    //   case POST_TYPE.SINGLE_POST:
-    //     dispatch(getPostByIdSuccess(post));
-    //     break;
-    //   case POST_TYPE.PROFILE:
-    //     dispatch(getAllPostByLoggedInUserSuccess(postArray));
-    //     break;
-    //   case POST_TYPE.USER_PROFILE:
-    //     dispatch(getAllPostByUserIdSuccess(postArray));
-    //     break;
-    //   default:
-    //     dispatch(
-    //       getAllPostSuccess({
-    //         data: postArray,
-    //       })
-    //     );
-    // }
-    UserController.downVote(postID, userID);
+    const ob = {
+      data: arr,
+    };
+    if (postIndex) {
+      dispatch(getAllPostSuccess(ob));
+    } else {
+      dispatch(getPostByIdData({ ...post }));
+    }
+    const apiData = await UserController.downVote(postID, userID);
   };
   const generateLink = async () => {
     try {
       var link = await dynamicLinks().buildShortLink(
         {
-          link: `https://jatievip.page.link/Eit5?postId=${postID}&postIndex=${postIndex}`,
-          domainUriPrefix: 'https://jatievip.page.link',
-          android: {
-            packageName: 'com.airlystudio.jatievip',
-            minimumVersion: '18',
-          },
-          ios: {
-            appStoreId: '123456789',
-            bundleId: 'com.jatievip.airly',
-            minimumVersion: '18',
-          },
+          link: DOMAIN_URI + `/H3Ed?postId=${postID}&postIndex=${postIndex}`,
+          domainUriPrefix: DOMAIN_URI,
+          android: ANDROID,
+          ios: IOS,
         },
         dynamicLinks.ShortLinkType.DEFAULT
       );
@@ -224,6 +277,9 @@ export const CardFooter = ({
               singlePost?.has_upvoted && {
                 backgroundColor: theme.light.colors.infoBgLight,
               },
+            postArray?.[postIndex]?.has_upvoted && {
+              backgroundColor: theme.light.colors.infoBgLight,
+            },
           ]}
           disabled={disable}
           onPress={() => upVoteHandel()}
@@ -248,6 +304,9 @@ export const CardFooter = ({
               singlePost.has_downvoted && {
                 backgroundColor: theme.light.colors.infoBgLight,
               },
+            postArray?.[postIndex]?.has_downvoted && {
+              backgroundColor: theme.light.colors.infoBgLight,
+            },
           ]}
           onPress={() => !disable && downVoteHandel()}
           disabled={disable}
@@ -363,3 +422,42 @@ const styles = StyleSheet.create({
   EllipsisIcon: { margin: ms(10) },
   ShareNodeIcon: { margin: ms(10) },
 });
+
+const a = {
+  comments_aggregate: { aggregate: { count: 11 } },
+  created_at: '2023-06-08T06:43:47.505949+00:00',
+  downVote: 0,
+  downVoteUserId: [],
+  has_downvoted: false,
+  has_upvoted: false,
+  id: 'e6e8ccad-9acf-4325-981d-4b35953cec14',
+  isExclusive: false,
+  isGiveaway: false,
+  isPinned: false,
+  isReported: false,
+  isUSAonly: false,
+  isVIPonly: false,
+  is_following: false,
+  postBody: 'testingupdate123',
+  postExpires: null,
+  postImg: [],
+  postMediaContent: [],
+  postTitle: '',
+  postVideo: '[]',
+  shared: 0,
+  sharedUserId: [],
+  upVote: 0,
+  upVoteUserId: [],
+  updated_at: '2023-06-08T06:43:47.505949+00:00',
+  user: {
+    followers: [],
+    following: [],
+    fullName: 'Chris Holland1',
+    isAdmin: false,
+    isBanned: false,
+    isVIP: true,
+    profilePic: 'https://d2wwqw32p0xkid.cloudfront.net/photo-1685424207848.jpg',
+    username: 'vipUser001',
+  },
+  userId: 'b9902993-ca3f-4a2f-9de8-397bf6f4767e',
+};

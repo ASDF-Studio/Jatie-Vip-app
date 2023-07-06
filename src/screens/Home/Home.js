@@ -108,13 +108,19 @@ import { MemoPostcard } from '@/components/PostCard';
 import { CustomSwitch } from '@/components/switch';
 import PostOptions from './PostOptions';
 
+import { POST_TYPE } from '@/constants/enums';
+import { followers, updateFCMToken } from '@/actions/UserActions';
+import { SwiperViewer } from '@/components/SwiperComponent';
+import { useRef } from 'react';
+import messaging from '@react-native-firebase/messaging';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 export function Home({ navigation }) {
   const ALLPOST = useSelector(getAllPostData);
+  const SEARCH_DATA = useSelector(getSearchData);
   const flatListRef = useRef();
   const userType = useSelector(state => state.userType);
   const user = useSelector(getUser);
   const scheduledPostData = useSelector(getSchedulePostData);
-  // console.log("USERRR", user);
   const dispatch = useDispatch();
   const [vipArea, setVipArea] = useState(strings.home.newFeed);
   const [open, setOpen] = useState(false);
@@ -124,6 +130,7 @@ export function Home({ navigation }) {
   const [follwingSwitch, setFollowingSwtich] = useState(false);
   const [showImageView, setShowImageView] = useState(false);
   const [feedImages, setFeedImages] = useState([]);
+  const [editData, setEditdata] = useState({});
   const [reportListOpen, setReportListOpen] = useState(false);
   const [openBan, setOpenBan] = useState(false);
   const [reportOption, setReportOption] = useState([
@@ -143,6 +150,12 @@ export function Home({ navigation }) {
   const [index, setIndex] = useState(null);
 
   const [selectedPost, setSelectedPost] = useState(null);
+  const [postUserId, setPostUserId] = useState(null);
+  const [postId, setpostId] = useState(null);
+  const [postTitle, setPostTitle] = useState('');
+  const [postBody, setPostBody] = useState('');
+  const [postImg, setPostImg] = useState([]);
+  const [isAdminPost, setIsAdminPost] = useState(false);
 
   const FILTER_DATA = [
     { title: strings.home.recent, value: strings.sortBy.recent },
@@ -150,6 +163,10 @@ export function Home({ navigation }) {
     { title: strings.home.popularThisWeek, value: strings.sortBy.week },
     { title: strings.home.popularThisMonth, value: strings.sortBy.month },
   ];
+  // click on more
+  const [postUserName, setPostUserName] = useState('');
+  const [postUserFollowed, setPostUserFollowed] = useState(false);
+  const [postIndex, setPostIndex] = useState(0);
   const [reportImage, setreportImage] = useState(null);
 
   //Search Post
@@ -200,6 +217,7 @@ export function Home({ navigation }) {
   // }, [sortBy, follwingSwitch, vipArea, user]);
 
   useEffect(() => {
+    saveFCMToken()
     dynamicLinks()
       .getInitialLink()
       .then(link => {
@@ -212,6 +230,17 @@ export function Home({ navigation }) {
     };
   }, []);
 
+  const saveFCMToken = async () => {
+    let fcmtoken = await AsyncStorage.getItem("fcmtoken");
+    console.log("FCM__TOsssEN", fcmtoken);
+    const DATA = {
+      "loggedInUserId": user?.id,
+      "fcm_token": fcmtoken,
+      "topic": "general",
+      "userId": user?.id
+    }
+    dispatch(updateFCMToken(DATA))
+  }
   const handleDynamicLink = link => {
     if (!!link?.url) {
       const params = queryString.parse(link.url.split('?')[1]);
@@ -241,6 +270,67 @@ export function Home({ navigation }) {
     setFeedImages(data.postMediaContent);
   };
 
+  const isShowReportToast = useSelector(state =>
+    successSelector([TYPES.REPORT_POST], state)
+  );
+
+  const onDelete = () => {
+    dispatch(
+      deletePost(postId, postUserId, user?.id, userType.user, NAVIGATION.home)
+    );
+    const page = '';
+    dispatch(
+      getAllPost(
+        user?.id,
+        sortBy,
+        follwingSwitch,
+        vipArea == `${strings.home.newFeed}` ? false : true,
+        page
+      )
+    );
+  };
+
+  const SelectFromGallery = () => {
+    ImagePicker.openPicker({
+      width: ms(300),
+      height: ms(400),
+      cropping: true,
+      freeStyleCropEnabled: true,
+      cropperCircleOverlay: true,
+    })
+      .then(image => {
+        setreportImage(image);
+      })
+      .catch(error => console.log('report image picker error', error));
+  };
+
+  let counter = 1;
+  let DATA = {
+    postId,
+    postTitle,
+    postBody,
+    postImg,
+    sortBy,
+    follwingSwitch,
+  };
+  const onFollow = () => {
+    // setPostUserFollowed(true)
+    setOpen(false);
+    if (ALLPOST[postIndex].is_following) {
+      dispatch(unFollowUser(user?.id, postUserId, strings.home.post));
+      dispatch(followers(user?.id));
+    } else {
+      dispatch(followUser(user?.id, postUserId, strings.home.post));
+    }
+    setPostUserName(''), setPostUserId(''), setPostIndex();
+  };
+  const onBlock = () => {
+    dispatch(blockUser(user?.id, postUserId, postIndex));
+    setOpen(false);
+    dispatch(getAllPost(user?.id, sortBy, follwingSwitch));
+  };
+
+
   const handleScroll = ({ nativeEvent }) => {
     const { layoutMeasurement, contentOffset, contentSize } = nativeEvent;
     const isEndReached =
@@ -262,13 +352,12 @@ export function Home({ navigation }) {
         user?.id,
         sortBy,
         follwingSwitch,
-        vipArea === `${strings.home.newFeed}` ? false : true,
+        vipArea == `${strings.home.newFeed}` ? false : true,
         page
       )
     );
   };
 
-  const getPaginate = () => {};
 
   const renderFooterPost = () => {
     return (
@@ -377,8 +466,10 @@ export function Home({ navigation }) {
             }
             initialNumToRender={5}
             ListFooterComponent={renderFooterPost}
-            onEndReached={onLoadMorePost}
-            extraData={ALLPOST}
+             onEndReached={onLoadMorePost}
+            // onEndReachedThreshold={0.5}
+         
+            extraData={searchEnabled ? SEARCH_DATA : ALLPOST}
             onEndReachedThreshold={0.5}
             onMomentumScrollBegin={() => {
               setIsScrolling(true);

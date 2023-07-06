@@ -54,11 +54,12 @@ export default function Active({ navigation, userType }) {
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.GET_ACTIVE_GIVEAWAY], state)
   );
+
   const [index, setIndex] = useState();
   const focus = useIsFocused();
 
   useEffect(() => {
-    // getSeconds();
+    getSeconds();
     getactiveData();
   }, []);
 
@@ -95,6 +96,15 @@ export default function Active({ navigation, userType }) {
     );
   };
 
+  function getSeconds(date) {
+    const dateString = date;
+    const dateObj = new Date(dateString);
+    const currentTime = new Date();
+    const timeDifference = dateObj.getTime() - currentTime.getTime();
+    const secondsLeft = Math.floor(timeDifference / 1000);
+    //   console.log("Seconds left:=-=-=-", secondsLeft);
+    return secondsLeft;
+  }
   return (
     <>
       <SafeAreaView
@@ -135,6 +145,7 @@ export default function Active({ navigation, userType }) {
           renderItem={({ item, index }) => (
             <View style={styles.FlatListContainer}>
               <Card>
+                {console.log(JSON.stringify(item))}
                 <View>
                   <Text style={styles.title}>{item.postTitle}</Text>
                 </View>
@@ -479,3 +490,5 @@ export const styles = StyleSheet.create({
     position: 'relative',
   },
 });
+
+

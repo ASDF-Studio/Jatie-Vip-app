@@ -2,6 +2,7 @@ import { NAVIGATION } from '@/constants';
 import { UserController } from '@/controllers';
 import { strings } from '@/localization';
 import { navigationRef } from '@/navigation/RootNavigation';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StackActions } from '@react-navigation/native';
 import { globalReset } from './GlobalActions';
 import { getAllPost } from './PostActions';
@@ -180,7 +181,39 @@ export const TYPES = {
 
   // Update user notif data
   UPDATE_USER_NOTIF_SETTINGS: 'UPDATE_USER_NOTIF_SETTINGS',
+
+  //Update FCM token
+  UPDATE_FCM_TOKEN: 'UPDATE_FCM_TOKEN',
+  UPDATE_FCM_TOKEN_REQUEST: 'UPDATE_FCM_TOKEN_REQUEST',
+  UPDATE_FCM_TOKEN_SUCCESS: 'UPDATE_FCM_TOKEN_SUCCESS',
+  UPDATE_FCM_TOKEN_ERROR: 'UPDATE_FCM_TOKEN_ERROR',
+
+
+  //Update user type subscription
+  UPDATE_USER_TYPE: 'UPDATE_USER_TYPE',
+  UPDATE_USER_TYPE_REQUEST: 'UPDATE_USER_TYPE_REQUEST',
+  UPDATE_USER_TYPE_SUCCESS: 'UPDATE_USER_TYPE_SUCCESS',
+  UPDATE_USER_TYPE_ERROR: 'UPDATE_USER_TYPE_ERROR',
 };
+const updateUserTypeRequest = () => ({
+  type: TYPES.UPDATE_USER_TYPE_REQUEST,
+  payload: null,
+});
+
+const updateUserTypeError = error => ({
+  type: TYPES.UPDATE_USER_TYPE_ERROR,
+  payload: { error },
+});
+
+const updateUserTypeSuccess = user => ({
+  type: TYPES.UPDATE_USER_TYPE_SUCCESS,
+  payload: { user },
+});
+
+
+
+
+
 
 const loginRequest = () => ({
   type: TYPES.LOGIN_REQUEST,
@@ -611,12 +644,31 @@ const markAllReadNotificationsError = error => ({
   payload: { error },
 });
 
+
+
+export const updateFcmTokenSuccess = user => ({
+  type: TYPES.UPDATE_FCM_TOKEN_SUCCESS,
+  payload: user,
+});
+
+const updateFcmTokenRequest = () => ({
+  type: TYPES.UPDATE_FCM_TOKEN_REQUEST,
+  payload: null,
+});
+
+const updateFcmTokenError = error => ({
+  type: TYPES.UPDATE_FCM_TOKEN_ERROR,
+  payload: { error },
+});
+
+
 export const login = number => async dispatch => {
   dispatch(globalReset());
   dispatch(loginRequest());
   try {
     const user = await UserController.login(number);
     dispatch(loginSuccess());
+
     navigationRef.navigate(NAVIGATION.enterOtp, {
       number,
       isRegistered: user?.isregistered,
@@ -632,6 +684,17 @@ export const verifyOtp = (number, Otp, isRegistered) => async dispatch => {
   try {
     // let selectedValue = "";
     const user = await UserController.verifyOtp(number, Otp);
+    // console.log("USER=-=-=-", JSON.stringify(user));
+    // // let fcmtoken = await AsyncStorage.getItem("fcmtoken");
+    // // console.log("FCM__TOsssEN", fcmtoken);
+    // // const DATA = {
+    // //   "loggedInUserId": user.id,
+    // //   "fcm_token": fcmtoken,
+    // //   "topic": "general",
+    // //   "userId": user.id
+    // // }
+
+    // dispatch(updateFCMToken(DATA))
     if (isRegistered == true) {
       dispatch(verifyOtpSuccess(user));
       if (user?.isAdmin == true) {

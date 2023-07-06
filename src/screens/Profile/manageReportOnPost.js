@@ -102,18 +102,15 @@ export default function ManageReportOnMessage({ navigation, route }) {
     setTimeout(() => {
       dispatch(manageAllReports());
     }, 500);
-    // console.log('banned id', postData?.user?.id)
-  };
+  }
   const onbanPress = () => {
-    banValue == true ? unbannedHandlePress() : bannedHandlePress();
-    // console.log('banned id', postData?.user?.id)
-  };
+    banValue == true ? unbannedHandlePress() : bannedHandlePress()
+  }
 
   const onFollow = () => {
     if (postData?.is_following == true) {
-      dispatch(unFollowUser(user?.id, postData?.userId));
-      // console.log(user?.id, postData?.userId)
-      setOpen(false);
+      dispatch(unFollowUser(user?.id, postData?.userId))
+      setOpen(false)
       setTimeout(() => {
         dispatch(getPostById(item.objectId, user?.id));
       }, 100);
@@ -121,7 +118,6 @@ export default function ManageReportOnMessage({ navigation, route }) {
       dispatch(followUser(user?.id, postData?.userId));
       setOpen(false);
 
-      //console.log(user?.id, postData?.userId)
       setTimeout(() => {
         dispatch(getPostById(item.objectId, user?.id));
       }, 100);

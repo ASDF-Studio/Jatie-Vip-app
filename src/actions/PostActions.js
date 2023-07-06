@@ -1099,7 +1099,7 @@ export const getAllPost =
 export const getAllPostPagination =
   (userId, filterBy, isFollowingData, isVip, page) => async dispatch => {
     dispatch(getAllPostPaginationRequest());
-    // console.log("PAGE____+___+_+_+_+_+_", page);
+
 
     try {
       const post = await PostController.getAllPost(

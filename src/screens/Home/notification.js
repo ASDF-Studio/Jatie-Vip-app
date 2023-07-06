@@ -79,6 +79,7 @@ export default function Notification({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <CustomLoader open={isLoading} />
       <View style={styles.header}>
         <View style={styles.left}>
           <Image
@@ -361,3 +362,294 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.Recoleta_semibold,
   },
 });
+
+[
+  {
+    created_at: '2023-06-08T03:13:10.794414+00:00',
+    id: '5b5e0939-b1b6-4cf8-bbe9-89274ddbfbb8',
+    objectId: '70ee2f0c-816d-40c2-a468-d32bec5dd603',
+    seenByUser: false,
+    text: 'commented on this',
+    type: 'comment',
+    updated_at: '2023-06-08T03:13:10.794414+00:00',
+    userByUserwhofiredevent: {
+      fullName: 'Team Airly',
+      id: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+      profilePic:
+        'https://d2wwqw32p0xkid.cloudfront.net/photo-1679142507829.jpg',
+      username: 'Jane',
+    },
+    userToNotify: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+    userWhoFiredEvent: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+  },
+  {
+    created_at: '2023-06-08T03:09:30.872574+00:00',
+    id: 'd1512549-cae9-49c1-8c7f-85f83c4f8fb5',
+    objectId: '70ee2f0c-816d-40c2-a468-d32bec5dd603',
+    seenByUser: true,
+    text: 'commented on this',
+    type: 'comment',
+    updated_at: '2023-06-08T03:12:57.962207+00:00',
+    userByUserwhofiredevent: {
+      fullName: 'Team Airly',
+      id: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+      profilePic:
+        'https://d2wwqw32p0xkid.cloudfront.net/photo-1679142507829.jpg',
+      username: 'Jane',
+    },
+    userToNotify: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+    userWhoFiredEvent: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+  },
+  {
+    created_at: '2023-06-08T03:08:35.252725+00:00',
+    id: '2ed0750a-5f58-4c00-b5d0-cc9b1e9454ce',
+    objectId: '7658ffca-b535-40e6-a5ab-b4020980e4dc',
+    seenByUser: true,
+    text: 'commented on this',
+    type: 'comment',
+    updated_at: '2023-06-08T03:12:57.962207+00:00',
+    userByUserwhofiredevent: {
+      fullName: 'Team Airly',
+      id: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+      profilePic:
+        'https://d2wwqw32p0xkid.cloudfront.net/photo-1679142507829.jpg',
+      username: 'Jane',
+    },
+    userToNotify: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+    userWhoFiredEvent: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+  },
+  {
+    created_at: '2023-06-08T03:08:24.011997+00:00',
+    id: '1ff6464a-9239-4408-9454-117ad439df9f',
+    objectId: '7658ffca-b535-40e6-a5ab-b4020980e4dc',
+    seenByUser: true,
+    text: 'commented on this',
+    type: 'comment',
+    updated_at: '2023-06-08T03:12:57.962207+00:00',
+    userByUserwhofiredevent: {
+      fullName: 'Team Airly',
+      id: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+      profilePic:
+        'https://d2wwqw32p0xkid.cloudfront.net/photo-1679142507829.jpg',
+      username: 'Jane',
+    },
+    userToNotify: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+    userWhoFiredEvent: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+  },
+  {
+    created_at: '2023-06-08T01:49:56.144748+00:00',
+    id: 'e2648adf-2ec2-48ba-8073-b4eadbd3d7d0',
+    objectId: '5b10303a-4bb2-4dc2-8418-5cb90d9f1818',
+    seenByUser: true,
+    text: 'commented on this',
+    type: 'comment',
+    updated_at: '2023-06-08T03:12:57.962207+00:00',
+    userByUserwhofiredevent: {
+      fullName: 'Team Airly',
+      id: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+      profilePic:
+        'https://d2wwqw32p0xkid.cloudfront.net/photo-1679142507829.jpg',
+      username: 'Jane',
+    },
+    userToNotify: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+    userWhoFiredEvent: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+  },
+  {
+    created_at: '2023-06-07T07:41:47.224351+00:00',
+    id: '121cff01-9afb-48a1-aea4-2a5221514b29',
+    objectId: '592ffcc7-3d35-4ed2-8456-4e2f63fe0486',
+    seenByUser: true,
+    text: 'commented on this',
+    type: 'comment',
+    updated_at: '2023-06-08T03:12:57.962207+00:00',
+    userByUserwhofiredevent: {
+      fullName: 'Team Airly',
+      id: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+      profilePic:
+        'https://d2wwqw32p0xkid.cloudfront.net/photo-1679142507829.jpg',
+      username: 'Jane',
+    },
+    userToNotify: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+    userWhoFiredEvent: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+  },
+  {
+    created_at: '2023-06-02T13:32:04.91555+00:00',
+    id: '7c0874d2-ffbb-44b0-8d31-6877af038e7b',
+    objectId: '4fae1f09-2b87-4555-b18c-8ea911797229',
+    seenByUser: true,
+    text: 'commented on this',
+    type: 'comment',
+    updated_at: '2023-06-08T03:12:57.962207+00:00',
+    userByUserwhofiredevent: {
+      fullName: 'Team Airly',
+      id: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+      profilePic:
+        'https://d2wwqw32p0xkid.cloudfront.net/photo-1679142507829.jpg',
+      username: 'Jane',
+    },
+    userToNotify: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+    userWhoFiredEvent: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+  },
+  {
+    created_at: '2023-06-02T13:31:27.730586+00:00',
+    id: '59907e18-6528-41c7-a605-3b824fab1d2e',
+    objectId: '4fae1f09-2b87-4555-b18c-8ea911797229',
+    seenByUser: true,
+    text: 'commented on this',
+    type: 'comment',
+    updated_at: '2023-06-08T03:12:57.962207+00:00',
+    userByUserwhofiredevent: {
+      fullName: 'Team Airly',
+      id: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+      profilePic:
+        'https://d2wwqw32p0xkid.cloudfront.net/photo-1679142507829.jpg',
+      username: 'Jane',
+    },
+    userToNotify: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+    userWhoFiredEvent: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+  },
+  {
+    created_at: '2023-06-02T13:06:07.306295+00:00',
+    id: '9144bf84-021a-423a-967c-6d4341a54247',
+    objectId: '4fae1f09-2b87-4555-b18c-8ea911797229',
+    seenByUser: true,
+    text: 'commented on this',
+    type: 'comment',
+    updated_at: '2023-06-08T03:12:57.962207+00:00',
+    userByUserwhofiredevent: {
+      fullName: 'Team Airly',
+      id: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+      profilePic:
+        'https://d2wwqw32p0xkid.cloudfront.net/photo-1679142507829.jpg',
+      username: 'Jane',
+    },
+    userToNotify: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+    userWhoFiredEvent: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+  },
+  {
+    created_at: '2023-06-02T13:05:50.738916+00:00',
+    id: 'c4300878-f7a2-4e19-82cf-792a966b5718',
+    objectId: '4fae1f09-2b87-4555-b18c-8ea911797229',
+    seenByUser: true,
+    text: 'commented on this',
+    type: 'comment',
+    updated_at: '2023-06-08T03:12:57.962207+00:00',
+    userByUserwhofiredevent: {
+      fullName: 'Team Airly',
+      id: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+      profilePic:
+        'https://d2wwqw32p0xkid.cloudfront.net/photo-1679142507829.jpg',
+      username: 'Jane',
+    },
+    userToNotify: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+    userWhoFiredEvent: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+  },
+  {
+    created_at: '2023-06-02T10:25:22.379357+00:00',
+    id: '3207f36a-68e3-4c3e-b7a5-027f4617b978',
+    objectId: '4fae1f09-2b87-4555-b18c-8ea911797229',
+    seenByUser: true,
+    text: 'commented on this',
+    type: 'comment',
+    updated_at: '2023-06-08T03:12:57.962207+00:00',
+    userByUserwhofiredevent: {
+      fullName: 'Team Airly',
+      id: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+      profilePic:
+        'https://d2wwqw32p0xkid.cloudfront.net/photo-1679142507829.jpg',
+      username: 'Jane',
+    },
+    userToNotify: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+    userWhoFiredEvent: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+  },
+  {
+    created_at: '2023-06-02T08:45:29.284512+00:00',
+    id: 'cc1197ea-9cb3-439b-829a-70276a397ee4',
+    objectId: '4fae1f09-2b87-4555-b18c-8ea911797229',
+    seenByUser: true,
+    text: 'commented on this',
+    type: 'comment',
+    updated_at: '2023-06-08T03:12:57.962207+00:00',
+    userByUserwhofiredevent: {
+      fullName: 'JatieVIP',
+      id: '6aae7065-5341-45b1-b717-0c3e3256dc2f',
+      profilePic:
+        'https://d2wwqw32p0xkid.cloudfront.net/photo-1679288548479.jpg',
+      username: 'jatieVIP',
+    },
+    userToNotify: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+    userWhoFiredEvent: '6aae7065-5341-45b1-b717-0c3e3256dc2f',
+  },
+  {
+    created_at: '2023-05-31T11:08:53.65461+00:00',
+    id: 'a18bdcef-345e-4e66-bde9-10222909382c',
+    objectId: '4fae1f09-2b87-4555-b18c-8ea911797229',
+    seenByUser: true,
+    text: 'commented on this',
+    type: 'comment',
+    updated_at: '2023-06-08T03:12:57.962207+00:00',
+    userByUserwhofiredevent: {
+      fullName: 'JatieVIP',
+      id: '6aae7065-5341-45b1-b717-0c3e3256dc2f',
+      profilePic:
+        'https://d2wwqw32p0xkid.cloudfront.net/photo-1679288548479.jpg',
+      username: 'jatieVIP',
+    },
+    userToNotify: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+    userWhoFiredEvent: '6aae7065-5341-45b1-b717-0c3e3256dc2f',
+  },
+  {
+    created_at: '2023-05-30T12:23:27.119095+00:00',
+    id: 'fa602480-3086-413c-94d5-96caf950a498',
+    objectId: '4fae1f09-2b87-4555-b18c-8ea911797229',
+    seenByUser: true,
+    text: 'commented on this',
+    type: 'comment',
+    updated_at: '2023-06-08T03:12:57.962207+00:00',
+    userByUserwhofiredevent: {
+      fullName: 'JatieVIP',
+      id: '6aae7065-5341-45b1-b717-0c3e3256dc2f',
+      profilePic:
+        'https://d2wwqw32p0xkid.cloudfront.net/photo-1679288548479.jpg',
+      username: 'jatieVIP',
+    },
+    userToNotify: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+    userWhoFiredEvent: '6aae7065-5341-45b1-b717-0c3e3256dc2f',
+  },
+  {
+    created_at: '2023-05-30T06:42:11.27643+00:00',
+    id: '08665e23-421b-453d-b4d0-e6278dc10643',
+    objectId: '4fae1f09-2b87-4555-b18c-8ea911797229',
+    seenByUser: true,
+    text: 'commented on this',
+    type: 'comment',
+    updated_at: '2023-06-08T03:12:57.962207+00:00',
+    userByUserwhofiredevent: {
+      fullName: 'JatieVIP',
+      id: '6aae7065-5341-45b1-b717-0c3e3256dc2f',
+      profilePic:
+        'https://d2wwqw32p0xkid.cloudfront.net/photo-1679288548479.jpg',
+      username: 'jatieVIP',
+    },
+    userToNotify: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+    userWhoFiredEvent: '6aae7065-5341-45b1-b717-0c3e3256dc2f',
+  },
+  {
+    created_at: '2023-05-30T06:36:30.11865+00:00',
+    id: 'bde8df9e-167f-4b91-bc34-4d0396f71a00',
+    objectId: '4fae1f09-2b87-4555-b18c-8ea911797229',
+    seenByUser: true,
+    text: 'commented on this',
+    type: 'comment',
+    updated_at: '2023-06-08T03:12:57.962207+00:00',
+    userByUserwhofiredevent: {
+      fullName: 'JatieVIP',
+      id: '6aae7065-5341-45b1-b717-0c3e3256dc2f',
+      profilePic:
+        'https://d2wwqw32p0xkid.cloudfront.net/photo-1679288548479.jpg',
+      username: 'jatieVIP',
+    },
+    userToNotify: 'ce656365-b90f-4b5f-aab6-b436051171f5',
+    userWhoFiredEvent: '6aae7065-5341-45b1-b717-0c3e3256dc2f',
+  },
+];

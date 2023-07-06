@@ -52,7 +52,7 @@ export default function Post({ navigation }) {
   const [imageArray, setImageArray] = useState([]);
   const [isModalVisible, setModalVisible] = useState(false);
   const [isImage, setIsImage] = useState();
-  // const [postTxt, setPostTxt] = useState('');
+
   const [vipOnly, setVipOnly] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -146,10 +146,23 @@ export default function Post({ navigation }) {
     {
       isImage == strings.exclusive.image
         ? ImageCropPicker.openCamera({
-            width: 300,
-            height: 400,
-            cropping: false,
-            compressImageQuality: 0.5,
+          width: 300,
+          height: 400,
+          cropping: false,
+          compressImageQuality: 0.5,
+        })
+          .then(image => {
+            imageArray.push({
+              id: nextId++,
+              image: image.path,
+              imageMime: image.mime,
+              video: null,
+            });
+            setPostImg(image.path);
+            setmimeType(image.mime);
+            setModalVisible(!isModalVisible);
+          })
+          .catch(e => {
           })
             .then(image => {
               imageArray.push({

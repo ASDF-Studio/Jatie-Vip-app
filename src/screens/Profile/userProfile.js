@@ -100,11 +100,10 @@ export default function UserProfile({ navigation, route }) {
   const [postIndex, setPostIndex] = useState(0);
   const dispatch = useDispatch();
   const { userId } = route?.params;
-  // console.log('otherpersoId', userId)
   const userr = useSelector(getUser);
-  // console.log('MyId', userr.id)
+  const getUserProfile = useSelector(getUser);
   const [active, setActive] = useState(false);
-
+  const userType = useSelector(state => state.userType);
   const [openMore, setOpenMore] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [user, setUser] = useState(null);
@@ -136,6 +135,9 @@ export default function UserProfile({ navigation, route }) {
   const [selectedPost, setSelectedPost] = useState(null);
   const [index, setIndex] = useState();
 
+
+  const focus = useIsFocused();
+
   const isFollowSuccess = useSelector(state =>
     isLoadingSelector([TYPES.FOLLOW_USER], state)
   );
@@ -144,9 +146,6 @@ export default function UserProfile({ navigation, route }) {
   );
 
   let counter = 1;
-
-  const userType = useSelector(state => state.userType);
-
   const customReq = async () => {
     setLoading(true);
     await getAllPostsByUserid(userId, userr.id)(dispatch);

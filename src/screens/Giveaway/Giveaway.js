@@ -87,9 +87,7 @@ export function Giveaway({ navigation }) {
         status={status}
         setStatus={setStatus}
       />
-
       <HorizontalLine />
-
       <View style={styles.feedContainer}>
         {status == strings.giveaway.active ? (
           <Active navigation={navigation} userType={userType} user={user} />
@@ -97,18 +95,16 @@ export function Giveaway({ navigation }) {
           <Past navigation={navigation} userType={userType} user={user} />
         )}
       </View>
-
-      {userType?.user == strings.userType.admin &&
-        status == strings.giveaway.active && (
-          <TouchableOpacity
-            onPress={() => navigation.navigate(NAVIGATION.adminGiveawayPost)}
-            style={[styles.adminBtn, styles.adminBtnDesign]}
-          >
-            <Text style={[styles.adminBtnTxt, styles.adminBtnTxtColor]}>
-              {strings.giveaway.newGiveaway}
-            </Text>
-          </TouchableOpacity>
-        )}
+      {(userType?.user == strings.userType.admin && status == strings.giveaway.active) && (
+        <TouchableOpacity
+          onPress={() => navigation.navigate(NAVIGATION.adminGiveawayPost)}
+          style={[styles.adminBtn, styles.adminBtnDesign]}
+        >
+          <Text style={[styles.adminBtnTxt, styles.adminBtnTxtColor]}>
+            {strings.giveaway.newGiveaway}
+          </Text>
+        </TouchableOpacity>
+      )}
     </SafeAreaView>
   );
 }

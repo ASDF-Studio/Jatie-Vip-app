@@ -109,6 +109,8 @@ export default function PastDetails({ navigation, route }) {
     });
   };
 
+
+
   return (
     <SafeAreaView style={styles.contianer}>
       <View style={styles.header}>
