@@ -53,7 +53,7 @@ import {
 import { NAVIGATION } from '@/constants';
 import moment from 'moment';
 import CountDown from 'react-native-countdown-component';
-import { useBlinker } from '@/hooks';
+// import { useBlinker } from '@/hooks';
 
 export default function PostDetails({ navigation, route }) {
   const dispatch = useDispatch();
@@ -62,7 +62,7 @@ export default function PostDetails({ navigation, route }) {
   const user = useSelector(getUser);
   const userType = useSelector(state => state.userType);
   const [showAlert, setShowAlert] = useState(true);
-  const { blink } = useBlinker();
+  // const { blink } = useBlinker();
 
   const [active, setActive] = useState(false);
   const [disabledJoin, setDisabledJoin] = useState(data?.has_Joined);
