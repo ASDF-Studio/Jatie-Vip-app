@@ -15,6 +15,8 @@ import {
 import messaging from '@react-native-firebase/messaging';
 import { getFCMToken, requestUserPermission } from './helper/utils/pushNotifications';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import notifee, { EventType } from '@notifee/react-native';
+
 import { Platform } from 'react-native';
 //import { requestUserPermission } from 'utils/PushNotifications';
 enableScreens();
@@ -23,7 +25,7 @@ Sentry.init({
 });
 export function App() {
   useEffect(() => {
-    // requestUserPermission()
+    requestUserPermission()
     getFCMToken1()
   }, [])
   async function requestUserPermission() {
@@ -51,7 +53,34 @@ export function App() {
       }
     }
   }
-
+  const onMessageReceived = React.useCallback(async message => {
+    // console.log('Notificatiohn=-=-=-terterterterter', JSON.stringify(message));
+    await notifee.displayNotification({
+      title: message?.notification?.title,
+      body: message?.notification?.body,
+      sound: 'default',
+      ios: {
+        badgeCount: 0,
+        sound: 'default',
+        interruptionLevel: 'timeSensitive',
+        criticalAlert: true,
+        foregroundPresentationOptions: {
+          alert: true,
+          badge: false,
+          sound: true,
+        },
+        backgroundPresentationOptions: {
+          alert: true,
+          badge: false,
+          sound: true,
+        },
+      },
+    });
+  }, []);
+  useEffect(() => {
+    messaging().onMessage(onMessageReceived);
+    messaging().setBackgroundMessageHandler(onMessageReceived);
+  }, [])
   return (
     <Sentry.ErrorBoundary>
       <Provider store={store}>
