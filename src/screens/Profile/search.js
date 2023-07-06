@@ -131,8 +131,8 @@ export default function Search({ navigation }) {
 
   useEffect(() => {
     if (!isEmpty(searchuservalue)) {
+      dispatch(searchUser(searchuservalue, user?.id));
       dispatch(searchAllPost(searchuservalue, user?.id));
-      dispatch(searchUser(searchuservalue));
       setShowSeeMoreUser(false);
     } else {
       dispatch(searchAllPostSuccess([]));
