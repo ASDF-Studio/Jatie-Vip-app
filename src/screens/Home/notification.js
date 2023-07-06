@@ -45,6 +45,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { isEmpty } from 'lodash';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
+import { isLoadingSelector } from '@/selectors/StatusSelectors';
 
 export default function Notification({ navigation }) {
   const [read, setRead] = useState(false);
@@ -65,7 +66,9 @@ export default function Notification({ navigation }) {
     await fetchAllNotifications(loggedInUser.id, read)(dispatch);
     setLoading(false);
   };
-
+  const isLoading = useSelector(state =>
+    isLoadingSelector([TYPES.GET_ALL_NOTIFICATIONS], state)
+  );
   const singelPostHnadlePress = () => {
     dispatch(getPostById(item.objectId, loggedInUser?.id));
     console.log(item.objectId, user?.id);
@@ -79,7 +82,7 @@ export default function Notification({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <CustomLoader open={isLoading} />
+      {/* <CustomLoader open={isLoading} /> */}
       <View style={styles.header}>
         <View style={styles.left}>
           <Image
