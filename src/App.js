@@ -7,10 +7,6 @@ import { persistor, store } from '@/store';
 import { RootNavigator } from '@/navigation';
 import FlashMessage from 'react-native-flash-message';
 import * as Sentry from '@sentry/react-native';
-import {
-  getFCMToken,
-  requestUserPermission,
-} from './helper/utils/pushNotifications';
 
 import messaging from '@react-native-firebase/messaging';
 import { getFCMToken, requestUserPermission } from './helper/utils/pushNotifications';
