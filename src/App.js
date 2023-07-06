@@ -1,19 +1,17 @@
+import { RootNavigator } from '@/navigation';
+import { persistor, store } from '@/store';
+import * as Sentry from '@sentry/react-native';
 import React, { useEffect } from 'react';
 import { hide } from 'react-native-bootsplash';
-import { enableScreens } from 'react-native-screens';
-import { Provider, useSelector } from 'react-redux';
-import { PersistGate } from 'redux-persist/integration/react';
-import { persistor, store } from '@/store';
-import { RootNavigator } from '@/navigation';
 import FlashMessage from 'react-native-flash-message';
-import * as Sentry from '@sentry/react-native';
+import { enableScreens } from 'react-native-screens';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 
-import messaging from '@react-native-firebase/messaging';
-import { getFCMToken, requestUserPermission } from './helper/utils/pushNotifications';
+import notifee from '@notifee/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import notifee, { EventType } from '@notifee/react-native';
+import messaging from '@react-native-firebase/messaging';
 
-import { Platform } from 'react-native';
 //import { requestUserPermission } from 'utils/PushNotifications';
 enableScreens();
 Sentry.init({
