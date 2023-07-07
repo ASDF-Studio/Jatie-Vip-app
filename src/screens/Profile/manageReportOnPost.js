@@ -1,5 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  ActivityIndicator,
+} from 'react-native';
 import { theme, TextStyles } from '@/theme';
 import { FontFamily } from '@/theme/Fonts';
 import { strings } from '@/localization';
@@ -50,9 +56,9 @@ import { TYPES } from '../../actions/PostActions';
 import { manageAllReports } from '@/actions/UserActions';
 import { isEmpty } from 'lodash';
 export default function ManageReportOnMessage({ navigation, route }) {
-  const isLoading = useSelector(state =>
-    isLoadingSelector([TYPES.GET_POST_BY_ID], state)
-  );
+  // const isLoading = useSelector(state =>
+  //   isLoadingSelector([TYPES.GET_POST_BY_ID], state)
+  // );
 
   const dispatch = useDispatch();
   const focus = useIsFocused();
@@ -63,14 +69,20 @@ export default function ManageReportOnMessage({ navigation, route }) {
   const postData = useSelector(getPostByIdData);
   const [openReplace, setReplace] = useState(false);
   const userType = useSelector(state => state.userType);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    dispatch(getPostById(item.objectId, user?.id));
-
     // setLikeCount(item?.upVote)
     // setDownCount(item?.downVote)
     // setCommentCount(item?.comments_aggregate?.aggregate?.count)
+    customReq();
   }, [focus]);
+
+  const customReq = async () => {
+    setLoading(true);
+    await getPostById(item.objectId, user?.id)(dispatch);
+    setLoading(false);
+  };
 
   const onDelete = () => {
     dispatch(
@@ -102,15 +114,15 @@ export default function ManageReportOnMessage({ navigation, route }) {
     setTimeout(() => {
       dispatch(manageAllReports());
     }, 500);
-  }
+  };
   const onbanPress = () => {
-    banValue == true ? unbannedHandlePress() : bannedHandlePress()
-  }
+    banValue == true ? unbannedHandlePress() : bannedHandlePress();
+  };
 
   const onFollow = () => {
     if (postData?.is_following == true) {
-      dispatch(unFollowUser(user?.id, postData?.userId))
-      setOpen(false)
+      dispatch(unFollowUser(user?.id, postData?.userId));
+      setOpen(false);
       setTimeout(() => {
         dispatch(getPostById(item.objectId, user?.id));
       }, 100);
@@ -126,7 +138,6 @@ export default function ManageReportOnMessage({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <CustomLoader open={isLoading} />
       <TopBackButton
         onPress={() => navigation.goBack()}
         style={styles.TopBackButton}
@@ -156,117 +167,126 @@ export default function ManageReportOnMessage({ navigation, route }) {
           </Text>
         </View>
       </View>
-      <View style={styles.body}>
-        <View style={styles.shadow} />
-        <View style={styles.reportBound}>
-          <Card>
-            <CardHeader
-              fullName={postData?.user.fullName}
-              userName={postData?.user.username}
-              profilePic={postData?.user.profilePic}
-              time={postData?.created_at}
-              userId={postData?.userId}
-            />
-            <CardBody
-              text={postData?.postBody || strings.message.postIsDeleted}
-            />
+      {loading ? (
+        <ActivityIndicator
+          animating={loading}
+          size={'large'}
+          color={theme.light.colors.primary}
+          style={styles.loaderStyle}
+        />
+      ) : (
+        <View style={styles.body}>
+          <View style={styles.shadow} />
+          <View style={styles.reportBound}>
+            <Card>
+              <CardHeader
+                fullName={postData?.user.fullName}
+                userName={postData?.user.username}
+                profilePic={postData?.user.profilePic}
+                time={postData?.created_at}
+                userId={postData?.userId}
+              />
+              <CardBody
+                text={postData?.postBody || strings.message.postIsDeleted}
+              />
 
-            <CardFooter
-              morePress={() => {
-                setOpen(true);
-              }}
-              disable={isEmpty(postData)}
-              postIndex={0}
-              userID={user?.id}
-              postID={postData?.id}
-              likeCount={postData?.upVote}
-              isDownVoted={postData?.has_downvoted}
-              isUpvoted={postData?.has_upvoted}
-              disLikeCount={postData?.downVote}
-              commentCount={postData?.comments_aggregate.aggregate.count}
-              commentPress={() =>
-                navigation.navigate(NAVIGATION.comments, {
-                  DATA: item.post,
-                  POST_INDEX: 0,
-                })
-              }
-            />
-          </Card>
-        </View>
-        <ModalDown open={open} setOpen={setOpen}>
-          <ModalList
-            onPress={() => {
-              onFollow();
-            }}
-            title={
-              postData?.is_following == true
-                ? 'UnFollow' + ' @' + postData?.user.username
-                : 'Follow' + ' @' + postData?.user.username
-            }
-            icon={faUserPlus}
-            iconColor={theme.light.colors.primary}
-            iconBg={theme.light.colors.primaryBgLight}
-          />
-          <ModalList
-            title={strings.operations.sendPrivateMessage}
-            icon={faMessage}
-            disabled
-            iconColor={theme.light.colors.success}
-            iconBg={theme.light.colors.successBgLight}
-          />
-          <HorizontalLine
-            color={theme.light.colors.infoBgLight}
-            paddingTop={15}
-            paddingBottom={8}
-          />
-
-          <>
+              <CardFooter
+                morePress={() => {
+                  setOpen(true);
+                }}
+                disable={isEmpty(postData)}
+                postIndex={0}
+                userID={user?.id}
+                postID={postData?.id}
+                likeCount={postData?.upVote}
+                isDownVoted={postData?.has_downvoted}
+                isUpvoted={postData?.has_upvoted}
+                disLikeCount={postData?.downVote}
+                commentCount={postData?.comments_aggregate.aggregate.count}
+                commentPress={() =>
+                  navigation.navigate(NAVIGATION.comments, {
+                    DATA: item.post,
+                    POST_INDEX: 0,
+                  })
+                }
+              />
+            </Card>
+          </View>
+          <ModalDown open={open} setOpen={setOpen}>
             <ModalList
-              title={strings.home.deletePost}
-              icon={faTrash}
-              iconColor={theme.light.colors.secondary}
-              iconBg={theme.light.colors.infoBgLight}
-              // onPress={() => console.log('1234')}
               onPress={() => {
-                setReplace(true), setOpen(false);
+                onFollow();
               }}
-            />
-
-            <ModalList
-              onPress={() => onbanPress()}
               title={
-                banValue == true
-                  ? strings.operations.unBan + ' @' + postData?.user.username
-                  : strings.operations.ban + ' @' + postData?.user.username
+                postData?.is_following == true
+                  ? 'UnFollow' + ' @' + postData?.user.username
+                  : 'Follow' + ' @' + postData?.user.username
               }
-              icon={faFlag}
-              iconColor={theme.light.colors.secondary}
-              iconBg={theme.light.colors.infoBgLight}
+              icon={faUserPlus}
+              iconColor={theme.light.colors.primary}
+              iconBg={theme.light.colors.primaryBgLight}
             />
-          </>
-        </ModalDown>
-        {openReplace && (
-          <PopUp open={openReplace} setOpen={setReplace}>
-            <View style={styles.ConfirmationTextContainer}>
-              <Text style={styles.ConfirmationText}>
-                {strings.alert.delete}
-              </Text>
-            </View>
-            <Button
-              title={strings.operations.yes}
-              style={styles.confirmButton}
-              onPress={() => {
-                onDelete(), setReplace(false);
-              }}
+            <ModalList
+              title={strings.operations.sendPrivateMessage}
+              icon={faMessage}
+              disabled
+              iconColor={theme.light.colors.success}
+              iconBg={theme.light.colors.successBgLight}
             />
-            <Button
-              title={strings.operations.no}
-              style={styles.cancelButton}
-              onPress={() => setReplace(false)}
+            <HorizontalLine
+              color={theme.light.colors.infoBgLight}
+              paddingTop={15}
+              paddingBottom={8}
             />
-          </PopUp>
-        )}
-      </View>
+
+            <>
+              <ModalList
+                title={strings.home.deletePost}
+                icon={faTrash}
+                iconColor={theme.light.colors.secondary}
+                iconBg={theme.light.colors.infoBgLight}
+                // onPress={() => console.log('1234')}
+                onPress={() => {
+                  setReplace(true), setOpen(false);
+                }}
+              />
+
+              <ModalList
+                onPress={() => onbanPress()}
+                title={
+                  banValue == true
+                    ? strings.operations.unBan + ' @' + postData?.user.username
+                    : strings.operations.ban + ' @' + postData?.user.username
+                }
+                icon={faFlag}
+                iconColor={theme.light.colors.secondary}
+                iconBg={theme.light.colors.infoBgLight}
+              />
+            </>
+          </ModalDown>
+          {openReplace && (
+            <PopUp open={openReplace} setOpen={setReplace}>
+              <View style={styles.ConfirmationTextContainer}>
+                <Text style={styles.ConfirmationText}>
+                  {strings.alert.delete}
+                </Text>
+              </View>
+              <Button
+                title={strings.operations.yes}
+                style={styles.confirmButton}
+                onPress={() => {
+                  onDelete(), setReplace(false);
+                }}
+              />
+              <Button
+                title={strings.operations.no}
+                style={styles.cancelButton}
+                onPress={() => setReplace(false)}
+              />
+            </PopUp>
+          )}
+        </View>
+      )}
     </SafeAreaView>
   );
 }

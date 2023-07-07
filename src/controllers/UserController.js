@@ -471,7 +471,6 @@ export class UserController {
       await HttpClient.post(endpoint, data, { headers })
         .then(response => {
           resolve(response);
-
         })
         .catch(error => {
           reject(error);
@@ -614,12 +613,14 @@ export class UserController {
     });
   }
 
-  static async searchUserRequest(searchuservalue) {
+  static async searchUserRequest(searchuservalue, loggedInUserId) {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.SEARCH_USER;
       var data = JSON.stringify({
         searchWord: searchuservalue,
+        loggedInUserId,
       });
+      console.log(data, ' ========');
       HttpClient.post(endpoint, data)
         .then(response => {
           resolve(response);
@@ -943,26 +944,21 @@ export class UserController {
     });
   }
   static async updateFCMTokenRequest(data) {
-
     return new Promise((resolve, reject) => {
-      const endpoint =
-        API_BASE_URL + API_END_POINTS.UPDATE_FCM_TOKEN;
+      const endpoint = API_BASE_URL + API_END_POINTS.UPDATE_FCM_TOKEN;
 
       //  console.log("endPoint", endpoint)
       var Data = JSON.stringify({
-        "loggedInUserId": data.loggedInUserId,
-        "fcm_token": data.fcm_token,
-        "topic": "general",
-        "userId": data.loggedInUserId
+        loggedInUserId: data.loggedInUserId,
+        fcm_token: data.fcm_token,
+        topic: 'general',
+        userId: data.loggedInUserId,
       });
-      console.log("FCM_DATA", Data);
+      console.log('FCM_DATA', Data);
       HttpClient.post(endpoint, Data)
         .then(response => {
           resolve(response);
-          console.log(
-            'response of Update FCM TOKEN',
-            JSON.stringify(response)
-          );
+          console.log('response of Update FCM TOKEN', JSON.stringify(response));
         })
         .catch(error => {
           reject(new Error(error.message));
@@ -971,24 +967,17 @@ export class UserController {
     });
   }
 
-
-
   static async validateReceiptRequest(data) {
-
     return new Promise((resolve, reject) => {
-      const endpoint =
-        API_BASE_URL + API_END_POINTS.VALIDATE_RECEIPT;
+      const endpoint = API_BASE_URL + API_END_POINTS.VALIDATE_RECEIPT;
       var DATA = JSON.stringify({
-        "receipt": data.receipt,
-        "userId": data.loggedInUserId
+        receipt: data.receipt,
+        userId: data.loggedInUserId,
       });
       HttpClient.post(endpoint, DATA)
         .then(response => {
           resolve(response);
-          console.log(
-            'response of Validate receipt',
-            JSON.stringify(response)
-          );
+          console.log('response of Validate receipt', JSON.stringify(response));
         })
         .catch(error => {
           reject(new Error(error.message));
@@ -997,25 +986,18 @@ export class UserController {
     });
   }
 
-
   static async updateUserTypeRequest(data) {
-
     return new Promise((resolve, reject) => {
-      const endpoint =
-        API_BASE_URL + API_END_POINTS.UPDATE_USER_TYPE;
+      const endpoint = API_BASE_URL + API_END_POINTS.UPDATE_USER_TYPE;
       var DATA = JSON.stringify({
-        "isVIP": data.isVIP,
-        "userId": data.userId
+        isVIP: data.isVIP,
+        userId: data.userId,
       });
 
       HttpClient.post(endpoint, DATA)
         .then(response => {
           resolve(response);
-          console.log(
-            'response of update user type',
-            JSON.stringify(response)
-          );
-
+          console.log('response of update user type', JSON.stringify(response));
         })
         .catch(error => {
           reject(new Error(error.message));
@@ -1023,6 +1005,4 @@ export class UserController {
         });
     });
   }
-
-
 }

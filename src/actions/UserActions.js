@@ -188,7 +188,6 @@ export const TYPES = {
   UPDATE_FCM_TOKEN_SUCCESS: 'UPDATE_FCM_TOKEN_SUCCESS',
   UPDATE_FCM_TOKEN_ERROR: 'UPDATE_FCM_TOKEN_ERROR',
 
-
   //Update user type subscription
   UPDATE_USER_TYPE: 'UPDATE_USER_TYPE',
   UPDATE_USER_TYPE_REQUEST: 'UPDATE_USER_TYPE_REQUEST',
@@ -209,11 +208,6 @@ const updateUserTypeSuccess = user => ({
   type: TYPES.UPDATE_USER_TYPE_SUCCESS,
   payload: { user },
 });
-
-
-
-
-
 
 const loginRequest = () => ({
   type: TYPES.LOGIN_REQUEST,
@@ -644,8 +638,6 @@ const markAllReadNotificationsError = error => ({
   payload: { error },
 });
 
-
-
 export const updateFcmTokenSuccess = user => ({
   type: TYPES.UPDATE_FCM_TOKEN_SUCCESS,
   payload: user,
@@ -660,7 +652,6 @@ const updateFcmTokenError = error => ({
   type: TYPES.UPDATE_FCM_TOKEN_ERROR,
   payload: { error },
 });
-
 
 export const login = number => async dispatch => {
   dispatch(globalReset());
@@ -1239,17 +1230,21 @@ export const blockUsersList = userId => async dispatch => {
 };
 
 //Search User Action
-export const searchUser = searchuservalue => async dispatch => {
-  dispatch(searchUserRequest());
-  try {
-    const user = await UserController.searchUserRequest(searchuservalue);
-    dispatch(searchUserSuccess(user));
-  } catch (error) {
-    dispatch(searchUserError(error));
-  }
-};
+export const searchUser =
+  (searchuservalue, loggedInUserId) => async dispatch => {
+    dispatch(searchUserRequest());
+    try {
+      const user = await UserController.searchUserRequest(
+        searchuservalue,
+        loggedInUserId
+      );
+      dispatch(searchUserSuccess(user));
+    } catch (error) {
+      dispatch(searchUserError(error));
+    }
+  };
 
-export const updateFCMToken = (data) => async dispatch => {
+export const updateFCMToken = data => async dispatch => {
   dispatch(updateFcmTokenRequest());
 
   try {
