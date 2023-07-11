@@ -25,10 +25,12 @@ export const SwiperViewer = ({ visible, setVisible, images, index = null }) => {
 
   useEffect(() => {
     if (swipeRef.current && index) {
-      swipeRef.current.scrollToIndex({
-        animated: false,
-        index: index,
-      });
+      setTimeout(() => {
+        swipeRef.current.scrollToIndex({
+          animated: true,
+          index: index,
+        });
+      }, 100);
     }
   }, [swipeRef, index]);
 
@@ -55,6 +57,7 @@ export const SwiperViewer = ({ visible, setVisible, images, index = null }) => {
             setWipeIndex(index);
           }}
           index={0}
+          initialScrollIndex={index}
           data={images}
           renderItem={({ item, index }) => (
             <View style={[styles.child]}>
