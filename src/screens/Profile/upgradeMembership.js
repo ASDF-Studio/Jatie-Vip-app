@@ -74,7 +74,7 @@ export default function UpgradeMembership({ navigation }) {
 
   const buySubscription = async (userProductSku) => {
     if (Platform.OS === 'ios') {
-      clearTransactionIOS()
+      await clearTransactionIOS()
         .catch((error) => {
           console.log({ error });
         })
@@ -82,7 +82,7 @@ export default function UpgradeMembership({ navigation }) {
           await handlePurchase(userProductSku);
         });
     } else {
-      flushFailedPurchasesCachedAsPendingAndroid()
+     await flushFailedPurchasesCachedAsPendingAndroid()
         .catch((error) => {
           console.log({ error });
         })

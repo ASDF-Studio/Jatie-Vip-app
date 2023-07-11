@@ -188,7 +188,6 @@ export function Home({ navigation }) {
     ExclusivePostController.getAllSchedulePost().then(res => {
       dispatch(getSchedulePostSuccess(res));
     });
-
     PostController.getAllPost(
       user?.id,
       sortBy,
@@ -200,10 +199,10 @@ export function Home({ navigation }) {
     });
   };
 
-  useBackgroundFetch({
-    callback: customReq,
-    isFocused: isFocused,
-  });
+  // useBackgroundFetch({
+  //   callback: customReq,
+  //   isFocused: isFocused,
+  // });
 
   // useEffect(() => {
   //   if (!user) return;
@@ -434,6 +433,7 @@ export function Home({ navigation }) {
             navigation.navigate(NAVIGATION.upgradeMembership);
             return;
           }
+
           setVipArea(status);
         }}
         showLock={userType?.user == `${strings.userType.free}` ? true : false}
