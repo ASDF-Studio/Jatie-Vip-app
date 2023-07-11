@@ -37,11 +37,14 @@ import {
   deletePost,
   getAllPostsByLoggedInUser,
   getAllPostsByLogInUserPagination,
+  getAllPostByLoggedInUserSuccess,
 } from '@/actions/UserActions';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { POST_TYPE } from '@/constants/enums';
 import { SwiperViewer } from '@/components/SwiperComponent';
 import { useCallback } from 'react';
+import { UserController } from '@/controllers';
+import { useBackgroundFetch } from '@/hooks';
 
 export default function MyStatus({ navigation }) {
   const [open, setOpen] = useState(false);
@@ -60,6 +63,7 @@ export default function MyStatus({ navigation }) {
   const userType = useSelector(state => state.userType);
   const [index, setIndex] = useState(null);
   const [openReplace, setReplace] = useState(false);
+  const isFocused = useIsFocused();
 
   useFocusEffect(
     useCallback(() => {
@@ -67,6 +71,24 @@ export default function MyStatus({ navigation }) {
       return () => {};
     }, [])
   );
+
+  const customReq = () => {
+    console.log('my status fetch calling');
+    if (userType === strings.userType.admin) {
+      UserController.getAllPostByAdmin(user.id).then(allPosts => {
+        dispatch(getAllPostByLoggedInUserSuccess(allPosts?.data));
+      });
+    } else {
+      UserController.postByUserId(user?.id, null, user.id).then(allPosts => {
+        dispatch(getAllPostByLoggedInUserSuccess(allPosts?.data));
+      });
+    }
+  };
+
+  useBackgroundFetch({
+    callback: customReq,
+    isFocused,
+  });
 
   const isLoading = useSelector(state =>
     isLoadingSelector(
@@ -184,7 +206,6 @@ export default function MyStatus({ navigation }) {
                   }
                   isDownVoted={item?.has_downvoted}
                   isUpvoted={item?.has_upvoted}
-                   
                   commentCount={item?.comments_aggregate?.aggregate?.count ?? 0}
                   sharePress={() => console.log('share')}
                   morePress={() => {

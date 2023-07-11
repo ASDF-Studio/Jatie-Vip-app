@@ -51,6 +51,7 @@ import {
   deleteExclusivePost,
   getAllExclusivePagination,
   getAllExclusivePost,
+  getAllExclusivePostSuccess,
   TYPES,
 } from '@/actions/PostActions';
 import { getUser } from '@/selectors/UserSelectors';
@@ -60,6 +61,8 @@ import { createThumbnail } from 'react-native-create-thumbnail';
 import { SwiperViewer } from '@/components/SwiperComponent';
 import { BlurView, VibrancyView } from '@react-native-community/blur';
 import { isEmpty } from 'lodash';
+import { ExclusivePostController } from '@/controllers/ExclusivePostController';
+import { useBackgroundFetch } from '@/hooks';
 
 export function Exclusive({ navigation }) {
   const dispatch = useDispatch();
@@ -81,6 +84,7 @@ export function Exclusive({ navigation }) {
   const [postIndex, setPostIndex] = useState(0);
   const [fetchExclusivePost, setExclusivePost] = useState(true);
   const [index, setIndex] = useState();
+  const isFocused = useIsFocused();
   let counter = 1;
   const CheckIcon = (
     <FontAwesomeIcon icon={faCheck} color={theme.light.colors.primary} />
@@ -92,6 +96,22 @@ export function Exclusive({ navigation }) {
     };
     dispatch(getAllExclusivePost(data));
   }, [sortBy, focus]);
+
+  const customReq = () => {
+    console.log('exclusive background fetch');
+    const data = {
+      userId: user?.id,
+      postFilter: sortBy.toLowerCase(),
+    };
+    ExclusivePostController.getAllExclusivePost(data).then(res => {
+      dispatch(getAllExclusivePostSuccess(res));
+    });
+  };
+
+  useBackgroundFetch({
+    callback: customReq,
+    isFocused,
+  });
 
   const onEditPost = () => {
     setOpen(false);

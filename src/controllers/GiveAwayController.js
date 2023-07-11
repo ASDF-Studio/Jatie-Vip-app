@@ -95,7 +95,7 @@ export class GiveAwayController {
       HttpClient.post(endpoint, body)
         .then(response => {
           resolve(response);
-          console.log('response of active giveaway JOIN', response);
+          // console.log('response of active giveaway JOIN', response);
         })
         .catch(error => {
           reject(new Error(error.message));
@@ -106,7 +106,6 @@ export class GiveAwayController {
 
   static async getAllPastGiveAwayPost(data) {
     return new Promise((resolve, reject) => {
-      console.log('check data', data);
       const endpoint = API_BASE_URL + API_END_POINTS.GET_PAST_GIVEAWAY;
       const body = JSON.stringify({
         loggedInUserId: data?.userId,
@@ -116,7 +115,7 @@ export class GiveAwayController {
       HttpClient.post(endpoint, body)
         .then(response => {
           resolve(response);
-          console.log('response of past giveaway', JSON.stringify(response));
+          // console.log('response of past giveaway', JSON.stringify(response));
         })
         .catch(error => {
           reject(new Error(error.message));

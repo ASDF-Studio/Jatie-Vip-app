@@ -68,7 +68,7 @@ export const Timer = memo(({ item }) => {
         <Text
           style={{
             fontSize: ms(12, 0.3),
-            color: 'black',
+            color: isOdd(seconds) ? 'black' : 'transparent',
             fontFamily: FontFamily.Recoleta_medium,
             marginBottom: 2,
             textAlign: 'center',
@@ -122,7 +122,7 @@ export const Timer = memo(({ item }) => {
               textAlign: 'right',
             }}
           >
-            {`${seconds}`}
+            {`${minutes}`}
           </Text>
           <Text
             style={{
@@ -131,7 +131,7 @@ export const Timer = memo(({ item }) => {
               fontFamily: FontFamily.Recoleta_medium,
               width: ms(25),
             }}
-          >{` Sec`}</Text>
+          >{` Min`}</Text>
         </View>
       </View>
     </View>

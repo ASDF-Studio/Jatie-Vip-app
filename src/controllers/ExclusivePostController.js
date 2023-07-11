@@ -78,31 +78,25 @@ export class ExclusivePostController {
     });
   }
 
+  static async getAllExclusivePost(data) {
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.GET_EXCLUSIVE_POST;
+      const body = JSON.stringify({
+        loggedInUserId: data.userId,
+        postsFilter: data.postFilter,
+        dateCursor: data?.page,
+      });
+      HttpClient.post(endpoint, body)
+        .then(response => {
+          resolve(response);
+          // console.log('response of active exclusive', response)
+        })
+        .catch(error => {
+          reject(new Error(error.message));
+        });
+    });
+  }
 
-    static async getAllExclusivePost(data) {
-
-        return new Promise((resolve, reject) => {
-            const endpoint = API_BASE_URL + API_END_POINTS.GET_EXCLUSIVE_POST;
-            const body = JSON.stringify({
-                "loggedInUserId": data.userId,
-                "postsFilter": data.postFilter,
-                "dateCursor": data?.page
-
-            })
-            HttpClient.post(endpoint, body)
-                .then((response) => {
-
-                    resolve(response)
-
-
-                    // console.log('response of active exclusive', response)
-                })
-                .catch((error) => {
-                    reject(new Error(error.message));
-
-                });
-              })}
-     
   static async getExclusivePostById(data) {
     return new Promise((resolve, reject) => {
       console.log('check data', data);

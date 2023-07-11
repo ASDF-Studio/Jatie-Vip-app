@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   View,
   FlatList,
@@ -42,15 +42,18 @@ import { useEffect } from 'react';
 import {
   getAllPastGiveaway,
   getAllPastGiveawayPagination,
+  getPastGiveAwaySuccess,
   TYPES,
 } from '@/actions/PostActions';
 import { getUser } from '@/selectors/UserSelectors';
-import { useIsFocused } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { ActivityIndicator } from 'react-native';
 import { getUserProfileByUserId } from '@/actions/UserActions';
 import { SwiperViewer } from '@/components/SwiperComponent';
+import { GiveAwayController } from '@/controllers/GiveAwayController';
+import { useBackgroundFetch } from '@/hooks';
 export default function Past({ navigation, userType }) {
   const getdataOfPast = useSelector(geAllPastGiveAwayData);
   // console.log('selector data', getdataOfPast)
@@ -59,16 +62,36 @@ export default function Past({ navigation, userType }) {
   const [fetchPastGiveaway, setFetchPastGiveaway] = useState(true);
   const [showUserModal, setShowUserModal] = useState(false);
   const user = useSelector(getUser);
-  const focus = useIsFocused();
+  const isFocused = useIsFocused();
   const [index, setIndex] = useState();
 
   const dispatch = useDispatch();
   const isLoading = useSelector(state =>
     isLoadingSelector([TYPES.GET_PAST_GIVEAWAY], state)
   );
-  useEffect(() => {
-    getPastData();
-  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      getPastData();
+    }, [])
+  );
+
+  const customReq = () => {
+    const data = {
+      userId: user?.id,
+    };
+
+    console.log('past callback called');
+
+    GiveAwayController.getAllPastGiveAwayPost(data).then(res => {
+      dispatch(getPastGiveAwaySuccess(res));
+    });
+  };
+
+  useBackgroundFetch({
+    callback: customReq,
+    isFocused,
+  });
 
   const getPastData = () => {
     const data = {
@@ -135,7 +158,7 @@ export default function Past({ navigation, userType }) {
           setFetchPastGiveaway(false);
           // onEndReachedCalledDuringMomentum = false;
         }}
-        renderItem={({ item,index }) => (
+        renderItem={({ item, index }) => (
           <View style={styles.cardContainer}>
             <Card>
               <View>
@@ -210,10 +233,11 @@ export default function Past({ navigation, userType }) {
                   </View>
                 </TouchableOpacity>
               ) : (
-                <MediaContainer contents={item?.postMediaContent}
-                onPress={index => {
-                  onViewImageVideo(item, index);
-                }}
+                <MediaContainer
+                  contents={item?.postMediaContent}
+                  onPress={index => {
+                    onViewImageVideo(item, index);
+                  }}
                 />
               )}
               <TouchableOpacity
@@ -306,13 +330,13 @@ export default function Past({ navigation, userType }) {
         )}
       </ModalDown>
       {showImageView && (
-          <SwiperViewer
-            visible={showImageView}
-            setVisible={() => setShowImageView(false)}
-            index={index}
-            images={feedImages}
-          />
-        )}
+        <SwiperViewer
+          visible={showImageView}
+          setVisible={() => setShowImageView(false)}
+          index={index}
+          images={feedImages}
+        />
+      )}
       {/* Admin */}
     </SafeAreaView>
   );

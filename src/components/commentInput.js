@@ -1,5 +1,13 @@
-import React,{useEffect} from 'react';
-import { View, StyleSheet, TouchableOpacity, Pressable, Text, Platform, ScrollView } from 'react-native';
+import React, { useEffect } from 'react';
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Pressable,
+  Text,
+  Platform,
+  ScrollView,
+} from 'react-native';
 import { TextField } from '@/components';
 import { theme } from '@/theme';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -26,7 +34,7 @@ import {
   getPostByIdData,
   getSearchData,
 } from '@/selectors/PostSelectors';
-import { showMessage } from "react-native-flash-message";
+import { showMessage } from 'react-native-flash-message';
 import { FontFamily } from '@/theme/Fonts';
 import { POST_TYPE } from '@/constants/enums';
 import { getUser } from '@/selectors/UserSelectors';
@@ -48,7 +56,7 @@ export const CommentInput = React.forwardRef((props, ref) => {
     isLoadingSelector([TYPES.COMMENT_ON_POST], state)
   );
   useEffect(() => {
-    dispatch(searchUserbyUserName(searchedKeyword));
+    dispatch(searchUserbyUserName(searchedKeyword, user.id));
   }, [searchedKeyword]);
   // Create config as static object out of function component
   // Or memoize it inside FC using `useMemo`

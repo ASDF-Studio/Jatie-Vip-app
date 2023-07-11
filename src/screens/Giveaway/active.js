@@ -31,16 +31,19 @@ import { Data } from './giveawayData/activeData';
 import { geAllActiveGiveAwayData } from '@/selectors/PostSelectors';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  getActiveGiveAwaySuccess,
   getAllActiveGiveaway,
   getAllActiveGiveawayPagination,
   TYPES,
 } from '@/actions/PostActions';
 import { getUser } from '@/selectors/UserSelectors';
 import { useEffect } from 'react';
-import { useIsFocused } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
 import { SwiperViewer } from '@/components/SwiperComponent';
 import { useCallback } from 'react';
+import { backgroundFetch, useBackgroundFetch } from '@/hooks';
+import { GiveAwayController } from '@/controllers/GiveAwayController';
 
 export default function Active({ navigation, userType }) {
   const user = useSelector(getUser);
@@ -56,12 +59,29 @@ export default function Active({ navigation, userType }) {
   );
 
   const [index, setIndex] = useState();
-  const focus = useIsFocused();
+  const isFocused = useIsFocused();
 
-  useEffect(() => {
-    getSeconds();
-    getactiveData();
-  }, []);
+  const customReq = () => {
+    console.log('active is calling');
+    const data = {
+      userId: user?.id,
+    };
+    GiveAwayController.getAllActiveGivePost(data).then(post => {
+      dispatch(getActiveGiveAwaySuccess(post));
+    });
+  };
+
+  const { unSubscribe } = useBackgroundFetch({
+    callback: customReq,
+    isFocused: isFocused,
+  });
+
+  useFocusEffect(
+    useCallback(() => {
+      getSeconds();
+      getactiveData();
+    }, [])
+  );
 
   const getactiveData = () => {
     const data = {
@@ -145,7 +165,6 @@ export default function Active({ navigation, userType }) {
           renderItem={({ item, index }) => (
             <View style={styles.FlatListContainer}>
               <Card>
-                {console.log(JSON.stringify(item))}
                 <View>
                   <Text style={styles.title}>{item.postTitle}</Text>
                 </View>
@@ -185,105 +204,7 @@ export default function Active({ navigation, userType }) {
                   </TouchableOpacity>
                 ) : (
                   <View style={styles.thumbnailContainer}>
-                    {/* {item?.postImg?.map(url => (
-                      <>
-                        <Image
-                          style={styles.thumbnailImage}
-                          source={{
-                            uri: url
-                          }}
-                        />
-                        <TouchableOpacity
-                          onPress={() =>
-                            navigation.navigate(NAVIGATION.giveawayPostDetails)
-                          }
-                          style={styles.btn}
-                        >
-                          <Text style={[styles.btnTxt, styles.btnTxtColor]}>
-                            {strings.giveaway.learnMore}
-                          </Text>
-                        </TouchableOpacity>
-                      </>
-                    ))} */}
                     <>
-                      {/* {item?.postImg?.length <= 2 ? (
-                        <View style={styles.imageContainer}>
-                          {item?.postImg?.map(data => (
-                            counter = counter + 1,
-                            <TouchableOpacity
-                              // key={counter}
-                              style={styles.touchContainer}
-                              onPress={() => {
-                                setShowImageView(true),
-                                  setFeedImages(item.postImg)
-                              }}
-                            >
-                              <Image
-                                source={{
-                                  uri: data,
-                                }}
-                                style={styles.image}
-                              />
-                            </TouchableOpacity>
-                          ))}
-                        </View>
-                      ) : item?.postImg?.length > 2 ? (
-                        counter = 1,
-                        <View style={styles.imageContainer}>
-                          {item?.postImg?.map(data =>
-                            counter == 1 ? (
-                              counter = counter + 1,
-                              <TouchableOpacity
-                                key={counter}
-                                style={styles.touchContainer}
-                                onPress={() => {
-                                  setShowImageView(true),
-                                    setFeedImages(item.postImg);
-                                  // console.log(feedImages)
-                                }}
-                              >
-                                <Image
-                                  source={{
-                                    uri: data,
-                                  }}
-                                  key={counter}
-                                  style={styles.image}
-                                />
-                              </TouchableOpacity>
-                            ) : counter == 2 ? (
-                              counter = counter + 1,
-                              <TouchableOpacity
-                                key={counter}
-                                style={styles.touchContainer}
-                                onPress={() => {
-                                  setShowImageView(true),
-                                    setFeedImages(item.postImg);
-                                }}
-                              >
-                                <ImageBackground
-                                  source={{
-                                    uri: data,
-                                  }}
-                                  key={counter}
-                                  style={[styles.image, styles.moreImage]}
-                                >
-                                  <TouchableOpacity
-                                    onPress={() => {
-                                      setShowImageView(true),
-                                        setFeedImages(item.postImg);
-                                    }}
-                                  >
-                                    <Text style={styles.extraImage}>
-                                      {strings.message.plus}
-                                      {item?.postImg?.length - 1}
-                                    </Text>
-                                  </TouchableOpacity>
-                                </ImageBackground>
-                              </TouchableOpacity>
-                            ) : null
-                          )}
-                        </View>
-                      ) : null} */}
                       <MediaContainer
                         contents={item?.postMediaContent}
                         onPress={index => {
@@ -490,5 +411,3 @@ export const styles = StyleSheet.create({
     position: 'relative',
   },
 });
-
-

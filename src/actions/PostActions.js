@@ -1075,14 +1075,6 @@ export const getAllPost =
   (userId, filterBy, isFollowingData, isVip, page) => async dispatch => {
     dispatch(getAllPostRequest());
     try {
-      console.log(
-        'request ================',
-        userId,
-        filterBy,
-        isFollowingData,
-        isVip,
-        page
-      );
       const post = await PostController.getAllPost(
         userId,
         filterBy,
@@ -1099,7 +1091,6 @@ export const getAllPost =
 export const getAllPostPagination =
   (userId, filterBy, isFollowingData, isVip, page) => async dispatch => {
     dispatch(getAllPostPaginationRequest());
-
 
     try {
       const post = await PostController.getAllPost(
@@ -1287,18 +1278,20 @@ export const reportPost = paramsObj => async dispatch => {
   }
 };
 
-export const searchUserbyUserName = searchWord => async dispatch => {
-  dispatch(globalReset());
-  dispatch(searchUserByUserNameRequest());
-  try {
-    const searchedUser = await PostController.searchUserByUserNameAPI(
-      searchWord
-    );
-    dispatch(searchUserByUserNameSuccess(searchedUser?.data));
-  } catch (error) {
-    dispatch(searchUserByUserNameError(error));
-  }
-};
+export const searchUserbyUserName =
+  (searchWord, loggedInUserId) => async dispatch => {
+    dispatch(globalReset());
+    dispatch(searchUserByUserNameRequest());
+    try {
+      const searchedUser = await PostController.searchUserByUserNameAPI(
+        searchWord,
+        loggedInUserId
+      );
+      dispatch(searchUserByUserNameSuccess(searchedUser?.data));
+    } catch (error) {
+      dispatch(searchUserByUserNameError(error));
+    }
+  };
 
 export const giveAwayPost = params => async dispatch => {
   dispatch(globalReset());

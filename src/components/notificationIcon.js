@@ -10,10 +10,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
 import { isEmpty } from 'lodash';
 import { useEffect } from 'react';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import { useCallback } from 'react';
 import { fetchAllNotifications } from '@/actions/UserActions';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { useBackgroundFetch } from '@/hooks';
 
 export const NotificationIcon = ({ style }) => {
   const loggedInUser = useSelector(getUser);
@@ -25,11 +26,18 @@ export const NotificationIcon = ({ style }) => {
     x => !x?.seenByUser
   );
 
-  useFocusEffect(
-    useCallback(() => {
-      dispatch(fetchAllNotifications(loggedInUser.id, true));
-    }, [])
-  );
+  const isFocused = useIsFocused();
+
+  const backgroundFetch = () => {
+    console.log('fetching notification');
+    fetchAllNotifications(loggedInUser.id, true);
+  };
+
+  useBackgroundFetch({
+    callback: backgroundFetch,
+    isFocused,
+    delay: 5,
+  });
 
   return (
     <TouchableOpacity

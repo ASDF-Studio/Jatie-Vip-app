@@ -568,11 +568,12 @@ export class PostController {
   }
 
   //Search user by username
-  static async searchUserByUserNameAPI(searchWord) {
+  static async searchUserByUserNameAPI(searchWord, loggedInUserId) {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.SEARCH_USER_BY_USERNAME;
       const body = {
         searchWord: searchWord,
+        loggedInUserId,
       };
       HttpClient.post(endpoint, body)
         .then(response => {

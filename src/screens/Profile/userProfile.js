@@ -95,6 +95,8 @@ import { customShowMessage } from '@/utils';
 import { isEmpty, last } from 'lodash';
 import PostOptions from '../Home/PostOptions';
 import { DefaultProfile } from '@/assets';
+import { UserController } from '@/controllers';
+import { useBackgroundFetch } from '@/hooks';
 
 export default function UserProfile({ navigation, route }) {
   const [postIndex, setPostIndex] = useState(0);
@@ -135,8 +137,7 @@ export default function UserProfile({ navigation, route }) {
   const [selectedPost, setSelectedPost] = useState(null);
   const [index, setIndex] = useState();
 
-
-  const focus = useIsFocused();
+  const isFocused = useIsFocused();
 
   const isFollowSuccess = useSelector(state =>
     isLoadingSelector([TYPES.FOLLOW_USER], state)
@@ -151,6 +152,18 @@ export default function UserProfile({ navigation, route }) {
     await getAllPostsByUserid(userId, userr.id)(dispatch);
     setLoading(false);
   };
+
+  const backgroundFetch = () => {
+    console.log('background fetching user posts');
+    UserController.postByUserId(userId, '', userr.id).then(res => {
+      dispatch(getAllPostByUserIdSuccess(res?.data));
+    });
+  };
+
+  useBackgroundFetch({
+    callback: backgroundFetch,
+    isFocused,
+  });
 
   useFocusEffect(
     useCallback(() => {

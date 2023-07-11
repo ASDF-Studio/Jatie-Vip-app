@@ -32,6 +32,7 @@ import { faSearch } from '@fortawesome/pro-regular-svg-icons';
 import {
   TYPES,
   fetchAllNotifications,
+  getAllNotificationsSuccess,
   markAllRead,
   markSingleNotifRead,
 } from '@/actions/UserActions';
@@ -43,9 +44,11 @@ import { navigate } from '@/navigation/RootNavigation';
 import { CustomSwitch } from '@/components/switch';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { isEmpty } from 'lodash';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import { useCallback } from 'react';
 import { isLoadingSelector } from '@/selectors/StatusSelectors';
+import { UserController } from '@/controllers';
+import { useBackgroundFetch } from '@/hooks';
 
 export default function Notification({ navigation }) {
   const [read, setRead] = useState(false);
@@ -54,12 +57,25 @@ export default function Notification({ navigation }) {
 
   const loggedInUser = useSelector(getUser);
   const notificationData = loggedInUser.notificationKey;
+  const isFocused = useIsFocused();
 
   useFocusEffect(
     useCallback(() => {
       customReq();
     }, [read])
   );
+
+  const backgroundFetch = () => {
+    console.log('fetching notif background');
+    UserController.AllNotificationsRequest(loggedInUser.id, read).then(res => {
+      dispatch(getAllNotificationsSuccess(res));
+    });
+  };
+
+  useBackgroundFetch({
+    callback: backgroundFetch,
+    isFocused,
+  });
 
   const customReq = async () => {
     setLoading(true);

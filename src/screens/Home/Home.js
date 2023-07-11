@@ -1,11 +1,8 @@
-import React, { useEffect, useState,useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { strings } from '@/localization';
 import { theme, TextStyles } from '@/theme';
 import { ms, vs } from 'react-native-size-matters';
-import {
-  faCheck,
-  faChevronDown,
-} from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { FontFamily } from '@/theme/Fonts';
@@ -66,6 +63,7 @@ import {
   getAllPostPagination,
   getSchedulePost,
   getAllPostSuccess,
+  getSchedulePostSuccess,
 } from '@/actions/PostActions';
 import {
   getAllPostData,
@@ -84,7 +82,7 @@ import queryString from 'query-string';
 import { SwiperViewer } from '@/components/SwiperComponent';
 
 import { isEmpty, last } from 'lodash';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import { useCallback } from 'react';
 import { MemoPostcard } from '@/components/PostCard';
 import { CustomSwitch } from '@/components/switch';
@@ -93,6 +91,9 @@ import { POST_TYPE } from '@/constants/enums';
 import { followers, updateFCMToken } from '@/actions/UserActions';
 import messaging from '@react-native-firebase/messaging';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { PostController } from '@/controllers/PostController';
+import { useBackgroundFetch } from '@/hooks';
+import { ExclusivePostController } from '@/controllers/ExclusivePostController';
 export function Home({ navigation }) {
   const ALLPOST = useSelector(getAllPostData);
   const SEARCH_DATA = useSelector(getSearchData);
@@ -156,6 +157,7 @@ export function Home({ navigation }) {
   const [openReplace, setReplace] = useState(false);
   const [isBanned, setIsBanned] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
+  const isFocused = useIsFocused();
 
   useFocusEffect(
     useCallback(() => {
@@ -180,6 +182,29 @@ export function Home({ navigation }) {
     }, [sortBy, follwingSwitch, vipArea])
   );
 
+  const customReq = () => {
+    console.log('fetch posts');
+
+    ExclusivePostController.getAllSchedulePost().then(res => {
+      dispatch(getSchedulePostSuccess(res));
+    });
+
+    PostController.getAllPost(
+      user?.id,
+      sortBy,
+      follwingSwitch,
+      vipArea == `${strings.home.newFeed}` ? false : true,
+      ''
+    ).then(res => {
+      dispatch(getAllPostSuccess(res));
+    });
+  };
+
+  useBackgroundFetch({
+    callback: customReq,
+    isFocused: isFocused,
+  });
+
   // useEffect(() => {
   //   if (!user) return;
 
@@ -196,7 +221,7 @@ export function Home({ navigation }) {
   // }, [sortBy, follwingSwitch, vipArea, user]);
 
   useEffect(() => {
-    saveFCMToken()
+    saveFCMToken();
     dynamicLinks()
       .getInitialLink()
       .then(link => {
@@ -210,16 +235,16 @@ export function Home({ navigation }) {
   }, []);
 
   const saveFCMToken = async () => {
-    let fcmtoken = await AsyncStorage.getItem("fcmtoken");
-    console.log("FCM__TOsssEN", fcmtoken);
+    let fcmtoken = await AsyncStorage.getItem('fcmtoken');
+    console.log('FCM__TOsssEN', fcmtoken);
     const DATA = {
-      "loggedInUserId": user?.id,
-      "fcm_token": fcmtoken,
-      "topic": "general",
-      "userId": user?.id
-    }
-    dispatch(updateFCMToken(DATA))
-  }
+      loggedInUserId: user?.id,
+      fcm_token: fcmtoken,
+      topic: 'general',
+      userId: user?.id,
+    };
+    dispatch(updateFCMToken(DATA));
+  };
   const handleDynamicLink = link => {
     if (!!link?.url) {
       const params = queryString.parse(link.url.split('?')[1]);
@@ -309,7 +334,6 @@ export function Home({ navigation }) {
     dispatch(getAllPost(user?.id, sortBy, follwingSwitch));
   };
 
-
   const handleScroll = ({ nativeEvent }) => {
     const { layoutMeasurement, contentOffset, contentSize } = nativeEvent;
     const isEndReached =
@@ -336,7 +360,6 @@ export function Home({ navigation }) {
       )
     );
   };
-
 
   const renderFooterPost = () => {
     return (
@@ -445,9 +468,9 @@ export function Home({ navigation }) {
             }
             initialNumToRender={5}
             ListFooterComponent={renderFooterPost}
-             onEndReached={onLoadMorePost}
+            onEndReached={onLoadMorePost}
             // onEndReachedThreshold={0.5}
-         
+
             extraData={searchEnabled ? SEARCH_DATA : ALLPOST}
             onEndReachedThreshold={0.5}
             onMomentumScrollBegin={() => {
