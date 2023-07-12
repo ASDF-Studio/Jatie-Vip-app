@@ -1445,6 +1445,7 @@ export const updateUserType = data => async dispatch => {
       let selectedValue = 'FREE';
       dispatch(ChooseUser(selectedValue));
     }
+    // navigation.reset({ index: 0, routes: [{ name: NAVIGATION.home }] })
     navigationRef.navigate(NAVIGATION.home, { reset: true });
     // dispatch(updateUserTypeSuccess(user));
   } catch (error) {

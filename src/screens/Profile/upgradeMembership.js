@@ -22,6 +22,8 @@ import RNIap, {
   endConnection,
   flushFailedPurchasesCachedAsPendingAndroid,
   clearTransactionIOS,
+  finishTransaction,
+  finishTransactionIOS,
 } from 'react-native-iap';
 import { buySubscription, cleanupIAP, restorePurchases } from '@/utils/IAPhelper';
 import { SKUS } from '@/constants/subscriptionConstant';
@@ -30,6 +32,8 @@ import { NAVIGATION } from '@/constants';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
 import { validateReceipt } from '@/actions/SubscriptionAction';
+import { CommonActions } from '@react-navigation/native';
+import { updateUserType } from '@/actions/UserActions';
 
 export default function UpgradeMembership({ navigation }) {
   const dispatch = useDispatch();
@@ -43,6 +47,7 @@ export default function UpgradeMembership({ navigation }) {
     initIAP();
     purchaseUpdateSubscription = purchaseUpdatedListener(async (purchase) => {
       const receipt = purchase.transactionReceipt;
+      console.log("receipt",receipt);
       if (receipt) {
         try {
           await verifyReceipt(receipt);
@@ -73,9 +78,12 @@ export default function UpgradeMembership({ navigation }) {
   };
 
   const buySubscription = async (userProductSku) => {
+
     if (Platform.OS === 'ios') {
+      setLoading(true);
       await clearTransactionIOS()
         .catch((error) => {
+          setLoading(false);
           console.log({ error });
         })
         .then(async () => {
@@ -92,7 +100,7 @@ export default function UpgradeMembership({ navigation }) {
     }
   };
   const handlePurchase = async (userProductSku) => {
-    setLoading(true);
+   
     try {
       const products = await getProducts({ skus: Platform.OS === 'ios' ? SKUS.IOS : SKUS.ANDROID });
       let productFound = false;
@@ -120,26 +128,72 @@ export default function UpgradeMembership({ navigation }) {
       receipt: receipt,
       loggedInUserId: user?.id,
     }
-    dispatch(validateReceipt(data))
+    dispatch(validateReceipt(data,navigation))
   }
 
-  const restorePurchases = async () => {
-    setLoading(true);
-    try {
-      const purchases = await getAvailablePurchases();
-      let restored = false;
-      for (const purchase of purchases) {
-        await requestSubscription({ sku: purchase.productId });
-        restored = true;
-        break; // Stop checking for more purchases after restoring one
-      }
-      if (!restored) {
-      }
-    } catch (error) {
-    } finally {
-      setLoading(false); // Hide loader regardless of success or failure
-    }
+  // const restorePurchases = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const purchases = await getAvailablePurchases();
+  //     console.log("purchasessss",purchases);
+  //     let restored = false;
+  //     for (const purchase of purchases) {
+  //       await requestSubscription({ sku: purchase[0].productId });
+  //       restored = true;
+  //       break; 
+  //       // Stop checking for more purchases after restoring one
+  //     }
+  //     if (!restored) {
+  //     }
+  //     else{
+  //       navigation.reset({ index: 0, routes: [{ name: NAVIGATION.home }] })
+  //     }
+  //   } catch (error) {
+  //     console.log("ERRROORR",error);
+  //   } finally {
+  //     setLoading(false); // Hide loader regardless of success or failure
+  //   }
+  // }
+  function processPurchase(purchase) {
+    const { productId, transactionId, transactionDate } = purchase;
+    const Data = {
+      "isVIP": true,
+      "userId": user?.id
   }
+  dispatch(updateUserType(Data))
+  setTimeout(() => {
+    navigationRef.navigate(NAVIGATION.home, { reset: true });
+   }, 1000);
+
+}
+ async function restorePurchases() {
+    try {
+      setLoading(true)
+        const purchases = await getAvailablePurchases();
+        if (purchases && purchases.length > 0) {
+            for (const purchase of purchases) {
+
+                if (purchase.transactionReceipt) {
+                  setLoading(false)
+                    processPurchase(purchase);
+                    // Finish transaction (required for iOS)
+                    if (Platform.OS === 'ios') {
+                        await finishTransactionIOS(purchase.transactionId);
+                    } else {
+                        await finishTransaction(purchase);
+                    }
+                }
+            }
+        } else {
+          setLoading(false)
+
+        }
+    } catch (error) {
+      setLoading(false)
+
+
+    }
+}
 
   return (
     <SafeAreaView style={styles.container}>

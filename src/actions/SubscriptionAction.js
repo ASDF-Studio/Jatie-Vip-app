@@ -38,7 +38,7 @@ const validateReceiptSuccess = data => ({
 
 //Update FCM Token 
 
-export const validateReceipt = (data) => async dispatch => {
+export const validateReceipt = (data,navigation) => async dispatch => {
     dispatch(validateReceiptRequest());
 
     try {
@@ -49,7 +49,7 @@ export const validateReceipt = (data) => async dispatch => {
                 "isVIP": true,
                 "userId": data.loggedInUserId
             }
-            dispatch(updateUserType(Data))
+            dispatch(updateUserType(Data,navigation))
         }
         else {
             const Data = {

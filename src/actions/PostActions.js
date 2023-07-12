@@ -1082,7 +1082,6 @@ export const getAllPost =
         isVip,
         page
       );
-      console.log('response ============', post);
       dispatch(getAllPostSuccess(post));
     } catch (error) {
       dispatch(getAllPostError(error));
