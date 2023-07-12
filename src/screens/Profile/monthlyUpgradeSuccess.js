@@ -49,8 +49,12 @@ export default function MonthlyUpgradeSuccess({ navigation }) {
       setLoading(false)
     }
   };
-  const onPurchase=(SKU)=>{
-
+  const onUpgradeDowngrade=()=>{
+    if (Platform.OS === 'ios') {
+      Linking.openURL('https://apps.apple.com/account/subscriptions');
+    } else {
+      Linking.openURL('https://play.google.com/store/account/subscriptions');
+    }
   }
 
   return (
@@ -93,9 +97,9 @@ export default function MonthlyUpgradeSuccess({ navigation }) {
         <Button title={
           subscriptionPlan == SKUS.ONE_MONTH ? strings.profile.upgradeYearlySubsription : strings.profile.donwgradeMonthlySubsription}
           onPress={() => 
-            
+             onUpgradeDowngrade()
             // onPurchase(subscriptionPlan == SKUS.ONE_MONTH ? SKUS.YEAR : SKUS.ONE_MONTH)
-            navigation.navigate(NAVIGATION.upgradeMembership)
+            // navigation.navigate(NAVIGATION.upgradeMembership)
           
           }
 
