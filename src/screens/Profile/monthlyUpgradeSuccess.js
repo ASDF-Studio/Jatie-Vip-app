@@ -20,7 +20,12 @@ export default function MonthlyUpgradeSuccess({ navigation }) {
   const [subscriptionPlan, setSubscriptionPlan] = useState(null)
   const [subscriptionRenewDate, setSubscriptionRenewDate] = useState(null)
   const [loading, setLoading] = useState(false)
-  useEffect(() => { checkSubscriptionAndReturnUser() }, [])
+  useEffect(() => { checkSubscriptionAndReturnUser()
+  
+  setTimeout(() => {
+    setLoading(false)
+  }, 5000);
+  }, [])
   const checkSubscriptionAndReturnUser = async () => {
     try {
      setLoading(true)
@@ -32,6 +37,7 @@ export default function MonthlyUpgradeSuccess({ navigation }) {
       availablePurchases.sort((a, b) => a.transactionDate - b.transactionDate);
       const latestPurchase = availablePurchases[availablePurchases.length - 1];
       if (latestPurchase && latestPurchase.productId) {
+        setLoading(false)
         setSubscriptionPlan(latestPurchase.productId);
         const timestamp = latestPurchase?.transactionDate; // Replace this with your actual timestamp
         var DATE=null
@@ -97,9 +103,9 @@ export default function MonthlyUpgradeSuccess({ navigation }) {
         <Button title={
           subscriptionPlan == SKUS.ONE_MONTH ? strings.profile.upgradeYearlySubsription : strings.profile.donwgradeMonthlySubsription}
           onPress={() => 
-             onUpgradeDowngrade()
+            //  onUpgradeDowngrade()
             // onPurchase(subscriptionPlan == SKUS.ONE_MONTH ? SKUS.YEAR : SKUS.ONE_MONTH)
-            // navigation.navigate(NAVIGATION.upgradeMembership)
+             navigation.navigate(NAVIGATION.upgradeMembership)
           
           }
 
