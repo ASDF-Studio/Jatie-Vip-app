@@ -18,33 +18,16 @@ import {
   TouchableWithoutFeedback,
   StatusBar,
   SafeAreaView,
-  TextInput,
-  ImageBackground,
   ActivityIndicator,
   Platform,
 } from 'react-native';
 import {
-  AppImageViewer,
-  AppSwitch,
-  AppVideoPlayer,
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
   HorizontalLine,
   Icon,
-  MediaContainer,
-  ModalDown,
-  ModalList,
   NotificationIcon,
-  PopUp,
-  ReportOnPostModal,
   SeeSchedulePost,
   ShareFeed,
   StatusNavigatorBar,
-  Toast,
-  TopBackButton,
   UserPostOptions,
   VerticalLine,
 } from '@/components';
@@ -55,11 +38,6 @@ import { navigationRef } from '@/navigation/RootNavigation';
 import {
   getAllPost,
   TYPES,
-  deletePost,
-  reportPost,
-  followUser,
-  blockUser,
-  unFollowUser,
   getAllPostPagination,
   getSchedulePost,
   getAllPostSuccess,
@@ -74,8 +52,7 @@ import {
   isLoadingSelector,
   successSelector,
 } from '@/selectors/StatusSelectors';
-import ImagePicker from 'react-native-image-crop-picker';
-import { globalReset } from '@/actions/GlobalActions';
+
 import SearchPost from './SearchPost';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import queryString from 'query-string';
@@ -83,13 +60,9 @@ import { SwiperViewer } from '@/components/SwiperComponent';
 
 import { isEmpty, last } from 'lodash';
 import { useFocusEffect, useIsFocused } from '@react-navigation/native';
-import { useCallback } from 'react';
 import { MemoPostcard } from '@/components/PostCard';
 import { CustomSwitch } from '@/components/switch';
-import PostOptions from './PostOptions';
-import { POST_TYPE } from '@/constants/enums';
 import { followers, updateFCMToken } from '@/actions/UserActions';
-import messaging from '@react-native-firebase/messaging';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PostController } from '@/controllers/PostController';
 import { useBackgroundFetch } from '@/hooks';
@@ -123,19 +96,11 @@ export function Home({ navigation }) {
     },
   ]);
 
-  const [reportOptionValue, setReportOptionValue] = useState('');
-  const [reportComment, setReportCommnet] = useState('');
   const [isFollowing, setIsFollowing] = useState(false);
   const userFollower = user.followersDatainReducer?.data;
   const [index, setIndex] = useState(null);
 
   const [selectedPost, setSelectedPost] = useState(null);
-  const [postUserId, setPostUserId] = useState(null);
-  const [postId, setpostId] = useState(null);
-  const [postTitle, setPostTitle] = useState('');
-  const [postBody, setPostBody] = useState('');
-  const [postImg, setPostImg] = useState([]);
-  const [isAdminPost, setIsAdminPost] = useState(false);
 
   const FILTER_DATA = [
     { title: strings.home.recent, value: strings.sortBy.recent },
@@ -159,32 +124,20 @@ export function Home({ navigation }) {
   const [isScrolling, setIsScrolling] = useState(false);
   const isFocused = useIsFocused();
 
-  useFocusEffect(
-    useCallback(() => {
-      dispatch(getSchedulePost());
-      dispatch(
-        getAllPost(
-          user?.id,
-          sortBy,
-          follwingSwitch,
-          vipArea == `${strings.home.newFeed}` ? false : true,
-          ''
-        )
-      );
-
-      return () => {
-        // dispatch(
-        //   getAllPostSuccess({
-        //     data: [],
-        //   })
-        // );
-      };
-    }, [sortBy, follwingSwitch, vipArea])
-  );
+  useEffect(() => {
+    dispatch(getSchedulePost());
+    dispatch(
+      getAllPost(
+        user?.id,
+        sortBy,
+        follwingSwitch,
+        vipArea == `${strings.home.newFeed}` ? false : true,
+        ''
+      )
+    );
+  }, [sortBy, follwingSwitch, vipArea]);
 
   const customReq = () => {
-    console.log('fetch posts');
-
     ExclusivePostController.getAllSchedulePost().then(res => {
       dispatch(getSchedulePostSuccess(res));
     });
@@ -199,25 +152,10 @@ export function Home({ navigation }) {
     });
   };
 
-  // useBackgroundFetch({
-  //   callback: customReq,
-  //   isFocused: isFocused,
-  // });
-
-  // useEffect(() => {
-  //   if (!user) return;
-
-  //   dispatch(getSchedulePost());
-  //   dispatch(getAllPost(user?.id, sortBy, follwingSwitch, false, ''));
-
-  //   return () => {
-  //     // dispatch(
-  //     //   getAllPostSuccess({
-  //     //     data: [],
-  //     //   })
-  //     // );
-  //   };
-  // }, [sortBy, follwingSwitch, vipArea, user]);
+  useBackgroundFetch({
+    callback: customReq,
+    isFocused: isFocused,
+  });
 
   useEffect(() => {
     saveFCMToken();
@@ -271,77 +209,6 @@ export function Home({ navigation }) {
     setIndex(index);
     setShowImageView(true);
     setFeedImages(data.postMediaContent);
-  };
-
-  const isShowReportToast = useSelector(state =>
-    successSelector([TYPES.REPORT_POST], state)
-  );
-
-  const onDelete = () => {
-    dispatch(
-      deletePost(postId, postUserId, user?.id, userType.user, NAVIGATION.home)
-    );
-    const page = '';
-    dispatch(
-      getAllPost(
-        user?.id,
-        sortBy,
-        follwingSwitch,
-        vipArea == `${strings.home.newFeed}` ? false : true,
-        page
-      )
-    );
-  };
-
-  const SelectFromGallery = () => {
-    ImagePicker.openPicker({
-      width: ms(300),
-      height: ms(400),
-      cropping: true,
-      freeStyleCropEnabled: true,
-      cropperCircleOverlay: true,
-    })
-      .then(image => {
-        setreportImage(image);
-      })
-      .catch(error => console.log('report image picker error', error));
-  };
-
-  let counter = 1;
-  let DATA = {
-    postId,
-    postTitle,
-    postBody,
-    postImg,
-    sortBy,
-    follwingSwitch,
-  };
-  const onFollow = () => {
-    // setPostUserFollowed(true)
-    setOpen(false);
-    if (ALLPOST[postIndex].is_following) {
-      dispatch(unFollowUser(user?.id, postUserId, strings.home.post));
-      dispatch(followers(user?.id));
-    } else {
-      dispatch(followUser(user?.id, postUserId, strings.home.post));
-    }
-    setPostUserName(''), setPostUserId(''), setPostIndex();
-  };
-  const onBlock = () => {
-    dispatch(blockUser(user?.id, postUserId, postIndex));
-    setOpen(false);
-    dispatch(getAllPost(user?.id, sortBy, follwingSwitch));
-  };
-
-  const handleScroll = ({ nativeEvent }) => {
-    const { layoutMeasurement, contentOffset, contentSize } = nativeEvent;
-    const isEndReached =
-      layoutMeasurement.height + contentOffset.y >= contentSize.height - 50;
-
-    if (isEndReached) {
-      onLoadMorePost();
-      // fetchMoreData();
-    }
   };
 
   const onLoadMorePost = () => {
@@ -439,7 +306,6 @@ export function Home({ navigation }) {
         showLock={userType?.user == `${strings.userType.free}` ? true : false}
       />
       <HorizontalLine />
-
       <View style={styles.feedContainer}>
         {isLoading ? (
           <ActivityIndicator
@@ -454,7 +320,11 @@ export function Home({ navigation }) {
             ListHeaderComponent={
               <View>
                 <ShareFeed
-                  onPress={() => navigation.navigate(NAVIGATION.post)}
+                  onPress={() =>
+                    navigation.navigate(NAVIGATION.post, {
+                      callBack: customReq,
+                    })
+                  }
                 />
                 {userType.user == `${strings.userType.admin}` && (
                   <SeeSchedulePost

@@ -25,7 +25,7 @@ import { CustomSwitch } from '@/components/switch';
 import { useEffect } from 'react';
 
 export default function PostOptions({ route, navigation }) {
-  const { prevData } = route.params;
+  const { prevData, callBack } = route.params || {};
   const [schedulePost, setSchedulePost] = useState(false);
   const [vipOnly, setVipOnly] = useState(false);
   const [pinPost, setPinPost] = useState(false);
@@ -84,7 +84,8 @@ export default function PostOptions({ route, navigation }) {
           goingLIve,
           ad,
           publishDate,
-          expireDate
+          expireDate,
+          callBack
         )
       );
     } else {
@@ -104,10 +105,16 @@ export default function PostOptions({ route, navigation }) {
           ad,
           publishDate,
           expireDate,
-          pinPost
+          pinPost,
+          callBack
         )
       );
     }
+
+    // setTimeout(() => {
+    //   console.log('call back called', callBack);
+    //   callBack && callBack();
+    // }, 150);
   };
 
   return (

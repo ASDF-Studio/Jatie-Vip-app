@@ -165,17 +165,22 @@ export default function UserProfile({ navigation, route }) {
     isFocused,
   });
 
-  useFocusEffect(
-    useCallback(() => {
-      dispatch(getUserProfileByUserId(userId, userr.id));
-      customReq();
+  useEffect(() => {
+    dispatch(getUserProfileByUserId(userId, userr.id));
+    customReq();
 
-      return () => {
-        dispatch(getUserProfileByUserIdSuccess(null));
-        dispatch(getAllPostByUserIdSuccess(null));
-      };
-    }, [userId])
-  );
+    return () => {
+      dispatch(getUserProfileByUserIdSuccess(null));
+    };
+  }, [userId]);
+
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     return () => {
+  //       // dispatch(getAllPostByUserIdSuccess(null));
+  //     };
+  //   }, [userId])
+  // );
 
   useEffect(() => {
     if (!userr.getUserByUserId) return;

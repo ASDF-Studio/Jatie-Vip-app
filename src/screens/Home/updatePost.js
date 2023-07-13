@@ -43,7 +43,7 @@ import { createThumbnail } from 'react-native-create-thumbnail';
 import { customShowMessage } from '@/utils';
 
 export default function UpdatePost({ route, navigation }) {
-  const { prevData } = route.params;
+  const { prevData, callBack } = route.params || {};
 
   const userType = useSelector(state => state.userType);
   const dispatch = useDispatch();
@@ -137,8 +137,7 @@ export default function UpdatePost({ route, navigation }) {
               // mimeType.push(item.mime);
             });
           })
-          .catch(e => {
-          })
+          .catch(e => {})
           .finally(() => {
             setImageArray([...imageArray]);
             setModalVisible(!isModalVisible);
@@ -174,8 +173,7 @@ export default function UpdatePost({ route, navigation }) {
               // setmimeType(video.mime);
             });
           })
-          .catch(e => {
-          });
+          .catch(e => {});
   };
 
   const OpenCamera = () => {
@@ -195,8 +193,7 @@ export default function UpdatePost({ route, navigation }) {
             // postImg.push(image.path);
             // mimeType.push(image.mime);
           })
-          .catch(e => {
-          })
+          .catch(e => {})
           .finally(() => {
             setImageArray([...imageArray]);
             setModalVisible(!isModalVisible);
@@ -227,8 +224,7 @@ export default function UpdatePost({ route, navigation }) {
               })
               .catch(err => console.log({ err }));
           })
-          .catch(e => {
-          });
+          .catch(e => {});
   };
 
   const validation = () => {
@@ -254,7 +250,10 @@ export default function UpdatePost({ route, navigation }) {
             NAVIGATION.home
           )
         );
-        dispatch(getAllPost(user?.id, null, null, NAVIGATION.profile));
+
+        setTimeout(() => {
+          callBack && callBack();
+        }, 1000);
       }
 
       if (userType.user == strings.userType.vip) {
@@ -274,10 +273,13 @@ export default function UpdatePost({ route, navigation }) {
           )
         );
 
-        dispatch(getAllPost(user?.id, null, null, NAVIGATION.profile));
+        setTimeout(() => {
+          callBack && callBack();
+        }, 1000);
       } else {
         userType.user == strings.userType.admin &&
           navigationRef.navigate(NAVIGATION.postOptions, {
+            callBack: callBack,
             prevData: {
               postId,
               userId,
@@ -299,9 +301,11 @@ export default function UpdatePost({ route, navigation }) {
       }
     }
   };
+
   const onSave = () => {
     validation();
   };
+
   return (
     <SafeAreaView style={styles.contianer}>
       <View style={styles.header}>

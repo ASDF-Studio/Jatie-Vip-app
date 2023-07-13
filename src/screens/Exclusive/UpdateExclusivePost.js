@@ -43,7 +43,7 @@ import { useMedia } from '@/hooks';
 let nextId = 0;
 
 export default function UpdateExclusivePost({ navigation, route }) {
-  const { DATA } = route.params
+  const { DATA } = route.params;
 
   const user = useSelector(getUser);
   const dispatch = useDispatch();
@@ -88,8 +88,6 @@ export default function UpdateExclusivePost({ navigation, route }) {
       mimeType: mimeType,
     };
 
-    // console.log("ARRRAAATA", JSON.stringify(params));
-    // return false
     navigation.navigate(NAVIGATION.updateExclusiveOption, { prevData: params });
   };
 

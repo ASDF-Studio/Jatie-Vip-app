@@ -207,6 +207,11 @@ export const UserPostOptions = ({
             iconColor={theme.light.colors.info}
             onPress={() => {
               navigationRef.navigate(NAVIGATION.updatePost, {
+                callBack: () => {
+                  dispatch(
+                    getAllPost(user?.id, sortBy, follwingSwitch, vipArea, '')
+                  );
+                },
                 prevData: {
                   ...selectedPostData,
                   DATA: selectetFeedConfigData,
