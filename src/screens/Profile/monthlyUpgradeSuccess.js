@@ -103,9 +103,9 @@ export default function MonthlyUpgradeSuccess({ navigation }) {
         <Button title={
           subscriptionPlan == SKUS.ONE_MONTH ? strings.profile.upgradeYearlySubsription : strings.profile.donwgradeMonthlySubsription}
           onPress={() => 
-            //  onUpgradeDowngrade()
+             onUpgradeDowngrade()
             // onPurchase(subscriptionPlan == SKUS.ONE_MONTH ? SKUS.YEAR : SKUS.ONE_MONTH)
-             navigation.navigate(NAVIGATION.upgradeMembership)
+            //  navigation.navigate(NAVIGATION.upgradeMembership)
           
           }
 
