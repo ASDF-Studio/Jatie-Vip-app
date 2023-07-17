@@ -45,6 +45,8 @@ export const userReducer = (state = {}, { payload, type }) => {
       return { ...state, allReportsKeyKey: payload.user };
     case TYPES.GET_ALL_NOTIFICATIONS_SUCCESS:
       return { ...state, notificationKey: payload.user };
+    case TYPES.GET_ALL_UNREAD_NOTIFICATIONS_SUCCESS:
+      return { ...state, notificationKeyUnread: payload.user };
     case TYPES.UPDATE_USER_NOTIF_SETTINGS:
       keys(payload).forEach(keys => {
         state[keys] = payload[keys];

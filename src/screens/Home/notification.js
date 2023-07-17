@@ -65,17 +65,17 @@ export default function Notification({ navigation }) {
     }, [read])
   );
 
-  // const backgroundFetch = () => {
-  //   console.log('fetching notif background');
-  //   UserController.AllNotificationsRequest(loggedInUser.id, read).then(res => {
-  //     dispatch(getAllNotificationsSuccess(res));
-  //   });
-  // };
+  const backgroundFetch = () => {
+    console.log('fetching notif background');
+    UserController.AllNotificationsRequest(loggedInUser.id, read).then(res => {
+      dispatch(getAllNotificationsSuccess(res));
+    });
+  };
 
-  // useBackgroundFetch({
-  //   callback: backgroundFetch,
-  //   isFocused,
-  // });
+  useBackgroundFetch({
+    callback: backgroundFetch,
+    isFocused,
+  });
 
   const customReq = async () => {
     setLoading(true);
