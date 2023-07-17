@@ -12,7 +12,10 @@ import { isEmpty } from 'lodash';
 import { useEffect } from 'react';
 import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import { useCallback } from 'react';
-import { fetchAllNotifications } from '@/actions/UserActions';
+import {
+  fetchAllNotifications,
+  fetchAllNotificationsUnReadNotif,
+} from '@/actions/UserActions';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { useBackgroundFetch } from '@/hooks';
 
@@ -20,17 +23,14 @@ export const NotificationIcon = ({ style }) => {
   const loggedInUser = useSelector(getUser);
   const dispatch = useDispatch();
 
-  const notificationData = loggedInUser?.notificationKey;
+  const notificationData = loggedInUser?.notificationKeyUnread;
 
   const isNotificationAvailable = notificationData?.data?.filter(
     x => !x?.seenByUser
   );
 
-  const isFocused = useIsFocused();
-
   const backgroundFetch = () => {
-    console.log('fetching notif');
-    fetchAllNotifications(loggedInUser.id, true);
+    dispatch(fetchAllNotificationsUnReadNotif(loggedInUser.id, true));
   };
 
   useBackgroundFetch({

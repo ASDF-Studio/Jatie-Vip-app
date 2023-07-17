@@ -206,7 +206,7 @@ export const en = {
     DoNotBan: "No, Don't Ban",
     yeaUnBan: 'Yes Unban',
     DoNotUnBan: "No, Don't Unban",
-    renews: 'Renews on December 10,2023',
+    renews: 'Renews on ',
     cancelAnyway: 'Cancel Anyway',
     doNotCancel: "Don't Cancel",
     closeMyAccount: 'Close My Account',

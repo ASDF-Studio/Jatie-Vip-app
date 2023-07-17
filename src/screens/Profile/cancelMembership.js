@@ -1,6 +1,6 @@
 import { TextStyles, theme } from '@/theme';
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, Linking, Platform } from 'react-native';
 import { ms } from 'react-native-size-matters';
 import { TopBackButton, Button, Card } from '@/components';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -10,6 +10,15 @@ import { NAVIGATION } from '@/constants';
 import { strings } from '@/localization';
 
 export default function CancelMemberShip({ navigation }) {
+
+  const onCancelSubscription=()=>{
+    if (Platform.OS === 'ios') {
+      Linking.openURL('https://apps.apple.com/account/subscriptions');
+    } else {
+      Linking.openURL('https://play.google.com/store/account/subscriptions');
+    }
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <TopBackButton
@@ -83,6 +92,7 @@ export default function CancelMemberShip({ navigation }) {
               style={styles.btnContainerDesign}
             />
             <Button
+            onPress={()=>{onCancelSubscription()}}
               title={strings.profile.cancelAnyway}
               style={styles.btn2ndContainerDesign}
               textStyle={{

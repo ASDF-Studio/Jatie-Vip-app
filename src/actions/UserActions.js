@@ -172,6 +172,7 @@ export const TYPES = {
   GET_ALL_NOTIFICATIONS_REQUEST: 'GET_ALL_NOTIFICATIONS_REQUEST',
   GET_ALL_NOTIFICATIONS_SUCCESS: 'GET_ALL_NOTIFICATIONS_SUCCESS',
   GET_ALL_NOTIFICATIONS_ERROR: 'GET_ALL_NOTIFICATIONS_ERROR',
+  GET_ALL_UNREAD_NOTIFICATIONS_SUCCESS: 'GET_ALL_UNREAD_NOTIFICATIONS_SUCCESS',
 
   //MARK_ALL_READ_NOTIFICATIONS
   MARK_ALL_READ_NOTIFICATIONS: 'MARK_ALL_READ_NOTIFICATIONS',
@@ -609,6 +610,16 @@ const bannedUserByIdError = error => ({
 //Get all Notifications
 export const getAllNotificationsSuccess = user => ({
   type: TYPES.GET_ALL_NOTIFICATIONS_SUCCESS,
+  payload: { user },
+});
+
+export const getUnReadNotificationsSuccess = user => ({
+  type: TYPES.GET_ALL_UNREAD_NOTIFICATIONS_SUCCESS,
+  payload: { user },
+});
+
+export const checkUnreadNotificationsSuccess = user => ({
+  type: TYPES.GET_ALL_UNREAD_NOTIFICATIONS_SUCCESS,
   payload: { user },
 });
 
@@ -1348,6 +1359,16 @@ export const fetchAllNotifications = (id, read) => async dispatch => {
   }
 };
 
+export const fetchAllNotificationsUnReadNotif =
+  (id, read) => async dispatch => {
+    try {
+      const user = await UserController.AllNotificationsRequest(id, read);
+      dispatch(getUnReadNotificationsSuccess(user));
+    } catch (error) {
+      dispatch(getAllNotificationsError(error));
+    }
+  };
+
 //Mark All read Response
 export const markAllRead = id => async dispatch => {
   dispatch(markAllReadNotificationsRequest());
@@ -1445,6 +1466,7 @@ export const updateUserType = data => async dispatch => {
       let selectedValue = 'FREE';
       dispatch(ChooseUser(selectedValue));
     }
+    // navigation.reset({ index: 0, routes: [{ name: NAVIGATION.home }] })
     navigationRef.navigate(NAVIGATION.home, { reset: true });
     // dispatch(updateUserTypeSuccess(user));
   } catch (error) {

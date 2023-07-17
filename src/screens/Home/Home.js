@@ -62,11 +62,19 @@ import { isEmpty, last } from 'lodash';
 import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import { MemoPostcard } from '@/components/PostCard';
 import { CustomSwitch } from '@/components/switch';
-import { followers, updateFCMToken } from '@/actions/UserActions';
+import PostOptions from './PostOptions';
+import { POST_TYPE } from '@/constants/enums';
+import {
+  followers,
+  updateFCMToken,
+  updateUserType,
+} from '@/actions/UserActions';
+import messaging from '@react-native-firebase/messaging';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PostController } from '@/controllers/PostController';
 import { useBackgroundFetch } from '@/hooks';
 import { ExclusivePostController } from '@/controllers/ExclusivePostController';
+import { getAvailablePurchases } from 'react-native-iap';
 export function Home({ navigation }) {
   const ALLPOST = useSelector(getAllPostData);
   const SEARCH_DATA = useSelector(getSearchData);
