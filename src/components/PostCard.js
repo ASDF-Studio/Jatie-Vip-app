@@ -1,6 +1,6 @@
 import { NAVIGATION } from '@/constants';
 import React, { memo } from 'react';
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Image, Text } from 'react-native';
 import { CardHeader } from './cardHeader';
 import { Card } from './card';
 import { CardBody } from './cardBody';

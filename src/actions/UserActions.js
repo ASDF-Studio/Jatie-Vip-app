@@ -836,7 +836,17 @@ export const logout = () => async dispatch => {
 // create_post action
 
 export const createPost =
-  (id, postTitle, postBody, file, mimeType, imageArray, screen, isVipOnly) =>
+  (
+    id,
+    postTitle,
+    postBody,
+    file,
+    mimeType,
+    imageArray,
+    screen,
+    isVipOnly,
+    callBack
+  ) =>
   async dispatch => {
     dispatch(globalReset());
     dispatch(createPostRequest());
@@ -850,6 +860,8 @@ export const createPost =
         imageArray,
         isVipOnly
       );
+
+      callBack && callBack();
       dispatch(createPostSuccess(user));
       if (screen == NAVIGATION.home) {
         customShowMessage({
@@ -894,7 +906,8 @@ export const createPostByAdmin =
     ad,
     publishDate,
     expireDate,
-    pinPost
+    pinPost,
+    callBack
   ) =>
   async dispatch => {
     dispatch(globalReset());
@@ -918,7 +931,7 @@ export const createPostByAdmin =
         expireDate,
         isPinned: pinPost,
       });
-
+      callBack && callBack();
       dispatch(createPostSuccess(user));
       if (screen == NAVIGATION.home) {
         customShowMessage({
@@ -967,7 +980,8 @@ export const updatePost =
     goingLIve,
     ad,
     publishDate,
-    expireDate
+    expireDate,
+    callBack
   ) =>
   async dispatch => {
     dispatch(globalReset());
@@ -995,12 +1009,15 @@ export const updatePost =
         expireDate,
       });
       dispatch(updatePostSuccess(user));
+      callBack && callBack();
       if (screen == NAVIGATION.home) {
         customShowMessage({
           message: strings.updatePost.updatedSuccess,
           type: 'success',
         });
-        dispatch(getAllPost(userId, strings.sortBy.recent, false));
+
+        console.log(' i am here ============== ');
+        // dispatch(getAllPost(userId, strings.sortBy.recent, false));
         navigationRef.dispatch(StackActions.popToTop());
         navigationRef.navigate(NAVIGATION.home);
       }
@@ -1416,18 +1433,15 @@ export const UpdateNotifactionSettings = async (params, dispatch) => {
   } catch (err) {
     console.log(err);
   }
-
-  
 };
-export const updateUserType = (data) => async dispatch => {
+export const updateUserType = data => async dispatch => {
   dispatch(updateUserTypeRequest());
   try {
     const user = await UserController.updateUserTypeRequest(data);
     if (data.isVIP) {
       let selectedValue = 'VIP';
       dispatch(ChooseUser(selectedValue));
-    }
-    else {
+    } else {
       let selectedValue = 'FREE';
       dispatch(ChooseUser(selectedValue));
     }

@@ -29,12 +29,13 @@ export const NotificationIcon = ({ style }) => {
   const isFocused = useIsFocused();
 
   const backgroundFetch = () => {
+    console.log('fetching notif');
     fetchAllNotifications(loggedInUser.id, true);
   };
 
   useBackgroundFetch({
     callback: backgroundFetch,
-    isFocused,
+    isFocused: true,
     delay: 5,
   });
 

@@ -45,7 +45,8 @@ import { isEmpty } from 'lodash';
 import { useCallback } from 'react';
 import { customShowMessage } from '@/utils';
 
-export default function AdminPost({ navigation }) {
+export default function AdminPost({ route, navigation }) {
+  const { callBack } = route.params || {};
   const userType = useSelector(state => state.userType);
   const [imageArray, setImageArray] = useState([]);
   const [isModalVisible, setModalVisible] = useState(false);
@@ -219,7 +220,8 @@ export default function AdminPost({ navigation }) {
           mimeType,
           imageArray,
           NAVIGATION.home,
-          vipOnly
+          vipOnly,
+          callBack
         )
       );
     }
@@ -234,6 +236,7 @@ export default function AdminPost({ navigation }) {
           imageArray,
           isImage,
         },
+        callBack,
       });
     }
 
@@ -247,7 +250,8 @@ export default function AdminPost({ navigation }) {
           mimeType,
           imageArray,
           NAVIGATION.home,
-          vipOnly
+          vipOnly,
+          callBack
         )
       );
     }

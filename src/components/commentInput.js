@@ -173,6 +173,12 @@ export const CommentInput = React.forwardRef((props, ref) => {
           )
         );
         props.updateParentState();
+        console.log(
+          '=============================================== ',
+          arr,
+          props.postIndex,
+          '   =============================================== '
+        );
         const count = arr[props.postIndex].comments_aggregate.aggregate.count;
         arr[props.postIndex].comments_aggregate.aggregate.count = count + 1;
         console.log(count);

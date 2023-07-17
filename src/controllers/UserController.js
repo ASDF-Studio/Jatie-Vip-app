@@ -297,7 +297,7 @@ export class UserController {
         'postMediaContent',
         preImageArray.length > 0 ? JSON.stringify(preImageArray) : ''
       );
-      console.log('ispinned =====', isPinned);
+
       data.append('id', id);
       data.append('userId', userId);
       data.append('postTitle', postTitle);
@@ -321,6 +321,7 @@ export class UserController {
         data.append('expiryDate', expireDate);
       }
 
+      console.log('==============================  ', data);
       // return false
       const headers = {
         'Content-Type': 'multipart/form-data',
@@ -331,6 +332,7 @@ export class UserController {
           resolve(response);
         })
         .catch(error => {
+          console.log('api error ---------------------------', error);
           reject(error);
         });
     });
