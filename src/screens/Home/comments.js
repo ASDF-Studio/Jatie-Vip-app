@@ -73,6 +73,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import { globalReset } from '@/actions/GlobalActions';
 import { POST_TYPE } from '@/constants/enums';
 import { isEmpty } from 'lodash';
+import KeyboardSpacer from 'react-native-keyboard-spacer';
 export default function Comments({ navigation, route }) {
   const keyboardScroll = useRef(null);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
@@ -235,265 +236,269 @@ export default function Comments({ navigation, route }) {
         <Text style={styles.headTxt}> {strings.home.comments} </Text>
       </View>
       <HorizontalLine color={theme.light.colors.infoBgLight} paddingTop={15} />
-      <KeyboardAvoidingView
+      {/* <KeyboardAvoidingView
         behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={20}
+        // keyboardVerticalOffset={20}
         style={{ flex: 1 }}
-      >
-        <View style={styles.commentContainer}>
-          {isLoading == true ? (
-            <Loader visible={true} size={'large'} />
-          ) : (
-            <FlatList
-              data={COMMENTS?.postComments || []}
-              ref={flatListRef}
-              keyExtractor={item => item.id}
-              onContentSizeChange={scrollToBottom}
-              renderItem={({ item, index }) => (
-                <CommentCard
-                  isBlocked={
-                    !isEmpty(
-                      USER?.blockListKey?.data.filter(
-                        el => el?.blockedUser === item?.userId
-                      ) || []
-                    )
-                  }
-                  name={item?.user?.fullName}
-                  userId={USER?.id}
-                  commentUserId={item?.userId}
-                  commentData={item}
-                  commentIndex={index}
-                  commentId={item?.id}
-                  userName={item?.user?.username}
-                  imageUrl={item?.user?.profilePic}
-                  time={moment(item?.created_at).fromNow()}
-                  commentTxt={item?.commentBody}
-                  likeCount={item?.upVote}
-                  disLikeCount={item?.downVote}
-                  hasVotedUp={item?.has_upvoted}
-                  hasVotedDown={item?.has_downvoted}
-                  replyPress={() => {
-                    commentReplyFormat(item?.user?.id, item?.user?.username);
-                  }}
-                  morePress={() => {
-                    setOpen(true);
-                    setCommentId(item?.id);
-                    setCommentUserId(item?.userId);
-                    setComment(item?.commentBody);
-                    setCommentIndex(index);
-                    setCommentUserName(item?.user?.username);
-                    setIsAdminComment(item?.isAdminComment);
-                  }}
-                />
-              )}
-            />
-          )}
-        </View>
-        {openReplyTo && (
-          <View style={styles.replyToContainer}>
-            <View style={styles.replay}>
-              <Text style={styles.replyTxt}> {strings.home.replyTo} </Text>
-              <Text style={styles.replayFontWeight}> {replyUserName}</Text>
-            </View>
-            <TouchableOpacity
-              onPress={() => {
-                setOpenReplyTo(false), setReplyUserName(''), setReplyUserId('');
-
-                childRef.current.resetValue();
-              }}
-              style={styles.closeIconContainer}
-            >
-              <FontAwesomeIcon
-                icon={faClose}
-                size={ms(13)}
-                color={theme.light.colors.white}
+      > */}
+      <View style={styles.commentContainer}>
+        {isLoading == true ? (
+          <Loader visible={true} size={'large'} />
+        ) : (
+          <FlatList
+            data={COMMENTS?.postComments || []}
+            ref={flatListRef}
+            keyExtractor={item => item.id}
+            onContentSizeChange={scrollToBottom}
+            renderItem={({ item, index }) => (
+              <CommentCard
+                isBlocked={
+                  !isEmpty(
+                    USER?.blockListKey?.data.filter(
+                      el => el?.blockedUser === item?.userId
+                    ) || []
+                  )
+                }
+                name={item?.user?.fullName}
+                userId={USER?.id}
+                commentUserId={item?.userId}
+                commentData={item}
+                commentIndex={index}
+                commentId={item?.id}
+                userName={item?.user?.username}
+                imageUrl={item?.user?.profilePic}
+                time={moment(item?.created_at).fromNow()}
+                commentTxt={item?.commentBody}
+                likeCount={item?.upVote}
+                disLikeCount={item?.downVote}
+                hasVotedUp={item?.has_upvoted}
+                hasVotedDown={item?.has_downvoted}
+                replyPress={() => {
+                  commentReplyFormat(item?.user?.id, item?.user?.username);
+                }}
+                morePress={() => {
+                  setOpen(true);
+                  setCommentId(item?.id);
+                  setCommentUserId(item?.userId);
+                  setComment(item?.commentBody);
+                  setCommentIndex(index);
+                  setCommentUserName(item?.user?.username);
+                  setIsAdminComment(item?.isAdminComment);
+                }}
               />
-            </TouchableOpacity>
-          </View>
-        )}
-        {!isLoading && (
-          <CommentInput
-            ref={childRef}
-            commentData={comment}
-            commentId={commentId}
-            postIndex={POST_INDEX}
-            isReply={openReplyTo}
-            replyTo={replyFormatedString}
-            isEdit={isEdit}
-            postId={DATA?.id}
-            userId={USER?.id}
-            updateParentState={updateParentState}
-            commentIndex={commentIndex}
-            commentOwnerId={DATA?.userId}
-            type={type}
-            // scrollRef={handleTextInputFocus}
+            )}
           />
         )}
-        {/*  Slide up for follow, edit , review  */}
-        {open &&
-          (commentUserId == USER?.id ? (
-            <ModalDown open={open} setOpen={setOpen}>
-              <ModalList
-                title={strings.profile.editComment}
-                icon={faPen}
-                iconBg={theme.light.colors.infoBgLight}
-                iconColor={theme.light.colors.info}
-                onPress={() => {
-                  setIsEdit(true);
-                  onEditComment();
-                }}
-              />
-              <HorizontalLine
-                color={theme.light.colors.infoBgLight}
-                paddingTop={15}
-                paddingBottom={8}
-              />
-              <ModalList
-                title={strings.operations.delete}
-                icon={faTrash}
-                iconBg={theme.light.colors.infoBgLight}
-                iconColor={theme.light.colors.secondary}
-                onPress={() => {
-                  setOpen(false), onDeleteComment();
-                }}
-              />
-            </ModalDown>
-          ) : (
-            <ModalDown open={open} setOpen={setOpen}>
-              <ModalList
-                onPress={() => {
-                  onFollow();
-                }}
-                title={
-                  (!COMMENTS?.postComments[commentIndex]?.is_following
-                    ? strings.operations.follow
-                    : strings.operations.unFollow) +
-                  ' @' +
-                  commentUserName
-                }
-                icon={faUserPlus}
-                iconColor={theme.light.colors.primary}
-                iconBg={theme.light.colors.primaryBgLight}
-              />
-              <ModalList
-                title={strings.operations.sendPrivateMessage}
-                icon={faMessage}
-                disabled
-                iconColor={theme.light.colors.success}
-                iconBg={theme.light.colors.successBgLight}
-              />
-              <HorizontalLine
-                color={theme.light.colors.infoBgLight}
-                paddingTop={15}
-                paddingBottom={8}
-              />
-              {isAdminComment == false && (
-                <ModalList
-                  title={strings.home.report}
-                  icon={faFlag}
-                  iconColor={theme.light.colors.secondary}
-                  iconBg={theme.light.colors.infoBgLight}
-                  onPress={() => {
-                    setReportOptionValue('');
-                    setOpenReport(true);
-                    setOpen(false);
-                    setreportImage(null);
-                  }}
-                />
-              )}
-              {isAdminComment == false && (
-                <ModalList
-                  title={strings.operations.block + ' @' + commentUserName}
-                  icon={faXmark}
-                  iconColor={theme.light.colors.secondary}
-                  iconBg={theme.light.colors.infoBgLight}
-                />
-              )}
-            </ModalDown>
-          ))}
+      </View>
+      {openReplyTo && (
+        <View style={styles.replyToContainer}>
+          <View style={styles.replay}>
+            <Text style={styles.replyTxt}> {strings.home.replyTo} </Text>
+            <Text style={styles.replayFontWeight}> {replyUserName}</Text>
+          </View>
+          <TouchableOpacity
+            onPress={() => {
+              setOpenReplyTo(false), setReplyUserName(''), setReplyUserId('');
 
-        <ReportOnPostModal open={openReport} setOpen={setOpenReport}>
-          <View style={styles.reportPostContainer}>
-            <TopBackButton
-              onPress={() => setOpenReport(false)}
-              style={styles.reportPostBackButton}
+              childRef.current.resetValue();
+            }}
+            style={styles.closeIconContainer}
+          >
+            <FontAwesomeIcon
+              icon={faClose}
+              size={ms(13)}
+              color={theme.light.colors.white}
             />
-            <View style={styles.reportPostTopContainer}>
-              <DropDownPicker
-                placeholder={strings.home.selectReason}
-                open={reportListOpen}
-                value={reportOptionValue}
-                items={reportOption}
-                setOpen={setReportListOpen}
-                setValue={setReportOptionValue}
-                setItems={setReportOption}
-                style={styles.dropDownPicker}
-                textStyle={styles.dropListTxt}
-                dropDownContainerStyle={styles.dropDownContainerStyle}
-              />
-              <TextInput
-                multiline
-                editable
-                onChangeText={val => setReportCommnet(val)}
-                placeholder={strings.operations.addComments}
-                numberOfLines={4}
-                style={styles.txtInput}
-              />
-            </View>
+          </TouchableOpacity>
+        </View>
+      )}
+      {!isLoading && (
+        <CommentInput
+          ref={childRef}
+          commentData={comment}
+          commentId={commentId}
+          postIndex={POST_INDEX}
+          isReply={openReplyTo}
+          replyTo={replyFormatedString}
+          isEdit={isEdit}
+          postId={DATA?.id}
+          userId={USER?.id}
+          updateParentState={updateParentState}
+          commentIndex={commentIndex}
+          commentOwnerId={DATA?.userId}
+          type={type}
+          // scrollRef={handleTextInputFocus}
+        />
+      )}
+      {/*  Slide up for follow, edit , review  */}
+      {open &&
+        (commentUserId == USER?.id ? (
+          <ModalDown open={open} setOpen={setOpen}>
+            <ModalList
+              title={strings.profile.editComment}
+              icon={faPen}
+              iconBg={theme.light.colors.infoBgLight}
+              iconColor={theme.light.colors.info}
+              onPress={() => {
+                setIsEdit(true);
+                onEditComment();
+              }}
+            />
             <HorizontalLine
               color={theme.light.colors.infoBgLight}
               paddingTop={15}
+              paddingBottom={8}
             />
-            <View style={styles.reportPostBottomContainer}>
-              <TouchableOpacity onPress={() => SelectFromGallery()}>
-                {reportImage ? (
-                  <Image
-                    style={{
-                      height: ms(35),
-                      width: ms(35),
-                      borderRadius: ms(5),
-                    }}
-                    source={{ uri: reportImage.path }}
-                  />
-                ) : (
-                  <View pointerEvents="none">
-                    <Icon
-                      icon={faImage}
-                      size={ms(22)}
-                      color={theme.light.colors.secondary}
-                    />
-                  </View>
-                )}
-              </TouchableOpacity>
-              <Button
-                title={strings.operations.submit}
-                disabled={!reportOptionValue}
-                opacity={reportOptionValue ? 1 : 0.4}
-                style={styles.reportPostButton}
+            <ModalList
+              title={strings.operations.delete}
+              icon={faTrash}
+              iconBg={theme.light.colors.infoBgLight}
+              iconColor={theme.light.colors.secondary}
+              onPress={() => {
+                setOpen(false), onDeleteComment();
+              }}
+            />
+          </ModalDown>
+        ) : (
+          <ModalDown open={open} setOpen={setOpen}>
+            <ModalList
+              onPress={() => {
+                onFollow();
+              }}
+              title={
+                (!COMMENTS?.postComments[commentIndex]?.is_following
+                  ? strings.operations.follow
+                  : strings.operations.unFollow) +
+                ' @' +
+                commentUserName
+              }
+              icon={faUserPlus}
+              iconColor={theme.light.colors.primary}
+              iconBg={theme.light.colors.primaryBgLight}
+            />
+            <ModalList
+              title={strings.operations.sendPrivateMessage}
+              icon={faMessage}
+              disabled
+              iconColor={theme.light.colors.success}
+              iconBg={theme.light.colors.successBgLight}
+            />
+            <HorizontalLine
+              color={theme.light.colors.infoBgLight}
+              paddingTop={15}
+              paddingBottom={8}
+            />
+            {isAdminComment == false && (
+              <ModalList
+                title={strings.home.report}
+                icon={faFlag}
+                iconColor={theme.light.colors.secondary}
+                iconBg={theme.light.colors.infoBgLight}
                 onPress={() => {
-                  const reportData = {
-                    objectId: DATA?.id,
-                    reportedBy: USER?.id,
-                    reportTitle: reportOptionValue,
-                    reportBody: reportComment,
-                    reportImg: reportImage,
-                  };
-                  dispatch(reportPost(reportData));
-                  setOpenReport(false);
+                  setReportOptionValue('');
+                  setOpenReport(true);
+                  setOpen(false);
+                  setreportImage(null);
                 }}
               />
-            </View>
-          </View>
-        </ReportOnPostModal>
-        {isShowReportToast && (
-          <Toast
-            open={isShowReportToast}
-            icon={faThumbsUp}
-            message={strings.home.reportMessage}
-            onPressOk={() => dispatch(globalReset())}
+            )}
+            {isAdminComment == false && (
+              <ModalList
+                title={strings.operations.block + ' @' + commentUserName}
+                icon={faXmark}
+                iconColor={theme.light.colors.secondary}
+                iconBg={theme.light.colors.infoBgLight}
+              />
+            )}
+          </ModalDown>
+        ))}
+
+      <ReportOnPostModal open={openReport} setOpen={setOpenReport}>
+        <View style={styles.reportPostContainer}>
+          <TopBackButton
+            onPress={() => setOpenReport(false)}
+            style={styles.reportPostBackButton}
           />
-        )}
-      </KeyboardAvoidingView>
+          <View style={styles.reportPostTopContainer}>
+            <DropDownPicker
+              placeholder={strings.home.selectReason}
+              open={reportListOpen}
+              value={reportOptionValue}
+              items={reportOption}
+              setOpen={setReportListOpen}
+              setValue={setReportOptionValue}
+              setItems={setReportOption}
+              style={styles.dropDownPicker}
+              textStyle={styles.dropListTxt}
+              dropDownContainerStyle={styles.dropDownContainerStyle}
+            />
+            <TextInput
+              multiline
+              editable
+              onChangeText={val => setReportCommnet(val)}
+              placeholder={strings.operations.addComments}
+              numberOfLines={4}
+              style={styles.txtInput}
+            />
+          </View>
+          <HorizontalLine
+            color={theme.light.colors.infoBgLight}
+            paddingTop={15}
+          />
+          <View style={styles.reportPostBottomContainer}>
+            <TouchableOpacity onPress={() => SelectFromGallery()}>
+              {reportImage ? (
+                <Image
+                  style={{
+                    height: ms(35),
+                    width: ms(35),
+                    borderRadius: ms(5),
+                  }}
+                  source={{ uri: reportImage.path }}
+                />
+              ) : (
+                <View pointerEvents="none">
+                  <Icon
+                    icon={faImage}
+                    size={ms(22)}
+                    color={theme.light.colors.secondary}
+                  />
+                </View>
+              )}
+            </TouchableOpacity>
+            <Button
+              title={strings.operations.submit}
+              disabled={!reportOptionValue}
+              opacity={reportOptionValue ? 1 : 0.4}
+              style={styles.reportPostButton}
+              onPress={() => {
+                const reportData = {
+                  objectId: DATA?.id,
+                  reportedBy: USER?.id,
+                  reportTitle: reportOptionValue,
+                  reportBody: reportComment,
+                  reportImg: reportImage,
+                };
+                dispatch(reportPost(reportData));
+                setOpenReport(false);
+              }}
+            />
+          </View>
+        </View>
+      </ReportOnPostModal>
+
+      {Platform.OS == 'ios' && <KeyboardSpacer />}
+
+      {/* <KeyboardSpacer /> */}
+      {isShowReportToast && (
+        <Toast
+          open={isShowReportToast}
+          icon={faThumbsUp}
+          message={strings.home.reportMessage}
+          onPressOk={() => dispatch(globalReset())}
+        />
+      )}
+      {/* </KeyboardAvoidingView> */}
       {/* </KeyboardAwareScrollView> */}
     </SafeAreaView>
   );
@@ -517,8 +522,12 @@ const styles = StyleSheet.create({
       fontSize: ms(16),
     },
   ],
+  commentContainerOpen: {
+    height: '60%',
+  },
   commentContainer: {
     flex: 1,
+    // height: '80%',
   },
   TopBackButton: {
     padding: ms(5),

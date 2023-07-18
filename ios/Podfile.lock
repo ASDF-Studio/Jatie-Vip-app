@@ -1099,12 +1099,8 @@ PODS:
   - react-native-mmkv-storage (0.8.0):
     - MMKV (= 1.2.13)
     - React-Core
-  - react-native-safe-area-context (4.6.4):
-    - RCT-Folly
-    - RCTRequired
-    - RCTTypeSafety
+  - react-native-safe-area-context (4.7.1):
     - React-Core
-    - ReactCommon/turbomodule/core
   - react-native-video (5.2.1):
     - React-Core
     - react-native-video/Video (= 5.2.1)
@@ -1184,7 +1180,7 @@ PODS:
     - React-RCTText
   - ReactNativeLocalization (2.3.2):
     - React-Core
-  - RNBootSplash (4.7.4):
+  - RNBootSplash (4.7.5):
     - React-Core
   - RNCAsyncStorage (1.19.0):
     - React-Core
@@ -1258,16 +1254,16 @@ PODS:
   - RNScreens (3.22.1):
     - React-Core
     - React-RCTImage
-  - RNSentry (5.6.0):
+  - RNSentry (5.7.1):
     - React-Core
-    - Sentry/HybridSDK (= 8.7.3)
+    - Sentry/HybridSDK (= 8.8.0)
   - RNShare (8.2.2):
     - React-Core
-  - RNSVG (13.9.0):
+  - RNSVG (13.10.0):
     - React-Core
-  - Sentry/HybridSDK (8.7.3):
-    - SentryPrivate (= 8.7.3)
-  - SentryPrivate (8.7.3)
+  - Sentry/HybridSDK (8.8.0):
+    - SentryPrivate (= 8.8.0)
+  - SentryPrivate (8.8.0)
   - SocketRocket (0.6.1)
   - TOCropViewController (2.5.3)
   - Yoga (1.14.0)
@@ -1592,7 +1588,7 @@ SPEC CHECKSUMS:
   react-native-date-picker: 04e866ba4e7857f83abd504ad42e787f0f02ae00
   react-native-image-crop-tools: a751dae773f66ceac0bea7d894dc6bc219a69c03
   react-native-mmkv-storage: 8ba3c0216a6df283ece11205b442a3e435aec4e5
-  react-native-safe-area-context: 68b07eabfb0d14547d36f6929c0e98d818064f02
+  react-native-safe-area-context: 9697629f7b2cda43cf52169bb7e0767d330648c2
   react-native-video: c26780b224543c62d5e1b2a7244a5cd1b50e8253
   react-native-webview: 9f111dfbcfc826084d6c507f569e5e03342ee1c1
   React-perflogger: cb386fd44c97ec7f8199c04c12b22066b0f2e1e0
@@ -1609,7 +1605,7 @@ SPEC CHECKSUMS:
   ReactCommon: 8f67bd7e0a6afade0f20718f859dc8c2275f2e83
   ReactNativeKeyboardManager: 60292dbac467c49841a7d69588208ec4a4f7b2a2
   ReactNativeLocalization: fb171138cdc80d5d0d4f20243d2fc82c2b3cc48f
-  RNBootSplash: 0a92fb6bd3d265e23cded61faf3e9fda441d0a6b
+  RNBootSplash: 85f6b879c080e958afdb4c62ee04497b05fd7552
   RNCAsyncStorage: 4b98ac3c64efa4e35c1197cb0c5ca5e9f5d4c666
   RNCMaskedView: 949696f25ec596bfc697fc88e6f95cf0c79669b6
   RNDateTimePicker: 65e1d202799460b286ff5e741d8baf54695e8abd
@@ -1623,11 +1619,11 @@ SPEC CHECKSUMS:
   RNNotifee: f3c01b391dd8e98e67f539f9a35a9cbcd3bae744
   RNReanimated: c6f8f70e96dd6ca21b65aef9b3e4efe4965db905
   RNScreens: 50ffe2fa2342eabb2d0afbe19f7c1af286bc7fb3
-  RNSentry: 9f0447b3ce13806f544903748de423259ead8552
+  RNSentry: 4e4fc87b53002c015f644cb7207d4b598bc3703f
   RNShare: d82e10f6b7677f4b0048c23709bd04098d5aee6c
-  RNSVG: 53c661b76829783cdaf9b7a57258f3d3b4c28315
-  Sentry: c7a86f43510a7d5678d4de28d78c28ab351d295b
-  SentryPrivate: 2eaabf598a46d4b9b8822aef766df2a84caf2e6f
+  RNSVG: 80584470ff1ffc7994923ea135a3e5ad825546b9
+  Sentry: 927dfb29d18a14d924229a59cc2ad149f43349f2
+  SentryPrivate: 4350d865f898224ab9fa02b37d6ee7fbb623f47e
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   TOCropViewController: 20a14b6a7a098308bf369e7c8d700dc983a974e6
   Yoga: ff994563b2fd98c982ca58e8cd9db2cdaf4dda74
