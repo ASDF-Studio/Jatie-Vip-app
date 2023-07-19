@@ -15,6 +15,7 @@ export const TYPES = {
   LOGIN_REQUEST: 'LOGIN_REQUEST',
   LOGIN_ERROR: 'LOGIN_ERROR',
   LOGIN_SUCCESS: 'LOGIN_SUCCESS',
+  LOG_OUT: 'LOG_OUT',
 
   VERIFY_OTP: 'VERIFY_OTP',
   VERIFY_OTP_REQUEST: 'VERIFY_OTP_REQUEST',
@@ -497,6 +498,11 @@ const clearStore = () => ({
   payload: null,
 });
 
+const logOut = () => ({
+  type: TYPES.LOG_OUT,
+  payload: null,
+});
+
 //BloclListData
 export const blocklistSuccess = user => ({
   type: TYPES.BLOCK_LIST_SUCCESSS,
@@ -836,7 +842,7 @@ export const getUserProfileByUserId =
   };
 
 export const logout = () => async dispatch => {
-  dispatch(clearStore());
+  dispatch(logOut());
   // try {
   //   // await UserController.logout();
   // } finally {
