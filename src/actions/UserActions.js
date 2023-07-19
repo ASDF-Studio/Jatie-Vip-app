@@ -1453,8 +1453,6 @@ export const UpdateNotifactionSettings = async (params, dispatch) => {
         notify_for_following_user_post: params.notifyForFollowingUserPost,
         notify_for_jatie_post: params.notifyForJatiePost,
         notify_for_jatie_live: params.notifyForJatieLive,
-        notify_for_one_hour_beofre_jatie_live:
-          params.notifyOneHourBeforeJatieLive,
       },
     });
   } catch (err) {

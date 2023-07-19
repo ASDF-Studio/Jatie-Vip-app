@@ -44,7 +44,7 @@ export function Login({ route }) {
         message: strings.login.numberHint,
         type: 'danger',
       });
-    } else if (mobileNumber.length < 10) {
+    } else if (mobileNumber.length < 8) {
       customShowMessage({ message: strings.login.numberValid, type: 'danger' });
     } else {
       recaptcha.current.open();
@@ -137,8 +137,11 @@ export function Login({ route }) {
           title={isLoading ? strings.common.loading : strings.login.continue}
         />
         <Text
-          onPress={() => { Linking.openURL(PRIVACY_POLICY_URL) }}
-          style={styles.termsAndConditionsStyle}>
+          onPress={() => {
+            Linking.openURL(PRIVACY_POLICY_URL);
+          }}
+          style={styles.termsAndConditionsStyle}
+        >
           {strings.login.byContinue}
           <Text style={styles.linkColor}>
             {strings.login.termsAndConditions}
