@@ -922,6 +922,7 @@ export class UserController {
         loggedInUserId,
         notify_for_jatie_live: notifyForJatieLive,
         notify_for_jatie_post: notifyForJatiePost,
+        notify_for_one_hour_beofre_jatie_live: true,
         notify_for_someone_react_on_my_post: notifyForSomeOneReactPost,
         notify_for_someone_comments_on_my_post:
           notifyForSomeoneCommentsOnMyPost,
