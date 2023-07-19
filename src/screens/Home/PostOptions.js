@@ -49,8 +49,6 @@ export default function PostOptions({ route, navigation }) {
   const publishDate = moment(publishingDate).format();
   const expireDate = moment(expiringDate).format();
 
-  console.log('===========================', prevData);
-
   useEffect(() => {
     if (prevData) {
       if (prevData?.isScheduled) {

@@ -127,10 +127,10 @@ export function Home({ navigation }) {
   const [searchText, setsearchText] = useState('');
 
   // for delete
-  const [openReplace, setReplace] = useState(false);
   const [isBanned, setIsBanned] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
   const isFocused = useIsFocused();
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     dispatch(getSchedulePost());
@@ -157,13 +157,9 @@ export function Home({ navigation }) {
       ''
     ).then(res => {
       dispatch(getAllPostSuccess(res));
+      setIsRefreshing(false);
     });
   };
-
-  useBackgroundFetch({
-    callback: customReq,
-    isFocused: isFocused,
-  });
 
   useEffect(() => {
     saveFCMToken();
@@ -241,6 +237,11 @@ export function Home({ navigation }) {
         {isLoadingMore && <ActivityIndicator size={'large'} color="orange" />}
       </View>
     );
+  };
+
+  const onRefresh = () => {
+    setIsRefreshing(true);
+    customReq();
   };
 
   return (
@@ -325,6 +326,8 @@ export function Home({ navigation }) {
         ) : (
           <FlatList
             ref={flatListRef}
+            onRefresh={onRefresh}
+            refreshing={isRefreshing}
             ListHeaderComponent={
               <View>
                 <ShareFeed
