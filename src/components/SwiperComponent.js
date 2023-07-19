@@ -18,6 +18,8 @@ import { ms } from 'react-native-size-matters';
 import { AppVideoPlayer } from './VideoPlayer';
 import { SwiperFlatList } from 'react-native-swiper-flatlist';
 import { FontFamily } from '@/theme/Fonts';
+import GestureRecognizer from 'react-native-swipe-gestures';
+
 const { width } = Dimensions.get('window');
 export const SwiperViewer = ({ visible, setVisible, images, index = null }) => {
   const [swipeIndex, setWipeIndex] = useState(index || 0);
@@ -35,8 +37,8 @@ export const SwiperViewer = ({ visible, setVisible, images, index = null }) => {
   }, [swipeRef, index]);
 
   return (
-    <View>
-      <Modal visible={visible} transparent={true}>
+    <GestureRecognizer style={{ flex: 1 }} onSwipeDown={setVisible}>
+      <Modal visible={visible} transparent={true} animationType="slide">
         <View style={styles.indexView}>
           <Text style={styles.swipeIndexText}>
             {swipeIndex + 1}/{images.length}
@@ -81,7 +83,7 @@ export const SwiperViewer = ({ visible, setVisible, images, index = null }) => {
           )}
         />
       </Modal>
-    </View>
+    </GestureRecognizer>
   );
 };
 
