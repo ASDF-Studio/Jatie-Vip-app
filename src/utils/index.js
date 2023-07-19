@@ -5,6 +5,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { showMessage } from 'react-native-flash-message';
 import { ms } from 'react-native-size-matters';
 import { FontFamily } from '@/theme/Fonts';
+const PNF = require('google-libphonenumber').PhoneNumberFormat;
+const phoneUtil =
+  require('google-libphonenumber').PhoneNumberUtil.getInstance();
 
 const styles = {
   containerStyle: {
@@ -70,3 +73,25 @@ export const customShowMessage = ({ type, message }) =>
       />
     ),
   });
+
+export const checkPhoneNumber = (countryCode, phoneNumber) => {
+  const finalNumber = countryCode + phoneNumber;
+  try {
+    const phoneNumberFormat = phoneUtil.format(
+      phoneUtil.parse(finalNumber),
+      PNF.E164
+    );
+
+    const phone = phoneNumberFormat.split(countryCode)[1];
+
+    return {
+      phoneNumberFormat,
+      phone,
+    };
+  } catch (e) {
+    return {
+      phoneNumberFormat: null,
+      phone: phoneNumber,
+    };
+  }
+};
