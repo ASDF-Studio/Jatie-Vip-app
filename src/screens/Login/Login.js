@@ -15,8 +15,9 @@ import { SITE_KEY, CAPTCHA_BASE_URL } from '@/constants';
 import Recaptcha from 'react-native-recaptcha-that-works';
 import { CountryPicker } from 'react-native-country-codes-picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { customShowMessage } from '@/utils';
+import { checkPhoneNumber, customShowMessage } from '@/utils';
 import { PRIVACY_POLICY_URL } from '@/constants/apiConstants';
+
 export function Login({ route }) {
   const recaptcha = useRef();
   const { postId, postIndex } = route.params || {};
@@ -44,7 +45,7 @@ export function Login({ route }) {
         message: strings.login.numberHint,
         type: 'danger',
       });
-    } else if (mobileNumber.length < 10) {
+    } else if (mobileNumber.length < 8) {
       customShowMessage({ message: strings.login.numberValid, type: 'danger' });
     } else {
       recaptcha.current.open();
@@ -61,12 +62,20 @@ export function Login({ route }) {
   const onVerify = token => {
     // Keyboard.dismiss()
     setCaptchaToken(token);
+
     const finalNumber = countryCode + mobileNumber;
+
     dispatch(login(finalNumber));
   };
 
   const onExpire = () => {
     setCaptchaToken('');
+  };
+
+  const onChange = val => {
+    const { phone } = checkPhoneNumber(countryCode, val);
+
+    setMobileNumber(phone);
   };
 
   // testing purpose code
@@ -113,7 +122,7 @@ export function Login({ route }) {
           <TextField
             style={styles.numberinput}
             autoCapitalize="none"
-            onChangeText={setMobileNumber}
+            onChangeText={onChange}
             placeholder={strings.login.phoneNumber}
             value={mobileNumber}
             keyboardType="phone-pad"
@@ -137,8 +146,11 @@ export function Login({ route }) {
           title={isLoading ? strings.common.loading : strings.login.continue}
         />
         <Text
-          onPress={() => { Linking.openURL(PRIVACY_POLICY_URL) }}
-          style={styles.termsAndConditionsStyle}>
+          onPress={() => {
+            Linking.openURL(PRIVACY_POLICY_URL);
+          }}
+          style={styles.termsAndConditionsStyle}
+        >
           {strings.login.byContinue}
           <Text style={styles.linkColor}>
             {strings.login.termsAndConditions}

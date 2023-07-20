@@ -113,6 +113,7 @@ export default function UserProfile({ navigation, route }) {
   const [loader, setLoader] = useState(false);
   const [showImageView, setShowImageView] = useState(false);
   const [feedImages, setFeedImages] = useState([]);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const [postId, setpostId] = useState(null);
   const [postUserId, setPostUserId] = useState(null);
@@ -154,16 +155,16 @@ export default function UserProfile({ navigation, route }) {
   };
 
   const backgroundFetch = () => {
-    console.log('background fetching user posts');
     UserController.postByUserId(userId, '', userr.id).then(res => {
       dispatch(getAllPostByUserIdSuccess(res?.data));
+      setIsRefreshing(false);
     });
   };
 
-  useBackgroundFetch({
-    callback: backgroundFetch,
-    isFocused,
-  });
+  // useBackgroundFetch({
+  //   callback: backgroundFetch,
+  //   isFocused,
+  // });
 
   useEffect(() => {
     dispatch(getUserProfileByUserId(userId, userr.id));
@@ -181,6 +182,11 @@ export default function UserProfile({ navigation, route }) {
   //     };
   //   }, [userId])
   // );
+
+  const onRefresh = () => {
+    setIsRefreshing(true);
+    backgroundFetch();
+  };
 
   useEffect(() => {
     if (!userr.getUserByUserId) return;
@@ -240,12 +246,6 @@ export default function UserProfile({ navigation, route }) {
       </View>
     );
   };
-
-  // useEffect(() => {
-  //   if (!openMore) {
-  //     setpostId(null);
-  //   }
-  // }, [openMore]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -389,6 +389,8 @@ export default function UserProfile({ navigation, route }) {
           onEndReached={getPostPagination}
           onEndReachedThreshold={0.5}
           ListFooterComponent={renderFooterPost}
+          onRefresh={onRefresh}
+          refreshing={isRefreshing}
           onMomentumScrollBegin={() => setEndReachedDuringMomentum(false)}
           key={props => props.id}
           renderItem={({ item, index }) => (

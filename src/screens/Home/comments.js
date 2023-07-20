@@ -240,6 +240,7 @@ export default function Comments({ navigation, route }) {
         behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
         // keyboardVerticalOffset={20}
         style={{ flex: 1 }}
+
       > */}
       <View style={styles.commentContainer}>
         {isLoading == true ? (

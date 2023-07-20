@@ -34,8 +34,7 @@ export default function NotificationSettings({ navigation }) {
         user?.notify_for_someone_comments_on_my_post &&
         user?.notify_for_following_user_post &&
         user?.notify_for_jatie_post &&
-        user?.notify_for_jatie_live &&
-        user?.notify_for_one_hour_beofre_jatie_live
+        user?.notify_for_jatie_live
       );
     } else {
       return (
@@ -54,7 +53,6 @@ export default function NotificationSettings({ navigation }) {
     ...(userType?.user !== `${strings.userType.admin}` && {
       jatiePost: user?.notify_for_jatie_post,
       jatieLive: user?.notify_for_jatie_live,
-      oneHourBeforeLive: user?.notify_for_one_hour_beofre_jatie_live,
     }),
   });
 
@@ -66,8 +64,6 @@ export default function NotificationSettings({ navigation }) {
         ...(userType?.user !== `${strings.userType.admin}` && {
           notifyForJatieLive: config.masterConfig || config.jatieLive,
           notifyForJatiePost: config.masterConfig || config.jatiePost,
-          notifyOneHourBeforeJatieLive:
-            config.masterConfig || config.oneHourBeforeLive,
         }),
         notifyForSomeOneReactPost: config.masterConfig || config.postReact,
         notifyForSomeoneCommentsOnMyPost:
@@ -180,13 +176,13 @@ export default function NotificationSettings({ navigation }) {
                 onChange={() => handleSwitch('jatieLive')}
               />
             </View>
-            <View style={styles.list}>
+            {/* <View style={styles.list}>
               <Text style={styles.listTxt}> {strings.profile.beforeLive} </Text>
               <CustomSwitch
                 value={config.oneHourBeforeLive || config.masterConfig}
                 onChange={() => handleSwitch('oneHourBeforeLive')}
               />
-            </View>
+            </View> */}
           </>
         )}
       </View>

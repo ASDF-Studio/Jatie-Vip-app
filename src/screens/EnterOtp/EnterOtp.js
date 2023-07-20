@@ -53,6 +53,7 @@ export function EnterOtp({ route }) {
       setCodeError(true);
     } else {
       setCodeError(false);
+      console.log(number, code);
       dispatch(verifyOtp(number, code, isRegistered));
     }
   };

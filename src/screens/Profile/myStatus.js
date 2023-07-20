@@ -63,7 +63,7 @@ export default function MyStatus({ navigation }) {
   const userType = useSelector(state => state.userType);
   const [index, setIndex] = useState(null);
   const [openReplace, setReplace] = useState(false);
-  const isFocused = useIsFocused();
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -73,22 +73,23 @@ export default function MyStatus({ navigation }) {
   );
 
   const customReq = () => {
-    console.log('my status fetch calling');
     if (userType === strings.userType.admin) {
       UserController.getAllPostByAdmin(user.id).then(allPosts => {
         dispatch(getAllPostByLoggedInUserSuccess(allPosts?.data));
+        setIsRefreshing(false);
       });
     } else {
       UserController.postByUserId(user?.id, null, user.id).then(allPosts => {
         dispatch(getAllPostByLoggedInUserSuccess(allPosts?.data));
+        setIsRefreshing(false);
       });
     }
   };
 
-  useBackgroundFetch({
-    callback: customReq,
-    isFocused,
-  });
+  // useBackgroundFetch({
+  //   callback: customReq,
+  //   isFocused,
+  // });
 
   const isLoading = useSelector(state =>
     isLoadingSelector(
@@ -130,6 +131,11 @@ export default function MyStatus({ navigation }) {
     dispatch(getAllPostsByLogInUserPagination(user?.id, page));
   });
 
+  const onRefresh = () => {
+    setIsRefreshing(true);
+    customReq();
+  };
+
   const renderFooterPost = () => {
     return (
       <View style={{}}>
@@ -154,6 +160,8 @@ export default function MyStatus({ navigation }) {
           key={props => {
             return props.id;
           }}
+          onRefresh={onRefresh}
+          refreshing={isRefreshing}
           ListFooterComponent={renderFooterPost}
           // onEndReached={onLoadMorePost}
           onEndReachedThreshold={0.1}
