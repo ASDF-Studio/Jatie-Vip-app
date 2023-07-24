@@ -138,11 +138,12 @@ android {
         applicationId "com.airlystudio.jatievip"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 5
-        versionName "1.0.4"
+        versionCode 7
+        versionName "1.0.6"
+        missingDimensionStrategy 'store', 'play'
         vectorDrawables.useSupportLibrary = true
         buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
-        missingDimensionStrategy 'store', 'play'
+        
         if (isNewArchitectureEnabled()) {
             // We configure the NDK build only if you decide to opt-in for the New Architecture.
             externalNativeBuild {
@@ -268,7 +269,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation project(':react-native-iap')
+    // implementation project(':react-native-iap')
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
