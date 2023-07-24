@@ -115,6 +115,27 @@ export default function UpgradeMembership({ navigation }) {
     }
   };
   const handlePurchase = async userProductSku => {
+   if(Platform.OS=="android"){
+    try {
+
+    const subscriptions = await getSubscriptions({skus: SKUS.ANDROID});
+
+    for (const product of subscriptions) {
+      if (product.productId === userProductSku) {
+        const offerToken=product?.subscriptionOfferDetails[0]?.offerToken
+        await requestSubscription({
+          sku: userProductSku,
+          ...(offerToken && {
+            subscriptionOffers: [{sku: userProductSku, offerToken}],
+          }),
+        });
+      }
+    }
+    } catch (error) {
+      console.log("ererere",error);
+    }
+   }
+   else{
     try {
       const products = await getProducts({
         skus: Platform.OS === 'ios' ? SKUS.IOS : SKUS.ANDROID,
@@ -137,6 +158,8 @@ export default function UpgradeMembership({ navigation }) {
     } finally {
       setLoading(false); // Hide loader regardless of success or failure
     }
+   }
+   
   };
 
   async function verifyReceipt(receipt) {
