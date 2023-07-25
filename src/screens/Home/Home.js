@@ -74,7 +74,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PostController } from '@/controllers/PostController';
 import { useBackgroundFetch } from '@/hooks';
 import { ExclusivePostController } from '@/controllers/ExclusivePostController';
-import { endConnection, getAvailablePurchases, initConnection, purchaseUpdatedListener } from 'react-native-iap';
+import {
+  endConnection,
+  getAvailablePurchases,
+  initConnection,
+} from 'react-native-iap';
 import { validateReceipt } from '@/actions/SubscriptionAction';
 import * as RNIap from 'react-native-iap';
 export function Home({ navigation }) {
@@ -134,8 +138,10 @@ export function Home({ navigation }) {
   const isFocused = useIsFocused();
   const [isRefreshing, setIsRefreshing] = useState(false);
   useEffect(() => {
-    initIAP();
-    checkForSubscriptionUpdates();
+    initIAP().then(() => {
+      checkForSubscriptionUpdates();
+    });
+
     return () => {
       clearIAPListeners();
     };
@@ -159,28 +165,26 @@ export function Home({ navigation }) {
         if (latestPurchase?.transactionReceipt) {
           await verifyReceipt(latestPurchase.transactionReceipt);
         }
-      }
-      else{
-       var receipt=""
-      await verifyReceipt(receipt); 
+      } else {
+        var receipt = '';
+        await verifyReceipt(receipt);
       }
     } catch (error) {
-      console.log("Error during subscription update check:", error);
+      console.log('Error during subscription update check:', error);
     }
   };
-  
+
   const clearIAPListeners = async () => {
     await endConnection();
   };
-  
+
   async function verifyReceipt(receipt) {
     const data = {
       receipt: receipt,
       loggedInUserId: user?.id,
     };
     dispatch(validateReceipt(data, navigation, NAVIGATION.home));
-
-  };
+  }
   useEffect(() => {
     dispatch(getSchedulePost());
     dispatch(
@@ -192,7 +196,7 @@ export function Home({ navigation }) {
         ''
       )
     );
-  }, [sortBy, follwingSwitch, vipArea,userType]);
+  }, [sortBy, follwingSwitch, vipArea, userType]);
 
   const customReq = () => {
     ExclusivePostController.getAllSchedulePost().then(res => {

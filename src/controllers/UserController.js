@@ -975,9 +975,9 @@ export class UserController {
       var DATA = JSON.stringify({
         receipt: data.receipt,
         userId: data.loggedInUserId,
-        platform:Platform.OS
+        platform: Platform.OS,
       });
-      console.log("JSONsdsdasdasdsa",DATA);
+      console.log('JSONsdsdasdasdsa', DATA);
       HttpClient.post(endpoint, DATA)
         .then(response => {
           resolve(response);

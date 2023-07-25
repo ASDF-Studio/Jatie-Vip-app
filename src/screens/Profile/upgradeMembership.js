@@ -58,11 +58,17 @@ export default function UpgradeMembership({ navigation }) {
     initIAP();
     purchaseUpdateSubscription = purchaseUpdatedListener(async purchase => {
       const receipt = purchase.transactionReceipt;
+
       if (receipt) {
         try {
-          await verifyReceipt(receipt);
+          verifyReceipt(receipt).then(async () => {
+            await finishTransaction({
+              purchase: purchase,
+              isConsumable: false,
+            });
+          });
         } catch (error) {
-          console.log("EROROROROR",error);
+          console.log('EROROROROR', error);
         }
       }
     });
@@ -70,24 +76,23 @@ export default function UpgradeMembership({ navigation }) {
       clearIAPListeners();
     };
   }, []);
-  
-  
-        const clearIAPListeners = async () => {
-          if (purchaseUpdateSubscription) {
-            purchaseUpdateSubscription.remove();
-            purchaseUpdateSubscription = null;
-          }
-          if (purchaseErrorSubscription) {
-            purchaseErrorSubscription.remove();
-            purchaseErrorSubscription = null;
-          }
-          await endConnection();
-        };
-       const initIAP = async () => {
-         try {
-          await initConnection();
-        } catch (error) {}
-      };
+
+  const clearIAPListeners = async () => {
+    if (purchaseUpdateSubscription) {
+      purchaseUpdateSubscription.remove();
+      purchaseUpdateSubscription = null;
+    }
+    if (purchaseErrorSubscription) {
+      purchaseErrorSubscription.remove();
+      purchaseErrorSubscription = null;
+    }
+    await endConnection();
+  };
+  const initIAP = async () => {
+    try {
+      await initConnection();
+    } catch (error) {}
+  };
 
   const buySubscription = async userProductSku => {
     if (Platform.OS === 'ios') {
@@ -111,54 +116,47 @@ export default function UpgradeMembership({ navigation }) {
     }
   };
   const handlePurchase = async userProductSku => {
-   if(Platform.OS=="android"){
-    try {
-    const subscriptions = await getSubscriptions({skus: SKUS.ANDROID});
-    for (const product of subscriptions) {
-      if (product.productId === userProductSku) {
-        const offerToken=product?.subscriptionOfferDetails[0]?.offerToken
-        await requestSubscription({
-          sku: userProductSku,
-          ...(offerToken && {
-            subscriptionOffers: [{sku: userProductSku, offerToken}],
-          }),
-        });
-      }
-    }
-    } catch (error) {
-      setLoading(false); 
-      console.log("ererere",error);
-    }
-    finally {
-      setLoading(false); // Hide loader regardless of success or failure
-    }
-   }
-   else{
-    try {
-      const subscriptions = await getSubscriptions({skus: SKUS.IOS});
-      console.log("SSSS",subscriptions);
-      let productFound = false;
-      for (const product of subscriptions) {
-        if (product.productId === userProductSku) {
-            await requestSubscription({ sku: product.productId });
-             productFound = true;
-             break; // Stop checking for more products after finding a match
-            }
+    if (Platform.OS == 'android') {
+      try {
+        const subscriptions = await getSubscriptions({ skus: SKUS.ANDROID });
+        for (const product of subscriptions) {
+          if (product.productId === userProductSku) {
+            const offerToken = product?.subscriptionOfferDetails[0]?.offerToken;
+            await requestSubscription({
+              sku: userProductSku,
+              ...(offerToken && {
+                subscriptionOffers: [{ sku: userProductSku, offerToken }],
+              }),
+            });
+          }
         }
-              if (!productFound) {
-                setLoading(false);
-                console.log('Desired product not found');
-      }
-      
       } catch (error) {
-        setLoading(false);
-        console.log("ererere",error);
-   
-    } finally {
-      setLoading(false); // Hide loader regardless of success or failure
+        console.log('ererere', error);
+      } finally {
+        setLoading(false); // Hide loader regardless of success or failure
+      }
+    } else {
+      try {
+        const subscriptions = await getSubscriptions({ skus: SKUS.IOS });
+        console.log('SSSS', subscriptions);
+        let productFound = false;
+        for (const product of subscriptions) {
+          if (product.productId === userProductSku) {
+            await requestSubscription({ sku: product.productId });
+            productFound = true;
+            break; // Stop checking for more products after finding a match
+          }
+        }
+        if (!productFound) {
+          setLoading(false);
+          console.log('Desired product not found');
+        }
+      } catch (error) {
+        console.log('ererere', error);
+      } finally {
+        setLoading(false); // Hide loader regardless of success or failure
+      }
     }
-   }
-   
   };
 
   async function verifyReceipt(receipt) {
@@ -166,7 +164,7 @@ export default function UpgradeMembership({ navigation }) {
       receipt: receipt,
       loggedInUserId: user?.id,
     };
-    dispatch(validateReceipt(data, navigation,NAVIGATION.upgradeMembership));
+    dispatch(validateReceipt(data, navigation, NAVIGATION.upgradeMembership));
   }
 
   // const restorePurchases = async () => {
@@ -201,7 +199,7 @@ export default function UpgradeMembership({ navigation }) {
     dispatch(updateUserType(Data));
     setTimeout(() => {
       // navigationRef.navigate(NAVIGATION.home, { reset: true });
-      resetStackToScreen(NAVIGATION.home)
+      resetStackToScreen(NAVIGATION.home);
     }, 1000);
   }
   async function restorePurchases() {
@@ -472,3 +470,25 @@ const styles = StyleSheet.create({
     marginBottom: ms(5),
   },
 });
+
+const a = {
+  autoRenewingAndroid: true,
+  dataAndroid:
+    '{"orderId":"GPA.3344-3767-1582-34131","packageName":"com.airlystudio.jatievip","productId":"com.jatievip.air.permonth","purchaseTime":1690282253784,"purchaseState":0,"purchaseToken":"lpbblknmmabejelmecnfbaah.AO-J1OzQH5FG5oqXzBykEEmqXO8J-fKweRxD-hVQQYXZxwzkKFRkq_uPhfxGYhECq4qnXysn0dgS2uf9hzNt9NPX1Jcp3TxbfOVTab72CkYIJMju1kiy0zo","quantity":1,"autoRenewing":true,"acknowledged":false}',
+  developerPayloadAndroid: '',
+  isAcknowledgedAndroid: false,
+  obfuscatedAccountIdAndroid: '',
+  obfuscatedProfileIdAndroid: '',
+  packageNameAndroid: 'com.airlystudio.jatievip',
+  productId: 'com.jatievip.air.permonth',
+  productIds: ['com.jatievip.air.permonth'],
+  purchaseStateAndroid: 1,
+  purchaseToken:
+    'lpbblknmmabejelmecnfbaah.AO-J1OzQH5FG5oqXzBykEEmqXO8J-fKweRxD-hVQQYXZxwzkKFRkq_uPhfxGYhECq4qnXysn0dgS2uf9hzNt9NPX1Jcp3TxbfOVTab72CkYIJMju1kiy0zo',
+  signatureAndroid:
+    'kPkgvGzh8nSGUcVapG2IC+5vEmrHNJG7qftPzj69h71ZkfzWp5lR9wwXcYSYmNcNhgy5wwtH0hoC1u0m6CFx+RRZxB5zuXJjV+SCZRLpN380WCq9utfbQOT2mX/MwodTGK7x/el5YeksCaim4LKxklnznwB88F83K0kRYzMgpAI1JP4SnUKlCZoIcSTFQQgowt4mEYDRK8LIgOfaTKE8PgOsQRL80wq9U4fdnWBbE+sG9kigSYPYHrOZc5rCkrsvbxgJI6WL9vyQHvzoTo8FiS5QqDgO3233QC9emNr7rumA8HLCB/IuBhbpkenvSeK9+CjYvy1zn+GDBsL8X6wb1w==',
+  transactionDate: 1690282253784,
+  transactionId: 'GPA.3344-3767-1582-34131',
+  transactionReceipt:
+    '{"orderId":"GPA.3344-3767-1582-34131","packageName":"com.airlystudio.jatievip","productId":"com.jatievip.air.permonth","purchaseTime":1690282253784,"purchaseState":0,"purchaseToken":"lpbblknmmabejelmecnfbaah.AO-J1OzQH5FG5oqXzBykEEmqXO8J-fKweRxD-hVQQYXZxwzkKFRkq_uPhfxGYhECq4qnXysn0dgS2uf9hzNt9NPX1Jcp3TxbfOVTab72CkYIJMju1kiy0zo","quantity":1,"autoRenewing":true,"acknowledged":false}',
+};
