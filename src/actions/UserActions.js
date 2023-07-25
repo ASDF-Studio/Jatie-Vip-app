@@ -1468,8 +1468,9 @@ export const updateUserType = (data,navigation,ScreenName) => async dispatch => 
       let selectedValue = 'VIP';
       dispatch(ChooseUser(selectedValue));
     } else {
-      let selectedValue = 'FREE';
+      let selectedValue = 'Free';
       dispatch(ChooseUser(selectedValue));
+   
     }
     if(ScreenName!==NAVIGATION.home){
       resetStackToScreen(NAVIGATION.home)

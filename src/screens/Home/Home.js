@@ -133,8 +133,6 @@ export function Home({ navigation }) {
   const [isScrolling, setIsScrolling] = useState(false);
   const isFocused = useIsFocused();
   const [isRefreshing, setIsRefreshing] = useState(false);
-
-
   useEffect(() => {
     initIAP();
     checkForSubscriptionUpdates();
@@ -162,6 +160,10 @@ export function Home({ navigation }) {
           await verifyReceipt(latestPurchase.transactionReceipt);
         }
       }
+      else{
+       var receipt=""
+      await verifyReceipt(receipt); 
+      }
     } catch (error) {
       console.log("Error during subscription update check:", error);
     }
@@ -177,9 +179,8 @@ export function Home({ navigation }) {
       loggedInUserId: user?.id,
     };
     dispatch(validateReceipt(data, navigation, NAVIGATION.home));
-  };
-  
 
+  };
   useEffect(() => {
     dispatch(getSchedulePost());
     dispatch(
@@ -191,7 +192,7 @@ export function Home({ navigation }) {
         ''
       )
     );
-  }, [sortBy, follwingSwitch, vipArea]);
+  }, [sortBy, follwingSwitch, vipArea,userType]);
 
   const customReq = () => {
     ExclusivePostController.getAllSchedulePost().then(res => {

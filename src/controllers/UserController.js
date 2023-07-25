@@ -3,6 +3,7 @@ import { strings } from '@/localization';
 import { HttpClient } from './HttpClient';
 import { showMessage } from 'react-native-flash-message';
 import { customShowMessage } from '@/utils';
+import { Platform } from 'react-native';
 
 export class UserController {
   static async login(number) {
@@ -974,14 +975,16 @@ export class UserController {
       var DATA = JSON.stringify({
         receipt: data.receipt,
         userId: data.loggedInUserId,
+        platform:Platform.OS
       });
+      console.log("JSONsdsdasdasdsa",DATA);
       HttpClient.post(endpoint, DATA)
         .then(response => {
           resolve(response);
           console.log('response of Validate receipt', JSON.stringify(response));
         })
         .catch(error => {
-          reject(new Error(error.message));
+          reject(error);
           console.log('error of Validate receipt', error);
         });
     });
