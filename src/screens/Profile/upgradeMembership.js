@@ -17,7 +17,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { FontFamily } from '@/theme/Fonts';
 import { strings } from '@/localization';
-import { navigationRef } from '@/navigation/RootNavigation';
+import { navigationRef, resetStackToScreen } from '@/navigation/RootNavigation';
 import { decode } from 'react-native-base64';
 import RNIap, {
   validateReceiptAndroid,
@@ -47,7 +47,6 @@ import { getUser } from '@/selectors/UserSelectors';
 import { validateReceipt } from '@/actions/SubscriptionAction';
 import { CommonActions } from '@react-navigation/native';
 import { updateUserType } from '@/actions/UserActions';
-
 export default function UpgradeMembership({ navigation }) {
   const dispatch = useDispatch();
   const user = useSelector(getUser);
@@ -59,39 +58,36 @@ export default function UpgradeMembership({ navigation }) {
     initIAP();
     purchaseUpdateSubscription = purchaseUpdatedListener(async purchase => {
       const receipt = purchase.transactionReceipt;
-      console.log('receipt', receipt);
       if (receipt) {
         try {
           await verifyReceipt(receipt);
-        } catch (error) {}
+        } catch (error) {
+          console.log("EROROROROR",error);
+        }
       }
     });
     return () => {
       clearIAPListeners();
     };
   }, []);
-  const clearIAPListeners = async () => {
-    if (purchaseUpdateSubscription) {
-      purchaseUpdateSubscription.remove();
-      purchaseUpdateSubscription = null;
-    }
-    if (purchaseErrorSubscription) {
-      purchaseErrorSubscription.remove();
-      purchaseErrorSubscription = null;
-    }
-    await endConnection();
-  };
-  const initIAP = async () => {
-    try {
-      await initConnection();
-
-      getSubscriptions({
-        skus: SKUS.ANDROID,
-      }).then(res => {
-        console.log(res, '=============');
-      });
-    } catch (error) {}
-  };
+  
+  
+        const clearIAPListeners = async () => {
+          if (purchaseUpdateSubscription) {
+            purchaseUpdateSubscription.remove();
+            purchaseUpdateSubscription = null;
+          }
+          if (purchaseErrorSubscription) {
+            purchaseErrorSubscription.remove();
+            purchaseErrorSubscription = null;
+          }
+          await endConnection();
+        };
+       const initIAP = async () => {
+         try {
+          await initConnection();
+        } catch (error) {}
+      };
 
   const buySubscription = async userProductSku => {
     if (Platform.OS === 'ios') {
@@ -117,9 +113,7 @@ export default function UpgradeMembership({ navigation }) {
   const handlePurchase = async userProductSku => {
    if(Platform.OS=="android"){
     try {
-
     const subscriptions = await getSubscriptions({skus: SKUS.ANDROID});
-
     for (const product of subscriptions) {
       if (product.productId === userProductSku) {
         const offerToken=product?.subscriptionOfferDetails[0]?.offerToken
@@ -132,29 +126,34 @@ export default function UpgradeMembership({ navigation }) {
       }
     }
     } catch (error) {
+      setLoading(false); 
       console.log("ererere",error);
+    }
+    finally {
+      setLoading(false); // Hide loader regardless of success or failure
     }
    }
    else{
     try {
-      const products = await getProducts({
-        skus: Platform.OS === 'ios' ? SKUS.IOS : SKUS.ANDROID,
-      });
+      const subscriptions = await getSubscriptions({skus: SKUS.IOS});
+      console.log("SSSS",subscriptions);
       let productFound = false;
-      for (const product of products) {
+      for (const product of subscriptions) {
         if (product.productId === userProductSku) {
-          await requestSubscription({ sku: product.productId });
-          productFound = true;
-          break; // Stop checking for more products after finding a match
+            await requestSubscription({ sku: product.productId });
+             productFound = true;
+             break; // Stop checking for more products after finding a match
+            }
         }
+              if (!productFound) {
+                setLoading(false);
+                console.log('Desired product not found');
       }
-      if (!productFound) {
+      
+      } catch (error) {
         setLoading(false);
-        console.log('Desired product not found');
-      }
-    } catch (error) {
-      setLoading(false);
-      console.log('Error buying subscription:', error);
+        console.log("ererere",error);
+   
     } finally {
       setLoading(false); // Hide loader regardless of success or failure
     }
@@ -167,7 +166,7 @@ export default function UpgradeMembership({ navigation }) {
       receipt: receipt,
       loggedInUserId: user?.id,
     };
-    dispatch(validateReceipt(data, navigation));
+    dispatch(validateReceipt(data, navigation,NAVIGATION.upgradeMembership));
   }
 
   // const restorePurchases = async () => {
@@ -201,7 +200,8 @@ export default function UpgradeMembership({ navigation }) {
     };
     dispatch(updateUserType(Data));
     setTimeout(() => {
-      navigationRef.navigate(NAVIGATION.home, { reset: true });
+      // navigationRef.navigate(NAVIGATION.home, { reset: true });
+      resetStackToScreen(NAVIGATION.home)
     }, 1000);
   }
   async function restorePurchases() {

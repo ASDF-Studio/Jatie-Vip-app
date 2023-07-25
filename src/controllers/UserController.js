@@ -968,7 +968,7 @@ export class UserController {
     });
   }
 
-  static async validateReceiptRequest(data) {
+  static async validateReceiptRequestData(data) {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.VALIDATE_RECEIPT;
       var DATA = JSON.stringify({

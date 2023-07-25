@@ -38,25 +38,26 @@ const validateReceiptSuccess = data => ({
 
 //Update FCM Token 
 
-export const validateReceipt = (data,navigation) => async dispatch => {
+export const validateReceipt = (data,navigation,ScreenName) => async dispatch => {
     dispatch(validateReceiptRequest());
-
     try {
-        const user = await UserController.validateReceiptRequest(data);
+
+        const user = await UserController.validateReceiptRequestData(data);
         dispatch(validateReceiptSuccess(user));
+        
         if (user?.status == RECEIPT_STATUS.VALID_RECEIPT) {
             const Data = {
                 "isVIP": true,
                 "userId": data.loggedInUserId
             }
-            dispatch(updateUserType(Data,navigation))
+            dispatch(updateUserType(Data,navigation,ScreenName))
         }
         else {
             const Data = {
                 "isVIP": false,
                 "userId": data.loggedInUserId
             }
-            dispatch(updateUserType(Data))
+            dispatch(updateUserType(Data,navigation,ScreenName))
         }
 
     } catch (error) {

@@ -1,12 +1,13 @@
 import { NAVIGATION } from '@/constants';
 import { UserController } from '@/controllers';
 import { strings } from '@/localization';
-import { navigationRef } from '@/navigation/RootNavigation';
+import { navigationRef, resetStackToScreen } from '@/navigation/RootNavigation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StackActions } from '@react-navigation/native';
 import { globalReset } from './GlobalActions';
 import { getAllPost } from './PostActions';
 import { customShowMessage } from '@/utils';
+import { NavigationActions } from '@react-navigation/native';
 
 export const TYPES = {
   CLEAR_STORE: 'CLEAR_STORE',
@@ -1459,7 +1460,7 @@ export const UpdateNotifactionSettings = async (params, dispatch) => {
     console.log(err);
   }
 };
-export const updateUserType = data => async dispatch => {
+export const updateUserType = (data,navigation,ScreenName) => async dispatch => {
   dispatch(updateUserTypeRequest());
   try {
     const user = await UserController.updateUserTypeRequest(data);
@@ -1470,10 +1471,16 @@ export const updateUserType = data => async dispatch => {
       let selectedValue = 'FREE';
       dispatch(ChooseUser(selectedValue));
     }
-    // navigation.reset({ index: 0, routes: [{ name: NAVIGATION.home }] })
-    navigationRef.navigate(NAVIGATION.home, { reset: true });
+    if(ScreenName!==NAVIGATION.home){
+      resetStackToScreen(NAVIGATION.home)
+    }
+    
+        // navigationRef.navigate(NAVIGATION.home, { reset: true });
+        
     // dispatch(updateUserTypeSuccess(user));
   } catch (error) {
     dispatch(updateUserTypeError(error));
   }
+
+ 
 };

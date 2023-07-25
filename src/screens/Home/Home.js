@@ -74,7 +74,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PostController } from '@/controllers/PostController';
 import { useBackgroundFetch } from '@/hooks';
 import { ExclusivePostController } from '@/controllers/ExclusivePostController';
-import { getAvailablePurchases } from 'react-native-iap';
+import { endConnection, getAvailablePurchases, initConnection, purchaseUpdatedListener } from 'react-native-iap';
+import { validateReceipt } from '@/actions/SubscriptionAction';
+import * as RNIap from 'react-native-iap';
 export function Home({ navigation }) {
   const ALLPOST = useSelector(getAllPostData);
   const SEARCH_DATA = useSelector(getSearchData);
@@ -131,6 +133,52 @@ export function Home({ navigation }) {
   const [isScrolling, setIsScrolling] = useState(false);
   const isFocused = useIsFocused();
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+
+  useEffect(() => {
+    initIAP();
+    checkForSubscriptionUpdates();
+    return () => {
+      clearIAPListeners();
+    };
+  }, []);
+  const initIAP = async () => {
+    try {
+      await initConnection();
+    } catch (error) {}
+  };
+
+  const checkForSubscriptionUpdates = async () => {
+    try {
+      const availablePurchases = await getAvailablePurchases();
+      if (availablePurchases?.length > 0) {
+        availablePurchases.sort(
+          (a, b) => parseInt(b.transactionDate) - parseInt(a.transactionDate)
+        );
+
+        const latestPurchase = availablePurchases[0];
+
+        if (latestPurchase?.transactionReceipt) {
+          await verifyReceipt(latestPurchase.transactionReceipt);
+        }
+      }
+    } catch (error) {
+      console.log("Error during subscription update check:", error);
+    }
+  };
+  
+  const clearIAPListeners = async () => {
+    await endConnection();
+  };
+  
+  async function verifyReceipt(receipt) {
+    const data = {
+      receipt: receipt,
+      loggedInUserId: user?.id,
+    };
+    dispatch(validateReceipt(data, navigation, NAVIGATION.home));
+  };
+  
 
   useEffect(() => {
     dispatch(getSchedulePost());
