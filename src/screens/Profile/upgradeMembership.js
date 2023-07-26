@@ -181,31 +181,52 @@ export default function UpgradeMembership({ navigation }) {
     // }, 1000);
   }
 
-  async function restorePurchases() {
+
+
+  async function restorePurchases(){
     try {
       setLoading(true);
-      const purchases = await getAvailablePurchases();
-      if (purchases && purchases.length > 0) {
-        for (const purchase of purchases) {
-          if (purchase.transactionReceipt) {
-            setLoading(false);
-            processPurchase(purchase);
-            // Finish transaction (required for iOS)
-            if (Platform.OS === 'ios') {
-              await finishTransactionIOS(purchase.transactionId);
-            } else {
-              await finishTransaction(purchase);
-            }
-          }
+      const availablePurchases = await getAvailablePurchases();
+      if (availablePurchases?.length > 0) {
+        availablePurchases.sort((a, b) => parseInt(b.transactionDate) - parseInt(a.transactionDate));
+        const latestPurchase = availablePurchases[0];
+        if (latestPurchase?.transactionReceipt) {
+          await verifyReceipt(latestPurchase.transactionReceipt);
         }
       } else {
         setLoading(false);
       }
     } catch (error) {
       setLoading(false);
-      console.log('Error during restore purchases:', error);
+      console.log('Error during subscription update check:', error);
     }
+
   }
+  // async function restorePurchases() {
+  //   try {
+  //     setLoading(true);
+  //     const purchases = await getAvailablePurchases();
+  //     if (purchases && purchases.length > 0) {
+  //       for (const purchase of purchases) {
+  //         if (purchase.transactionReceipt) {
+  //           setLoading(false);
+  //           processPurchase(purchase);
+  //           // Finish transaction (required for iOS)
+  //           if (Platform.OS === 'ios') {
+  //             await finishTransactionIOS(purchase.transactionId);
+  //           } else {
+  //             await finishTransaction(purchase);
+  //           }
+  //         }
+  //       }
+  //     } else {
+  //       setLoading(false);
+  //     }
+  //   } catch (error) {
+  //     setLoading(false);
+  //     console.log('Error during restore purchases:', error);
+  //   }
+  // }
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
