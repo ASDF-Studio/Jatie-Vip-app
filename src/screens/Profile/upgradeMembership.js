@@ -176,9 +176,9 @@ export default function UpgradeMembership({ navigation }) {
       userId: user?.id,
     };
     dispatch(updateUserType(Data));
-    setTimeout(() => {
-      resetStackToScreen(NAVIGATION.home);
-    }, 1000);
+    // setTimeout(() => {
+    //   resetStackToScreen(NAVIGATION.home);
+    // }, 1000);
   }
 
   async function restorePurchases() {
