@@ -56,25 +56,25 @@ export default function UpgradeMembership({ navigation }) {
 
   useEffect(() => {
     initIAP();
-    purchaseUpdateSubscription = purchaseUpdatedListener(async purchase => {
-      const receipt = purchase.transactionReceipt;
+    // purchaseUpdateSubscription = purchaseUpdatedListener(async purchase => {
+    //   const receipt = purchase.transactionReceipt;
 
-      if (receipt) {
-        try {
-          verifyReceipt(receipt).then(async () => {
-            await finishTransaction({
-              purchase: purchase,
-              isConsumable: false,
-            });
-          });
-        } catch (error) {
-          console.log('EROROROROR', error);
-        }
-      }
-    });
-    return () => {
-      clearIAPListeners();
-    };
+    //   if (receipt) {
+    //     try {
+    //       verifyReceipt(receipt).then(async () => {
+    //         await finishTransaction({
+    //           purchase: purchase,
+    //           isConsumable: false,
+    //         });
+    //       });
+    //     } catch (error) {
+    //       console.log('EROROROROR', error);
+    //     }
+    //   }
+    // });
+    // return () => {
+    //   clearIAPListeners();
+    // };
   }, []);
 
   const clearIAPListeners = async () => {
@@ -137,8 +137,7 @@ export default function UpgradeMembership({ navigation }) {
       }
     } else {
       try {
-        const subscriptions = await getSubscriptions({ skus: SKUS.IOS });
-        console.log('SSSS', subscriptions);
+        const subscriptions = await getSubscriptions({ skus: SKUS.IOS })
         let productFound = false;
         for (const product of subscriptions) {
           if (product.productId === userProductSku) {
@@ -150,6 +149,27 @@ export default function UpgradeMembership({ navigation }) {
         if (!productFound) {
           setLoading(false);
           console.log('Desired product not found');
+        }
+        else{
+          try {
+            const availablePurchases = await getAvailablePurchases();
+            if (availablePurchases?.length > 0) {
+              availablePurchases.sort(
+                (a, b) => parseInt(b.transactionDate) - parseInt(a.transactionDate)
+              );
+              const latestPurchase = availablePurchases[0];
+              if (latestPurchase?.transactionReceipt) {
+                await verifyReceipt(latestPurchase.transactionReceipt);
+              }
+            } else {
+              var receipt = '';
+              await verifyReceipt(receipt);
+            }
+          } catch (error) {
+            setLoading(false);
+            console.log('Error during subscription update check:', error);
+          }
+
         }
       } catch (error) {
         console.log('ererere', error);
