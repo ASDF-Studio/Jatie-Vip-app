@@ -3,6 +3,7 @@ import { RECEIPT_STATUS } from '@/constants/subscriptionConstant';
 import { UserController } from '@/controllers';
 import { strings } from '@/localization';
 import { navigationRef } from '@/navigation/RootNavigation';
+import { customShowMessage } from '@/utils';
 import { StackActions } from '@react-navigation/native';
 import { showMessage } from 'react-native-flash-message';
 import { globalReset } from './GlobalActions';
@@ -41,33 +42,35 @@ const validateReceiptSuccess = data => ({
 export const validateReceipt = (data,navigation,ScreenName) => async dispatch => {
     dispatch(validateReceiptRequest());
     try {
-
         const user = await UserController.validateReceiptRequestData(data);
         dispatch(validateReceiptSuccess(user));
         
-        if (user?.status == RECEIPT_STATUS.VALID_RECEIPT) {
+        if (user?.message == RECEIPT_STATUS.VALID_RECEIPT) {
             const Data = {
                 "isVIP": true,
                 "userId": data.loggedInUserId
             }
             dispatch(updateUserType(Data,navigation,ScreenName))
         }
-        else if(user?.status==RECEIPT_STATUS.INVALID_RECEIPT){
+        else if(user?.message==RECEIPT_STATUS.INVALID_RECEIPT){
             const Data = {
                 "isVIP": false,
                 "userId": data.loggedInUserId
             }
             dispatch(updateUserType(Data,navigation,ScreenName))
         }
-
+      return user
     } catch (error) {
-        if(error?.status==RECEIPT_STATUS.INVALID_RECEIPT){
-            const Data = {
-                "isVIP": false,
-                "userId": data.loggedInUserId
-            }
-        dispatch(updateUserType(Data,navigation,ScreenName))
-        }
+        // if(error?.message==RECEIPT_STATUS.INVALID_RECEIPT){
+        //     const Data = {
+        //         "isVIP": false,
+        //         "userId": data.loggedInUserId
+        //     }
+        // dispatch(updateUserType(Data,navigation,ScreenName))
+
+        // }
         dispatch(validateReceiptError(error));
+       return error
+        
     }
 };

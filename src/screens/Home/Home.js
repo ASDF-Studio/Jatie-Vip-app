@@ -77,6 +77,7 @@ import { ExclusivePostController } from '@/controllers/ExclusivePostController';
 import {
   endConnection,
   getAvailablePurchases,
+  getReceiptIOS,
   initConnection,
 } from 'react-native-iap';
 import { validateReceipt } from '@/actions/SubscriptionAction';
@@ -100,6 +101,7 @@ export function Home({ navigation }) {
   const [editData, setEditdata] = useState({});
   const [reportListOpen, setReportListOpen] = useState(false);
   const [openBan, setOpenBan] = useState(false);
+  const [vipLoader, setVipLoader] = useState(false);
   const [reportOption, setReportOption] = useState([
     { label: 'Explicit Content', value: 'Explicit Content' },
     { label: 'Bullying or Harassment', value: 'Bullying or Harassment' },
@@ -137,54 +139,56 @@ export function Home({ navigation }) {
   const [isScrolling, setIsScrolling] = useState(false);
   const isFocused = useIsFocused();
   const [isRefreshing, setIsRefreshing] = useState(false);
-  useEffect(() => {
-    initIAP().then(() => {
-      checkForSubscriptionUpdates();
-    });
+  // useEffect(() => {
+  //   initIAP().then(() => {
+  //     checkForSubscriptionUpdates();
+  //   });
 
-    return () => {
-      clearIAPListeners();
-    };
-  }, []);
-  const initIAP = async () => {
-    try {
-      await initConnection();
-    } catch (error) {}
-  };
+  //   return () => {
+  //     clearIAPListeners();
+  //   };
+  // }, []);
+  // const initIAP = async () => {
+  //   try {
+  //     await initConnection();
+  //   } catch (error) {}
+  // };
 
-  const checkForSubscriptionUpdates = async () => {
-    try {
-      const availablePurchases = await getAvailablePurchases();
-      if (availablePurchases?.length > 0) {
-        availablePurchases.sort(
-          (a, b) => parseInt(b.transactionDate) - parseInt(a.transactionDate)
-        );
+  // const checkForSubscriptionUpdates = async () => {
+  //   try {
+  //     setVipLoader(true)
+  //     const availablePurchases = await getAvailablePurchases();
+  //     if (availablePurchases?.length > 0) {
+  //       availablePurchases.sort(
+  //         (a, b) => parseInt(b.transactionDate) - parseInt(a.transactionDate)
+  //       );
+  //       const latestPurchase = availablePurchases[0];
+  //       // console.log("LATESTSTSTS",latestPurchase);
 
-        const latestPurchase = availablePurchases[0];
+  //       if (latestPurchase?.transactionReceipt) {
+  //          await verifyReceipt(latestPurchase.transactionReceipt);
+  //       }
+  //     } else {
+  //        var receipt = '';
+  //        await verifyReceipt(receipt);
+  //     }
+  //     setVipLoader(false)
+  //   } catch (error) {
+  //     setVipLoader(false)
+  //     console.log('Error during subscription update check:', error);
+  //   }
+  // };
 
-        if (latestPurchase?.transactionReceipt) {
-          await verifyReceipt(latestPurchase.transactionReceipt);
-        }
-      } else {
-        var receipt = '';
-        await verifyReceipt(receipt);
-      }
-    } catch (error) {
-      console.log('Error during subscription update check:', error);
-    }
-  };
-
-  const clearIAPListeners = async () => {
-    await endConnection();
-  };
-
-  async function verifyReceipt(receipt) {
-    const data = {
-      receipt: receipt,
-      loggedInUserId: user?.id,
-    };
-    dispatch(validateReceipt(data, navigation, NAVIGATION.home));
-  }
+  // const clearIAPListeners = async () => {
+  //   await endConnection();
+  // };
+  // async function verifyReceipt(receipt) {
+  //   const data = {
+  //     receipt: receipt,
+  //     loggedInUserId: user?.id,
+  //   };
+  //   dispatch(validateReceipt(data, navigation, NAVIGATION.home));
+  // }
   useEffect(() => {
     dispatch(getSchedulePost());
     dispatch(

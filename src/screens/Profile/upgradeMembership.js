@@ -1,14 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  SafeAreaView,
-  Linking,
-  ScrollView,
-  TouchableOpacity,
-  Platform,
-} from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, Linking, ScrollView, TouchableOpacity, Platform, Alert } from 'react-native';
 import { TextStyles, theme } from '@/theme';
 import { Logo } from '@/assets';
 import { ms, vs } from 'react-native-size-matters';
@@ -24,58 +15,85 @@ import RNIap, {
   getAvailablePurchases,
   getSubscriptions,
   initConnection,
-  getProducts,
   requestSubscription,
-  IapIos,
-  purchaseUpdatedListener,
   endConnection,
   flushFailedPurchasesCachedAsPendingAndroid,
   clearTransactionIOS,
   finishTransaction,
   finishTransactionIOS,
+  purchaseUpdatedListener,
 } from 'react-native-iap';
-import {
-  buySubscription,
-  cleanupIAP,
-  restorePurchases,
-} from '@/utils/IAPhelper';
-import { SKUS } from '@/constants/subscriptionConstant';
-import { PRIVACY_POLICY_URL } from '@/constants/apiConstants';
-import { NAVIGATION } from '@/constants';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
 import { validateReceipt } from '@/actions/SubscriptionAction';
 import { CommonActions } from '@react-navigation/native';
 import { updateUserType } from '@/actions/UserActions';
+import { SKUS } from '@/constants/subscriptionConstant';
+import { PRIVACY_POLICY_URL } from '@/constants/apiConstants';
+import { NAVIGATION } from '@/constants';
+
 export default function UpgradeMembership({ navigation }) {
   const dispatch = useDispatch();
   const user = useSelector(getUser);
   const [loading, setLoading] = useState(false);
+  const [stopPurchase, setStopPurchase] = useState(false);
+  const [purchasedStatus, setPurchasedStatus] = useState(false);
+  const [purchasedMessage, setPurchasedMessage] = useState(null);
+
   let purchaseUpdateSubscription;
   let purchaseErrorSubscription;
 
   useEffect(() => {
     initIAP();
-    // purchaseUpdateSubscription = purchaseUpdatedListener(async purchase => {
-    //   const receipt = purchase.transactionReceipt;
+    checkForSubscriptionUpdates();
+    purchaseUpdateSubscription = purchaseUpdatedListener(async (purchase) => {
+      const receipt = purchase.transactionReceipt;
+      if (receipt) {
+        try {
+          verifyReceipt(receipt).then(async () => {
+            await finishTransaction({
+              purchase: purchase,
+              isConsumable: false,
+            });
+          });
+        } catch (error) {
+          console.log('Error verifying receipt:', error);
+        }
+      }
+    });
 
-    //   if (receipt) {
-    //     try {
-    //       verifyReceipt(receipt).then(async () => {
-    //         await finishTransaction({
-    //           purchase: purchase,
-    //           isConsumable: false,
-    //         });
-    //       });
-    //     } catch (error) {
-    //       console.log('EROROROROR', error);
-    //     }
-    //   }
-    // });
-    // return () => {
-    //   clearIAPListeners();
-    // };
+    return () => {
+      setStopPurchase(false);
+      clearIAPListeners();
+    };
   }, []);
+
+  const initIAP = async () => {
+    try {
+      await initConnection();
+    } catch (error) {
+      console.log('Error initializing connection:', error);
+    }
+  };
+
+  const checkForSubscriptionUpdates = async () => {
+    try {
+      setLoading(true);
+      const availablePurchases = await getAvailablePurchases();
+      if (availablePurchases?.length > 0) {
+        availablePurchases.sort((a, b) => parseInt(b.transactionDate) - parseInt(a.transactionDate));
+        const latestPurchase = availablePurchases[0];
+        if (latestPurchase?.transactionReceipt) {
+          await verifyReceipt(latestPurchase.transactionReceipt);
+        }
+      } else {
+        setLoading(false);
+      }
+    } catch (error) {
+      setLoading(false);
+      console.log('Error during subscription update check:', error);
+    }
+  };
 
   const clearIAPListeners = async () => {
     if (purchaseUpdateSubscription) {
@@ -88,94 +106,40 @@ export default function UpgradeMembership({ navigation }) {
     }
     await endConnection();
   };
-  const initIAP = async () => {
-    try {
-      await initConnection();
-    } catch (error) {}
-  };
 
-  const buySubscription = async userProductSku => {
+  const buySubscription = async (userProductSku) => {
+    setLoading(true);
     if (Platform.OS === 'ios') {
-      setLoading(true);
-      await clearTransactionIOS()
-        .catch(error => {
-          setLoading(false);
-          console.log({ error });
-        })
-        .then(async () => {
-          await handlePurchase(userProductSku);
-        });
+      try {
+        await clearTransactionIOS();
+      } catch (error) {
+        setLoading(false);
+        console.log('Error clearing iOS transactions:', error);
+      }
     } else {
-      await flushFailedPurchasesCachedAsPendingAndroid()
-        .catch(error => {
-          console.log({ error });
-        })
-        .then(async () => {
-          await handlePurchase(userProductSku);
-        });
+      try {
+        await flushFailedPurchasesCachedAsPendingAndroid();
+      } catch (error) {
+        console.log('Error flushing failed purchases in Android:', error);
+      }
     }
+    handlePurchase(userProductSku);
   };
-  const handlePurchase = async userProductSku => {
-    if (Platform.OS == 'android') {
-      try {
-        const subscriptions = await getSubscriptions({ skus: SKUS.ANDROID });
-        for (const product of subscriptions) {
-          if (product.productId === userProductSku) {
-            const offerToken = product?.subscriptionOfferDetails[0]?.offerToken;
-            await requestSubscription({
-              sku: userProductSku,
-              ...(offerToken && {
-                subscriptionOffers: [{ sku: userProductSku, offerToken }],
-              }),
-            });
-          }
-        }
-      } catch (error) {
-        console.log('ererere', error);
-      } finally {
-        setLoading(false); // Hide loader regardless of success or failure
-      }
-    } else {
-      try {
-        const subscriptions = await getSubscriptions({ skus: SKUS.IOS })
-        let productFound = false;
-        for (const product of subscriptions) {
-          if (product.productId === userProductSku) {
-            await requestSubscription({ sku: product.productId });
-            productFound = true;
-            break; // Stop checking for more products after finding a match
-          }
-        }
-        if (!productFound) {
-          setLoading(false);
-          console.log('Desired product not found');
-        }
-        else{
-          try {
-            const availablePurchases = await getAvailablePurchases();
-            if (availablePurchases?.length > 0) {
-              availablePurchases.sort(
-                (a, b) => parseInt(b.transactionDate) - parseInt(a.transactionDate)
-              );
-              const latestPurchase = availablePurchases[0];
-              if (latestPurchase?.transactionReceipt) {
-                await verifyReceipt(latestPurchase.transactionReceipt);
-              }
-            } else {
-              var receipt = '';
-              await verifyReceipt(receipt);
-            }
-          } catch (error) {
-            setLoading(false);
-            console.log('Error during subscription update check:', error);
-          }
 
-        }
-      } catch (error) {
-        console.log('ererere', error);
-      } finally {
-        setLoading(false); // Hide loader regardless of success or failure
+  const handlePurchase = async (userProductSku) => {
+    try {
+      const subscriptions = await getSubscriptions({ skus: Platform.OS === 'android' ? SKUS.ANDROID : SKUS.IOS });
+      const product = subscriptions.find((product) => product.productId === userProductSku);
+      if (product) {
+        await requestSubscription({ sku: userProductSku });
+      } else {
+        setLoading(false);
+        console.log('Desired product not found');
       }
+    } catch (error) {
+      console.log('Error during subscription request:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -184,32 +148,27 @@ export default function UpgradeMembership({ navigation }) {
       receipt: receipt,
       loggedInUserId: user?.id,
     };
-    dispatch(validateReceipt(data, navigation, NAVIGATION.upgradeMembership));
+
+    try {
+      const res = await dispatch(validateReceipt(data, navigation, NAVIGATION.upgradeMembership));
+      console.log('Response:', res);
+      setLoading(false);
+      if (res.message === "Can not purchase from same Apple ID. Try different one or purchase through Stripe.") {
+        setStopPurchase(true);
+        setPurchasedStatus(true);
+        setPurchasedMessage(res.message);
+        showAlert(res.message);
+      }
+    } catch (error) {
+      setLoading(false);
+      console.log('Error during receipt verification:', error);
+    }
   }
 
-  // const restorePurchases = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const purchases = await getAvailablePurchases();
-  //     console.log("purchasessss",purchases);
-  //     let restored = false;
-  //     for (const purchase of purchases) {
-  //       await requestSubscription({ sku: purchase[0].productId });
-  //       restored = true;
-  //       break;
-  //       // Stop checking for more purchases after restoring one
-  //     }
-  //     if (!restored) {
-  //     }
-  //     else{
-  //       navigation.reset({ index: 0, routes: [{ name: NAVIGATION.home }] })
-  //     }
-  //   } catch (error) {
-  //     console.log("ERRROORR",error);
-  //   } finally {
-  //     setLoading(false); // Hide loader regardless of success or failure
-  //   }
-  // }
+  const showAlert = (message) => {
+    Alert.alert('Purchase Info', message, [{ text: 'OK', onPress: () => console.log('') }], { cancelable: false });
+  };
+
   function processPurchase(purchase) {
     const { productId, transactionId, transactionDate } = purchase;
     const Data = {
@@ -218,10 +177,10 @@ export default function UpgradeMembership({ navigation }) {
     };
     dispatch(updateUserType(Data));
     setTimeout(() => {
-      // navigationRef.navigate(NAVIGATION.home, { reset: true });
       resetStackToScreen(NAVIGATION.home);
     }, 1000);
   }
+
   async function restorePurchases() {
     try {
       setLoading(true);
@@ -244,9 +203,9 @@ export default function UpgradeMembership({ navigation }) {
       }
     } catch (error) {
       setLoading(false);
+      console.log('Error during restore purchases:', error);
     }
   }
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -327,11 +286,13 @@ export default function UpgradeMembership({ navigation }) {
           <View style={styles.btnContainer}>
             <Button
               title={strings.profile.monthlyPlan}
-              onPress={() => buySubscription(SKUS.ONE_MONTH)}
+              onPress={() =>stopPurchase?showAlert(purchasedMessage): buySubscription(SKUS.ONE_MONTH)}
               style={styles.monthlyPlanButton}
             />
             <Button
-              onPress={() => buySubscription(SKUS.YEAR)}
+              onPress={() => 
+                stopPurchase?showAlert(purchasedMessage):
+                buySubscription(SKUS.YEAR)}
               title={strings.profile.yearlyPlan}
               style={styles.yearlyPlanButton}
             />
@@ -372,6 +333,7 @@ export default function UpgradeMembership({ navigation }) {
             <Text style={styles.linkColor}>{strings.login.privacyPolicy}</Text>
           </Text>
         </View>
+      
       </ScrollView>
     </SafeAreaView>
   );
@@ -491,24 +453,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const a = {
-  autoRenewingAndroid: true,
-  dataAndroid:
-    '{"orderId":"GPA.3344-3767-1582-34131","packageName":"com.airlystudio.jatievip","productId":"com.jatievip.air.permonth","purchaseTime":1690282253784,"purchaseState":0,"purchaseToken":"lpbblknmmabejelmecnfbaah.AO-J1OzQH5FG5oqXzBykEEmqXO8J-fKweRxD-hVQQYXZxwzkKFRkq_uPhfxGYhECq4qnXysn0dgS2uf9hzNt9NPX1Jcp3TxbfOVTab72CkYIJMju1kiy0zo","quantity":1,"autoRenewing":true,"acknowledged":false}',
-  developerPayloadAndroid: '',
-  isAcknowledgedAndroid: false,
-  obfuscatedAccountIdAndroid: '',
-  obfuscatedProfileIdAndroid: '',
-  packageNameAndroid: 'com.airlystudio.jatievip',
-  productId: 'com.jatievip.air.permonth',
-  productIds: ['com.jatievip.air.permonth'],
-  purchaseStateAndroid: 1,
-  purchaseToken:
-    'lpbblknmmabejelmecnfbaah.AO-J1OzQH5FG5oqXzBykEEmqXO8J-fKweRxD-hVQQYXZxwzkKFRkq_uPhfxGYhECq4qnXysn0dgS2uf9hzNt9NPX1Jcp3TxbfOVTab72CkYIJMju1kiy0zo',
-  signatureAndroid:
-    'kPkgvGzh8nSGUcVapG2IC+5vEmrHNJG7qftPzj69h71ZkfzWp5lR9wwXcYSYmNcNhgy5wwtH0hoC1u0m6CFx+RRZxB5zuXJjV+SCZRLpN380WCq9utfbQOT2mX/MwodTGK7x/el5YeksCaim4LKxklnznwB88F83K0kRYzMgpAI1JP4SnUKlCZoIcSTFQQgowt4mEYDRK8LIgOfaTKE8PgOsQRL80wq9U4fdnWBbE+sG9kigSYPYHrOZc5rCkrsvbxgJI6WL9vyQHvzoTo8FiS5QqDgO3233QC9emNr7rumA8HLCB/IuBhbpkenvSeK9+CjYvy1zn+GDBsL8X6wb1w==',
-  transactionDate: 1690282253784,
-  transactionId: 'GPA.3344-3767-1582-34131',
-  transactionReceipt:
-    '{"orderId":"GPA.3344-3767-1582-34131","packageName":"com.airlystudio.jatievip","productId":"com.jatievip.air.permonth","purchaseTime":1690282253784,"purchaseState":0,"purchaseToken":"lpbblknmmabejelmecnfbaah.AO-J1OzQH5FG5oqXzBykEEmqXO8J-fKweRxD-hVQQYXZxwzkKFRkq_uPhfxGYhECq4qnXysn0dgS2uf9hzNt9NPX1Jcp3TxbfOVTab72CkYIJMju1kiy0zo","quantity":1,"autoRenewing":true,"acknowledged":false}',
-};
+
