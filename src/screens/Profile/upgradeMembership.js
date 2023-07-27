@@ -45,7 +45,7 @@ export default function UpgradeMembership({ navigation }) {
 
   useEffect(() => {
     initIAP();
-    checkForSubscriptionUpdates();
+    // checkForSubscriptionUpdates();
     purchaseUpdateSubscription = purchaseUpdatedListener(async (purchase) => {
       const receipt = purchase.transactionReceipt;
       if (receipt) {
