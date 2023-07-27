@@ -57,18 +57,18 @@ export const validateReceipt = (data,navigation,ScreenName) => async dispatch =>
                 "isVIP": false,
                 "userId": data.loggedInUserId
             }
-            dispatch(updateUserType(Data,navigation,ScreenName))
+         dispatch(updateUserType(Data,navigation,ScreenName))
         }
       return user
     } catch (error) {
-        // if(error?.message==RECEIPT_STATUS.INVALID_RECEIPT){
-        //     const Data = {
-        //         "isVIP": false,
-        //         "userId": data.loggedInUserId
-        //     }
-        // dispatch(updateUserType(Data,navigation,ScreenName))
+        if(error?.message==RECEIPT_STATUS.INVALID_RECEIPT){
+            const Data = {
+                "isVIP": false,
+                "userId": data.loggedInUserId
+            }
+           dispatch(updateUserType(Data,navigation,ScreenName))
 
-        // }
+        }
         dispatch(validateReceiptError(error));
        return error
         

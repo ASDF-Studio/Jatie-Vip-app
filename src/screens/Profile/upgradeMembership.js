@@ -166,7 +166,7 @@ export default function UpgradeMembership({ navigation }) {
   }
 
   const showAlert = (message) => {
-    Alert.alert('Purchase Info', message, [{ text: 'OK', onPress: () => console.log('') }], { cancelable: false });
+    Alert.alert('Purchase Info', message, [{ text: 'OK' }], { cancelable: false });
   };
 
   function processPurchase(purchase) {
@@ -333,6 +333,7 @@ export default function UpgradeMembership({ navigation }) {
           </View>
           <TouchableOpacity
             onPress={() => {
+              stopPurchase?showAlert(purchasedMessage):
               restorePurchases();
             }}
           >

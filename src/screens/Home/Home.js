@@ -140,58 +140,66 @@ export function Home({ navigation }) {
   const [isScrolling, setIsScrolling] = useState(false);
   const isFocused = useIsFocused();
   const [isRefreshing, setIsRefreshing] = useState(false);
-  // useEffect(() => {
-  //   initIAP().then(() => {
-  //     checkForSubscriptionUpdates();
-  //   });
-
-  //   return () => {
-  //     clearIAPListeners();
-  //   };
-  // }, []);
-  // const initIAP = async () => {
-  //   try {
-  //     await initConnection();
-  //   } catch (error) {}
-  // };
-
-  // const checkForSubscriptionUpdates = async () => {
-  //   try {
-  //     setVipLoader(true)
-  //     const availablePurchases = await getAvailablePurchases();
-  //     if (availablePurchases?.length > 0) {
-  //       availablePurchases.sort(
-  //         (a, b) => parseInt(b.transactionDate) - parseInt(a.transactionDate)
-  //       );
-  //       const latestPurchase = availablePurchases[0];
-  //       // console.log("LATESTSTSTS",latestPurchase);
-
-  //       if (latestPurchase?.transactionReceipt) {
-  //          await verifyReceipt(latestPurchase.transactionReceipt);
-  //       }
-  //     } else {
-  //        var receipt = '';
-  //        await verifyReceipt(receipt);
-  //     }
-  //     setVipLoader(false)
-  //   } catch (error) {
-  //     setVipLoader(false)
-  //     console.log('Error during subscription update check:', error);
-  //   }
-  // };
-
-  // const clearIAPListeners = async () => {
-  //   await endConnection();
-  // };
-  // async function verifyReceipt(receipt) {
-  //   const data = {
-  //     receipt: receipt,
-  //     loggedInUserId: user?.id,
-  //   };
-  //   dispatch(validateReceipt(data, navigation, NAVIGATION.home));
-  // }
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     dispatch(getUserType(user?.id))
+  //   //   return () => {
+  //   //  };
+  //   }, [])
+  // );
   useEffect(() => {
-    dispatch(getUserType(user?.id))
+    initIAP().then(() => {
+      checkForSubscriptionUpdates();
+    });
+
+    return () => {
+      clearIAPListeners();
+    };
+  }, []);
+  const initIAP = async () => {
+    try {
+      await initConnection();
+    } catch (error) {}
+  };
+
+  const checkForSubscriptionUpdates = async () => {
+    try {
+      setVipLoader(true)
+      const availablePurchases = await getAvailablePurchases();
+      if (availablePurchases?.length > 0) {
+        availablePurchases.sort(
+          (a, b) => parseInt(b.transactionDate) - parseInt(a.transactionDate)
+        );
+        const latestPurchase = availablePurchases[0];
+        // console.log("LATESTSTSTS",latestPurchase);
+
+        if (latestPurchase?.transactionReceipt) {
+           await verifyReceipt(latestPurchase.transactionReceipt);
+        }
+      } else {
+         var receipt = '';
+         await verifyReceipt(receipt);
+      }
+      setVipLoader(false)
+    } catch (error) {
+      setVipLoader(false)
+      console.log('Error during subscription update check:', error);
+    }
+  };
+
+  const clearIAPListeners = async () => {
+    await endConnection();
+  };
+  async function verifyReceipt(receipt) {
+    const data = {
+      receipt: receipt,
+      loggedInUserId: user?.id,
+    };
+    dispatch(validateReceipt(data, navigation, NAVIGATION.home));
+  }
+ 
+  useEffect(() => {
+
     dispatch(getSchedulePost());
     dispatch(
       getAllPost(
