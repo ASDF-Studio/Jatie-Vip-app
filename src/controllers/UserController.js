@@ -1009,4 +1009,24 @@ export class UserController {
         });
     });
   }
+
+
+
+  static async getUserTypeDataRequest(userId) {
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.GET_USER_TYPE;
+      var DATA = JSON.stringify({
+        userId:userId,
+      });
+      HttpClient.post(endpoint, DATA)
+        .then(response => {
+          resolve(response);
+          console.log('response of get user type', JSON.stringify(response));
+        })
+        .catch(error => {
+          reject(new Error(error.message));
+          console.log('error of get user type', error);
+        });
+    });
+  }
 }

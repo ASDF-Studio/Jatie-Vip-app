@@ -66,6 +66,7 @@ import PostOptions from './PostOptions';
 import { POST_TYPE } from '@/constants/enums';
 import {
   followers,
+  getUserType,
   updateFCMToken,
   updateUserType,
 } from '@/actions/UserActions';
@@ -190,6 +191,7 @@ export function Home({ navigation }) {
   //   dispatch(validateReceipt(data, navigation, NAVIGATION.home));
   // }
   useEffect(() => {
+    dispatch(getUserType(user?.id))
     dispatch(getSchedulePost());
     dispatch(
       getAllPost(

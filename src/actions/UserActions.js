@@ -196,6 +196,15 @@ export const TYPES = {
   UPDATE_USER_TYPE_REQUEST: 'UPDATE_USER_TYPE_REQUEST',
   UPDATE_USER_TYPE_SUCCESS: 'UPDATE_USER_TYPE_SUCCESS',
   UPDATE_USER_TYPE_ERROR: 'UPDATE_USER_TYPE_ERROR',
+
+
+
+
+    //Get user type subscription
+    GET_USER_TYPE: 'GET_USER_TYPE',
+    GET_USER_TYPE_REQUEST: 'GET_USER_TYPE_REQUEST',
+    GET_USER_TYPE_SUCCESS: 'GET_USER_TYPE_SUCCESS',
+    GET_USER_TYPE_ERROR: 'GET_USER_TYPE_ERROR',
 };
 const updateUserTypeRequest = () => ({
   type: TYPES.UPDATE_USER_TYPE_REQUEST,
@@ -534,6 +543,34 @@ const unblockUserByIdError = error => ({
   type: TYPES.UNBLOCK_USER_BY_ID_ERROR,
   payload: { error },
 });
+
+
+export const getUserTypeSuccess = user => ({
+  type: TYPES.GET_USER_TYPE_SUCCESS,
+  payload: { user },
+});
+
+const getUserTypeRequest = () => ({
+  type: TYPES.GET_USER_TYPE_REQUEST,
+  payload: null,
+});
+
+const getUserTypeError = error => ({
+  type: TYPES.GET_USER_TYPE_ERROR,
+  payload:error ,
+});
+
+
+
+
+
+
+
+
+
+
+
+
 
 //Get All activity by user Id
 export const getAllActivitySuccess = user => ({
@@ -1475,13 +1512,29 @@ export const updateUserType = (data,navigation,ScreenName) => async dispatch => 
     if(ScreenName!==NAVIGATION.home){
       resetStackToScreen(NAVIGATION.home)
     }
-    
-        // navigationRef.navigate(NAVIGATION.home, { reset: true });
-        
+    // navigationRef.navigate(NAVIGATION.home, { reset: true });    
     // dispatch(updateUserTypeSuccess(user));
   } catch (error) {
     dispatch(updateUserTypeError(error));
   }
 
  
+};
+
+export const getUserType = id => async dispatch => {
+  dispatch(getUserTypeRequest());
+  try {
+    const user = await UserController.getUserTypeDataRequest(id);
+    
+    // dispatch(getUserTypeSuccess(user));
+    if (data.isVIP) {
+      let selectedValue = 'VIP';
+      dispatch(ChooseUser(selectedValue));
+    } else {
+      let selectedValue = 'Free';
+      dispatch(ChooseUser(selectedValue));
+    }
+  } catch (error) {
+    dispatch(getUserTypeError(error));
+  }
 };
