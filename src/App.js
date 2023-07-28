@@ -11,6 +11,8 @@ import { PersistGate } from 'redux-persist/integration/react';
 import notifee from '@notifee/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
+import { navigationRef } from './navigation/RootNavigation';
+import { NAVIGATION } from './constants';
 
 //import { requestUserPermission } from 'utils/PushNotifications';
 enableScreens();
@@ -19,9 +21,10 @@ Sentry.init({
 });
 export function App() {
   useEffect(() => {
-    requestUserPermission()
-    getFCMToken1()
-  }, [])
+    requestUserPermission();
+    getFCMToken1();
+  }, []);
+
   async function requestUserPermission() {
     const authStatus = await messaging().requestPermission();
     const enabled =
@@ -29,26 +32,28 @@ export function App() {
       authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
     if (enabled) {
-      console.log("Authorization status:", authStatus);
+      console.log('Authorization status:', authStatus);
     }
   }
   async function getFCMToken1() {
-    let fcmtoken = await AsyncStorage.getItem("fcmtoken");
-    // console.log("FCM__TOsssEN", fcmtoken);
+    let fcmtoken = await AsyncStorage.getItem('fcmtoken');
+    console.log('FCM__TOsssEN', fcmtoken);
     if (!fcmtoken) {
       try {
         const token = await messaging().getToken();
         // console.log("FCM__TOEN", token);
         if (token) {
-          await AsyncStorage.setItem("fcmtoken", token);
+          await AsyncStorage.setItem('fcmtoken', token);
         }
-      } catch (error) {
-
-      }
+      } catch (error) {}
     }
   }
   const onMessageReceived = React.useCallback(async message => {
-    // console.log('Notificatiohn=-=-=-terterterterter', JSON.stringify(message));
+    console.log(
+      'Notificatiohn=-=-=-terterterterter ------------',
+      JSON.stringify(message)
+    );
+
     await notifee.displayNotification({
       title: message?.notification?.title,
       body: message?.notification?.body,
@@ -71,10 +76,33 @@ export function App() {
       },
     });
   }, []);
+
   useEffect(() => {
-    messaging().onMessage(onMessageReceived);
+    const unsubscribe = messaging().onMessage(onMessageReceived);
+
+    messaging()
+      .getInitialNotification()
+      .then(val => {
+        console.log('initialNotif called ============  ', val);
+      });
+
     messaging().setBackgroundMessageHandler(onMessageReceived);
-  }, [])
+
+    messaging().onNotificationOpenedApp(remoteMessage => {
+      const { data } = remoteMessage;
+      const { postId } = data || {};
+
+      if (postId) {
+        navigationRef.navigate(NAVIGATION.singlePost, {
+          postId,
+        });
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
   return (
     <Sentry.ErrorBoundary>
       <Provider store={store}>

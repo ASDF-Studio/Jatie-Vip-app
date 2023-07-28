@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, Linking, ScrollView, TouchableOpacity, Platform, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  Linking,
+  ScrollView,
+  TouchableOpacity,
+  Platform,
+  Alert,
+} from 'react-native';
 import { TextStyles, theme } from '@/theme';
 import { Logo } from '@/assets';
 import { ms, vs } from 'react-native-size-matters';
@@ -11,7 +21,6 @@ import { strings } from '@/localization';
 import { navigationRef, resetStackToScreen } from '@/navigation/RootNavigation';
 import { decode } from 'react-native-base64';
 import RNIap, {
-  validateReceiptAndroid,
   getAvailablePurchases,
   getSubscriptions,
   initConnection,
@@ -20,7 +29,6 @@ import RNIap, {
   flushFailedPurchasesCachedAsPendingAndroid,
   clearTransactionIOS,
   finishTransaction,
-  finishTransactionIOS,
   purchaseUpdatedListener,
 } from 'react-native-iap';
 import { useDispatch, useSelector } from 'react-redux';
@@ -44,18 +52,24 @@ export default function UpgradeMembership({ navigation }) {
   let purchaseErrorSubscription;
 
   useEffect(() => {
-    initIAP();
-    // checkForSubscriptionUpdates();
-    purchaseUpdateSubscription = purchaseUpdatedListener(async (purchase) => {
+    initIAP().then(() => {
+      checkForSubscriptionUpdates();
+    });
+
+    purchaseUpdateSubscription = purchaseUpdatedListener(async purchase => {
       const receipt = purchase.transactionReceipt;
       if (receipt) {
         try {
-          verifyReceipt(receipt).then(async () => {
-            await finishTransaction({
-              purchase: purchase,
-              isConsumable: false,
+          verifyReceipt(receipt)
+            .then(async () => {
+              await finishTransaction({
+                purchase: purchase,
+                isConsumable: false,
+              });
+            })
+            .catch(err => {
+              console.log(err);
             });
-          });
         } catch (error) {
           console.log('Error verifying receipt:', error);
         }
@@ -81,7 +95,9 @@ export default function UpgradeMembership({ navigation }) {
       setLoading(true);
       const availablePurchases = await getAvailablePurchases();
       if (availablePurchases?.length > 0) {
-        availablePurchases.sort((a, b) => parseInt(b.transactionDate) - parseInt(a.transactionDate));
+        availablePurchases.sort(
+          (a, b) => parseInt(b.transactionDate) - parseInt(a.transactionDate)
+        );
         const latestPurchase = availablePurchases[0];
         if (latestPurchase?.transactionReceipt) {
           await verifyReceipt(latestPurchase.transactionReceipt);
@@ -107,7 +123,7 @@ export default function UpgradeMembership({ navigation }) {
     await endConnection();
   };
 
-  const buySubscription = async (userProductSku) => {
+  const buySubscription = async userProductSku => {
     setLoading(true);
     if (Platform.OS === 'ios') {
       try {
@@ -126,12 +142,27 @@ export default function UpgradeMembership({ navigation }) {
     handlePurchase(userProductSku);
   };
 
-  const handlePurchase = async (userProductSku) => {
+  const handlePurchase = async userProductSku => {
     try {
-      const subscriptions = await getSubscriptions({ skus: Platform.OS === 'android' ? SKUS.ANDROID : SKUS.IOS });
-      const product = subscriptions.find((product) => product.productId === userProductSku);
+      const subscriptions = await getSubscriptions({
+        skus: Platform.OS === 'android' ? SKUS.ANDROID : SKUS.IOS,
+      });
+      const product = subscriptions.find(
+        product => product.productId === userProductSku
+      );
+
       if (product) {
-        await requestSubscription({ sku: userProductSku });
+        await requestSubscription({
+          sku: userProductSku,
+          ...(product?.subscriptionOfferDetails && {
+            subscriptionOffers: [
+              {
+                sku: product?.productId,
+                offerToken: product?.subscriptionOfferDetails[0]?.offerToken,
+              },
+            ],
+          }),
+        });
       } else {
         setLoading(false);
         console.log('Desired product not found');
@@ -150,10 +181,17 @@ export default function UpgradeMembership({ navigation }) {
     };
 
     try {
-      const res = await dispatch(validateReceipt(data, navigation, NAVIGATION.upgradeMembership));
+      const res = await validateReceipt(
+        data,
+        navigation,
+        NAVIGATION.upgradeMembership
+      )(dispatch);
       console.log('Response:', res);
       setLoading(false);
-      if (res.message === "Can not purchase from same Apple ID. Try different one or purchase through Stripe.") {
+      if (
+        res.message ===
+        'Can not purchase from same Apple ID. Try different one or purchase through Stripe.'
+      ) {
         setStopPurchase(true);
         setPurchasedStatus(true);
         setPurchasedMessage(res.message);
@@ -165,8 +203,13 @@ export default function UpgradeMembership({ navigation }) {
     }
   }
 
-  const showAlert = (message) => {
-    Alert.alert('Purchase Info', message, [{ text: 'OK' }], { cancelable: false });
+  const showAlert = message => {
+    Alert.alert(
+      'Purchase Info',
+      message,
+      [{ text: 'OK', onPress: () => console.log('') }],
+      { cancelable: false }
+    );
   };
 
   function processPurchase(purchase) {
@@ -181,14 +224,14 @@ export default function UpgradeMembership({ navigation }) {
     // }, 1000);
   }
 
-
-
-  async function restorePurchases(){
+  async function restorePurchases() {
     try {
       setLoading(true);
       const availablePurchases = await getAvailablePurchases();
       if (availablePurchases?.length > 0) {
-        availablePurchases.sort((a, b) => parseInt(b.transactionDate) - parseInt(a.transactionDate));
+        availablePurchases.sort(
+          (a, b) => parseInt(b.transactionDate) - parseInt(a.transactionDate)
+        );
         const latestPurchase = availablePurchases[0];
         if (latestPurchase?.transactionReceipt) {
           await verifyReceipt(latestPurchase.transactionReceipt);
@@ -200,7 +243,6 @@ export default function UpgradeMembership({ navigation }) {
       setLoading(false);
       console.log('Error during subscription update check:', error);
     }
-
   }
   // async function restorePurchases() {
   //   try {
@@ -307,13 +349,19 @@ export default function UpgradeMembership({ navigation }) {
           <View style={styles.btnContainer}>
             <Button
               title={strings.profile.monthlyPlan}
-              onPress={() =>stopPurchase?showAlert(purchasedMessage): buySubscription(SKUS.ONE_MONTH)}
+              onPress={() =>
+                stopPurchase
+                  ? showAlert(purchasedMessage)
+                  : buySubscription(SKUS.ONE_MONTH)
+              }
               style={styles.monthlyPlanButton}
             />
             <Button
-              onPress={() => 
-                stopPurchase?showAlert(purchasedMessage):
-                buySubscription(SKUS.YEAR)}
+              onPress={() =>
+                stopPurchase
+                  ? showAlert(purchasedMessage)
+                  : buySubscription(SKUS.YEAR)
+              }
               title={strings.profile.yearlyPlan}
               style={styles.yearlyPlanButton}
             />
@@ -333,8 +381,7 @@ export default function UpgradeMembership({ navigation }) {
           </View>
           <TouchableOpacity
             onPress={() => {
-              stopPurchase?showAlert(purchasedMessage):
-              restorePurchases();
+              stopPurchase ? showAlert(purchasedMessage) : restorePurchases();
             }}
           >
             <Text style={styles.restorePurchases}>
@@ -355,7 +402,6 @@ export default function UpgradeMembership({ navigation }) {
             <Text style={styles.linkColor}>{strings.login.privacyPolicy}</Text>
           </Text>
         </View>
-      
       </ScrollView>
     </SafeAreaView>
   );
@@ -474,5 +520,3 @@ const styles = StyleSheet.create({
     marginBottom: ms(5),
   },
 });
-
-

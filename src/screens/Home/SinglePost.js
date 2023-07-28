@@ -67,6 +67,7 @@ import { isEmpty } from 'lodash';
 
 export default function SinglePost({ navigation, route }) {
   const { postId } = route.params || {};
+
   const userType = useSelector(state => state.userType);
   const dispatch = useDispatch();
   const user = useSelector(getUser);
