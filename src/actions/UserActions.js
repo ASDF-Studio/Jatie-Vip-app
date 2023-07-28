@@ -1530,7 +1530,7 @@ export const getUserType = (id,userStatus) => async dispatch => {
       let selectedValue = 'VIP';
       dispatch(ChooseUser(selectedValue));
     }
-    else if (!user.data.isVIP && userStatus=="VIP"){
+    else if (user.data.isVIP==false && userStatus=="VIP"){
       let selectedValue = 'Free';
       dispatch(ChooseUser(selectedValue));
     }  
