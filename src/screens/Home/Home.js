@@ -201,7 +201,6 @@ export function Home({ navigation }) {
   // }
  
   useEffect(() => {
-
     dispatch(getSchedulePost());
     dispatch(
       getAllPost(

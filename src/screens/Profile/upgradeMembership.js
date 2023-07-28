@@ -48,7 +48,7 @@ export default function UpgradeMembership({ navigation }) {
   const [purchasedStatus, setPurchasedStatus] = useState(false);
   const [purchasedMessage, setPurchasedMessage] = useState(null);
   const [isMakingPurchase, setIsMakingPurchase] = useState(false);
-  const [productSKU, setProductSKU] = useState(null);
+  const [productSKU, setProductSKU] = useState(SKUS.ONE_MONTH);
   const [subsExpired, setSubsExpired] = useState(false);
   let purchaseUpdateSubscription;
   let purchaseErrorSubscription;
@@ -146,7 +146,7 @@ export default function UpgradeMembership({ navigation }) {
         // console.log('Error flushing failed purchases in Android:', error);
       }
     }
-   handlePurchase(userProductSku);
+    handlePurchase(userProductSku);
   };
 
   const handlePurchase = async userProductSku => {
@@ -186,7 +186,7 @@ export default function UpgradeMembership({ navigation }) {
       const res = await dispatch(validateReceipt(data, navigation, NAVIGATION.upgradeMembership));
       setLoading(false);
       if(res.key==1){
-      buySubscription(productSKU)
+       buySubscription(productSKU)
       }
      else if (res.key == 2) {
         setStopPurchase(true);
