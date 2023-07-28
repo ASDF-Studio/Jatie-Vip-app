@@ -62,7 +62,7 @@ export default function Active({ navigation, userType }) {
   const isFocused = useIsFocused();
 
   const customReq = () => {
-    console.log('active is calling');
+
     const data = {
       userId: user?.id,
     };

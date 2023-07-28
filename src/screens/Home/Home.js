@@ -246,7 +246,7 @@ export function Home({ navigation }) {
 
   const saveFCMToken = async () => {
     let fcmtoken = await AsyncStorage.getItem('fcmtoken');
-    console.log('FCM__TOsssEN', fcmtoken);
+    // console.log('FCM__TOsssEN', fcmtoken);
     const DATA = {
       loggedInUserId: user?.id,
       fcm_token: fcmtoken,

@@ -137,7 +137,6 @@ export default function AdminPost({ route, navigation }) {
             });
           })
           .catch(e => {
-            console.log('Error: ' + e);
           });
   };
 
@@ -160,7 +159,6 @@ export default function AdminPost({ route, navigation }) {
               // setmimeType(image.mime);
             })
             .catch(e => {
-              console.log('Error: ' + e);
             })
             .finally(() => {
               setImageArray([...imageArray]);
@@ -192,7 +190,6 @@ export default function AdminPost({ route, navigation }) {
                 .catch(err => console.log({ err }));
             })
             .catch(e => {
-              console.log('Error: ' + e);
             })
             .finally(() => {
               setImageArray([...imageArray]);

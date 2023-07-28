@@ -30,7 +30,7 @@ export const useBackgroundFetch = ({
 
   useEffect(() => {
     if (!isFocused) {
-      console.log('clearing background fetch');
+      // console.log('clearing background fetch');
       clearInterval(interval);
 
       return;

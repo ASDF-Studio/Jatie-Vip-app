@@ -1451,7 +1451,7 @@ export const createExclusivePost = data => async dispatch => {
     // dispatch(getAllExclusivePost(dataa))
     navigationRef.navigate(NAVIGATION.exclusive);
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     dispatch(createExclusivePostError(error));
   }
 };
@@ -1460,7 +1460,7 @@ export const getAllExclusivePost = data => async dispatch => {
   dispatch(getAllExclusivePostRequest());
   try {
     const post = await ExclusivePostController.getAllExclusivePost(data);
-    console.log('exclusive posts data ', post);
+    // console.log('exclusive posts data ', post);
     dispatch(getAllExclusivePostSuccess(post));
   } catch (error) {
     dispatch(getAllExclusivePostError(error));
@@ -1534,19 +1534,19 @@ export const pinPost = async ({ postId }) => {
       type: 'success',
     });
   } catch (err) {
-    console.log(err);
+    // console.log(err);
   }
 };
 
 export const unPinPost = async ({ postId }) => {
   try {
     const res = await PostController.unPinPost({ postId });
-    console.log('========================', res);
+    // console.log('========================', res);
     customShowMessage({
       message: 'Post Unpinned Successfully',
       type: 'success',
     });
   } catch (err) {
-    console.log(err);
+    // console.log(err);
   }
 };

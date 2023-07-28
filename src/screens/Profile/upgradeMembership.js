@@ -48,6 +48,8 @@ export default function UpgradeMembership({ navigation }) {
   const [purchasedStatus, setPurchasedStatus] = useState(false);
   const [purchasedMessage, setPurchasedMessage] = useState(null);
   const [isMakingPurchase, setIsMakingPurchase] = useState(false);
+  const [productSKU, setProductSKU] = useState(null);
+  const [subsExpired, setSubsExpired] = useState(false);
   let purchaseUpdateSubscription;
   let purchaseErrorSubscription;
 
@@ -59,7 +61,7 @@ export default function UpgradeMembership({ navigation }) {
     try {
       await initConnection();
     } catch (error) {
-      console.log('Error initializing connection:', error);
+      // console.log('Error initializing connection:', error);
     }
   };
   const clearIAPListeners = async () => {
@@ -121,7 +123,7 @@ export default function UpgradeMembership({ navigation }) {
       }
     } catch (error) {
       setLoading(false);
-      console.log('Error during subscription update check:', error);
+      // console.log('Error during subscription update check:', error);
     }
   };
 
@@ -135,13 +137,13 @@ export default function UpgradeMembership({ navigation }) {
         await clearTransactionIOS();
       } catch (error) {
         setLoading(false);
-        console.log('Error clearing iOS transactions:', error);
+        // console.log('Error clearing iOS transactions:', error);
       }
     } else {
       try {
         await flushFailedPurchasesCachedAsPendingAndroid();
       } catch (error) {
-        console.log('Error flushing failed purchases in Android:', error);
+        // console.log('Error flushing failed purchases in Android:', error);
       }
     }
    handlePurchase(userProductSku);
@@ -166,10 +168,10 @@ export default function UpgradeMembership({ navigation }) {
         });
       } else {
         setLoading(false);
-        console.log('Desired product not found');
+        // console.log('Desired product not found');
       }
     } catch (error) {
-      console.log('Error during subscription request:', error);
+      // console.log('Error during subscription request:', error);
     } finally {
       setLoading(false);
     }
@@ -182,9 +184,11 @@ export default function UpgradeMembership({ navigation }) {
     };
     try {
       const res = await dispatch(validateReceipt(data, navigation, NAVIGATION.upgradeMembership));
-      // console.log('Response:', res);
       setLoading(false);
-      if (res.key == 2) {
+      if(res.key==1){
+      buySubscription(productSKU)
+      }
+     else if (res.key == 2) {
         setStopPurchase(true);
         setPurchasedStatus(true);
         setPurchasedMessage(res.message);
@@ -195,7 +199,6 @@ export default function UpgradeMembership({ navigation }) {
       }      
     } catch (error) {
       setLoading(false);
-      // console.log('Error during receipt verification:', error);
     }
   }
 
@@ -203,7 +206,7 @@ export default function UpgradeMembership({ navigation }) {
     Alert.alert(
       'Purchase Info',
       message,
-      [{ text: 'OK', onPress: () => console.log('') }],
+      [{ text: 'OK', }],
       { cancelable: false }
     );
   };
@@ -215,9 +218,6 @@ export default function UpgradeMembership({ navigation }) {
       userId: user?.id,
     };
     dispatch(updateUserType(Data));
-    // setTimeout(() => {
-    //   resetStackToScreen(NAVIGATION.home);
-    // }, 1000);
   }
 
   async function restorePurchases(){
@@ -240,31 +240,23 @@ export default function UpgradeMembership({ navigation }) {
       console.log('Error during subscription update check:', error);
     }
   }
-  // async function restorePurchases() {
-  //   try {
-  //     setLoading(true);
-  //     const purchases = await getAvailablePurchases();
-  //     if (purchases && purchases.length > 0) {
-  //       for (const purchase of purchases) {
-  //         if (purchase.transactionReceipt) {
-  //           setLoading(false);
-  //           processPurchase(purchase);
-  //           // Finish transaction (required for iOS)
-  //           if (Platform.OS === 'ios') {
-  //             await finishTransactionIOS(purchase.transactionId);
-  //           } else {
-  //             await finishTransaction(purchase);
-  //           }
-  //         }
-  //       }
-  //     } else {
-  //       setLoading(false);
-  //     }
-  //   } catch (error) {
-  //     setLoading(false);
-  //     console.log('Error during restore purchases:', error);
-  //   }
-  // }
+ 
+  const handleMonthlyPlanPress = () => {
+    setProductSKU(SKUS.ONE_MONTH);
+    if (stopPurchase) {
+      showAlert(purchasedMessage);
+    } else {
+      checkForSubscriptionUpdates(SKUS.ONE_MONTH);
+    }
+  };
+  const handleYearlyPlanPress = () => {
+    setProductSKU(SKUS.YEAR);
+    if (stopPurchase) {
+      showAlert(purchasedMessage);
+    } else {
+      checkForSubscriptionUpdates(SKUS.YEAR);
+    }
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -345,13 +337,18 @@ export default function UpgradeMembership({ navigation }) {
           <View style={styles.btnContainer}>
             <Button
               title={strings.profile.monthlyPlan}
-              onPress={() =>stopPurchase?showAlert(purchasedMessage): checkForSubscriptionUpdates(SKUS.ONE_MONTH)}
+              onPress={handleMonthlyPlanPress}
+              // onPress={() =>{
+              //   setProductSKU(SKUS.ONE_MONTH)
+              //   stopPurchase?showAlert(purchasedMessage): checkForSubscriptionUpdates(SKUS.ONE_MONTH)}}
               style={styles.monthlyPlanButton}
             />
             <Button
-              onPress={() => 
-                stopPurchase?showAlert(purchasedMessage):
-                checkForSubscriptionUpdates(SKUS.YEAR)}
+             onPress={handleYearlyPlanPress}
+              // onPress={() => 
+              //  { setProductSKU(SKUS.ONE_MONTH)
+              //   stopPurchase?showAlert(purchasedMessage):
+              //   checkForSubscriptionUpdates(SKUS.YEAR)}}
               title={strings.profile.yearlyPlan}
               style={styles.yearlyPlanButton}
             />

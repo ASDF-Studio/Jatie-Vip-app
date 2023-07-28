@@ -167,10 +167,10 @@ export class UserController {
       HttpClient.post(endpoint, data)
         .then(response => {
           resolve(response);
-          console.log(
-            'response of every single user',
-            JSON.stringify(response)
-          );
+          // console.log(
+          //   'response of every single user',
+          //   JSON.stringify(response)
+          // );
         })
         .catch(error => {
           reject(error);
@@ -253,22 +253,22 @@ export class UserController {
     return new Promise(async (resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.UPDATE_POST;
       let data = new FormData();
-      console.log(
-        '=======================',
-        id,
-        userId,
-        postTitle,
-        postBody,
-        preImageArray,
-        imageArray,
-        isPinned,
-        vipOnly,
-        schedulePost,
-        scheduleDetails,
-        goingLIve,
-        ad,
-        '======================='
-      );
+      // console.log(
+      //   '=======================',
+      //   id,
+      //   userId,
+      //   postTitle,
+      //   postBody,
+      //   preImageArray,
+      //   imageArray,
+      //   isPinned,
+      //   vipOnly,
+      //   schedulePost,
+      //   scheduleDetails,
+      //   goingLIve,
+      //   ad,
+      //   '======================='
+      // );
 
       imageArray.forEach(item => {
         const fileName = item.video
@@ -322,7 +322,7 @@ export class UserController {
         data.append('expiryDate', expireDate);
       }
 
-      console.log('==============================  ', data);
+      // console.log('==============================  ', data);
       // return false
       const headers = {
         'Content-Type': 'multipart/form-data',
@@ -333,7 +333,7 @@ export class UserController {
           resolve(response);
         })
         .catch(error => {
-          console.log('api error ---------------------------', error);
+          // console.log('api error ---------------------------', error);
           reject(error);
         });
     });
@@ -477,7 +477,7 @@ export class UserController {
         })
         .catch(error => {
           reject(error);
-          console.log('error in create post', error);
+          // console.log('error in create post', error);
         });
     });
   }
@@ -623,11 +623,11 @@ export class UserController {
         searchWord: searchuservalue,
         loggedInUserId,
       });
-      console.log(data, ' ========');
+      // console.log(data, ' ========');
       HttpClient.post(endpoint, data)
         .then(response => {
           resolve(response);
-          console.log('response of search user users', response);
+          // console.log('response of search user users', response);
         })
         .catch(error => {
           reject(new Error(error.message));
@@ -653,7 +653,7 @@ export class UserController {
         })
         .catch(error => {
           reject(new Error(error.message));
-          console.log('error of all activity', error);
+          // console.log('error of all activity', error);
         });
     });
   }
@@ -693,7 +693,7 @@ export class UserController {
         })
         .catch(error => {
           reject(new Error(error.message));
-          console.log('error of all banned users', error);
+          // console.log('error of all banned users', error);
         });
     });
   }
@@ -707,7 +707,7 @@ export class UserController {
       HttpClient.post(endpoint, data)
         .then(response => {
           resolve(response);
-          console.log('response of unBanned User', response);
+          // console.log('response of unBanned User', response);
           customShowMessage({
             message: 'User Unbanned',
             type: 'success',
@@ -715,7 +715,7 @@ export class UserController {
         })
         .catch(error => {
           reject(new Error(error.message));
-          console.log('error of  UnBanned user', error);
+          // console.log('error of  UnBanned user', error);
         });
     });
   }
@@ -729,7 +729,7 @@ export class UserController {
       HttpClient.post(endpoint, data)
         .then(response => {
           resolve(response);
-          console.log('response of banned User', response);
+          // console.log('response of banned User', response);
           customShowMessage({
             message: 'User Banned',
             type: 'success',
@@ -737,7 +737,7 @@ export class UserController {
         })
         .catch(error => {
           reject(new Error(error.message));
-          console.log('error of  banned user', error);
+          // console.log('error of  banned user', error);
         });
     });
   }
@@ -761,7 +761,7 @@ export class UserController {
         })
         .catch(error => {
           reject(new Error(error.message));
-          console.log('error of All notifications', error);
+          // console.log('error of All notifications', error);
         });
     });
   }
@@ -778,10 +778,10 @@ export class UserController {
       HttpClient.post(endpoint, data)
         .then(response => {
           resolve(response);
-          console.log(
-            'response of mark read Notifications',
-            JSON.stringify(response)
-          );
+          // console.log(
+          //   'response of mark read Notifications',
+          //   JSON.stringify(response)
+          // );
           customShowMessage({
             message: 'All Notifications are read',
             type: 'success',
@@ -789,7 +789,7 @@ export class UserController {
         })
         .catch(error => {
           reject(new Error(error.message));
-          console.log('error of All notifications', error);
+          // console.log('error of All notifications', error);
         });
     });
   }
@@ -809,10 +809,10 @@ export class UserController {
       HttpClient.post(endpoint, data)
         .then(response => {
           resolve(response);
-          console.log(
-            'response of mark read Notifications',
-            JSON.stringify(response)
-          );
+          // console.log(
+          //   'response of mark read Notifications',
+          //   JSON.stringify(response)
+          // );
           // customShowMessage({
           //   message: 'All Notifications are read',
           //   type: 'success',
@@ -820,7 +820,7 @@ export class UserController {
         })
         .catch(error => {
           reject(new Error(error.message));
-          console.log('error of All notifications', error);
+          // console.log('error of All notifications', error);
         });
     });
   }
@@ -838,7 +838,7 @@ export class UserController {
       HttpClient.post(endpoint, data)
         .then(response => {
           resolve(response);
-          console.log(JSON.stringify(response));
+          // console.log(JSON.stringify(response));
           customShowMessage({
             message: 'Report Archived Successfully',
             type: 'success',
@@ -846,7 +846,7 @@ export class UserController {
         })
         .catch(error => {
           reject(new Error(error.message));
-          console.log('error of All notifications', error);
+          // console.log('error of All notifications', error);
         });
     });
   }
@@ -872,7 +872,7 @@ export class UserController {
       HttpClient.post(endpoint, data)
         .then(response => {
           resolve(response);
-          console.log(JSON.stringify(response));
+          // console.log(JSON.stringify(response));
           // customShowMessage({
           //   message: 'User Reported Successfully',
           //   type: 'success',
@@ -880,7 +880,7 @@ export class UserController {
         })
         .catch(error => {
           reject(new Error(error.message));
-          console.log('error of All notifications', error);
+          // console.log('error of All notifications', error);
         });
     });
   }
@@ -895,7 +895,7 @@ export class UserController {
       HttpClient.post(endpoint, data)
         .then(response => {
           resolve(response);
-          console.log(JSON.stringify(response));
+          // console.log(JSON.stringify(response));
           // customShowMessage({
           //   message: 'User Reported Successfully',
           //   type: 'success',
@@ -903,7 +903,7 @@ export class UserController {
         })
         .catch(error => {
           reject(new Error(error.message));
-          console.log('error of All notifications', error);
+          // console.log('error of All notifications', error);
         });
     });
   }
@@ -933,7 +933,7 @@ export class UserController {
       HttpClient.post(endpoint, data)
         .then(response => {
           resolve(response);
-          console.log(JSON.stringify(response));
+          // console.log(JSON.stringify(response));
           // customShowMessage({
           //   message: 'User Reported Successfully',
           //   type: 'success',
@@ -941,7 +941,7 @@ export class UserController {
         })
         .catch(error => {
           reject(new Error(error.message));
-          console.log('error of All notifications', error);
+          // console.log('error of All notifications', error);
         });
     });
   }
@@ -956,15 +956,15 @@ export class UserController {
         topic: 'general',
         userId: data.loggedInUserId,
       });
-      console.log('FCM_DATA', Data);
+      // console.log('FCM_DATA', Data);
       HttpClient.post(endpoint, Data)
         .then(response => {
           resolve(response);
-          console.log('response of Update FCM TOKEN', JSON.stringify(response));
+          // console.log('response of Update FCM TOKEN', JSON.stringify(response));
         })
         .catch(error => {
           reject(new Error(error.message));
-          console.log('error of Update FCM TOKEN', error);
+          // console.log('error of Update FCM TOKEN', error);
         });
     });
   }
@@ -981,11 +981,11 @@ export class UserController {
       HttpClient.post(endpoint, DATA)
         .then(response => {
           resolve(response);
-          console.log('response of Validate receipt', JSON.stringify(response));
+           console.log('response of Validate receipt', JSON.stringify(response));
         })
         .catch(error => {
           reject(error);
-          console.log('error of Validate receipt', error);
+          // console.log('error of Validate receipt', error);
         });
     });
   }
@@ -1001,11 +1001,11 @@ export class UserController {
       HttpClient.post(endpoint, DATA)
         .then(response => {
           resolve(response);
-          console.log('response of update user type', JSON.stringify(response));
+          // console.log('response of update user type', JSON.stringify(response));
         })
         .catch(error => {
           reject(new Error(error.message));
-          console.log('error of update user type', error);
+          // console.log('error of update user type', error);
         });
     });
   }
@@ -1021,11 +1021,11 @@ export class UserController {
       HttpClient.post(endpoint, DATA)
         .then(response => {
           resolve(response);
-          console.log('response of get user type', JSON.stringify(response));
+          // console.log('response of get user type', JSON.stringify(response));
         })
         .catch(error => {
           reject(new Error(error.message));
-          console.log('error of get user type', error);
+          // console.log('error of get user type', error);
         });
     });
   }

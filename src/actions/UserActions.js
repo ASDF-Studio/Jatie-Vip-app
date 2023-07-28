@@ -1071,7 +1071,7 @@ export const updatePost =
           type: 'success',
         });
 
-        console.log(' i am here ============== ');
+        // console.log(' i am here ============== ');
         // dispatch(getAllPost(userId, strings.sortBy.recent, false));
         navigationRef.dispatch(StackActions.popToTop());
         navigationRef.navigate(NAVIGATION.home);
@@ -1428,18 +1428,18 @@ export const markAllRead = id => async dispatch => {
 export const markSingleNotifRead = async (userId, notifId) => {
   try {
     await UserController.markSingleNotificationsRequest(userId, notifId);
-    console.log('notification read successfully ===================');
+    // console.log('notification read successfully ===================');
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
 };
 
 export const ArchiveReport = async ({ reportID }) => {
   try {
     await UserController.archiveReport({ reportID });
-    console.log('report archived successfully');
+    // console.log('report archived successfully');
   } catch (err) {
-    console.log(err);
+    // console.log(err);
   }
 };
 
@@ -1465,12 +1465,12 @@ export const ReportUser = async ({
 
 export const MarkSingleReportRead = async ({ reportId }) => {
   try {
-    console.log('marking single report read =====', reportId);
+    // console.log('marking single report read =====', reportId);
     await UserController.MarkSingleReportRead({
       reportId,
     });
   } catch (err) {
-    console.log(err);
+    // console.log(err);
   }
 };
 

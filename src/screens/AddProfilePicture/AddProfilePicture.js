@@ -88,14 +88,14 @@ export function AddProfilePicture({ route }) {
       compressImageQuality: 0.5,
     })
       .then(image => {
-        console.log(image);
+        // console.log(image);
         setImage(image.path);
         setmimeType(image.mime);
         setModalVisible(!isModalVisible);
         setCropImageModal(true);
       })
       .catch(e => {
-        console.log('Error: ' + e);
+        // console.log('Error: ' + e);
       });
   };
   const OpenCamera = () => {

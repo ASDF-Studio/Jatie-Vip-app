@@ -66,7 +66,7 @@ export default function Notification({ navigation }) {
   );
 
   const backgroundFetch = () => {
-    console.log('fetching notif background');
+    // console.log('fetching notif background');
     UserController.AllNotificationsRequest(loggedInUser.id, read).then(res => {
       dispatch(getAllNotificationsSuccess(res));
     });
@@ -87,7 +87,7 @@ export default function Notification({ navigation }) {
   );
   const singelPostHnadlePress = () => {
     dispatch(getPostById(item.objectId, loggedInUser?.id));
-    console.log(item.objectId, user?.id);
+    // console.log(item.objectId, user?.id);
   };
   const markAllAsReadNotifications = () => {
     dispatch(markAllRead(loggedInUser?.id));

@@ -300,7 +300,7 @@ export class PostController {
           // console.log('response of all posts', response);
         })
         .catch(error => {
-          console.log('ERPOPOPo', error);
+          // console.log('ERPOPOPo', error);
           reject(new Error(error.message));
         });
     });
@@ -336,7 +336,7 @@ export class PostController {
         commentBody: commentBody,
         postOwnerId: commentOwnerId,
       });
-      console.log('COMMENT_BODY', body);
+      // console.log('COMMENT_BODY', body);
       HttpClient.post(endpoint, body)
         .then(response => {
           // console.log("COMMENT_Response", JSON.stringify(response))
@@ -357,14 +357,14 @@ export class PostController {
         userId: userId,
         commentBody: commentBody,
       });
-      console.log('EDIT_COMMENT_BODY', body);
+      // console.log('EDIT_COMMENT_BODY', body);
       HttpClient.post(endpoint, body)
         .then(response => {
-          console.log('EDIT_COMMENT_Response', JSON.stringify(response));
+          // console.log('EDIT_COMMENT_Response', JSON.stringify(response));
           resolve(response);
         })
         .catch(error => {
-          console.log('EDIT_COMMENT_Response_ERRR', JSON.stringify(error));
+          // console.log('EDIT_COMMENT_Response_ERRR', JSON.stringify(error));
           reject(error);
         });
     });
@@ -376,14 +376,14 @@ export class PostController {
         id: id,
         userId: userId,
       });
-      console.log('DELETE_COMMENT_BODY', body);
+      // console.log('DELETE_COMMENT_BODY', body);
       HttpClient.post(endpoint, body)
         .then(response => {
-          console.log('DELETE____COMMENT_Response', JSON.stringify(response));
+          // console.log('DELETE____COMMENT_Response', JSON.stringify(response));
           resolve(response);
         })
         .catch(error => {
-          console.log('CDELEYE_Response_ERRR', JSON.stringify(error));
+          // console.log('CDELEYE_Response_ERRR', JSON.stringify(error));
           reject(error);
         });
     });
@@ -419,7 +419,7 @@ export class PostController {
       HttpClient.post(endpoint, body)
         .then(response => {
           resolve(response);
-          console.log('respnse of single post', response);
+          // console.log('respnse of single post', response);
         })
         .catch(error => {
           reject(error);
@@ -491,7 +491,7 @@ export class PostController {
       HttpClient.post(endpoint, data, { headers })
         .then(response => {
           resolve(response);
-          console.log('reponse of report post', response);
+          // console.log('reponse of report post', response);
         })
         .catch(error => {
           reject(error);
@@ -578,7 +578,7 @@ export class PostController {
       HttpClient.post(endpoint, body)
         .then(response => {
           resolve(response);
-          console.log('check search data ', response);
+          // console.log('check search data ', response);
         })
         .catch(error => {
           reject(error);
@@ -605,7 +605,7 @@ export class PostController {
         })
         .catch(error => {
           reject(new Error(error.message));
-          console.log('error', error);
+          // console.log('error', error);
         });
     });
   }
@@ -623,7 +623,7 @@ export class PostController {
         })
         .catch(error => {
           reject(new Error(error.message));
-          console.log('error', error);
+          // console.log('error', error);
         });
     });
   }

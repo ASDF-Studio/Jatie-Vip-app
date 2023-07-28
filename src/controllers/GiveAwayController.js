@@ -55,7 +55,7 @@ export class GiveAwayController {
           data.append('videoPoster', videoPoster);
         }
         // data.append('videoPoster', videoPoster);
-        console.log('VIDEEO___OPOSTER', videoPoster);
+        // console.log('VIDEEO___OPOSTER', videoPoster);
       }
 
       data.append('postImg', '');
@@ -68,7 +68,7 @@ export class GiveAwayController {
       data.append('isVIPonly', params.isVIPonly);
       data.append('isUSAonly', params.isUSAonly);
       data.append('numOfWinners', params.winnerCount);
-      console.log('GIVEATWA__BOSY', data);
+      // console.log('GIVEATWA__BOSY', data);
       const headers = {
         'Content-Type': 'multipart/form-data',
       };
@@ -76,7 +76,7 @@ export class GiveAwayController {
       await HttpClient.post(endpoint, data, { headers })
         .then(response => {
           resolve(response);
-          console.log('giveaway post response', JSON.stringify(response));
+          // console.log('giveaway post response', JSON.stringify(response));
         })
         .catch(error => {
           reject(error);
@@ -135,7 +135,7 @@ export class GiveAwayController {
       HttpClient.post(endpoint, body)
         .then(response => {
           resolve(response);
-          console.log('response of join giveaway', JSON.stringify(response));
+          // console.log('response of join giveaway', JSON.stringify(response));
 
           {
             response.status == 'User already joined'
@@ -205,7 +205,7 @@ export class GiveAwayController {
         if (isVideo) {
           data.append('videoPoster', videoPoster);
         }
-        console.log('preImageArray=-=-=-=-=-', params.preImageArray);
+        // console.log('preImageArray=-=-=-=-=-', params.preImageArray);
       }
 
       data.append(
@@ -225,7 +225,7 @@ export class GiveAwayController {
       data.append('isVIPonly', params.isVIPonly);
       data.append('isUSAonly', params.isUSAonly);
       data.append('numOfWinners', params.winnerCount);
-      console.log('GIVEATWA__Update=-=-=-=', data);
+      // console.log('GIVEATWA__Update=-=-=-=', data);
       const headers = {
         'Content-Type': 'multipart/form-data',
       };
@@ -233,11 +233,11 @@ export class GiveAwayController {
       await HttpClient.post(endpoint, data, { headers })
         .then(response => {
           resolve(response);
-          console.log('giveaway update response', JSON.stringify(response));
+          // console.log('giveaway update response', JSON.stringify(response));
         })
         .catch(error => {
           reject(error);
-          console.log('errror', error);
+          // console.log('errror', error);
         });
     });
   }
@@ -263,11 +263,11 @@ export class GiveAwayController {
       )
         .then(response => {
           resolve(response);
-          console.log('giveaway delete response', JSON.stringify(response));
+          // console.log('giveaway delete response', JSON.stringify(response));
         })
         .catch(error => {
           reject(error);
-          console.log('errror', error);
+          // console.log('errror', error);
         });
     });
   }
@@ -283,11 +283,11 @@ export class GiveAwayController {
       HttpClient.post(endpoint, body)
         .then(response => {
           resolve(response);
-          console.log('giveaway end response', JSON.stringify(response));
+          // console.log('giveaway end response', JSON.stringify(response));
         })
         .catch(error => {
           reject(error);
-          console.log('errror', error);
+          // console.log('errror', error);
         });
     });
   }

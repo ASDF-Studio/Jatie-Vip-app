@@ -241,7 +241,7 @@ export const CardFooter = ({
       );
       return link;
     } catch (error) {
-      console.log('error raised', error);
+      // console.log('error raised', error);
     }
   };
 

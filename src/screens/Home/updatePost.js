@@ -206,7 +206,6 @@ export default function UpdatePost({ route, navigation }) {
           compressImageQuality: 0.5,
         })
           .then(video => {
-            console.log(video);
             createThumbnail({
               url: video.path,
               timeStamp: 10000,
@@ -447,7 +446,7 @@ export const FileUpload = ({ imageArray = [], onDelete }) => {
       <View style={styles.BottomVideoContainer}>
         <View style={styles.videoContainer}>
           {imageArray.map((item, index) => {
-            console.log(item);
+            // console.log(item);
             return item.image ? (
               <View style={styles.fileSpacing} key={item.id}>
                 <Image style={styles.thumbnail} source={{ uri: item.image }} />

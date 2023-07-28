@@ -25,7 +25,7 @@ export const useGallery = () => {
             });
           })
           .catch(e => {
-            console.log('Error: ' + e);
+            // console.log('Error: ' + e);
           })
           .finally(() => {
             setItems([...items]);
@@ -56,10 +56,10 @@ export const useGallery = () => {
             });
           })
           .catch(e => {
-            console.log('Error: ' + e);
+            // console.log('Error: ' + e);
           })
           .finally(() => {
-            console.log('finally fuckers', items);
+            // console.log('finally fuckers', items);
             setItems([...items]);
           });
   };

@@ -98,7 +98,7 @@ export function Exclusive({ navigation }) {
   }, [sortBy, focus]);
 
   const customReq = () => {
-    console.log('exclusive background fetch');
+    // console.log('exclusive background fetch');
     const data = {
       userId: user?.id,
       postFilter: sortBy.toLowerCase(),

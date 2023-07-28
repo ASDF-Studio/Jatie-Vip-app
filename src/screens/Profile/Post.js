@@ -98,7 +98,7 @@ export default function Post({ navigation }) {
               });
             })
             .catch(e => {
-              console.log('Error: ' + e);
+              // console.log('Error: ' + e);
             })
             .finally(() => {
               setImageArray([...imageArray]);
@@ -137,7 +137,7 @@ export default function Post({ navigation }) {
               });
             })
             .catch(e => {
-              console.log('Error: ' + e);
+              // console.log('Error: ' + e);
             });
     }
   };
@@ -174,7 +174,7 @@ export default function Post({ navigation }) {
               // setmimeType(image.mime);
             })
             .catch(e => {
-              console.log('Error: ' + e);
+              // console.log('Error: ' + e);
             })
             .finally(() => {
               setImageArray([...imageArray]);
@@ -199,7 +199,7 @@ export default function Post({ navigation }) {
               // setmimeType(image.mime);
             })
             .catch(e => {
-              console.log('Error: ' + e);
+              // console.log('Error: ' + e);
             });
     }
   };

@@ -32,12 +32,12 @@ export function App() {
       authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
     if (enabled) {
-      console.log('Authorization status:', authStatus);
+      // console.log('Authorization status:', authStatus);
     }
   }
   async function getFCMToken1() {
     let fcmtoken = await AsyncStorage.getItem('fcmtoken');
-    console.log('FCM__TOsssEN', fcmtoken);
+    // console.log('FCM__TOsssEN', fcmtoken);
     if (!fcmtoken) {
       try {
         const token = await messaging().getToken();
@@ -49,10 +49,10 @@ export function App() {
     }
   }
   const onMessageReceived = React.useCallback(async message => {
-    console.log(
-      'Notificatiohn=-=-=-terterterterter ------------',
-      JSON.stringify(message)
-    );
+    // console.log(
+    //   'Notificatiohn=-=-=-terterterterter ------------',
+    //   JSON.stringify(message)
+    // );
 
     await notifee.displayNotification({
       title: message?.notification?.title,
@@ -83,7 +83,7 @@ export function App() {
     messaging()
       .getInitialNotification()
       .then(val => {
-        console.log('initialNotif called ============  ', val);
+        // console.log('initialNotif called ============  ', val);
       });
 
     messaging().setBackgroundMessageHandler(onMessageReceived);

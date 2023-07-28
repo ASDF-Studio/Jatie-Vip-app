@@ -30,7 +30,7 @@ export const useMedia = ({ initImages = [] }) => {
           });
         })
         .catch(e => {
-          console.log('Error: ' + e);
+          // console.log('Error: ' + e);
         })
         .finally(() => {
           setSelectedMedias([...selectedMedias]);
@@ -66,7 +66,7 @@ export const useMedia = ({ initImages = [] }) => {
           });
         })
         .catch(e => {
-          console.log('Error: ' + e);
+          // console.log('Error: ' + e);
         });
     }
   };
@@ -86,7 +86,7 @@ export const useMedia = ({ initImages = [] }) => {
           });
         })
         .catch(e => {
-          console.log('Error: ' + e);
+          // console.log('Error: ' + e);
         })
         .finally(() => {
           setSelectedMedias([...selectedMedias]);
@@ -118,7 +118,7 @@ export const useMedia = ({ initImages = [] }) => {
             .catch(err => console.log({ err }));
         })
         .catch(e => {
-          console.log('Error: ' + e);
+          // console.log('Error: ' + e);
         });
     }
   };
