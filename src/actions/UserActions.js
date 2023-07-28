@@ -1521,19 +1521,19 @@ export const updateUserType = (data,navigation,ScreenName) => async dispatch => 
  
 };
 
-export const getUserType = id => async dispatch => {
+export const getUserType = (id,userStatus) => async dispatch => {
   dispatch(getUserTypeRequest());
   try {
     const user = await UserController.getUserTypeDataRequest(id);
-    
     // dispatch(getUserTypeSuccess(user));
-    if (data.isVIP) {
+    if(user.data.isVIP==true && userStatus=="Free"){
       let selectedValue = 'VIP';
       dispatch(ChooseUser(selectedValue));
-    } else {
+    }
+    else if (!user.data.isVIP && userStatus=="VIP"){
       let selectedValue = 'Free';
       dispatch(ChooseUser(selectedValue));
-    }
+    }  
   } catch (error) {
     dispatch(getUserTypeError(error));
   }

@@ -45,30 +45,30 @@ export const validateReceipt = (data,navigation,ScreenName) => async dispatch =>
         const user = await UserController.validateReceiptRequestData(data);
         dispatch(validateReceiptSuccess(user));
         
-        if (user?.message == RECEIPT_STATUS.VALID_RECEIPT) {
-            const Data = {
-                "isVIP": true,
-                "userId": data.loggedInUserId
-            }
-            dispatch(updateUserType(Data,navigation,ScreenName))
-        }
-        else if(user?.message==RECEIPT_STATUS.INVALID_RECEIPT){
-            const Data = {
-                "isVIP": false,
-                "userId": data.loggedInUserId
-            }
-         dispatch(updateUserType(Data,navigation,ScreenName))
-        }
+        // if (user?.message == RECEIPT_STATUS.VALID_RECEIPT) {
+        //     const Data = {
+        //         "isVIP": true,
+        //         "userId": data.loggedInUserId
+        //     }
+        //     dispatch(updateUserType(Data,navigation,ScreenName))
+        // }
+        // else if(user?.message==RECEIPT_STATUS.INVALID_RECEIPT){
+        //     const Data = {
+        //         "isVIP": false,
+        //         "userId": data.loggedInUserId
+        //     }
+        //   dispatch(updateUserType(Data,navigation,ScreenName))
+        // }
       return user
     } catch (error) {
-        if(error?.message==RECEIPT_STATUS.INVALID_RECEIPT){
-            const Data = {
-                "isVIP": false,
-                "userId": data.loggedInUserId
-            }
-           dispatch(updateUserType(Data,navigation,ScreenName))
+        // if(error?.message==RECEIPT_STATUS.INVALID_RECEIPT){
+            // const Data = {
+            //     "isVIP": false,
+            //     "userId": data.loggedInUserId
+            // }
+        //    dispatch(updateUserType(Data,navigation,ScreenName))
 
-        }
+        // }
         dispatch(validateReceiptError(error));
        return error
         

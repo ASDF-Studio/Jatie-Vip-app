@@ -22,6 +22,7 @@ import {
   Platform,
 } from 'react-native';
 import {
+  CustomLoader,
   HorizontalLine,
   Icon,
   NotificationIcon,
@@ -141,63 +142,63 @@ export function Home({ navigation }) {
   const [isScrolling, setIsScrolling] = useState(false);
   const isFocused = useIsFocused();
   const [isRefreshing, setIsRefreshing] = useState(false);
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     dispatch(getUserType(user?.id))
-  //   //   return () => {
-  //   //  };
-  //   }, [])
-  // );
-  useEffect(() => {
-    initIAP().then(() => {
-      checkForSubscriptionUpdates();
-    });
+  useFocusEffect(
+    React.useCallback(() => {
+      dispatch(getUserType(user?.id,userType.user))
+    //   return () => {
+    //  };
+    }, [])
+  );
+  // useEffect(() => {
+  //   initIAP().then(() => {
+  //     checkForSubscriptionUpdates();
+  //   });
 
-    return () => {
-      clearIAPListeners();
-    };
-  }, []);
-  const initIAP = async () => {
-    try {
-      await initConnection();
-    } catch (error) {}
-  };
+  //   return () => {
+  //     clearIAPListeners();
+  //   };
+  // }, []);
+  // const initIAP = async () => {
+  //   try {
+  //     await initConnection();
+  //   } catch (error) {}
+  // };
 
-  const checkForSubscriptionUpdates = async () => {
-    try {
-      setVipLoader(true)
-      const availablePurchases = await getAvailablePurchases();
-      if (availablePurchases?.length > 0) {
-        availablePurchases.sort(
-          (a, b) => parseInt(b.transactionDate) - parseInt(a.transactionDate)
-        );
-        const latestPurchase = availablePurchases[0];
-        // console.log("LATESTSTSTS",latestPurchase);
+  // const checkForSubscriptionUpdates = async () => {
+  //   try {
+  //     setVipLoader(true)
+  //     const availablePurchases = await getAvailablePurchases();
+  //     if (availablePurchases?.length > 0) {
+  //       availablePurchases.sort(
+  //         (a, b) => parseInt(b.transactionDate) - parseInt(a.transactionDate)
+  //       );
+  //       const latestPurchase = availablePurchases[0];
+  //       // console.log("LATESTSTSTS",latestPurchase);
 
-        if (latestPurchase?.transactionReceipt) {
-           await verifyReceipt(latestPurchase.transactionReceipt);
-        }
-      } else {
-         var receipt = '';
-         await verifyReceipt(receipt);
-      }
-      setVipLoader(false)
-    } catch (error) {
-      setVipLoader(false)
-      console.log('Error during subscription update check:', error);
-    }
-  };
+  //       if (latestPurchase?.transactionReceipt) {
+  //          await verifyReceipt(latestPurchase.transactionReceipt);
+  //       }
+  //     } else {
+  //        var receipt = '';
+  //        await verifyReceipt(receipt);
+  //     }
+  //     setVipLoader(false)
+  //   } catch (error) {
+  //     setVipLoader(false)
+  //     console.log('Error during subscription update check:', error);
+  //   }
+  // };
 
-  const clearIAPListeners = async () => {
-    await endConnection();
-  };
-  async function verifyReceipt(receipt) {
-    const data = {
-      receipt: receipt,
-      loggedInUserId: user?.id,
-    };
-    dispatch(validateReceipt(data, navigation, NAVIGATION.home));
-  }
+  // const clearIAPListeners = async () => {
+  //   await endConnection();
+  // };
+  // async function verifyReceipt(receipt) {
+  //   const data = {
+  //     receipt: receipt,
+  //     loggedInUserId: user?.id,
+  //   };
+  //   dispatch(validateReceipt(data, navigation, NAVIGATION.home));
+  // }
  
   useEffect(() => {
 
@@ -364,6 +365,7 @@ export function Home({ navigation }) {
           <NotificationIcon />
         </View>
       </View>
+      
       <StatusNavigatorBar
         title1={strings.home.newFeed}
         title2={strings.home.vipArea}
@@ -384,6 +386,7 @@ export function Home({ navigation }) {
         showLock={userType?.user == `${strings.userType.free}` ? true : false}
       />
       <HorizontalLine />
+     
       <View style={styles.feedContainer}>
         {isLoading ? (
           <ActivityIndicator

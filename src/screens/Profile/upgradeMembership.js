@@ -36,7 +36,7 @@ import { getUser } from '@/selectors/UserSelectors';
 import { validateReceipt } from '@/actions/SubscriptionAction';
 import { CommonActions } from '@react-navigation/native';
 import { updateUserType } from '@/actions/UserActions';
-import { SKUS } from '@/constants/subscriptionConstant';
+import { RECEIPT_STATUS, SKUS } from '@/constants/subscriptionConstant';
 import { PRIVACY_POLICY_URL } from '@/constants/apiConstants';
 import { NAVIGATION } from '@/constants';
 
@@ -47,39 +47,12 @@ export default function UpgradeMembership({ navigation }) {
   const [stopPurchase, setStopPurchase] = useState(false);
   const [purchasedStatus, setPurchasedStatus] = useState(false);
   const [purchasedMessage, setPurchasedMessage] = useState(null);
-
+  const [isMakingPurchase, setIsMakingPurchase] = useState(false);
   let purchaseUpdateSubscription;
   let purchaseErrorSubscription;
 
   useEffect(() => {
-    initIAP().then(() => {
-      checkForSubscriptionUpdates();
-    });
-
-    purchaseUpdateSubscription = purchaseUpdatedListener(async purchase => {
-      const receipt = purchase.transactionReceipt;
-      if (receipt) {
-        try {
-          verifyReceipt(receipt)
-            .then(async () => {
-              await finishTransaction({
-                purchase: purchase,
-                isConsumable: false,
-              });
-            })
-            .catch(err => {
-              console.log(err);
-            });
-        } catch (error) {
-          console.log('Error verifying receipt:', error);
-        }
-      }
-    });
-
-    return () => {
-      setStopPurchase(false);
-      clearIAPListeners();
-    };
+    initIAP();
   }, []);
 
   const initIAP = async () => {
@@ -89,28 +62,6 @@ export default function UpgradeMembership({ navigation }) {
       console.log('Error initializing connection:', error);
     }
   };
-
-  const checkForSubscriptionUpdates = async () => {
-    try {
-      setLoading(true);
-      const availablePurchases = await getAvailablePurchases();
-      if (availablePurchases?.length > 0) {
-        availablePurchases.sort(
-          (a, b) => parseInt(b.transactionDate) - parseInt(a.transactionDate)
-        );
-        const latestPurchase = availablePurchases[0];
-        if (latestPurchase?.transactionReceipt) {
-          await verifyReceipt(latestPurchase.transactionReceipt);
-        }
-      } else {
-        setLoading(false);
-      }
-    } catch (error) {
-      setLoading(false);
-      console.log('Error during subscription update check:', error);
-    }
-  };
-
   const clearIAPListeners = async () => {
     if (purchaseUpdateSubscription) {
       purchaseUpdateSubscription.remove();
@@ -123,8 +74,62 @@ export default function UpgradeMembership({ navigation }) {
     await endConnection();
   };
 
-  const buySubscription = async userProductSku => {
+  useEffect(() => {
+    if (isMakingPurchase) {
+      purchaseUpdateSubscription = purchaseUpdatedListener(async (purchase) => {
+        const receipt = purchase.transactionReceipt;
+        if (receipt) {
+          try {
+            verifyReceipt(receipt).then(async () => {
+              await finishTransaction({
+                purchase: purchase,
+                isConsumable: false,
+              });
+            });
+          } catch (error) {
+            console.log('Error verifying receipt:', error);
+          }
+        }
+      });
+    } else {
+      // If the user is not making a purchase, remove the listener
+      if (purchaseUpdateSubscription) {
+        purchaseUpdateSubscription.remove();
+        purchaseUpdateSubscription = null;
+      }
+    }
+
+    return () => {
+      setStopPurchase(false);
+      clearIAPListeners();
+    };
+  }, [isMakingPurchase]);
+
+  const checkForSubscriptionUpdates = async (userProductSku) => {
+    try {
+      setLoading(true);
+      const availablePurchases = await getAvailablePurchases();
+      if (availablePurchases?.length > 0) {
+        availablePurchases.sort((a, b) => parseInt(b.transactionDate) - parseInt(a.transactionDate));
+        const latestPurchase = availablePurchases[0];
+        if (latestPurchase?.transactionReceipt) {
+          await verifyReceipt(latestPurchase.transactionReceipt);
+        }
+      } else {
+        buySubscription(userProductSku)
+
+      }
+    } catch (error) {
+      setLoading(false);
+      console.log('Error during subscription update check:', error);
+    }
+  };
+
+ 
+
+  const buySubscription = async (userProductSku) => {
     setLoading(true);
+
     if (Platform.OS === 'ios') {
       try {
         await clearTransactionIOS();
@@ -139,18 +144,14 @@ export default function UpgradeMembership({ navigation }) {
         console.log('Error flushing failed purchases in Android:', error);
       }
     }
-    handlePurchase(userProductSku);
+   handlePurchase(userProductSku);
   };
 
   const handlePurchase = async userProductSku => {
     try {
-      const subscriptions = await getSubscriptions({
-        skus: Platform.OS === 'android' ? SKUS.ANDROID : SKUS.IOS,
-      });
-      const product = subscriptions.find(
-        product => product.productId === userProductSku
-      );
-
+      setIsMakingPurchase(true);
+      const subscriptions = await getSubscriptions({ skus: Platform.OS === 'android' ? SKUS.ANDROID : SKUS.IOS });
+      const product = subscriptions.find((product) => product.productId === userProductSku);
       if (product) {
         await requestSubscription({
           sku: userProductSku,
@@ -179,27 +180,22 @@ export default function UpgradeMembership({ navigation }) {
       receipt: receipt,
       loggedInUserId: user?.id,
     };
-
     try {
-      const res = await validateReceipt(
-        data,
-        navigation,
-        NAVIGATION.upgradeMembership
-      )(dispatch);
-      console.log('Response:', res);
+      const res = await dispatch(validateReceipt(data, navigation, NAVIGATION.upgradeMembership));
+      // console.log('Response:', res);
       setLoading(false);
-      if (
-        res.message ===
-        'Can not purchase from same Apple ID. Try different one or purchase through Stripe.'
-      ) {
+      if (res.key == 2) {
         setStopPurchase(true);
         setPurchasedStatus(true);
         setPurchasedMessage(res.message);
         showAlert(res.message);
       }
+      else if (res.key==3||4){
+       resetStackToScreen(NAVIGATION.home)
+      }      
     } catch (error) {
       setLoading(false);
-      console.log('Error during receipt verification:', error);
+      // console.log('Error during receipt verification:', error);
     }
   }
 
@@ -224,7 +220,7 @@ export default function UpgradeMembership({ navigation }) {
     // }, 1000);
   }
 
-  async function restorePurchases() {
+  async function restorePurchases(){
     try {
       setLoading(true);
       const availablePurchases = await getAvailablePurchases();
@@ -349,19 +345,13 @@ export default function UpgradeMembership({ navigation }) {
           <View style={styles.btnContainer}>
             <Button
               title={strings.profile.monthlyPlan}
-              onPress={() =>
-                stopPurchase
-                  ? showAlert(purchasedMessage)
-                  : buySubscription(SKUS.ONE_MONTH)
-              }
+              onPress={() =>stopPurchase?showAlert(purchasedMessage): checkForSubscriptionUpdates(SKUS.ONE_MONTH)}
               style={styles.monthlyPlanButton}
             />
             <Button
-              onPress={() =>
-                stopPurchase
-                  ? showAlert(purchasedMessage)
-                  : buySubscription(SKUS.YEAR)
-              }
+              onPress={() => 
+                stopPurchase?showAlert(purchasedMessage):
+                checkForSubscriptionUpdates(SKUS.YEAR)}
               title={strings.profile.yearlyPlan}
               style={styles.yearlyPlanButton}
             />
