@@ -82,8 +82,17 @@ export function App() {
 
     messaging()
       .getInitialNotification()
-      .then(val => {
-        // console.log('initialNotif called ============  ', val);
+      .then(remoteMessage => {
+        const { data } = remoteMessage;
+        const { postId } = data || {};
+
+        if (postId) {
+          setTimeout(() => {
+            navigationRef.navigate(NAVIGATION.singlePost, {
+              postId,
+            });
+          }, 1000);
+        }
       });
 
     messaging().setBackgroundMessageHandler(onMessageReceived);
