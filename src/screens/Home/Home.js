@@ -145,8 +145,9 @@ export function Home({ navigation }) {
   useFocusEffect(
     React.useCallback(() => {
       dispatch(getUserType(user?.id,userType.user))
-    //   return () => {
-    //  };
+       return () => {
+        dispatch(getUserType(user?.id,userType.user))
+      };
     }, [])
   );
   // useEffect(() => {

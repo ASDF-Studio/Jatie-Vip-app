@@ -30,6 +30,7 @@ import RNIap, {
   clearTransactionIOS,
   finishTransaction,
   purchaseUpdatedListener,
+  getProducts,
 } from 'react-native-iap';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '@/selectors/UserSelectors';
@@ -50,18 +51,23 @@ export default function UpgradeMembership({ navigation }) {
   const [isMakingPurchase, setIsMakingPurchase] = useState(false);
   const [productSKU, setProductSKU] = useState(SKUS.ONE_MONTH);
   const [subsExpired, setSubsExpired] = useState(false);
+  const [restorePurchase, setRestorePurchase] = useState(false);
   let purchaseUpdateSubscription;
   let purchaseErrorSubscription;
 
   useEffect(() => {
     initIAP();
+    return () => {
+      setStopPurchase(false);
+      clearIAPListeners();
+    };
   }, []);
 
   const initIAP = async () => {
     try {
       await initConnection();
     } catch (error) {
-      // console.log('Error initializing connection:', error);
+       console.log('Error initializing connection:', error);
     }
   };
   const clearIAPListeners = async () => {
@@ -95,16 +101,16 @@ export default function UpgradeMembership({ navigation }) {
       });
     } else {
       // If the user is not making a purchase, remove the listener
-      if (purchaseUpdateSubscription) {
-        purchaseUpdateSubscription.remove();
-        purchaseUpdateSubscription = null;
-      }
+      // if (purchaseUpdateSubscription) {
+      //   purchaseUpdateSubscription.remove();
+      //   purchaseUpdateSubscription = null;
+      // }
     }
 
-    return () => {
-      setStopPurchase(false);
-      clearIAPListeners();
-    };
+    // return () => {
+    //   setStopPurchase(false);
+    //   clearIAPListeners();
+    // };
   }, [isMakingPurchase]);
 
   const checkForSubscriptionUpdates = async (userProductSku) => {
@@ -123,6 +129,7 @@ export default function UpgradeMembership({ navigation }) {
       }
     } catch (error) {
       setLoading(false);
+      setRestorePurchase(false)
       // console.log('Error during subscription update check:', error);
     }
   };
@@ -130,52 +137,98 @@ export default function UpgradeMembership({ navigation }) {
  
 
   const buySubscription = async (userProductSku) => {
-    setLoading(true);
-
     if (Platform.OS === 'ios') {
-      try {
-        await clearTransactionIOS();
-      } catch (error) {
-        setLoading(false);
-        // console.log('Error clearing iOS transactions:', error);
-      }
+      clearTransactionIOS()
+        .catch((error) => {
+          console.log({ error });
+        })
+        .then(async () => {
+          await handlePurchase(userProductSku);
+        });
     } else {
-      try {
-        await flushFailedPurchasesCachedAsPendingAndroid();
-      } catch (error) {
-        // console.log('Error flushing failed purchases in Android:', error);
-      }
+      flushFailedPurchasesCachedAsPendingAndroid()
+        .catch((error) => {
+          console.log({ error });
+        })
+        .then(async () => {
+          await handlePurchase(userProductSku);
+        });
     }
-    handlePurchase(userProductSku);
   };
 
-  const handlePurchase = async userProductSku => {
+  const handlePurchase = async (userProductSku) => {
     try {
       setIsMakingPurchase(true);
-      const subscriptions = await getSubscriptions({ skus: Platform.OS === 'android' ? SKUS.ANDROID : SKUS.IOS });
-      const product = subscriptions.find((product) => product.productId === userProductSku);
-      if (product) {
-        await requestSubscription({
-          sku: userProductSku,
-          ...(product?.subscriptionOfferDetails && {
-            subscriptionOffers: [
-              {
-                sku: product?.productId,
-                offerToken: product?.subscriptionOfferDetails[0]?.offerToken,
-              },
-            ],
-          }),
-        });
+      const skus = Platform.OS === 'ios' ? SKUS.IOS : SKUS.ANDROID;
+      if (Platform.OS === 'android') {
+        const subscriptions = await getSubscriptions({ skus });
+        const product = subscriptions.find((product) => product.productId === userProductSku);
+        if (product) {
+          await requestSubscription({
+            sku: userProductSku,
+            ...(product?.subscriptionOfferDetails && {
+              subscriptionOffers: [
+                {
+                  sku: product?.productId,
+                  offerToken: product?.subscriptionOfferDetails[0]?.offerToken,
+                },
+              ],
+            }),
+          });
+        } else {
+          setLoading(false);
+          console.log('Desired product not found');
+        }
       } else {
-        setLoading(false);
-        // console.log('Desired product not found');
+        const products = await getProducts({ skus });
+        const product = products.find((product) => product.productId === userProductSku);
+        if (product) {
+          await requestSubscription({ sku: product.productId });
+        } else {
+          setLoading(false);
+          console.log('Desired product not found');
+        }
       }
     } catch (error) {
-      // console.log('Error during subscription request:', error);
+      setIsMakingPurchase(false);
+      setLoading(false);
+      console.log('Error during subscription request:', error);
     } finally {
+      
       setLoading(false);
     }
   };
+  
+
+
+  // const handlePurchase = async userProductSku => {
+  //   try {
+  //     setIsMakingPurchase(true);
+  //     const subscriptions = await getSubscriptions({ skus: Platform.OS === 'android' ? SKUS.ANDROID : SKUS.IOS });
+  //     const product = subscriptions.find((product) => product.productId === userProductSku);
+  //     if (product) {
+  //       await requestSubscription({
+  //         sku: userProductSku,
+  //         ...(product?.subscriptionOfferDetails && {
+  //           subscriptionOffers: [
+  //             {
+  //               sku: product?.productId,
+  //               offerToken: product?.subscriptionOfferDetails[0]?.offerToken,
+  //             },
+  //           ],
+  //         }),
+  //       });
+  //     } else {
+  //       setLoading(false);
+  //       // console.log('Desired product not found');
+  //     }
+  //   } catch (error) {
+  //     // console.log('Error during subscription request:', error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
 
   async function verifyReceipt(receipt) {
     const data = {
@@ -184,11 +237,11 @@ export default function UpgradeMembership({ navigation }) {
     };
     try {
       const res = await dispatch(validateReceipt(data, navigation, NAVIGATION.upgradeMembership));
-      setLoading(false);
+      setLoading(false); 
       if(res.key==1){
        buySubscription(productSKU)
       }
-     else if (res.key == 2) {
+      else if (res.key == 2) {
         setStopPurchase(true);
         setPurchasedStatus(true);
         setPurchasedMessage(res.message);
@@ -199,6 +252,7 @@ export default function UpgradeMembership({ navigation }) {
       }      
     } catch (error) {
       setLoading(false);
+      setRestorePurchase(false)
     }
   }
 
@@ -225,18 +279,18 @@ export default function UpgradeMembership({ navigation }) {
       setLoading(true);
       const availablePurchases = await getAvailablePurchases();
       if (availablePurchases?.length > 0) {
-        availablePurchases.sort(
-          (a, b) => parseInt(b.transactionDate) - parseInt(a.transactionDate)
-        );
+        availablePurchases.sort((a, b) => parseInt(b.transactionDate) - parseInt(a.transactionDate) );
         const latestPurchase = availablePurchases[0];
         if (latestPurchase?.transactionReceipt) {
           await verifyReceipt(latestPurchase.transactionReceipt);
         }
       } else {
+        // setRestorePurchase(false)
         setLoading(false);
       }
     } catch (error) {
       setLoading(false);
+      // setRestorePurchase(false)
       console.log('Error during subscription update check:', error);
     }
   }
@@ -368,6 +422,7 @@ export default function UpgradeMembership({ navigation }) {
           </View>
           <TouchableOpacity
             onPress={() => {
+              setRestorePurchase(true)
               stopPurchase ? showAlert(purchasedMessage) : restorePurchases();
             }}
           >

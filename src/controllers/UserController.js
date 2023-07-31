@@ -985,7 +985,7 @@ export class UserController {
         })
         .catch(error => {
           reject(error);
-          // console.log('error of Validate receipt', error);
+           console.log('error of Validate receipt', error);
         });
     });
   }
@@ -1021,7 +1021,7 @@ export class UserController {
       HttpClient.post(endpoint, DATA)
         .then(response => {
           resolve(response);
-          // console.log('response of get user type', JSON.stringify(response));
+           console.log('response of get user type', JSON.stringify(response));
         })
         .catch(error => {
           reject(new Error(error.message));
