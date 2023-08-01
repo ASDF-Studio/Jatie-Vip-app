@@ -79,10 +79,10 @@ export class UserController {
       data.append('id', id);
       data.append('fullname', fullname);
       data.append('primaryEmail', primaryEmail);
-      data.append('location', location);
+      data.append('location', location==null?"":location);
       data.append('username', username);
       data.append('dob', dob);
-      data.append('gender', gender);
+      data.append('gender', gender==null?"":gender);
       data.append('profilePic', mimeType == null && file);
       const headers = {
         'Content-Type': 'multipart/form-data',
@@ -977,7 +977,7 @@ export class UserController {
         userId: data.loggedInUserId,
         platform: Platform.OS,
       });
-       console.log('RECIPT_DATA................', DATA);
+      //  console.log('RECIPT_DATA................', DATA);
       HttpClient.post(endpoint, DATA)
         .then(response => {
           resolve(response);

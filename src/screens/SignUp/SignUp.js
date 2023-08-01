@@ -340,22 +340,24 @@ export function SignUp({ route }) {
         message: strings.SignUp.emailPlaceHolder,
         type: 'danger',
       });
-    } else if (birthday == '') {
-      customShowMessage({
-        message: strings.SignUp.dobPlaceHolder,
-        type: 'danger',
-      });
-    } else if (genderValue == null) {
-      customShowMessage({
-        message: strings.SignUp.genderPlaceHolder,
-        type: 'danger',
-      });
-    } else if (countryvalue == null) {
-      customShowMessage({
-        message: strings.SignUp.countryPlaceHolder,
-        type: 'danger',
-      });
-    } else {
+    } 
+    // else if (birthday == '') {
+    //   customShowMessage({
+    //     message: strings.SignUp.dobPlaceHolder,
+    //     type: 'danger',
+    //   });
+    // } else if (genderValue == null) {
+    //   customShowMessage({
+    //     message: strings.SignUp.genderPlaceHolder,
+    //     type: 'danger',
+    //   });
+    // } else if (countryvalue == null) {
+    //   customShowMessage({
+    //     message: strings.SignUp.countryPlaceHolder,
+    //     type: 'danger',
+    //   });
+    // } 
+    else {
       var DATA = {
         birthday,
         name,

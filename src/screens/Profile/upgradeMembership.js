@@ -264,7 +264,7 @@ export default function UpgradeMembership({ navigation }) {
       else{
         setLoading(false);
       }   
-      setRestorePurchaseStatus(false) 
+      setRestorePurchaseStatus(false)  
     } catch (error) {
       setLoading(false);
       setStopPurchase(false)
