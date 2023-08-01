@@ -1526,14 +1526,13 @@ export const getUserType = (id,userStatus) => async dispatch => {
   try {
     const user = await UserController.getUserTypeDataRequest(id);
     // dispatch(getUserTypeSuccess(user));
-    if(user.data.isVIP==true && userStatus=="Free"){
-      let selectedValue = 'VIP';
+    const { isVIP } = user.data;
+    let selectedValue = isVIP ? 'VIP' : 'Free';
+    if (isVIP && userStatus === 'Free') {
+      dispatch(ChooseUser(selectedValue));
+    } else if (!isVIP && userStatus === 'VIP') {
       dispatch(ChooseUser(selectedValue));
     }
-    else if (user.data.isVIP==false && userStatus=="VIP"){
-      let selectedValue = 'Free';
-      dispatch(ChooseUser(selectedValue));
-    }  
   } catch (error) {
     dispatch(getUserTypeError(error));
   }

@@ -246,7 +246,7 @@ export default function UpgradeMembership({ navigation }) {
         buySubscription(productSKU)
       }
       else if(res.key==1&&restorePurchaseStatus){
-        alert("There is no subcription purchased by you.Please buy subcription")
+        alert("There is no subscription purchased by you. Please buy a subscription.");
         setRestorePurchaseStatus(false) 
         setLoading(false); 
       }

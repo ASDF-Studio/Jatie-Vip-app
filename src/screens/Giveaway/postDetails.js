@@ -53,6 +53,7 @@ import {
 import { NAVIGATION } from '@/constants';
 import moment from 'moment';
 import CountDown from 'react-native-countdown-component';
+import { PRIVACY_POLICY_URL } from '@/constants/apiConstants';
 // import { useBlinker } from '@/hooks';
 
 export default function PostDetails({ navigation, route }) {
@@ -234,7 +235,7 @@ export default function PostDetails({ navigation, route }) {
                           // disabled={data?.has_Joined}
                           disabled={disabledJoin}
                           onPress={() => {
-                            joinGiveAwayhandlePress(),
+                              joinGiveAwayhandlePress(),
                               setActive(false),
                               setDisabledJoin(true);
                           }}
@@ -305,7 +306,8 @@ const termsAndCondition = (text, link) => {
         <Text
           style={styles.termsTextDesign}
           onPress={() => {
-            Linking.openURL(link);
+            Linking.openURL(PRIVACY_POLICY_URL);
+            // Linking.openURL(link);
           }}
         >
           {link}
