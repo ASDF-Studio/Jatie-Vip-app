@@ -130,7 +130,7 @@ export default function UpgradeMembership({ navigation }) {
       }
     } catch (error) {
       setLoading(false);
-      setRestorePurchase(false)
+      setRestorePurchaseStatus(false)
       // console.log('Error during subscription update check:', error);
     }
   };
