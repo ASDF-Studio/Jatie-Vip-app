@@ -59,7 +59,7 @@ export default function UpgradeMembership({ navigation }) {
     initIAP();
     return () => {
       setStopPurchase(false);
-      setRestorePurchaseStatus(false)
+      setRestorePurchaseStatus(false);
       clearIAPListeners();
     };
   }, []);
@@ -68,7 +68,7 @@ export default function UpgradeMembership({ navigation }) {
     try {
       await initConnection();
     } catch (error) {
-       console.log('Error initializing connection:', error);
+      console.log('Error initializing connection:', error);
     }
   };
   const clearIAPListeners = async () => {
@@ -85,7 +85,7 @@ export default function UpgradeMembership({ navigation }) {
 
   useEffect(() => {
     if (isMakingPurchase) {
-      purchaseUpdateSubscription = purchaseUpdatedListener(async (purchase) => {
+      purchaseUpdateSubscription = purchaseUpdatedListener(async purchase => {
         const receipt = purchase.transactionReceipt;
         if (receipt) {
           try {
@@ -114,33 +114,32 @@ export default function UpgradeMembership({ navigation }) {
     // };
   }, [isMakingPurchase]);
 
-  const checkForSubscriptionUpdates = async (userProductSku) => {
+  const checkForSubscriptionUpdates = async userProductSku => {
     try {
       setLoading(true);
       const availablePurchases = await getAvailablePurchases();
       if (availablePurchases?.length > 0) {
-        availablePurchases.sort((a, b) => parseInt(b.transactionDate) - parseInt(a.transactionDate));
+        availablePurchases.sort(
+          (a, b) => parseInt(b.transactionDate) - parseInt(a.transactionDate)
+        );
         const latestPurchase = availablePurchases[0];
         if (latestPurchase?.transactionReceipt) {
           await verifyReceipt(latestPurchase.transactionReceipt);
         }
       } else {
-        buySubscription(userProductSku)
-
+        buySubscription(userProductSku);
       }
     } catch (error) {
       setLoading(false);
-      setRestorePurchaseStatus(false)
+      setRestorePurchaseStatus(false);
       // console.log('Error during subscription update check:', error);
     }
   };
 
- 
-
-  const buySubscription = async (userProductSku) => {
+  const buySubscription = async userProductSku => {
     if (Platform.OS === 'ios') {
       clearTransactionIOS()
-        .catch((error) => {
+        .catch(error => {
           setLoading(false);
           console.log({ error });
         })
@@ -149,7 +148,7 @@ export default function UpgradeMembership({ navigation }) {
         });
     } else {
       flushFailedPurchasesCachedAsPendingAndroid()
-        .catch((error) => {
+        .catch(error => {
           setLoading(false);
           console.log({ error });
         })
@@ -159,13 +158,15 @@ export default function UpgradeMembership({ navigation }) {
     }
   };
 
-  const handlePurchase = async (userProductSku) => {
+  const handlePurchase = async userProductSku => {
     try {
       setIsMakingPurchase(true);
       const skus = Platform.OS === 'ios' ? SKUS.IOS : SKUS.ANDROID;
       if (Platform.OS === 'android') {
         const subscriptions = await getSubscriptions({ skus });
-        const product = subscriptions.find((product) => product.productId === userProductSku);
+        const product = subscriptions.find(
+          product => product.productId === userProductSku
+        );
         if (product) {
           await requestSubscription({
             sku: userProductSku,
@@ -184,7 +185,9 @@ export default function UpgradeMembership({ navigation }) {
         }
       } else {
         const products = await getProducts({ skus });
-        const product = products.find((product) => product.productId === userProductSku);
+        const product = products.find(
+          product => product.productId === userProductSku
+        );
         if (product) {
           await requestSubscription({ sku: product.productId });
         } else {
@@ -197,12 +200,9 @@ export default function UpgradeMembership({ navigation }) {
       setLoading(false);
       console.log('Error during subscription request:', error);
     } finally {
-      
       setLoading(false);
     }
   };
-  
-
 
   // const handlePurchase = async userProductSku => {
   //   try {
@@ -232,53 +232,51 @@ export default function UpgradeMembership({ navigation }) {
   //   }
   // };
 
-
   async function verifyReceipt(receipt) {
     const data = {
       receipt: receipt,
       loggedInUserId: user?.id,
     };
     try {
-      const res = await dispatch(validateReceipt(data, navigation, NAVIGATION.upgradeMembership));
+      const res = await validateReceipt(
+        data,
+        navigation,
+        NAVIGATION.upgradeMembership
+      )(dispatch);
       // console.log("restorePurchaseStatus",restorePurchaseStatus);
-      if(res.key==1&&restorePurchaseStatus==false){
+      if (res.key == 1 && restorePurchaseStatus == false) {
         // console.log("CALLL=-=-=-=-=--=-=-=-=-=-=-");
-        buySubscription(productSKU)
-      }
-      else if(res.key==1&&restorePurchaseStatus){
-        alert("There is no subscription purchased by you. Please buy a subscription.");
-        setRestorePurchaseStatus(false) 
-        setLoading(false); 
-      }
-      else if (res.key == 2) {
-        setLoading(false); 
+        buySubscription(productSKU);
+      } else if (res.key == 1 && restorePurchaseStatus) {
+        alert(
+          'There is no subscription purchased by you. Please buy a subscription.'
+        );
+        setRestorePurchaseStatus(false);
+        setLoading(false);
+      } else if (res.key == 2) {
+        setLoading(false);
         setStopPurchase(true);
         setPurchasedStatus(true);
         setPurchasedMessage(res.message);
         showAlert(res.message);
-      }
-      else if (res.key==3||4){
-        setLoading(false); 
-        resetStackToScreen(NAVIGATION.home)
-      }  
-      else{
+      } else if (res.key == 3 || 4) {
         setLoading(false);
-      }   
-      setRestorePurchaseStatus(false)  
+        resetStackToScreen(NAVIGATION.home);
+      } else {
+        setLoading(false);
+      }
+      setRestorePurchaseStatus(false);
     } catch (error) {
       setLoading(false);
-      setStopPurchase(false)
-      setRestorePurchaseStatus(false)
+      setStopPurchase(false);
+      setRestorePurchaseStatus(false);
     }
   }
 
   const showAlert = message => {
-    Alert.alert(
-      'Purchase Info',
-      message,
-      [{ text: 'OK', }],
-      { cancelable: false }
-    );
+    Alert.alert('Purchase Info', message, [{ text: 'OK' }], {
+      cancelable: false,
+    });
   };
 
   function processPurchase(purchase) {
@@ -290,13 +288,15 @@ export default function UpgradeMembership({ navigation }) {
     dispatch(updateUserType(Data));
   }
 
-  async function restorePurchases(){
+  async function restorePurchases() {
     try {
       setLoading(true);
       const availablePurchases = await getAvailablePurchases();
       // console.log("AAAAVAV",availablePurchases);
       if (availablePurchases?.length > 0) {
-        availablePurchases.sort((a, b) => parseInt(b.transactionDate) - parseInt(a.transactionDate) );
+        availablePurchases.sort(
+          (a, b) => parseInt(b.transactionDate) - parseInt(a.transactionDate)
+        );
         const latestPurchase = availablePurchases[0];
         if (latestPurchase?.transactionReceipt) {
           await verifyReceipt(latestPurchase.transactionReceipt);
@@ -311,7 +311,7 @@ export default function UpgradeMembership({ navigation }) {
       console.log('Error during subscription update check:', error);
     }
   }
- 
+
   const handleMonthlyPlanPress = () => {
     setProductSKU(SKUS.ONE_MONTH);
     if (stopPurchase) {
@@ -415,8 +415,8 @@ export default function UpgradeMembership({ navigation }) {
               style={styles.monthlyPlanButton}
             />
             <Button
-             onPress={handleYearlyPlanPress}
-              // onPress={() => 
+              onPress={handleYearlyPlanPress}
+              // onPress={() =>
               //  { setProductSKU(SKUS.ONE_MONTH)
               //   stopPurchase?showAlert(purchasedMessage):
               //   checkForSubscriptionUpdates(SKUS.YEAR)}}
@@ -439,7 +439,7 @@ export default function UpgradeMembership({ navigation }) {
           </View>
           <TouchableOpacity
             onPress={() => {
-              setRestorePurchaseStatus(true)
+              setRestorePurchaseStatus(true);
               stopPurchase ? showAlert(purchasedMessage) : restorePurchases();
             }}
           >
