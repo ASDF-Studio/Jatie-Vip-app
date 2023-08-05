@@ -53,7 +53,10 @@ import {
 import { NAVIGATION } from '@/constants';
 import moment from 'moment';
 import CountDown from 'react-native-countdown-component';
-import { PRIVACY_POLICY_URL } from '@/constants/apiConstants';
+import {
+  GIVEAWAY_TERMS_URL,
+  PRIVACY_POLICY_URL,
+} from '@/constants/apiConstants';
 // import { useBlinker } from '@/hooks';
 
 export default function PostDetails({ navigation, route }) {
@@ -168,9 +171,7 @@ export default function PostDetails({ navigation, route }) {
               <CardBody text={data.postBody} />
               {link(item.link)}
               <CardBody text={item.MoreDesc} />
-              <Text style={styles.EndTimeTxt}>
-                {/* {item.postExpires} */}
-              </Text>
+              <Text style={styles.EndTimeTxt}>{/* {item.postExpires} */}</Text>
               <View style={styles.thumbnailContainer}>
                 {/* map function for images */}
                 {data.postMediaContent.map(item => {
@@ -199,61 +200,63 @@ export default function PostDetails({ navigation, route }) {
 
                     </TouchableOpacity>
                   </View> */}
-                  {!disabledJoin && (
-                    <View style={styles.termsAndConsition}>
-                      {termsAndCondition(
-                        strings.giveaway.byJoining,
-                        strings.giveaway.termsAndConsition
-                      )}
-                    </View>
-                  )}
-                </View>
-
-                {disabledJoin && (
-                  <View style={styles.PostButtonContainer}>
-                    <TouchableOpacity>
-                      <Button
-                        onPress={() => {
-                          WithdrawGiveAwayhandlePress(),
-                            setActive(true),
-                            setDisabledJoin(false);
-                        }}
-                        title={strings.giveaway.withdrawFromThisGiveaway}
-                        style={styles.withdrawBtn}
-                        textStyle={{
-                          color: theme.light.colors.primary,
-                        }}
-                      />
-                    </TouchableOpacity>
+                    {!disabledJoin && (
+                      <View style={styles.termsAndConsition}>
+                        {termsAndCondition(
+                          strings.giveaway.byJoining,
+                          strings.giveaway.termsAndConsition
+                        )}
+                      </View>
+                    )}
                   </View>
-                )}
-                <View>
-                  {!disabledJoin && (
+
+                  {disabledJoin && (
                     <View style={styles.PostButtonContainer}>
-                      <TouchableOpacity disabled={disabledJoin}>
+                      <TouchableOpacity>
                         <Button
-                          // disabled={data?.has_Joined}
-                          disabled={disabledJoin}
                           onPress={() => {
-                              joinGiveAwayhandlePress(),
-                              setActive(false),
-                              setDisabledJoin(true);
+                            WithdrawGiveAwayhandlePress(),
+                              setActive(true),
+                              setDisabledJoin(false);
                           }}
-                          title={strings.giveaway.joinThisGiveaway}
-                          style={disabledJoin ? styles.outOfUS : styles.joinBtn}
+                          title={strings.giveaway.withdrawFromThisGiveaway}
+                          style={styles.withdrawBtn}
                           textStyle={{
-                            color: theme.light.colors.background,
+                            color: theme.light.colors.primary,
                           }}
                         />
                       </TouchableOpacity>
                     </View>
                   )}
-                  <View style={styles.termsAndConsition}>
-                    {/* for US users only */}
-                    {/* {termsAndCondition(strings.giveaway.onlyUS)} */}
+                  <View>
+                    {!disabledJoin && (
+                      <View style={styles.PostButtonContainer}>
+                        <TouchableOpacity disabled={disabledJoin}>
+                          <Button
+                            // disabled={data?.has_Joined}
+                            disabled={disabledJoin}
+                            onPress={() => {
+                              joinGiveAwayhandlePress(),
+                                setActive(false),
+                                setDisabledJoin(true);
+                            }}
+                            title={strings.giveaway.joinThisGiveaway}
+                            style={
+                              disabledJoin ? styles.outOfUS : styles.joinBtn
+                            }
+                            textStyle={{
+                              color: theme.light.colors.background,
+                            }}
+                          />
+                        </TouchableOpacity>
+                      </View>
+                    )}
+                    <View style={styles.termsAndConsition}>
+                      {/* for US users only */}
+                      {/* {termsAndCondition(strings.giveaway.onlyUS)} */}
+                    </View>
                   </View>
                 </View>
-              </View>
               </View>
             </Card>
           </View>
@@ -306,7 +309,7 @@ const termsAndCondition = (text, link) => {
         <Text
           style={styles.termsTextDesign}
           onPress={() => {
-            Linking.openURL(PRIVACY_POLICY_URL);
+            Linking.openURL(GIVEAWAY_TERMS_URL);
             // Linking.openURL(link);
           }}
         >
@@ -356,7 +359,7 @@ const styles = StyleSheet.create({
     margin: ms(10),
     marginBottom: ms(0),
     marginHorizontal: ms(10),
-    marginTop: ms(10)
+    marginTop: ms(10),
   },
   termsAndConsition: {
     paddingLeft: ms(20),

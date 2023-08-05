@@ -38,7 +38,10 @@ import { validateReceipt } from '@/actions/SubscriptionAction';
 import { CommonActions } from '@react-navigation/native';
 import { updateUserType } from '@/actions/UserActions';
 import { RECEIPT_STATUS, SKUS } from '@/constants/subscriptionConstant';
-import { PRIVACY_POLICY_URL } from '@/constants/apiConstants';
+import {
+  PRIVACY_POLICY_URL,
+  TERMS_AND_CONDITION_URL,
+} from '@/constants/apiConstants';
 import { NAVIGATION } from '@/constants';
 
 export default function UpgradeMembership({ navigation }) {
@@ -448,17 +451,24 @@ export default function UpgradeMembership({ navigation }) {
             </Text>
           </TouchableOpacity>
 
-          <Text
-            onPress={() => {
-              Linking.openURL(PRIVACY_POLICY_URL);
-            }}
-            style={styles.termsAndConditionsStyle}
-          >
-            <Text style={styles.linkColor}>
+          <Text style={styles.termsAndConditionsStyle}>
+            <Text
+              onPress={() => {
+                Linking.openURL(TERMS_AND_CONDITION_URL);
+              }}
+              style={styles.linkColor}
+            >
               {strings.login.termsAndConditions}
             </Text>
             {strings.login.and}
-            <Text style={styles.linkColor}>{strings.login.privacyPolicy}</Text>
+            <Text
+              onPress={() => {
+                Linking.openURL(PRIVACY_POLICY_URL);
+              }}
+              style={styles.linkColor}
+            >
+              {strings.login.privacyPolicy}
+            </Text>
           </Text>
         </View>
       </ScrollView>

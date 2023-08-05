@@ -197,14 +197,11 @@ export const TYPES = {
   UPDATE_USER_TYPE_SUCCESS: 'UPDATE_USER_TYPE_SUCCESS',
   UPDATE_USER_TYPE_ERROR: 'UPDATE_USER_TYPE_ERROR',
 
-
-
-
-    //Get user type subscription
-    GET_USER_TYPE: 'GET_USER_TYPE',
-    GET_USER_TYPE_REQUEST: 'GET_USER_TYPE_REQUEST',
-    GET_USER_TYPE_SUCCESS: 'GET_USER_TYPE_SUCCESS',
-    GET_USER_TYPE_ERROR: 'GET_USER_TYPE_ERROR',
+  //Get user type subscription
+  GET_USER_TYPE: 'GET_USER_TYPE',
+  GET_USER_TYPE_REQUEST: 'GET_USER_TYPE_REQUEST',
+  GET_USER_TYPE_SUCCESS: 'GET_USER_TYPE_SUCCESS',
+  GET_USER_TYPE_ERROR: 'GET_USER_TYPE_ERROR',
 };
 const updateUserTypeRequest = () => ({
   type: TYPES.UPDATE_USER_TYPE_REQUEST,
@@ -544,7 +541,6 @@ const unblockUserByIdError = error => ({
   payload: { error },
 });
 
-
 export const getUserTypeSuccess = user => ({
   type: TYPES.GET_USER_TYPE_SUCCESS,
   payload: { user },
@@ -557,20 +553,8 @@ const getUserTypeRequest = () => ({
 
 const getUserTypeError = error => ({
   type: TYPES.GET_USER_TYPE_ERROR,
-  payload:error ,
+  payload: error,
 });
-
-
-
-
-
-
-
-
-
-
-
-
 
 //Get All activity by user Id
 export const getAllActivitySuccess = user => ({
@@ -808,13 +792,23 @@ export const updateProfile =
         file,
         mimeType
       );
-      dispatch(updateProfileSuccess(user));
-      if (screen == NAVIGATION.editProfile) {
+
+      console.log('response update profile ========== ', user);
+
+      if (user.status) {
+        dispatch(updateProfileSuccess(user));
+        if (screen == NAVIGATION.editProfile) {
+          customShowMessage({
+            message: strings.editProfile.updatedSuccess,
+            type: 'success',
+          });
+          navigationRef.navigate(NAVIGATION.profileSetting);
+        }
+      } else {
         customShowMessage({
-          message: strings.editProfile.updatedSuccess,
-          type: 'success',
+          message: user?.message,
+          type: 'danger',
         });
-        navigationRef.navigate(NAVIGATION.profileSetting);
       }
     } catch (error) {
       customShowMessage({
@@ -1497,31 +1491,29 @@ export const UpdateNotifactionSettings = async (params, dispatch) => {
     console.log(err);
   }
 };
-export const updateUserType = (data,navigation,ScreenName) => async dispatch => {
-  dispatch(updateUserTypeRequest());
-  try {
-    const user = await UserController.updateUserTypeRequest(data);
-    if (data.isVIP) {
-      let selectedValue = 'VIP';
-      dispatch(ChooseUser(selectedValue));
-    } else {
-      let selectedValue = 'Free';
-      dispatch(ChooseUser(selectedValue));
-   
+export const updateUserType =
+  (data, navigation, ScreenName) => async dispatch => {
+    dispatch(updateUserTypeRequest());
+    try {
+      const user = await UserController.updateUserTypeRequest(data);
+      if (data.isVIP) {
+        let selectedValue = 'VIP';
+        dispatch(ChooseUser(selectedValue));
+      } else {
+        let selectedValue = 'Free';
+        dispatch(ChooseUser(selectedValue));
+      }
+      if (ScreenName !== NAVIGATION.home) {
+        resetStackToScreen(NAVIGATION.home);
+      }
+      // navigationRef.navigate(NAVIGATION.home, { reset: true });
+      // dispatch(updateUserTypeSuccess(user));
+    } catch (error) {
+      dispatch(updateUserTypeError(error));
     }
-    if(ScreenName!==NAVIGATION.home){
-      resetStackToScreen(NAVIGATION.home)
-    }
-    // navigationRef.navigate(NAVIGATION.home, { reset: true });    
-    // dispatch(updateUserTypeSuccess(user));
-  } catch (error) {
-    dispatch(updateUserTypeError(error));
-  }
+  };
 
- 
-};
-
-export const getUserType = (id,userStatus) => async dispatch => {
+export const getUserType = (id, userStatus) => async dispatch => {
   dispatch(getUserTypeRequest());
   try {
     const user = await UserController.getUserTypeDataRequest(id);

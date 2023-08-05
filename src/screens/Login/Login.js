@@ -16,7 +16,10 @@ import Recaptcha from 'react-native-recaptcha-that-works';
 import { CountryPicker } from 'react-native-country-codes-picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { checkPhoneNumber, customShowMessage } from '@/utils';
-import { PRIVACY_POLICY_URL } from '@/constants/apiConstants';
+import {
+  PRIVACY_POLICY_URL,
+  TERMS_AND_CONDITION_URL,
+} from '@/constants/apiConstants';
 
 export function Login({ route }) {
   const recaptcha = useRef();
@@ -145,18 +148,25 @@ export function Login({ route }) {
           style={styles.submitButton}
           title={isLoading ? strings.common.loading : strings.login.continue}
         />
-        <Text
-          onPress={() => {
-            Linking.openURL(PRIVACY_POLICY_URL);
-          }}
-          style={styles.termsAndConditionsStyle}
-        >
+        <Text style={styles.termsAndConditionsStyle}>
           {strings.login.byContinue}
-          <Text style={styles.linkColor}>
+          <Text
+            onPress={() => {
+              Linking.openURL(TERMS_AND_CONDITION_URL);
+            }}
+            style={styles.linkColor}
+          >
             {strings.login.termsAndConditions}
           </Text>
           {strings.login.and}
-          <Text style={styles.linkColor}>{strings.login.privacyPolicy}</Text>
+          <Text
+            onPress={() => {
+              Linking.openURL(PRIVACY_POLICY_URL);
+            }}
+            style={styles.linkColor}
+          >
+            {strings.login.privacyPolicy}
+          </Text>
         </Text>
       </View>
     </KeyboardAwareScrollView>

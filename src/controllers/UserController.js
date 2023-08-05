@@ -79,10 +79,10 @@ export class UserController {
       data.append('id', id);
       data.append('fullname', fullname);
       data.append('primaryEmail', primaryEmail);
-      data.append('location', location==null?"":location);
+      data.append('location', location == null ? '' : location);
       data.append('username', username);
       data.append('dob', dob);
-      data.append('gender', gender==null?"":gender);
+      data.append('gender', gender == null ? '' : gender);
       data.append('profilePic', mimeType == null && file);
       const headers = {
         'Content-Type': 'multipart/form-data',
@@ -92,6 +92,7 @@ export class UserController {
           resolve(response);
         })
         .catch(error => {
+          console.log('error ----------------- === ', error);
           reject(error);
         });
     });
@@ -981,11 +982,11 @@ export class UserController {
       HttpClient.post(endpoint, DATA)
         .then(response => {
           resolve(response);
-           console.log('response of Validate receipt', JSON.stringify(response));
+          console.log('response of Validate receipt', JSON.stringify(response));
         })
         .catch(error => {
           reject(error);
-           console.log('error of Validate receipt', error);
+          console.log('error of Validate receipt', error);
         });
     });
   }
@@ -1010,18 +1011,17 @@ export class UserController {
     });
   }
 
-
-
   static async getUserTypeDataRequest(userId) {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.GET_USER_TYPE;
+      console.log('endpoint ====', endpoint);
       var DATA = JSON.stringify({
-        userId:userId,
+        userId: userId,
       });
       HttpClient.post(endpoint, DATA)
         .then(response => {
           resolve(response);
-           console.log('response of get user type', JSON.stringify(response));
+          console.log('response of get user type', JSON.stringify(response));
         })
         .catch(error => {
           reject(new Error(error.message));
