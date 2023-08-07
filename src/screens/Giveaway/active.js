@@ -54,9 +54,9 @@ import { GIVEAWAY_TERMS_URL } from '@/constants/apiConstants';
 
 const GiveAwayAlert = () => {
   const rules = [
-    'Rule description #1, placeholder text. we are going to raffle away a brand new iPhone 13! ',
-    'Rule description #1, placeholder text. we are going to raffle away a brand new iPhone 13! ',
-    'Rule description #1, placeholder text. we are going to raffle away a brand new iPhone 13! ',
+    'Rule #1 - Each giveaway specifically states its start and end date and may have rules of its own (example: US only). Please read each carefully before joining ',
+    'Rule #2 - Some giveaways will be open to anyone in the app and some will be open only to our VIP users. ',
+    'Rule #3 - Winners are randomly selected, if a winner fails to respond or does not meet the giveaway criteria you may forfeit the prize. See T&C for more info. ',
   ];
 
   return (
@@ -91,8 +91,8 @@ const GiveAwayAlert = () => {
           color: theme.light.colors.text,
         }}
       >
-        Thanks for joining our app everyone! To show our appreciation, we are
-        going to raffle away a brand new iPhone 13!
+        Thanks for being a member of our Jatie VIP App! This is our giveaway
+        section where you can Join in for a chance to win prizes!
       </Text>
       <View
         style={{
@@ -145,8 +145,10 @@ const GiveAwayAlert = () => {
             color: theme.light.colors.text,
           }}
         >
-          Please note that Apple Inc. isn’t involved in this content/giveaway in
-          any way. Apple will not be responsible for anything that happens here.
+          Entrants should understand that they are providing their information
+          to the Company and not to Apple or any other platform. This promotion
+          is in no way sponsored, endorsed, or administered by, or associated
+          with Apple or any other platform.
         </Text>
       </View>
       <View style={{ marginBottom: ms(10) }} />
