@@ -402,10 +402,7 @@ export function SignUp({ route }) {
           value={email}
         />
 
-        <Text style={styles.subTitle}>
-          {strings.SignUp.birthday}
-          <Required />
-        </Text>
+        <Text style={styles.subTitle}>{strings.SignUp.birthday}</Text>
 
         <TouchableOpacity
           onPress={showDatepicker}

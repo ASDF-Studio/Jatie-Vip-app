@@ -486,7 +486,6 @@ export default function EditProfile({ navigation }) {
             <Text style={styles.textFieldLebel}>
               {' '}
               {strings.SignUp.yourName}
-              {` `}
               <Required />
             </Text>
             <TextInput
@@ -499,7 +498,6 @@ export default function EditProfile({ navigation }) {
             <Text style={styles.textFieldLebel}>
               {' '}
               {strings.SignUp.email}
-              {` `}
               <Required />
             </Text>
             <TextInput
@@ -512,7 +510,6 @@ export default function EditProfile({ navigation }) {
             <Text style={styles.textFieldLebel}>
               {' '}
               {strings.SignUp.birthday}
-              {` `} <Required />
             </Text>
             <TextInput
               style={styles.textFiled}
@@ -615,7 +612,7 @@ export default function EditProfile({ navigation }) {
             <Text style={styles.textFieldLebel}>
               {' '}
               {strings.profile.userName}
-              {` `} <Required />
+              <Required />
             </Text>
             <TextInput
               ref={userNameInput_ref}
@@ -641,7 +638,7 @@ export default function EditProfile({ navigation }) {
             <Text style={styles.textFieldLebel}>
               {' '}
               {strings.SignUp.loginPhone}
-              {` `} <Required />
+              <Required />
             </Text>
             <TextInput
               style={styles.textFiled}
