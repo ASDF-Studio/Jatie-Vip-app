@@ -9,6 +9,7 @@ import {
   Platform,
   ImageBackground,
   ActivityIndicator,
+  Linking,
 } from 'react-native';
 import { theme } from '@/theme';
 import Moment from 'moment';
@@ -26,7 +27,11 @@ import { strings } from '@/localization';
 import { NAVIGATION } from '@/constants';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faLock, faPlay } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCircleCheck,
+  faLock,
+  faPlay,
+} from '@fortawesome/free-solid-svg-icons';
 import { Data } from './giveawayData/activeData';
 import { geAllActiveGiveAwayData } from '@/selectors/PostSelectors';
 import { useDispatch, useSelector } from 'react-redux';
@@ -44,6 +49,131 @@ import { SwiperViewer } from '@/components/SwiperComponent';
 import { useCallback } from 'react';
 import { backgroundFetch, useBackgroundFetch } from '@/hooks';
 import { GiveAwayController } from '@/controllers/GiveAwayController';
+import { values } from 'lodash';
+import { GIVEAWAY_TERMS_URL } from '@/constants/apiConstants';
+
+const GiveAwayAlert = () => {
+  const rules = [
+    'Rule description #1, placeholder text. we are going to raffle away a brand new iPhone 13! ',
+    'Rule description #1, placeholder text. we are going to raffle away a brand new iPhone 13! ',
+    'Rule description #1, placeholder text. we are going to raffle away a brand new iPhone 13! ',
+  ];
+
+  return (
+    <View
+      style={{
+        marginHorizontal: ms(10),
+        // marginVertical: ms(22),
+        marginTop: ms(10),
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: theme.light.colors.borderColor,
+        padding: ms(15),
+        backgroundColor: theme.light.colors.alertBackground,
+      }}
+    >
+      <Text
+        style={{
+          fontFamily: FontFamily.Recoleta_bold,
+          textAlign: 'justify',
+          color: theme.light.colors.black,
+          fontSize: ms(18, 0.3),
+        }}
+      >
+        Giveaway Rules
+      </Text>
+      <View style={{ marginBottom: ms(10) }} />
+      <Text
+        style={{
+          fontFamily: FontFamily.BrandonGrotesque_regular,
+          fontSize: ms(18, 0.3),
+          lineHeight: ms(22),
+          color: theme.light.colors.text,
+        }}
+      >
+        Thanks for joining our app everyone! To show our appreciation, we are
+        going to raffle away a brand new iPhone 13!
+      </Text>
+      <View
+        style={{
+          marginBottom: ms(10),
+        }}
+      />
+      {rules.map(rule => {
+        return (
+          <View
+            style={{
+              flexDirection: 'row',
+              marginBottom: ms(10),
+            }}
+          >
+            <FontAwesomeIcon
+              icon={faCircleCheck}
+              size={ms(14)}
+              style={{
+                color: theme.light.colors.borderColor,
+                marginTop: ms(5),
+                marginRight: ms(5),
+              }}
+            />
+            <Text
+              style={{
+                fontFamily: FontFamily.BrandonGrotesque_regular,
+                fontSize: ms(18, 0.3),
+                lineHeight: ms(22),
+                color: theme.light.colors.text,
+              }}
+            >
+              {rule}
+            </Text>
+          </View>
+        );
+      })}
+
+      <View
+        style={{
+          padding: ms(16),
+          backgroundColor: theme.light.colors.white,
+          borderRadius: 8,
+        }}
+      >
+        <Text
+          style={{
+            fontFamily: FontFamily.BrandonGrotesque_regular,
+            fontSize: ms(17, 0.3),
+            lineHeight: ms(22),
+            color: theme.light.colors.text,
+          }}
+        >
+          Please note that Apple Inc. isn’t involved in this content/giveaway in
+          any way. Apple will not be responsible for anything that happens here.
+        </Text>
+      </View>
+      <View style={{ marginBottom: ms(10) }} />
+      <Text
+        style={{
+          fontFamily: FontFamily.BrandonGrotesque_regular,
+          fontSize: ms(18, 0.3),
+          lineHeight: ms(22),
+          color: theme.light.colors.text,
+        }}
+      >
+        <Text>By joining, you are agreeing to the </Text>
+        <Text
+          style={{
+            color: theme.light.colors.hyperlink,
+            textDecorationLine: 'underline',
+          }}
+          onPress={() => {
+            Linking.openURL(GIVEAWAY_TERMS_URL);
+          }}
+        >
+          Giveaway Terms & Conditions.
+        </Text>
+      </Text>
+    </View>
+  );
+};
 
 export default function Active({ navigation, userType }) {
   const user = useSelector(getUser);
@@ -62,7 +192,6 @@ export default function Active({ navigation, userType }) {
   const isFocused = useIsFocused();
 
   const customReq = () => {
-
     const data = {
       userId: user?.id,
     };
@@ -145,9 +274,11 @@ export default function Active({ navigation, userType }) {
             style={styles.loaderStyle}
           />
         )}
+
         <FlatList
           data={getActiveGiveWayData ?? []}
           key={props => props.id}
+          ListHeaderComponent={GiveAwayAlert}
           ListFooterComponent={renderFooterPost}
           onEndReachedThreshold={0.1}
           onEndReached={() => {

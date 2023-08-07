@@ -21,6 +21,7 @@ import { theme } from '@/theme';
 import { faCheck } from '@fortawesome/pro-regular-svg-icons';
 import { navigationRef } from '@/navigation/RootNavigation';
 import { customShowMessage } from '@/utils';
+import { Required } from '../Profile/editProfile';
 
 export function SignUp({ route }) {
   const { username, ID, number } = route.params;
@@ -340,7 +341,7 @@ export function SignUp({ route }) {
         message: strings.SignUp.emailPlaceHolder,
         type: 'danger',
       });
-    } 
+    }
     // else if (birthday == '') {
     //   customShowMessage({
     //     message: strings.SignUp.dobPlaceHolder,
@@ -356,7 +357,7 @@ export function SignUp({ route }) {
     //     message: strings.SignUp.countryPlaceHolder,
     //     type: 'danger',
     //   });
-    // } 
+    // }
     else {
       var DATA = {
         birthday,
@@ -377,7 +378,10 @@ export function SignUp({ route }) {
     <KeyboardAwareScrollView>
       <View style={styles.container}>
         <AuthHeader title={strings.SignUp.title} />
-        <Text style={styles.subTitle}>{strings.SignUp.yourName}</Text>
+        <Text style={styles.subTitle}>
+          {strings.SignUp.yourName}
+          <Required />
+        </Text>
 
         <TextField
           autoCapitalize="none"
@@ -386,7 +390,10 @@ export function SignUp({ route }) {
           value={name}
           placeholderStyle={styles.dropdowntextstyle}
         />
-        <Text style={styles.subTitle}>{strings.SignUp.email}</Text>
+        <Text style={styles.subTitle}>
+          {strings.SignUp.email}
+          <Required />
+        </Text>
         {isLoading && <CustomLoader open={isLoading} />}
         <TextField
           autoCapitalize="none"
@@ -395,7 +402,10 @@ export function SignUp({ route }) {
           value={email}
         />
 
-        <Text style={styles.subTitle}>{strings.SignUp.birthday}</Text>
+        <Text style={styles.subTitle}>
+          {strings.SignUp.birthday}
+          <Required />
+        </Text>
 
         <TouchableOpacity
           onPress={showDatepicker}

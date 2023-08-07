@@ -39,6 +39,20 @@ import { TYPES } from '@/actions/UserActions';
 import { customShowMessage } from '@/utils';
 import { DefaultProfile } from '@/assets';
 
+export const Required = () => {
+  return (
+    <Text
+      style={{
+        color: theme.light.colors.red,
+        fontFamily: FontFamily.Recoleta_bold,
+        fontSize: ms(15, 0.3),
+      }}
+    >
+      {` * `}
+    </Text>
+  );
+};
+
 export default function EditProfile({ navigation }) {
   const userNameInput_ref = useRef();
   const dispatch = useDispatch();
@@ -466,12 +480,14 @@ export default function EditProfile({ navigation }) {
               }}
             />
           </View>
-        </View> 
+        </View>
         <View style={styles.formContainer}>
           <View style={styles.textFiledContainer}>
             <Text style={styles.textFieldLebel}>
               {' '}
-              {strings.SignUp.yourName}{' '}
+              {strings.SignUp.yourName}
+              {` `}
+              <Required />
             </Text>
             <TextInput
               style={styles.textFiled}
@@ -480,7 +496,12 @@ export default function EditProfile({ navigation }) {
             />
           </View>
           <View style={styles.textFiledContainer}>
-            <Text style={styles.textFieldLebel}> {strings.SignUp.email} </Text>
+            <Text style={styles.textFieldLebel}>
+              {' '}
+              {strings.SignUp.email}
+              {` `}
+              <Required />
+            </Text>
             <TextInput
               style={styles.textFiled}
               value={email}
@@ -490,7 +511,8 @@ export default function EditProfile({ navigation }) {
           <View style={styles.textFiledContainer}>
             <Text style={styles.textFieldLebel}>
               {' '}
-              {strings.SignUp.birthday}{' '}
+              {strings.SignUp.birthday}
+              {` `} <Required />
             </Text>
             <TextInput
               style={styles.textFiled}
@@ -592,7 +614,8 @@ export default function EditProfile({ navigation }) {
           <View style={styles.textFiledContainer}>
             <Text style={styles.textFieldLebel}>
               {' '}
-              {strings.profile.userName}{' '}
+              {strings.profile.userName}
+              {` `} <Required />
             </Text>
             <TextInput
               ref={userNameInput_ref}
@@ -617,7 +640,8 @@ export default function EditProfile({ navigation }) {
           <View style={styles.textFiledContainer}>
             <Text style={styles.textFieldLebel}>
               {' '}
-              {strings.SignUp.loginPhone}{' '}
+              {strings.SignUp.loginPhone}
+              {` `} <Required />
             </Text>
             <TextInput
               style={styles.textFiled}
