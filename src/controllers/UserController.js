@@ -53,6 +53,21 @@ export class UserController {
         });
     });
   }
+  static async checkEmail(email) {
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.CHECK_EMAIL;
+      var data = JSON.stringify({
+        primaryEmail: email,
+      });
+      HttpClient.post(endpoint, data)
+        .then(response => {
+          resolve(response);
+        })
+        .catch(error => {
+          reject(error);
+        });
+    });
+  }
   static async updateProfile(
     dob,
     fullname,
@@ -978,7 +993,7 @@ export class UserController {
         userId: data.loggedInUserId,
         platform: Platform.OS,
       });
-      //  console.log('RECIPT_DATA................', DATA);
+      console.log('RECIPT_DATA................', DATA);
       HttpClient.post(endpoint, DATA)
         .then(response => {
           resolve(response);

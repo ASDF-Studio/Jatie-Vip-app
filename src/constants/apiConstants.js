@@ -6,6 +6,7 @@ export const API_END_POINTS = {
   LOGIN: 'auth/login',
   VERIFY_OTP: 'auth/verifyotp',
   CHECK_USERNAME: 'auth/getusername',
+  CHECK_EMAIL: 'auth/getEmail',
   UPDATE_USER: 'auth/updateuser',
   UPLOAD_PROFILE_PIC: 'auth/upload',
 

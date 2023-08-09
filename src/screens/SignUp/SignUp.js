@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { TYPES } from '@/actions/UserActions';
+import { TYPES, checkEmail } from '@/actions/UserActions';
 import { Button, CustomLoader, TextField } from '@/components';
 import { strings } from '@/localization';
 import { styles } from '@/screens/SignUp/SignUp.style';
@@ -22,6 +22,11 @@ import { faCheck } from '@fortawesome/pro-regular-svg-icons';
 import { navigationRef } from '@/navigation/RootNavigation';
 import { customShowMessage } from '@/utils';
 import { Required } from '../Profile/editProfile';
+import { useEffect } from 'react';
+import { debounce } from 'lodash';
+import { useCallback } from 'react';
+import { ms } from 'react-native-size-matters';
+import { FontFamily } from '@/theme/Fonts';
 
 export function SignUp({ route }) {
   const { username, ID, number } = route.params;
@@ -41,6 +46,7 @@ export function SignUp({ route }) {
     { label: 'Male', value: 'Male' },
     { label: 'Female', value: 'Female' },
   ]);
+  const [emailWarning, setEmailWarning] = useState(true);
 
   const [openCountryDropDown, setOpenCountryDropDown] = useState(false);
   const [countryvalue, setCountryvalue] = useState(null);
@@ -331,6 +337,10 @@ export function SignUp({ route }) {
   };
 
   const validation = () => {
+    if (!emailWarning) {
+      return;
+    }
+
     if (name == '') {
       customShowMessage({
         message: strings.SignUp.name,
@@ -341,24 +351,7 @@ export function SignUp({ route }) {
         message: strings.SignUp.emailPlaceHolder,
         type: 'danger',
       });
-    }
-    // else if (birthday == '') {
-    //   customShowMessage({
-    //     message: strings.SignUp.dobPlaceHolder,
-    //     type: 'danger',
-    //   });
-    // } else if (genderValue == null) {
-    //   customShowMessage({
-    //     message: strings.SignUp.genderPlaceHolder,
-    //     type: 'danger',
-    //   });
-    // } else if (countryvalue == null) {
-    //   customShowMessage({
-    //     message: strings.SignUp.countryPlaceHolder,
-    //     type: 'danger',
-    //   });
-    // }
-    else {
+    } else {
       var DATA = {
         birthday,
         name,
@@ -374,6 +367,40 @@ export function SignUp({ route }) {
       });
     }
   };
+
+  useEffect(() => {
+    checkPrimaryEmail(email);
+  }, [email]);
+
+  const checkPrimaryEmail = useCallback(async email => {
+    const res = await checkEmail(email);
+    setEmailWarning(res);
+  }, []);
+
+  const EmailErrorView = () => {
+    return (
+      <View
+        style={{
+          marginBottom: 10,
+          flexDirection: 'row',
+        }}
+      >
+        <Text
+          style={[
+            {
+              fontSize: ms(14, 0.3),
+              fontFamily: FontFamily.BrandonGrotesque_regular,
+              fontSize: ms(16),
+            },
+            { color: theme.light.colors.error },
+          ]}
+        >
+          {strings.setupUserId.emailValid}
+        </Text>
+      </View>
+    );
+  };
+
   return (
     <KeyboardAwareScrollView>
       <View style={styles.container}>
@@ -394,14 +421,17 @@ export function SignUp({ route }) {
           {strings.SignUp.email}
           <Required />
         </Text>
-        {isLoading && <CustomLoader open={isLoading} />}
+        {/* {isLoading && <CustomLoader open={isLoading} />} */}
         <TextField
           autoCapitalize="none"
-          onChangeText={setEmail}
+          onChangeText={text => {
+            setEmail(text);
+            // checkPrimaryEmail(email);
+          }}
           placeholder={strings.SignUp.emailPlaceHolder}
           value={email}
         />
-
+        {!emailWarning && <EmailErrorView />}
         <Text style={styles.subTitle}>{strings.SignUp.birthday}</Text>
 
         <TouchableOpacity

@@ -763,6 +763,16 @@ export const checkUserName = username => async dispatch => {
   }
 };
 
+export const checkEmail = async email => {
+  try {
+    const res = await UserController.checkEmail(email);
+
+    return res.status;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const updateProfile =
   (
     dob,

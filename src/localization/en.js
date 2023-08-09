@@ -117,6 +117,8 @@ export const en = {
     chooseAnother:
       'Sorry, this username is already taken, please choose another one.',
     userNameValidation: 'Please enter username',
+    emailValid:
+      'Sorry, this email is already registred, please use another one.',
   },
   profile: {
     message: 'This screen has the iOS native large header.',
@@ -427,7 +429,8 @@ export const en = {
     users: 'Reported Users',
   },
   subscription: {
-    restorePurchases: "Restore Purchases",
-    cancelSubscription: "Then subscription period applies cancel anytime up to 24hrs prior to end of trial"
-  }
+    restorePurchases: 'Restore Purchases',
+    cancelSubscription:
+      'Then subscription period applies cancel anytime up to 24hrs prior to end of trial',
+  },
 };

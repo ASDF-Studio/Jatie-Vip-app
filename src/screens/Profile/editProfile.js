@@ -338,6 +338,7 @@ export default function EditProfile({ navigation }) {
   const [loginPhone, setLoginPhone] = useState(user?.contact?.toString());
   const [profileImage, setprofileimage] = useState(user?.profilePic || '');
   const [mimeType, setmimeType] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const PickFromCamera = () => {
     ImagePicker.openCamera({
@@ -365,9 +366,6 @@ export default function EditProfile({ navigation }) {
     });
   };
 
-  const isLoading = useSelector(state =>
-    isLoadingSelector([TYPES.UPDATE_PROFILE], state)
-  );
   const onChange = selectedDate => {
     const formattedDate = moment(selectedDate).format('MMM DD, yyyy');
     const birthDate = moment(selectedDate).format('yyyy/MM/DD');
@@ -376,53 +374,48 @@ export default function EditProfile({ navigation }) {
     setDate(selectedDate);
     setFormatedDate(formattedDate);
   };
-  const validation = () => {
+  const validation = async () => {
+    setLoading(true);
     if (name == '') {
       customShowMessage({
         message: strings.SignUp.name,
         type: 'danger',
       });
-    } else if (email == '') {
+      return;
+    }
+    if (email == '') {
       customShowMessage({
         message: strings.SignUp.emailPlaceHolder,
         type: 'danger',
       });
-    } else if (formatedDate == '') {
-      customShowMessage({
-        message: strings.SignUp.dobPlaceHolder,
-        type: 'danger',
-      });
-    } else if (genderValue == '') {
-      customShowMessage({
-        message: strings.SignUp.genderPlaceHolder,
-        type: 'danger',
-      });
-    } else if (locationValue == '') {
-      customShowMessage({
-        message: strings.SignUp.countryPlaceHolder,
-        type: 'danger',
-      });
-    } else if (userName == '') {
+      return;
+    }
+    if (userName == '') {
       customShowMessage({
         message: strings.setupUserId.subtitle,
         type: 'danger',
       });
-    } else {
-      dispatch(
-        updateProfile(
-          formatedDate,
-          name,
-          genderValue,
-          user?.id,
-          email,
-          locationValue,
-          userName,
-          user?.number,
-          profileImage,
-          mimeType,
-          NAVIGATION.editProfile
-        )
-      );
+      return;
+    }
+
+    try {
+      await updateProfile(
+        formatedDate,
+        name,
+        genderValue,
+        user?.id,
+        email,
+        locationValue,
+        userName,
+        user?.number,
+        profileImage,
+        mimeType,
+        NAVIGATION.editProfile
+      )(dispatch);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading(false);
     }
   };
   const onSave = () => {
@@ -450,7 +443,7 @@ export default function EditProfile({ navigation }) {
         nestedScrollEnabled={true}
         showsVerticalScrollIndicator={true}
       >
-        {isLoading && <CustomLoader open={isLoading} />}
+        {loading && <CustomLoader open={loading} />}
         <Text style={styles.profileTxt}>{strings.profile.profilePic}</Text>
         <View style={styles.ScrollViewContainer}>
           <View>
