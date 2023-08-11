@@ -43,15 +43,19 @@ import {
   TERMS_AND_CONDITION_URL,
 } from '@/constants/apiConstants';
 import { NAVIGATION } from '@/constants';
+import { capitalizeFirstLetter } from '@/hooks/strings';
 
 export default function UpgradeMembership({ navigation }) {
   const dispatch = useDispatch();
   const user = useSelector(getUser);
   const [loading, setLoading] = useState(false);
   const [stopPurchase, setStopPurchase] = useState(false);
+  const[saveYearlyPlan,setSaveYearlyPlan]=useState(null)
+  const[currencySymbol,setCurrencySymbol]=useState(null)
   const [purchasedStatus, setPurchasedStatus] = useState(false);
   const [purchasedMessage, setPurchasedMessage] = useState(null);
   const [isMakingPurchase, setIsMakingPurchase] = useState(false);
+  const [productArray, setProductArray] = useState([]);
   const [productSKU, setProductSKU] = useState(SKUS.ONE_MONTH);
   const [subsExpired, setSubsExpired] = useState(false);
   const [restorePurchaseStatus, setRestorePurchaseStatus] = useState(false);
@@ -70,10 +74,53 @@ export default function UpgradeMembership({ navigation }) {
   const initIAP = async () => {
     try {
       await initConnection();
+      fetchProductInformation()
     } catch (error) {
       console.log('Error initializing connection:', error);
     }
   };
+  
+
+   async function fetchProductInformation() {
+    try {
+        const products = await getProducts({ skus: Platform.OS == 'ios' ? SKUS.IOS : SKUS.ANDROID });
+        setProductArray(products)
+
+const monthlyPrice = products.find(item => item.subscriptionPeriodUnitIOS === 'MONTH');
+const yearlyPrice = products.find(item => item.subscriptionPeriodUnitIOS === 'YEAR');
+
+
+if (monthlyPrice && yearlyPrice) {
+  const monthlyPriceValue = extractPriceFromString(monthlyPrice.localizedPrice);
+  const yearlyPriceValue = extractPriceFromString(yearlyPrice.localizedPrice);
+
+  // Get the currency symbol from the first character of the localized price
+  const currencySymbol = monthlyPrice.localizedPrice.charAt(0);
+
+  const priceDifference = yearlyPriceValue - monthlyPriceValue;
+  setCurrencySymbol(currencySymbol)
+  setSaveYearlyPlan(priceDifference)
+
+  console.log(`Price difference between monthly and yearly: ${currencySymbol}${priceDifference.toFixed(2)}`);
+} else {
+  console.log("Monthly and/or yearly price data not found.");
+} 
+    } catch (error) {
+
+      // console.log("ERRROPORPORPO",JSON.stringify(error));
+    }
+}
+
+function extractPriceFromString(priceString) {
+  const numericPart = priceString.replace(/[^\d.]/g, ''); // Remove non-numeric characters except dot
+  return parseFloat(numericPart);
+}
+
+
+
+
+
+
   const clearIAPListeners = async () => {
     if (purchaseUpdateSubscription) {
       purchaseUpdateSubscription.remove();
@@ -207,33 +254,6 @@ export default function UpgradeMembership({ navigation }) {
     }
   };
 
-  // const handlePurchase = async userProductSku => {
-  //   try {
-  //     setIsMakingPurchase(true);
-  //     const subscriptions = await getSubscriptions({ skus: Platform.OS === 'android' ? SKUS.ANDROID : SKUS.IOS });
-  //     const product = subscriptions.find((product) => product.productId === userProductSku);
-  //     if (product) {
-  //       await requestSubscription({
-  //         sku: userProductSku,
-  //         ...(product?.subscriptionOfferDetails && {
-  //           subscriptionOffers: [
-  //             {
-  //               sku: product?.productId,
-  //               offerToken: product?.subscriptionOfferDetails[0]?.offerToken,
-  //             },
-  //           ],
-  //         }),
-  //       });
-  //     } else {
-  //       setLoading(false);
-  //       // console.log('Desired product not found');
-  //     }
-  //   } catch (error) {
-  //     // console.log('Error during subscription request:', error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   async function verifyReceipt(receipt) {
     const data = {
@@ -315,22 +335,35 @@ export default function UpgradeMembership({ navigation }) {
     }
   }
 
-  const handleMonthlyPlanPress = () => {
-    setProductSKU(SKUS.ONE_MONTH);
+  // const handleMonthlyPlanPress = () => {
+  //    setProductSKU(SKUS.ONE_MONTH);
+  //   if (stopPurchase) {
+  //     showAlert(purchasedMessage);
+  //   } else {
+  //     checkForSubscriptionUpdates(SKUS.ONE_MONTH);
+  //   }
+  // };
+  // const handleYearlyPlanPress = () => {
+  //   setProductSKU(SKUS.YEAR);
+  //   if (stopPurchase) {
+  //     showAlert(purchasedMessage);
+  //   } else {
+  //     checkForSubscriptionUpdates(SKUS.YEAR);
+  //   }
+  // };
+
+
+
+
+
+  const handlePlanPress=(item)=>{
+    setProductSKU(item.productId);
     if (stopPurchase) {
       showAlert(purchasedMessage);
     } else {
-      checkForSubscriptionUpdates(SKUS.ONE_MONTH);
+      checkForSubscriptionUpdates(item.productId);
     }
-  };
-  const handleYearlyPlanPress = () => {
-    setProductSKU(SKUS.YEAR);
-    if (stopPurchase) {
-      showAlert(purchasedMessage);
-    } else {
-      checkForSubscriptionUpdates(SKUS.YEAR);
-    }
-  };
+  }
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -408,8 +441,22 @@ export default function UpgradeMembership({ navigation }) {
             </View>
             <Text style={styles.listText}> {strings.profile.benefit_5} </Text>
           </View>
+          {productArray.length>0 &&
+          
           <View style={styles.btnContainer}>
-            <Button
+            {productArray.map((item)=>{
+
+              return(
+                <Button
+              title={item.localizedPrice +"/"+ capitalizeFirstLetter(item.subscriptionPeriodUnitIOS)}
+              onPress={()=>handlePlanPress(item)}
+              style={styles.monthlyPlanButton}
+            />
+              )
+            })
+
+            }
+             {/* <Button
               title={strings.profile.monthlyPlan}
               onPress={handleMonthlyPlanPress}
               // onPress={() =>{
@@ -425,13 +472,19 @@ export default function UpgradeMembership({ navigation }) {
               //   checkForSubscriptionUpdates(SKUS.YEAR)}}
               title={strings.profile.yearlyPlan}
               style={styles.yearlyPlanButton}
-            />
+            />  */}
           </View>
+          
+          }
           <View style={styles.footerTxtContainer}>
-            <Text style={styles.footerTxt}>
-              {' '}
-              {strings.profile.saveByYearlyPlan}{' '}
-            </Text>
+           {saveYearlyPlan!==null &&
+           
+           <Text style={styles.footerTxt}>
+           {' '}
+           {/* {strings.profile.saveByYearlyPlan}{' '} */}
+           {`Save ${currencySymbol+saveYearlyPlan.toFixed(2)}  by choosing the Yearly plan`}
+         </Text>
+           }
           </View>
 
           <View style={styles.cancelTxtContainer}>
