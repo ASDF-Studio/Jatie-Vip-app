@@ -104,7 +104,7 @@ export const CommentInput = React.forwardRef((props, ref) => {
                     id: one.id,
                     name: one.username,
                   };
-                  onSelect(finalData);
+                  onSelect({ name: one.username });
                 }}
                 style={{ padding: 12 }}
               >
@@ -253,12 +253,15 @@ export const CommentInput = React.forwardRef((props, ref) => {
           )
         );
         props.updateParentState();
-        var count = arr[props.postIndex]?.comments_aggregate?.aggregate?.count;
-        arr[props.postIndex].comments_aggregate.aggregate.count = count + 1;
-        const ob = {
-          data: arr,
-        };
-        dispatch(getAllPostSuccess(ob));
+        if (arr) {
+          var count =
+            arr[props.postIndex]?.comments_aggregate?.aggregate?.count;
+          arr[props.postIndex].comments_aggregate.aggregate.count = count + 1;
+          const ob = {
+            data: arr,
+          };
+          dispatch(getAllPostSuccess(ob));
+        }
       } else {
         setIsEdit(false);
         dispatch(

@@ -1539,3 +1539,17 @@ export const getUserType = (id, userStatus) => async dispatch => {
     dispatch(getUserTypeError(error));
   }
 };
+
+export const getUserId = async username => {
+  try {
+    const res = await UserController.getUserId({
+      username,
+    });
+    return res.data[0];
+  } catch (error) {
+    customShowMessage({
+      message: 'User not found',
+      type: 'danger',
+    });
+  }
+};

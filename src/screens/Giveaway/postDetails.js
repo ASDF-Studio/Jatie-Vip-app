@@ -169,7 +169,7 @@ export default function PostDetails({ navigation, route }) {
               </View>
               <Timer item={data} />
               <CardBody text={data.postBody} />
-              {link(item.link)}
+              {/* {link(item.link)} */}
               <CardBody text={item.MoreDesc} />
               <Text style={styles.EndTimeTxt}>{/* {item.postExpires} */}</Text>
               <View style={styles.thumbnailContainer}>

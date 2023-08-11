@@ -152,4 +152,5 @@ export const API_END_POINTS = {
   VALIDATE_RECEIPT: 'vip/receipt_validation',
 
   GET_USER_TYPE: 'user/get_user_type',
+  GET_USER_ID: 'auth/getUserId',
 };

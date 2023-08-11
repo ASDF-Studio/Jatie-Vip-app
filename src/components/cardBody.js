@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, Linking } from 'react-native';
 import PropsType from 'prop-types';
 import { FontFamily } from '@/theme/Fonts';
 import { ms } from 'react-native-size-matters';
@@ -7,16 +7,18 @@ import { theme } from '@/theme';
 import ParsedText from 'react-native-parsed-text';
 import { navigationRef } from '@/navigation/RootNavigation';
 import { NAVIGATION } from '@/constants';
+import { Link } from '@react-navigation/native';
+import { getUserId } from '@/actions/UserActions';
 
 export const CardBody = ({ text, VIPKEY }) => {
-
-  const mentionToPlainTextRegex = /({([^{^}]*)}\[([^[]*)]\(([^(^)]*)\))/i
+  const mentionToPlainTextRegex = /({([^{^}]*)}\[([^[]*)]\(([^(^)]*)\))/i;
+  const matchMention = /\B@\w+/g;
 
   const renderUserNameText = (matchingString, matches) => {
-    let pattern = mentionToPlainTextRegex
+    let pattern = mentionToPlainTextRegex;
     let match = matchingString.match(pattern);
     return `@${match[3]}`;
-  }
+  };
 
   function extractUserId(string) {
     const pattern = /\((.*?)\)/;
@@ -25,37 +27,52 @@ export const CardBody = ({ text, VIPKEY }) => {
       const number = match[1];
       return number;
     } else {
-      return null;  // or throw an error, depending on your use case
+      return null; // or throw an error, depending on your use case
     }
   }
 
   const onPressUserName = (text, index) => {
-    const userId = extractUserId(`${text}`)
+    const userId = extractUserId(`${text}`);
 
     //TODO:  Navigate to the  user profile on the basis of user id mentioned in the comment section
-    navigationRef.navigate(NAVIGATION.userProfile, { userId: userId })
-  }
+    navigationRef.navigate(NAVIGATION.userProfile, { userId: userId });
+  };
+
+  const onPressPostMention = text => {
+    const username = text.slice(1);
+    getUserId(username).then(user => {
+      navigationRef.navigate(NAVIGATION.userProfile, { userId: user.id });
+    });
+  };
 
   return (
     <View style={styles.container}>
-
-
-      <ParsedText style={[styles.text, VIPKEY == true ? styles.bluretextStyle : null]}
-
-        parse={
-          [
-            { pattern: mentionToPlainTextRegex, style: styles.username, onPress: onPressUserName, renderText: renderUserNameText },
-          ]
-        }
+      <ParsedText
+        style={[styles.text, VIPKEY == true ? styles.bluretextStyle : null]}
+        parse={[
+          {
+            pattern: mentionToPlainTextRegex,
+            style: styles.username,
+            onPress: onPressUserName,
+            renderText: renderUserNameText,
+          },
+          {
+            type: 'url',
+            style: styles.username,
+            onPress: url => {
+              Linking.openURL(url);
+            },
+          },
+          {
+            pattern: matchMention,
+            style: styles.username,
+            onPress: onPressPostMention,
+          },
+        ]}
         childrenProps={{ allowFontScaling: false }}
       >
-
         {text}
-
-
       </ParsedText>
-
-
     </View>
   );
 };
@@ -69,7 +86,7 @@ const styles = StyleSheet.create({
     paddingLeft: ms(15),
     paddingRight: ms(15),
     paddingBottom: ms(15),
-    backgroundColor: '#FFFFFF'
+    backgroundColor: '#FFFFFF',
   },
   text: {
     fontFamily: FontFamily.BrandonGrotesque_regular,
@@ -79,11 +96,11 @@ const styles = StyleSheet.create({
   },
   username: {
     color: theme.light.colors.mention,
-    fontFamily: FontFamily.BrandonGrotesque_medium
+    fontFamily: FontFamily.BrandonGrotesque_medium,
   },
 
   bluretextStyle: {
-    color: "#fff0",
+    color: '#fff0',
     fontWeight: 'bold',
     textShadowColor: '#000000',
     textShadowOffset: {
@@ -92,8 +109,7 @@ const styles = StyleSheet.create({
     },
     textShadowRadius: 12,
     // fontSize: 24,
-    fontWeight: "600",
-    textTransform: "capitalize",
-
-  }
+    fontWeight: '600',
+    textTransform: 'capitalize',
+  },
 });

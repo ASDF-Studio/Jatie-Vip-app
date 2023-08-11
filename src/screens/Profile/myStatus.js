@@ -86,10 +86,7 @@ export default function MyStatus({ navigation }) {
     }
   };
 
-  // useBackgroundFetch({
-  //   callback: customReq,
-  //   isFocused,
-  // });
+  console.log('====', user.getAllPostsByLoggedInUser);
 
   const isLoading = useSelector(state =>
     isLoadingSelector(

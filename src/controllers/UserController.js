@@ -563,6 +563,7 @@ export class UserController {
         loggedInUserId,
       })
         .then(response => {
+          console.log(response);
           resolve(response);
         })
         .catch(error => {
@@ -1037,6 +1038,24 @@ export class UserController {
         .then(response => {
           resolve(response);
           console.log('response of get user type', JSON.stringify(response));
+        })
+        .catch(error => {
+          reject(new Error(error.message));
+          // console.log('error of get user type', error);
+        });
+    });
+  }
+
+  static async getUserId({ username }) {
+    return new Promise((resolve, reject) => {
+      const endpoint = API_BASE_URL + API_END_POINTS.GET_USER_ID;
+      console.log('endpoint ====', endpoint);
+      var DATA = JSON.stringify({
+        username: username,
+      });
+      HttpClient.post(endpoint, DATA)
+        .then(response => {
+          resolve(response);
         })
         .catch(error => {
           reject(new Error(error.message));
