@@ -14,11 +14,11 @@ import { showMessage } from 'react-native-flash-message';
 import { TextStyles, theme } from '@/theme';
 import { CustomErrorView } from '@/components/CustomErrorView';
 import { customShowMessage } from '@/utils';
+import { getUser } from '@/selectors/UserSelectors';
 
 export function SetupUserId({ route }) {
-  const { ID, number } = route.params;
-  const [userId, setUserId] = useState('');
-
+  const { ID, number, user } = route.params;
+  const [userId, setUserId] = useState(user?.username || '');
   const dispatch = useDispatch();
 
   const isLoading = useSelector(state =>
@@ -41,6 +41,7 @@ export function SetupUserId({ route }) {
         username: userId,
         ID: ID,
         number: number,
+        user,
       });
     }
   };

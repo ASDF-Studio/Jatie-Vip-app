@@ -725,6 +725,7 @@ export const verifyOtp = (number, Otp, isRegistered) => async dispatch => {
     // // }
 
     // dispatch(updateFCMToken(DATA))
+
     if (isRegistered == true) {
       dispatch(verifyOtpSuccess(user));
       if (user?.isAdmin == true) {
@@ -741,6 +742,7 @@ export const verifyOtp = (number, Otp, isRegistered) => async dispatch => {
       navigationRef.navigate(NAVIGATION.setupUserId, {
         ID: user?.id,
         number: number,
+        user,
       });
     }
   } catch (error) {

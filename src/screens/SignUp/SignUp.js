@@ -29,18 +29,18 @@ import { ms } from 'react-native-size-matters';
 import { FontFamily } from '@/theme/Fonts';
 
 export function SignUp({ route }) {
-  const { username, ID, number } = route.params;
+  const { username, ID, number, user } = route.params;
   const dispatch = useDispatch();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [name, setName] = useState(user?.fullName || '');
+  const [email, setEmail] = useState(user?.primaryEmail || '');
   const [birthday, setBirthday] = useState('');
-  const [formatedDate, setFormatedDate] = useState('');
+  const [formatedDate, setFormatedDate] = useState(user?.dateOfBirth || '');
   const [date, setDate] = useState(new Date());
   const [openDatePicker, setOpenDatePicker] = useState(false);
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
   const [openGenderDropDown, setOpenGenderDropDown] = useState(false);
-  const [genderValue, setGenderValue] = useState(null);
+  const [genderValue, setGenderValue] = useState(user?.gender || null);
   const [genderItems, setGenderItems] = useState([
     { label: 'Prefer not to say', value: 'Prefer not to say' },
     { label: 'Male', value: 'Male' },
@@ -49,7 +49,7 @@ export function SignUp({ route }) {
   const [emailWarning, setEmailWarning] = useState(true);
 
   const [openCountryDropDown, setOpenCountryDropDown] = useState(false);
-  const [countryvalue, setCountryvalue] = useState(null);
+  const [countryvalue, setCountryvalue] = useState(user?.location || null);
   const [countryItems, setCountryItems] = useState([
     { value: 'AF', label: 'Afghanistan' },
     { value: 'AX', label: 'Åland Islands' },
@@ -369,7 +369,9 @@ export function SignUp({ route }) {
   };
 
   useEffect(() => {
-    checkPrimaryEmail(email);
+    if (email !== '') {
+      checkPrimaryEmail(email);
+    }
   }, [email]);
 
   const checkPrimaryEmail = useCallback(async email => {

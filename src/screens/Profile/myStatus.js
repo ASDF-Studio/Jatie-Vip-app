@@ -86,8 +86,6 @@ export default function MyStatus({ navigation }) {
     }
   };
 
-  console.log('====', user.getAllPostsByLoggedInUser);
-
   const isLoading = useSelector(state =>
     isLoadingSelector(
       [TYPES.DELETE_POST, TYPES.GET_ALL_POST_BY_LOGGED_IN_USER],
