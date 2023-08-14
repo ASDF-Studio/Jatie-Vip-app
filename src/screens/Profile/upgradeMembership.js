@@ -44,14 +44,15 @@ import {
 } from '@/constants/apiConstants';
 import { NAVIGATION } from '@/constants';
 import { capitalizeFirstLetter } from '@/hooks/strings';
+import { isEmpty } from 'lodash';
 
 export default function UpgradeMembership({ navigation }) {
   const dispatch = useDispatch();
   const user = useSelector(getUser);
   const [loading, setLoading] = useState(false);
   const [stopPurchase, setStopPurchase] = useState(false);
-  const[saveYearlyPlan,setSaveYearlyPlan]=useState(null)
-  const[currencySymbol,setCurrencySymbol]=useState(null)
+  const [saveYearlyPlan, setSaveYearlyPlan] = useState(null);
+  const [currencySymbol, setCurrencySymbol] = useState(null);
   const [purchasedStatus, setPurchasedStatus] = useState(false);
   const [purchasedMessage, setPurchasedMessage] = useState(null);
   const [isMakingPurchase, setIsMakingPurchase] = useState(false);
@@ -74,52 +75,100 @@ export default function UpgradeMembership({ navigation }) {
   const initIAP = async () => {
     try {
       await initConnection();
-      fetchProductInformation()
+
+      if (Platform.OS === 'ios') fetchProductInformation();
+      else fetchSubscriptionAndroid();
     } catch (error) {
       console.log('Error initializing connection:', error);
     }
   };
-  
 
-   async function fetchProductInformation() {
+  const fetchSubscriptionAndroid = async () => {
     try {
-        const products = await getProducts({ skus: Platform.OS == 'ios' ? SKUS.IOS : SKUS.ANDROID });
-        setProductArray(products)
+      const products = await getProducts({
+        skus: SKUS.ANDROID.product,
+      });
 
-const monthlyPrice = products.find(item => item.subscriptionPeriodUnitIOS === 'MONTH');
-const yearlyPrice = products.find(item => item.subscriptionPeriodUnitIOS === 'YEAR');
+      if (!isEmpty(products)) {
+        setProductArray(
+          products.map(x => ({
+            ...x,
+            subscriptionPeriodUnitIOS: x.title.split(' ')[0],
+          }))
+        );
 
+        const monthlyPrice = products.find(
+          x => x.productId === SKUS.ANDROID.product[0]
+        );
+        const yearlyPrice = products.find(
+          x => x.productId === SKUS.ANDROID.product[1]
+        );
 
-if (monthlyPrice && yearlyPrice) {
-  const monthlyPriceValue = extractPriceFromString(monthlyPrice.localizedPrice);
-  const yearlyPriceValue = extractPriceFromString(yearlyPrice.localizedPrice);
+        const monthlyPriceValue = extractPriceFromString(
+          monthlyPrice.localizedPrice
+        );
+        const yearlyPriceValue = extractPriceFromString(
+          yearlyPrice.localizedPrice
+        );
 
-  // Get the currency symbol from the first character of the localized price
-  const currencySymbol = monthlyPrice.localizedPrice.charAt(0);
+        const currencySymbol = monthlyPrice.localizedPrice.charAt(0);
 
-  const priceDifference = yearlyPriceValue - monthlyPriceValue;
-  setCurrencySymbol(currencySymbol)
-  setSaveYearlyPlan(priceDifference)
+        const priceDifference = yearlyPriceValue - monthlyPriceValue;
+        setCurrencySymbol(currencySymbol);
+        setSaveYearlyPlan(priceDifference);
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+    }
+  };
 
-  console.log(`Price difference between monthly and yearly: ${currencySymbol}${priceDifference.toFixed(2)}`);
-} else {
-  console.log("Monthly and/or yearly price data not found.");
-} 
+  async function fetchProductInformation() {
+    try {
+      const products = await getProducts({
+        skus: Platform.OS == 'ios' ? SKUS.IOS : SKUS.ANDROID,
+      });
+      setProductArray(products);
+
+      const monthlyPrice = products.find(
+        item => item.subscriptionPeriodUnitIOS === 'MONTH'
+      );
+      const yearlyPrice = products.find(
+        item => item.subscriptionPeriodUnitIOS === 'YEAR'
+      );
+
+      if (monthlyPrice && yearlyPrice) {
+        const monthlyPriceValue = extractPriceFromString(
+          monthlyPrice.localizedPrice
+        );
+        const yearlyPriceValue = extractPriceFromString(
+          yearlyPrice.localizedPrice
+        );
+
+        // Get the currency symbol from the first character of the localized price
+        const currencySymbol = monthlyPrice.localizedPrice.charAt(0);
+
+        const priceDifference = yearlyPriceValue - monthlyPriceValue;
+        setCurrencySymbol(currencySymbol);
+        setSaveYearlyPlan(priceDifference);
+
+        console.log(
+          `Price difference between monthly and yearly: ${currencySymbol}${priceDifference.toFixed(
+            2
+          )}`
+        );
+      } else {
+        console.log('Monthly and/or yearly price data not found.');
+      }
     } catch (error) {
-
       // console.log("ERRROPORPORPO",JSON.stringify(error));
     }
-}
+  }
 
-function extractPriceFromString(priceString) {
-  const numericPart = priceString.replace(/[^\d.]/g, ''); // Remove non-numeric characters except dot
-  return parseFloat(numericPart);
-}
-
-
-
-
-
+  function extractPriceFromString(priceString) {
+    const numericPart = priceString.replace(/[^\d.]/g, ''); // Remove non-numeric characters except dot
+    return parseFloat(numericPart);
+  }
 
   const clearIAPListeners = async () => {
     if (purchaseUpdateSubscription) {
@@ -211,15 +260,18 @@ function extractPriceFromString(priceString) {
   const handlePurchase = async userProductSku => {
     try {
       setIsMakingPurchase(true);
-      const skus = Platform.OS === 'ios' ? SKUS.IOS : SKUS.ANDROID;
+      const skus = Platform.OS === 'ios' ? SKUS.IOS : SKUS.ANDROID.subscription;
       if (Platform.OS === 'android') {
         const subscriptions = await getSubscriptions({ skus });
+        const index = SKUS.ANDROID.product.findIndex(x => x == userProductSku);
+        const subscriptionId = SKUS.ANDROID.subscription[index];
+
         const product = subscriptions.find(
-          product => product.productId === userProductSku
+          product => product.productId === subscriptionId
         );
         if (product) {
           await requestSubscription({
-            sku: userProductSku,
+            sku: subscriptionId,
             ...(product?.subscriptionOfferDetails && {
               subscriptionOffers: [
                 {
@@ -253,7 +305,6 @@ function extractPriceFromString(priceString) {
       setLoading(false);
     }
   };
-
 
   async function verifyReceipt(receipt) {
     const data = {
@@ -352,18 +403,14 @@ function extractPriceFromString(priceString) {
   //   }
   // };
 
-
-
-
-
-  const handlePlanPress=(item)=>{
+  const handlePlanPress = item => {
     setProductSKU(item.productId);
     if (stopPurchase) {
       showAlert(purchasedMessage);
     } else {
       checkForSubscriptionUpdates(item.productId);
     }
-  }
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -441,22 +488,22 @@ function extractPriceFromString(priceString) {
             </View>
             <Text style={styles.listText}> {strings.profile.benefit_5} </Text>
           </View>
-          {productArray.length>0 &&
-          
-          <View style={styles.btnContainer}>
-            {productArray.map((item)=>{
-
-              return(
-                <Button
-              title={item.localizedPrice +"/"+ capitalizeFirstLetter(item.subscriptionPeriodUnitIOS)}
-              onPress={()=>handlePlanPress(item)}
-              style={styles.monthlyPlanButton}
-            />
-              )
-            })
-
-            }
-             {/* <Button
+          {productArray.length > 0 && (
+            <View style={styles.btnContainer}>
+              {productArray.map(item => {
+                return (
+                  <Button
+                    title={
+                      item.localizedPrice +
+                      '/' +
+                      capitalizeFirstLetter(item.subscriptionPeriodUnitIOS)
+                    }
+                    onPress={() => handlePlanPress(item)}
+                    style={styles.monthlyPlanButton}
+                  />
+                );
+              })}
+              {/* <Button
               title={strings.profile.monthlyPlan}
               onPress={handleMonthlyPlanPress}
               // onPress={() =>{
@@ -473,18 +520,18 @@ function extractPriceFromString(priceString) {
               title={strings.profile.yearlyPlan}
               style={styles.yearlyPlanButton}
             />  */}
-          </View>
-          
-          }
+            </View>
+          )}
           <View style={styles.footerTxtContainer}>
-           {saveYearlyPlan!==null &&
-           
-           <Text style={styles.footerTxt}>
-           {' '}
-           {/* {strings.profile.saveByYearlyPlan}{' '} */}
-           {`Save ${currencySymbol+saveYearlyPlan.toFixed(2)}  by choosing the Yearly plan`}
-         </Text>
-           }
+            {saveYearlyPlan !== null && (
+              <Text style={styles.footerTxt}>
+                {' '}
+                {/* {strings.profile.saveByYearlyPlan}{' '} */}
+                {`Save ${
+                  currencySymbol + saveYearlyPlan.toFixed(2)
+                }  by choosing the Yearly plan`}
+              </Text>
+            )}
           </View>
 
           <View style={styles.cancelTxtContainer}>
