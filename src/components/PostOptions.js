@@ -286,22 +286,6 @@ export const UserPostOptions = ({
                 />
               )}
               <ModalList
-                title={`${
-                  isBlocked
-                    ? strings.operations.unBlock
-                    : strings.operations.block
-                } @${selectedPostData?.user?.username}`}
-                icon={faXmark}
-                iconColor={theme.light.colors.secondary}
-                iconBg={theme.light.colors.infoBgLight}
-                onPress={() => {
-                  setOpen(false);
-                  blockAPI({
-                    callBack: onBanCallBack,
-                  });
-                }}
-              />
-              <ModalList
                 title={
                   isBanned
                     ? `${strings.operations.unBan} @${selectedPostData?.user?.username}`

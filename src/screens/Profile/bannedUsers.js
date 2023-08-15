@@ -9,6 +9,7 @@ import {
   FlatList,
   TouchableOpacity,
   SafeAreaView,
+  ActivityIndicator,
 } from 'react-native';
 import { faEllipsis, faCheck } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -37,6 +38,7 @@ export default function Notification({ navigation }) {
   const [open, setOpen] = useState(false);
   const [bannedId, SetBannedId] = useState(null);
   const [userName, setUserName] = useState('');
+  const [loading, setLoading] = useState(false);
   const focus = useIsFocused();
 
   const dispatch = useDispatch();
@@ -48,9 +50,19 @@ export default function Notification({ navigation }) {
 
   useEffect(() => {
     if (focus) {
-      dispatch(bannedUsers());
+      customReq();
     }
   }, [focus]);
+
+  const customReq = async () => {
+    try {
+      setLoading(true);
+      await bannedUsers()(dispatch);
+    } catch (err) {
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const unBannedHandlePress = () => {
     dispatch(unBannedUserById(bannedId.id));
@@ -62,7 +74,6 @@ export default function Notification({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <CustomLoader open={isLoading} />
       <TopBackButton
         onPress={() => navigation.goBack()}
         style={styles.TopBackButton}
@@ -89,6 +100,12 @@ export default function Notification({ navigation }) {
         color={theme.light.colors.infoBgLight}
         paddingTop={2}
         paddingBottom={2}
+      />
+      <ActivityIndicator
+        size={'large'}
+        color={theme.light.colors.activeTabIcon}
+        style={{ alignSelf: 'center', marginTop: 50 }}
+        animating={loading}
       />
       <View style={styles.searchList}>
         <View>

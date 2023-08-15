@@ -101,28 +101,30 @@ export default function Settings({ navigation }) {
             size={13}
           />
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => navigation.navigate(NAVIGATION.blockedUsers)}
-          style={styles.list}
-        >
-          <View style={styles.rawContainer}>
-            <View style={styles.iconContainer}>
-              <FontAwesomeIcon
-                icon={faLock}
-                color={theme.light.colors.primary}
-                size={ms(13)}
-              />
+        {userType?.user !== `${strings.userType.admin}` && (
+          <TouchableOpacity
+            onPress={() => navigation.navigate(NAVIGATION.blockedUsers)}
+            style={styles.list}
+          >
+            <View style={styles.rawContainer}>
+              <View style={styles.iconContainer}>
+                <FontAwesomeIcon
+                  icon={faLock}
+                  color={theme.light.colors.primary}
+                  size={ms(13)}
+                />
+              </View>
+              <Text style={[TextStyles.header, styles.listText]}>
+                {strings.profile.blockedUsers}
+              </Text>
             </View>
-            <Text style={[TextStyles.header, styles.listText]}>
-              {strings.profile.blockedUsers}
-            </Text>
-          </View>
-          <FontAwesomeIcon
-            icon={faArrowRight}
-            color={theme.light.colors.info}
-            size={13}
-          />
-        </TouchableOpacity>
+            <FontAwesomeIcon
+              icon={faArrowRight}
+              color={theme.light.colors.info}
+              size={13}
+            />
+          </TouchableOpacity>
+        )}
         <TouchableOpacity
           onPress={() => navigation.navigate(NAVIGATION.notificationSettings)}
           style={styles.list}
