@@ -142,65 +142,64 @@ export function Home({ navigation }) {
   const [isScrolling, setIsScrolling] = useState(false);
   const isFocused = useIsFocused();
   const [isRefreshing, setIsRefreshing] = useState(false);
+
   useFocusEffect(
     React.useCallback(() => {
-      dispatch(getUserType(user?.id,userType.user))
-       return () => {
-        dispatch(getUserType(user?.id,userType.user))
+      dispatch(getUserType(user?.id, userType.user));
+      return () => {
+        dispatch(getUserType(user?.id, userType.user));
       };
     }, [])
   );
-  // useEffect(() => {
-  //   initIAP().then(() => {
-  //     checkForSubscriptionUpdates();
-  //   });
 
-  //   return () => {
-  //     clearIAPListeners();
-  //   };
-  // }, []);
-  // const initIAP = async () => {
-  //   try {
-  //     await initConnection();
-  //   } catch (error) {}
-  // };
+  useEffect(() => {
+    initIAP().then(() => {
+      checkForSubscriptionUpdates();
+    });
 
-  // const checkForSubscriptionUpdates = async () => {
-  //   try {
-  //     setVipLoader(true)
-  //     const availablePurchases = await getAvailablePurchases();
-  //     if (availablePurchases?.length > 0) {
-  //       availablePurchases.sort(
-  //         (a, b) => parseInt(b.transactionDate) - parseInt(a.transactionDate)
-  //       );
-  //       const latestPurchase = availablePurchases[0];
-  //       // console.log("LATESTSTSTS",latestPurchase);
+    return () => {
+      clearIAPListeners();
+    };
+  }, []);
 
-  //       if (latestPurchase?.transactionReceipt) {
-  //          await verifyReceipt(latestPurchase.transactionReceipt);
-  //       }
-  //     } else {
-  //        var receipt = '';
-  //        await verifyReceipt(receipt);
-  //     }
-  //     setVipLoader(false)
-  //   } catch (error) {
-  //     setVipLoader(false)
-  //     console.log('Error during subscription update check:', error);
-  //   }
-  // };
+  const initIAP = async () => {
+    try {
+      await initConnection();
+    } catch (error) {}
+  };
 
-  // const clearIAPListeners = async () => {
-  //   await endConnection();
-  // };
-  // async function verifyReceipt(receipt) {
-  //   const data = {
-  //     receipt: receipt,
-  //     loggedInUserId: user?.id,
-  //   };
-  //   dispatch(validateReceipt(data, navigation, NAVIGATION.home));
-  // }
- 
+  const checkForSubscriptionUpdates = async () => {
+    try {
+      const availablePurchases = await getAvailablePurchases();
+      if (availablePurchases?.length > 0) {
+        availablePurchases.sort(
+          (a, b) => parseInt(b.transactionDate) - parseInt(a.transactionDate)
+        );
+        const latestPurchase = availablePurchases[0];
+
+        if (latestPurchase?.transactionReceipt) {
+          verifyReceipt(latestPurchase.transactionReceipt).then(() => {
+            dispatch(getUserType(user?.id, userType.user));
+          });
+        }
+      }
+    } catch (error) {
+      console.log('Error during subscription update check:', error);
+    }
+  };
+
+  const clearIAPListeners = async () => {
+    await endConnection();
+  };
+
+  const verifyReceipt = async receipt => {
+    const data = {
+      receipt: receipt,
+      loggedInUserId: user?.id,
+    };
+    await validateReceipt(data, navigation, NAVIGATION.home)(dispatch);
+  };
+
   useEffect(() => {
     dispatch(getSchedulePost());
     dispatch(
@@ -365,7 +364,7 @@ export function Home({ navigation }) {
           <NotificationIcon />
         </View>
       </View>
-      
+
       <StatusNavigatorBar
         title1={strings.home.newFeed}
         title2={strings.home.vipArea}
@@ -386,7 +385,7 @@ export function Home({ navigation }) {
         showLock={userType?.user == `${strings.userType.free}` ? true : false}
       />
       <HorizontalLine />
-     
+
       <View style={styles.feedContainer}>
         {isLoading ? (
           <ActivityIndicator

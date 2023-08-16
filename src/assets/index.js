@@ -9,3 +9,4 @@ export { default as Logo } from '@/assets/svgs/Logo.svg';
 //images
 
 export { default as DefaultProfile } from '@/assets/images/profile_default.png';
+export { default as WelcomeImage } from '@/assets/images/splash_screen_image.png';

@@ -6,7 +6,7 @@ import { styles as customStyles } from '@/screens/Welcome/Welcome.styles';
 import { Button } from '@/components';
 import { navigate } from '@/navigation/RootNavigation';
 import { NAVIGATION } from '@/constants';
-import { Logo } from '@/assets';
+import { Logo, WelcomeImage } from '@/assets';
 import { strings } from '@/localization';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {
@@ -18,24 +18,26 @@ import {
 } from '@fortawesome/free-brands-svg-icons';
 import { ms } from 'react-native-size-matters';
 import { useEffect } from 'react';
-import { getFCMToken, requestUserPermission } from '@/helper/utils/pushNotifications';
-import messaging from "@react-native-firebase/messaging";
+import {
+  getFCMToken,
+  requestUserPermission,
+} from '@/helper/utils/pushNotifications';
+import messaging from '@react-native-firebase/messaging';
 export function Welcome() {
   const { colors } = useTheme();
   const styles = useMemo(() => customStyles(colors), [colors]);
   useEffect(() => {
-
-    getToken()
-  }, [])
+    getToken();
+  }, []);
 
   const getToken = async () => {
     const fcmToken = await messaging().getToken();
     if (fcmToken) {
       console.log('fcm token', fcmToken);
     }
-  }
+  };
   return (
-    <ImageBackground style={styles.container}>
+    <ImageBackground style={styles.container} source={WelcomeImage}>
       <View style={styles.subContainer}>
         <View style={styles.logoContainer}>
           <Logo height={ms(250)} width={ms(235)} />
@@ -44,11 +46,11 @@ export function Welcome() {
           title={strings.Welcome.login}
           onPress={() => navigate(NAVIGATION.login)}
         />
-        <Button title={strings.Welcome.signup}
-          onPress={() =>
-            navigate(NAVIGATION.login)
-          }
-          style={styles.signButton} />
+        <Button
+          title={strings.Welcome.signup}
+          onPress={() => navigate(NAVIGATION.login)}
+          style={styles.signButton}
+        />
 
         <View style={styles.socialContainer}>
           <FontAwesomeIcon

@@ -1,8 +1,13 @@
 import { useTheme } from '@react-navigation/native';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
-import { TextStyles } from '@/theme';
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
+import { TextStyles, theme } from '@/theme';
 import { useMemo } from 'react';
 import { ms } from 'react-native-size-matters';
 
@@ -18,7 +23,15 @@ const customStyles = colors =>
     },
   });
 
-export function Button({ style, textStyle, opacity, title, onPress, ...rest }) {
+export function Button({
+  style,
+  textStyle,
+  opacity,
+  title,
+  loading = false,
+  onPress,
+  ...rest
+}) {
   const { colors } = useTheme();
 
   const styles = useMemo(() => customStyles(colors), [colors]);
@@ -29,17 +42,23 @@ export function Button({ style, textStyle, opacity, title, onPress, ...rest }) {
       style={
         opacity
           ? [
-            styles.button,
-            { borderColor: colors.border, opacity: opacity },
-            style,
-          ]
+              styles.button,
+              { borderColor: colors.border, opacity: opacity },
+              style,
+            ]
           : [styles.button, { borderColor: colors.border }, style]
       }
       {...rest}
     >
-      <Text style={[{ color: colors.white }, TextStyles.buttonText, textStyle]}>
-        {title}
-      </Text>
+      {loading ? (
+        <ActivityIndicator color={theme.light.colors.white} />
+      ) : (
+        <Text
+          style={[{ color: colors.white }, TextStyles.buttonText, textStyle]}
+        >
+          {title}
+        </Text>
+      )}
     </TouchableOpacity>
   );
 }
