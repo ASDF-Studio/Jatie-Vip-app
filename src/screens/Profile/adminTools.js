@@ -5,6 +5,7 @@ import {
   Text,
   TouchableOpacity,
   SafeAreaView,
+  Linking,
 } from 'react-native';
 import {
   faArrowRight,
@@ -72,7 +73,12 @@ export default function AdminTools({ navigation }) {
             color={theme.light.colors.info}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.list}>
+        <TouchableOpacity
+          style={styles.list}
+          onPress={() => {
+            Linking.openURL('http://admin.jatievip.com/');
+          }}
+        >
           <View style={styles.RawContainer}>
             <View style={styles.iconContainer}>
               <FontAwesomeIcon

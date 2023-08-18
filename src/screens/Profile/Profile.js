@@ -47,7 +47,7 @@ export function Profile({ navigation }) {
 
   useEffect(() => {
     if (focus) {
-      dispatch(followers(user?.id, user.id));
+      dispatch(followers(user?.id, user?.id));
     }
   }, [focus]);
 
