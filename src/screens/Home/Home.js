@@ -211,7 +211,7 @@ export function Home({ navigation }) {
         ''
       )
     );
-  }, [sortBy, follwingSwitch, vipArea, userType]);
+  }, [sortBy, follwingSwitch, vipArea]);
 
   const customReq = () => {
     ExclusivePostController.getAllSchedulePost().then(res => {
