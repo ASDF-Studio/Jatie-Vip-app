@@ -347,36 +347,47 @@ export function Exclusive({ navigation }) {
                         showPin={item?.isPinned}
                         isOfficial={true}
                       />
-                      <View style={styles.fullNameTxtContainer}>
-                        <Text style={styles.fullNameTxt}>{item.postBody}</Text>
-                      </View>
 
-                      {item?.postMediaContent?.length > 0 ? (
-                        <View style={styles.thumbnailContainer}>
-                          <Image
-                            blurRadius={5}
-                            style={styles.thumbnailImage}
-                            source={{
-                              uri:
-                                item?.postMediaContent[0]?.mimetype?.split(
-                                  '/'
-                                )[0] == 'image'
-                                  ? item?.postMediaContent[0]?.url
-                                  : item?.postMediaContent[0]?.cover,
-                            }}
-                          />
-                          <View style={styles.vipOnlyContainer}>
-                            <FontAwesomeIcon
-                              icon={faLock}
-                              size={ms(10)}
-                              style={styles.lock}
-                            />
-                            <Text style={styles.vipOnlyText}>
-                              {strings.giveaway.vipOnly}
-                            </Text>
-                          </View>
+                      <View>
+                        <BlurView
+                          style={styles.absolute}
+                          blurType="light"
+                          overlayColor="transparent"
+                          blurAmount={2}
+                          reducedTransparencyFallbackColor="white"
+                        />
+                        <View style={styles.fullNameTxtContainer}>
+                          <Text style={styles.fullNameTxt}>
+                            {item.postBody}
+                          </Text>
                         </View>
-                      ) : null}
+                        {item?.postMediaContent?.length > 0 ? (
+                          <View style={styles.thumbnailContainer}>
+                            <Image
+                              // blurRadius={5}
+                              style={styles.thumbnailImage}
+                              source={{
+                                uri:
+                                  item?.postMediaContent[0]?.mimetype?.split(
+                                    '/'
+                                  )[0] == 'image'
+                                    ? item?.postMediaContent[0]?.url
+                                    : item?.postMediaContent[0]?.cover,
+                              }}
+                            />
+                            <View style={styles.vipOnlyContainer}>
+                              <FontAwesomeIcon
+                                icon={faLock}
+                                size={ms(10)}
+                                style={styles.lock}
+                              />
+                              <Text style={styles.vipOnlyText}>
+                                {strings.giveaway.vipOnly}
+                              </Text>
+                            </View>
+                          </View>
+                        ) : null}
+                      </View>
                     </Card>
                   </TouchableOpacity>
                 ) : (
