@@ -24,6 +24,7 @@ import {
   MediaContainer,
   PopUpAlert,
   NotificationIcon,
+  CardBody,
 } from '@/components';
 import {
   faCheck,
@@ -424,7 +425,8 @@ export function Exclusive({ navigation }) {
                     {/* </View> */}
                     {/* <CardBody text={item.text}/> */}
                     <View style={styles.fullNameTxtContainer}>
-                      <Text style={styles.fullNameTxt}>{item.postBody}</Text>
+                      <CardBody text={item?.postBody} isBold={true} />
+                      {/* <Text style={styles.fullNameTxt}>{item.postBody}</Text> */}
                     </View>
                     <MediaContainer
                       contents={item?.postMediaContent}

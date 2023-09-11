@@ -10,7 +10,7 @@ import { NAVIGATION } from '@/constants';
 import { Link } from '@react-navigation/native';
 import { getUserId } from '@/actions/UserActions';
 
-export const CardBody = ({ text, VIPKEY }) => {
+export const CardBody = ({ text, VIPKEY, isBold = false }) => {
   const mentionToPlainTextRegex = /({([^{^}]*)}\[([^[]*)]\(([^(^)]*)\))/i;
   const matchMention = /\B@\w+/g;
 
@@ -46,9 +46,22 @@ export const CardBody = ({ text, VIPKEY }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        isBold && {
+          paddingLeft: ms(10),
+          paddingRight: ms(10),
+          paddingBottom: ms(10),
+        },
+      ]}
+    >
       <ParsedText
-        style={[styles.text, VIPKEY == true ? styles.bluretextStyle : null]}
+        style={[
+          styles.text,
+          isBold && styles.textBold,
+          VIPKEY == true ? styles.bluretextStyle : null,
+        ]}
         parse={[
           {
             pattern: mentionToPlainTextRegex,
@@ -88,6 +101,13 @@ const styles = StyleSheet.create({
     paddingBottom: ms(15),
     backgroundColor: '#FFFFFF',
   },
+  textBold: {
+    fontFamily: FontFamily.BrandonGrotesque_bold,
+    fontSize: ms(18, 0.3),
+    color: theme.light.colors.black,
+    lineHeight: ms(22),
+  },
+
   text: {
     fontFamily: FontFamily.BrandonGrotesque_regular,
     fontSize: ms(16, 0.3),
