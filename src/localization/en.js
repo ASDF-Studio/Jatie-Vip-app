@@ -153,6 +153,8 @@ export const en = {
     reactTo: 'Someone reacts to my post',
     commentsOn: 'Someone comments on my post',
     ImFollowing: "Someone I'm following posts",
+    giveawayPost: 'Jatie giveaway posts',
+    exclusivePost: 'Jatie exclusive posts',
     fromJatie: 'From Jatie',
     jatiePost: 'Jatie posts',
     JatieLive: 'Jatie goes live',

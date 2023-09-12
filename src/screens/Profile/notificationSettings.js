@@ -53,6 +53,8 @@ export default function NotificationSettings({ navigation }) {
     ...(userType?.user !== `${strings.userType.admin}` && {
       jatiePost: user?.notify_for_jatie_post,
       jatieLive: user?.notify_for_jatie_live,
+      giveAwayPost: user?.notify_for_jatie_giveaway_post,
+      exclusivePost: user?.notify_for_jatie_exclusive_post,
     }),
   });
 
@@ -64,6 +66,10 @@ export default function NotificationSettings({ navigation }) {
         ...(userType?.user !== `${strings.userType.admin}` && {
           notifyForJatieLive: config.masterConfig || config.jatieLive,
           notifyForJatiePost: config.masterConfig || config.jatiePost,
+          notifyForJatieGiveawayPost:
+            config.masterConfig || config.giveAwayPost,
+          notifyForJatieExclusivePost:
+            config.masterConfig || config.exclusivePost,
         }),
         notifyForSomeOneReactPost: config.masterConfig || config.postReact,
         notifyForSomeoneCommentsOnMyPost:
@@ -153,7 +159,6 @@ export default function NotificationSettings({ navigation }) {
             onChange={() => handleSwitch('postFollowing')}
           />
         </View>
-
         {userType?.user !== `${strings.userType.admin}` && (
           <>
             <HorizontalLine
@@ -167,6 +172,26 @@ export default function NotificationSettings({ navigation }) {
               <CustomSwitch
                 value={config.jatiePost || config.masterConfig}
                 onChange={() => handleSwitch('jatiePost')}
+              />
+            </View>
+            <View style={styles.list}>
+              <Text style={styles.listTxt}>
+                {' '}
+                {strings.profile.giveawayPost}{' '}
+              </Text>
+              <CustomSwitch
+                value={config.giveAwayPost || config.masterConfig}
+                onChange={() => handleSwitch('giveAwayPost')}
+              />
+            </View>
+            <View style={styles.list}>
+              <Text style={styles.listTxt}>
+                {' '}
+                {strings.profile.exclusivePost}{' '}
+              </Text>
+              <CustomSwitch
+                value={config.exclusivePost || config.masterConfig}
+                onChange={() => handleSwitch('exclusivePost')}
               />
             </View>
             <View style={styles.list}>
