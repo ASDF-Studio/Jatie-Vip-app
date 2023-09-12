@@ -932,6 +932,8 @@ export class UserController {
     notifyForSomeOneReactPost,
     notifyForSomeoneCommentsOnMyPost,
     notifyForFollowingUserPost,
+    notifyForJatieGiveawayPost,
+    notifyForJatieExclusivePost,
   }) {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.USER_NOTIFICATION_SETTINGS;
@@ -945,6 +947,8 @@ export class UserController {
         notify_for_someone_comments_on_my_post:
           notifyForSomeoneCommentsOnMyPost,
         notify_for_following_user_post: notifyForFollowingUserPost,
+        notify_for_jatie_giveaway_post: notifyForJatieGiveawayPost,
+        notify_for_jatie_exclusive_post: notifyForJatieExclusivePost,
       });
 
       HttpClient.post(endpoint, data)
