@@ -34,7 +34,9 @@ export default function NotificationSettings({ navigation }) {
         user?.notify_for_someone_comments_on_my_post &&
         user?.notify_for_following_user_post &&
         user?.notify_for_jatie_post &&
-        user?.notify_for_jatie_live
+        user?.notify_for_jatie_live &&
+        user?.notify_for_jatie_giveaway_post &&
+        user?.notify_for_jatie_exclusive_post
       );
     } else {
       return (
