@@ -6,11 +6,12 @@ import { customShowMessage } from '@/utils';
 import { Platform } from 'react-native';
 
 export class UserController {
-  static async login(number) {
+  static async login(number, captcha) {
     return new Promise((resolve, reject) => {
       const endpoint = API_BASE_URL + API_END_POINTS.LOGIN;
       var data = JSON.stringify({
         phoneNumber: number,
+        captcha,
       });
       HttpClient.post(endpoint, data)
         .then(response => {

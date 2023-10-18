@@ -65,10 +65,8 @@ export function Login({ route }) {
   const onVerify = token => {
     // Keyboard.dismiss()
     setCaptchaToken(token);
-
     const finalNumber = countryCode + mobileNumber;
-
-    dispatch(login(finalNumber));
+    dispatch(login(finalNumber, token));
   };
 
   const onExpire = () => {
