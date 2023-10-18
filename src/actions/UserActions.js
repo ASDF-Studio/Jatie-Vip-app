@@ -692,11 +692,11 @@ const updateFcmTokenError = error => ({
   payload: { error },
 });
 
-export const login = number => async dispatch => {
+export const login = (number, captcha) => async dispatch => {
   dispatch(globalReset());
   dispatch(loginRequest());
   try {
-    const user = await UserController.login(number);
+    const user = await UserController.login(number, captcha);
     dispatch(loginSuccess());
 
     navigationRef.navigate(NAVIGATION.enterOtp, {
